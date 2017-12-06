@@ -3,13 +3,13 @@ package main
 import "fmt"
 
 func varsExamples() {
-	var v1 int = 10
+	// var v1 int = 10
 	var v2 = 10
 	v3 := 10
 
 	fmt.Println("VARS EXAMPLES:")
 	fmt.Println("vars define and init:")
-	fmt.Println(v1)
+	// fmt.Println(v1)
 	fmt.Println(v2)
 	fmt.Println(v3)
 
@@ -96,7 +96,7 @@ type PersonInfo struct {
 	Address string
 }
 
-func mapExamples() {
+func mapTest() {
 	var personDB map[string]PersonInfo
 	personDB = make(map[string]PersonInfo)
 
@@ -113,7 +113,7 @@ func mapExamples() {
 	}
 }
 
-func switchExample(number int) {
+func switchTest(number int) {
 	switch {
 	case 0 <= number && number <= 3:
 		fmt.Printf("0-3")
@@ -126,7 +126,7 @@ func switchExample(number int) {
 	}
 }
 
-func controlStatements() {
+func controlTest() {
 JLoop:
 	for j := 0; j < 5; j++ {
 		for i := 0; i < 10; i++ {
@@ -138,7 +138,7 @@ JLoop:
 	}
 }
 
-func argsExample(args ...int) {
+func argsTest(args ...int) {
 	fmt.Println("arguments:")
 	for _, arg := range args {
 		fmt.Println(arg)
@@ -193,11 +193,11 @@ func mainHello() {
 	// fmt.Println("nick name: " + nickName)
 
 	// arrayExamples()
-	// mapExamples()
+	// mapTest()
 
-	// switchExample(7)
-	// controlStatements()
-	// argsExample(1, 2, 3)
+	// switchTest(7)
+	// controlTest()
+	// argsTest(1, 2, 3)
 
 	// var v1 = 1
 	// var v2 int64 = 1234
@@ -206,7 +206,7 @@ func mainHello() {
 	// myPrintf(v1, v2, v3, v4)
 
 	// fnTest()
-	fnClosureTest()
+	// fnClosureTest()
 
 	fmt.Printf("\nhello, world\n")
 }

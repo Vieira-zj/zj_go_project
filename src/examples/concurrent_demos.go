@@ -8,23 +8,6 @@ import (
 	"time"
 )
 
-func count(ch chan int) {
-	ch <- 1
-	fmt.Println("Counting")
-}
-
-func concurrentTest() {
-	chs := make([]chan int, 10)
-	for i := 0; i < 10; i++ {
-		chs[i] = make(chan int)
-		go count(chs[i])
-	}
-
-	for _, ch := range chs {
-		<-ch
-	}
-}
-
 func myFetch(url string, ch chan<- string) {
 	start := time.Now()
 
@@ -61,9 +44,7 @@ func myFetchAllTest() {
 }
 
 func main() {
-	// concurrentTest()
-
-	// myFetchAllTest()
+	myFetchAllTest()
 
 	fmt.Println("concurrent demo.")
 }

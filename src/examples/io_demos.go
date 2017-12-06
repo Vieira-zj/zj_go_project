@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func readArgs() {
+func readArgsExamples() {
 	var s1, s2 string
 	for i := 1; i < len(os.Args); i++ {
 		s1 += " " + os.Args[i]
@@ -118,7 +118,7 @@ func countLineTest() {
 }
 
 func mainIO() {
-	// readArgs()
+	// readArgsExamples()
 
 	// readFileExample()
 	// writeFileExample()
