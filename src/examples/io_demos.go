@@ -1,10 +1,28 @@
 package main
 
-import "fmt"
-import "os"
-import "bufio"
-import "io"
-import "strconv"
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func readArgs() {
+	var s1, s2 string
+	for i := 1; i < len(os.Args); i++ {
+		s1 += " " + os.Args[i]
+	}
+	fmt.Println("ex1 arguments:", s1[1:])
+
+	for _, arg := range os.Args[1:] {
+		s2 += " " + arg
+	}
+	fmt.Println("ex2 arguments:", s2[1:])
+
+	fmt.Println("ex3 arguments:", strings.Join(os.Args[1:], " "))
+}
 
 func readValues(inFile string) (values []int, err error) {
 	file, err := os.Open(inFile)
@@ -57,18 +75,55 @@ func writeValues(values []int, outFile string) error {
 	return nil
 }
 
-func mainIO() {
+func readFileExample() {
 	values, err := readValues("./io_input.txt")
 	if err != nil {
 		fmt.Println("read file error:", err)
 	} else {
 		fmt.Println("file output:", values)
 	}
+}
 
-	err1 := writeValues([]int{1, 11, 123, 1234}, "./io_output.txt")
-	if err1 != nil {
+func writeFileExample() {
+	err := writeValues([]int{1, 11, 123, 1234}, "./io_output.txt")
+	if err != nil {
 		fmt.Println("write file error:", err)
 	}
+}
+
+func countLines(f *os.File, counts map[string]int) {
+	input := bufio.NewScanner(f)
+	for input.Scan() {
+		counts[input.Text()]++
+	}
+}
+
+func countLineTest() {
+	paths := [2]string{"./io_input.txt", "./io_output.txt"}
+	counts := make(map[string]int) // reference
+
+	for _, path := range paths {
+		f, err := os.Open(path)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "countLineTest: %v\n", err)
+			continue
+		}
+		countLines(f, counts) // pass reference
+		defer f.Close()
+	}
+
+	for line, num := range counts {
+		fmt.Printf("%s\t%d\n", line, num)
+	}
+}
+
+func mainIO() {
+	// readArgs()
+
+	// readFileExample()
+	// writeFileExample()
+
+	// countLineTest()
 
 	fmt.Println("io demo.")
 }

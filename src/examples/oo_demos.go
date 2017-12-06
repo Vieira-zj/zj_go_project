@@ -62,7 +62,7 @@ func myPrintTest(args ...interface{}) {
 	}
 }
 
-func main() {
+func mainOO() {
 	// addMethodTest()
 	// valueAndReferenceTest()
 
