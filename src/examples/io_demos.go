@@ -4,9 +4,11 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func readArgsExamples() {
@@ -117,6 +119,20 @@ func countLineTest() {
 	}
 }
 
+func deferTest() {
+	defer myTrace("deferTest")()
+	time.Sleep(5 * time.Second)
+	return
+}
+
+func myTrace(msg string) func() {
+	start := time.Now()
+	log.Printf("enter %s", msg)
+	return func() {
+		log.Printf("exit %s (%.2f)", msg, time.Since(start).Seconds())
+	}
+}
+
 func mainIO() {
 	// readArgsExamples()
 
@@ -124,6 +140,8 @@ func mainIO() {
 	// writeFileExample()
 
 	// countLineTest()
+
+	// deferTest()
 
 	fmt.Println("io demo.")
 }

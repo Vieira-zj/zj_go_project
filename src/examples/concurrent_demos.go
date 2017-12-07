@@ -43,7 +43,7 @@ func myFetchAllTest() {
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
-func main() {
+func mainConcurrent() {
 	myFetchAllTest()
 
 	fmt.Println("concurrent demo.")

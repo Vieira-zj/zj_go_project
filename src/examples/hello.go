@@ -1,13 +1,14 @@
 package main
 
 import "fmt"
+import "sort"
 
 func varsExamples() {
 	// var v1 int = 10
 	var v2 = 10
 	v3 := 10
 
-	fmt.Println("VARS EXAMPLES:")
+	fmt.Println("vars examples:")
 	fmt.Println("vars define and init:")
 	// fmt.Println(v1)
 	fmt.Println(v2)
@@ -21,8 +22,9 @@ func varsExamples() {
 	fmt.Println(j)
 
 	fmt.Println("enum:")
+	type weekday int
 	const (
-		Sunday = iota
+		Sunday weekday = iota
 		Monday
 		Tuesday
 		Wednesday
@@ -46,6 +48,12 @@ func varsExamples() {
 	for i, ch := range str {
 		fmt.Println(i, ch)
 	}
+
+	fmt.Println("create value by new")
+	p := new(int)
+	fmt.Println("value by new():", *p)
+	*p = 2
+	fmt.Print("p value:", *p)
 }
 
 func getName() (firstName, lastName, nickName string) {
@@ -58,6 +66,10 @@ func modifyArray(array [5]int) {
 }
 
 func arrayExamples() {
+	q := [...]int{1, 2, 3}
+	fmt.Printf("%T\n", q)
+
+	fmt.Println("array examples:")
 	fmt.Println("array pass as value not reference:")
 	array := [5]int{1, 2, 3, 4, 5}
 	modifyArray(array)
@@ -82,12 +94,19 @@ func arrayExamples() {
 	fmt.Println("slice length:", len(mySlice2))
 	fmt.Println("slice capbility:", cap(mySlice2))
 
+	fmt.Println("slice pass as value:")
 	mySlice2 = append(mySlice2, 1, 2, 3)
+	myUpdateSlice(mySlice2)
 	fmt.Println("slice after append:", mySlice2)
 
 	mySlice3 := []int{11, 12, 13}
 	copy(mySlice2, mySlice3)
 	fmt.Println("slice after copied:", mySlice2)
+}
+
+func myUpdateSlice(s []int) {
+	s = append(s, 4, 5)
+	fmt.Println("slice in update:", s)
 }
 
 type PersonInfo struct {
@@ -96,14 +115,43 @@ type PersonInfo struct {
 	Address string
 }
 
-func mapTest() {
+func mapExamples() {
+	fmt.Println("map examples:")
+	fmt.Println("map init and iterator:")
+	tmpMap1 := make(map[string]int)
+	tmpMap1["one"] = 1
+	tmpMap1["two"] = 2
+	for k, v := range tmpMap1 {
+		fmt.Printf("%d - %s\n", v, k)
+	}
+
+	tmpMap2 := map[string]int{"three": 3, "four": 4}
+	for k := range tmpMap2 {
+		fmt.Printf("key: %s\n", k)
+	}
+
+	fmt.Println("map pass as reference:")
 	var personDB map[string]PersonInfo
 	personDB = make(map[string]PersonInfo)
 
 	personDB["test1"] = PersonInfo{"test1", "Tom", "Room 203,..."}
 	personDB["test2"] = PersonInfo{"test2", "Jack", "Room 101,..."}
 
-	fmt.Println("map examples:")
+	myUpdateMap(personDB)
+	fmt.Println(personDB)
+
+	fmt.Println("print map values as sorted:")
+	// var ids []string
+	ids := make([]string, 0, len(personDB))
+	for id := range personDB {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		fmt.Printf("%s\t%s\n", id, personDB[id].Name)
+	}
+
+	fmt.Println("delete map entry by key:")
 	delete(personDB, "test1")
 	person, ok := personDB["test1"]
 	if ok {
@@ -111,6 +159,11 @@ func mapTest() {
 	} else {
 		fmt.Println("Did not find.")
 	}
+}
+
+func myUpdateMap(persons map[string]PersonInfo) {
+	// persons["test2"].Address = "Room 101,...(update)"
+	persons["test3"] = PersonInfo{ID: "test3", Name: "henry", Address: "Room 606..."}
 }
 
 func switchTest(number int) {
@@ -186,14 +239,51 @@ func fnClosureTest() {
 	fn()
 }
 
-func mainHello() {
+// struct and method
+type Point struct {
+	x, y int
+}
+
+// receiver as reference
+func (p *Point) scaleBy(factor int) {
+	p.x *= factor
+	p.y *= factor
+}
+
+// receiver as value
+func (p Point) String() string {
+	return fmt.Sprintf("x=%d, y=%d", p.x, p.y)
+}
+
+func methodTest() {
+	fmt.Println("invoke methods of struct:")
+	p := &Point{1, 2}
+	p.scaleBy(2)
+	fmt.Println((*p).String())
+	fmt.Println(p.String())
+
+	fmt.Println("method value:")
+	p1 := Point{1, 3}
+	fnScale1 := p1.scaleBy
+	fnScale1(2)
+	fmt.Println(p1.String())
+	fmt.Printf("%T\n", fnScale1)
+
+	p2 := Point{1, 4}
+	fnScale2 := (*Point).scaleBy
+	fnScale2(&p2, 2)
+	fmt.Println(p2.String())
+	fmt.Printf("%T\n", fnScale2)
+}
+
+func main() {
 	// varsExamples()
 
 	// _, _, nickName := getName()
 	// fmt.Println("nick name: " + nickName)
 
 	// arrayExamples()
-	// mapTest()
+	// mapExamples()
 
 	// switchTest(7)
 	// controlTest()
@@ -207,6 +297,8 @@ func mainHello() {
 
 	// fnTest()
 	// fnClosureTest()
+
+	// methodTest()
 
 	fmt.Printf("\nhello, world\n")
 }
