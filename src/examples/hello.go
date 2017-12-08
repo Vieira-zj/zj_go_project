@@ -276,7 +276,7 @@ func methodTest() {
 	fmt.Printf("%T\n", fnScale2)
 }
 
-func main() {
+func mainHello() {
 	// varsExamples()
 
 	// _, _, nickName := getName()

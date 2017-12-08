@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -77,7 +78,7 @@ func writeValues(values []int, outFile string) error {
 	return nil
 }
 
-func readFileExample() {
+func readFileTest() {
 	values, err := readValues("./io_input.txt")
 	if err != nil {
 		fmt.Println("read file error:", err)
@@ -86,7 +87,7 @@ func readFileExample() {
 	}
 }
 
-func writeFileExample() {
+func writeFileTest() {
 	err := writeValues([]int{1, 11, 123, 1234}, "./io_output.txt")
 	if err != nil {
 		fmt.Println("write file error:", err)
@@ -133,15 +134,26 @@ func myTrace(msg string) func() {
 	}
 }
 
+func flagTest() {
+	period := flag.Duration("period", 1*time.Second, "sleep period")
+
+	flag.Parse()
+	fmt.Printf("sleep for %v...", *period)
+	time.Sleep(*period)
+}
+
 func mainIO() {
 	// readArgsExamples()
 
-	// readFileExample()
-	// writeFileExample()
+	// readFileTest()
+	// writeFileTest()
 
 	// countLineTest()
 
 	// deferTest()
+
+	// run cmd: $ ./io_demos -period 5s
+	// flagTest()
 
 	fmt.Println("io demo.")
 }
