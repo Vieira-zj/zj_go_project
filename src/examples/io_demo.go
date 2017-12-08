@@ -1,4 +1,4 @@
-package main
+package examples
 
 import (
 	"bufio"
@@ -142,7 +142,8 @@ func flagTest() {
 	time.Sleep(*period)
 }
 
-func mainIO() {
+// MainIO : main function for IO demos.
+func MainIO() {
 	// readArgsExamples()
 
 	// readFileTest()

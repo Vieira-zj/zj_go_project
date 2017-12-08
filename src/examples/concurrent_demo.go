@@ -1,4 +1,4 @@
-package main
+package examples
 
 import (
 	"fmt"
@@ -43,7 +43,8 @@ func myFetchAllTest() {
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
-func mainConcurrent() {
+// MainConcurrent : main function for concurrent demos.
+func MainConcurrent() {
 	myFetchAllTest()
 
 	fmt.Println("concurrent demo.")

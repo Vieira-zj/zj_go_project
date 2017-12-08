@@ -1,7 +1,10 @@
-package main
+package examples
 
-import "fmt"
-import "sort"
+import (
+	"fmt"
+	"os"
+	"sort"
+)
 
 func varsExamples() {
 	// var v1 int = 10
@@ -109,7 +112,7 @@ func myUpdateSlice(s []int) {
 	fmt.Println("slice in update:", s)
 }
 
-type PersonInfo struct {
+type personInfo struct {
 	ID      string
 	Name    string
 	Address string
@@ -131,11 +134,11 @@ func mapExamples() {
 	}
 
 	fmt.Println("map pass as reference:")
-	var personDB map[string]PersonInfo
-	personDB = make(map[string]PersonInfo)
+	var personDB map[string]personInfo
+	personDB = make(map[string]personInfo)
 
-	personDB["test1"] = PersonInfo{"test1", "Tom", "Room 203,..."}
-	personDB["test2"] = PersonInfo{"test2", "Jack", "Room 101,..."}
+	personDB["test1"] = personInfo{"test1", "Tom", "Room 203,..."}
+	personDB["test2"] = personInfo{"test2", "Jack", "Room 101,..."}
 
 	myUpdateMap(personDB)
 	fmt.Println(personDB)
@@ -161,9 +164,9 @@ func mapExamples() {
 	}
 }
 
-func myUpdateMap(persons map[string]PersonInfo) {
+func myUpdateMap(persons map[string]personInfo) {
 	// persons["test2"].Address = "Room 101,...(update)"
-	persons["test3"] = PersonInfo{ID: "test3", Name: "henry", Address: "Room 606..."}
+	persons["test3"] = personInfo{ID: "test3", Name: "henry", Address: "Room 606..."}
 }
 
 func switchTest(number int) {
@@ -239,44 +242,50 @@ func fnClosureTest() {
 	fn()
 }
 
-// struct and method
-type Point struct {
+type point struct {
 	x, y int
 }
 
 // receiver as reference
-func (p *Point) scaleBy(factor int) {
+func (p *point) scaleBy(factor int) {
 	p.x *= factor
 	p.y *= factor
 }
 
 // receiver as value
-func (p Point) String() string {
+func (p point) String() string {
 	return fmt.Sprintf("x=%d, y=%d", p.x, p.y)
 }
 
 func methodTest() {
 	fmt.Println("invoke methods of struct:")
-	p := &Point{1, 2}
+	p := &point{1, 2}
 	p.scaleBy(2)
 	fmt.Println((*p).String())
 	fmt.Println(p.String())
 
 	fmt.Println("method value:")
-	p1 := Point{1, 3}
+	p1 := point{1, 3}
 	fnScale1 := p1.scaleBy
 	fnScale1(2)
 	fmt.Println(p1.String())
 	fmt.Printf("%T\n", fnScale1)
 
-	p2 := Point{1, 4}
-	fnScale2 := (*Point).scaleBy
+	p2 := point{1, 4}
+	fnScale2 := (*point).scaleBy
 	fnScale2(&p2, 2)
 	fmt.Println(p2.String())
 	fmt.Printf("%T\n", fnScale2)
 }
 
-func mainHello() {
+// PrintGoEnvValues : print go root and path env values
+func printGoEnvValues() {
+	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
+	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
+}
+
+// MainHello : main function for hello demos.
+func MainHello() {
 	// varsExamples()
 
 	// _, _, nickName := getName()
@@ -299,6 +308,8 @@ func mainHello() {
 	// fnClosureTest()
 
 	// methodTest()
+
+	printGoEnvValues()
 
 	fmt.Printf("\nhello, world\n")
 }

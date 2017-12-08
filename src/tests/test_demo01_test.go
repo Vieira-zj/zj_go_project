@@ -44,14 +44,14 @@ var _ = Describe("TestDemo01", func() {
 			It("string is not null", func() {
 				GinkgoWriter.Write([]byte("TEST: run test01\n"))
 				By("sub step description")
-				Expect(myText != "").Should(BeTrue())
+				Expect(myText != "").Should(BeTrue(), "Failed, not null")
 			})
 		})
 
 		Context("Test context", func() {
 			It("string length should be 4", func() {
 				GinkgoWriter.Write([]byte("TEST: run test02\n"))
-				Expect(len(myText)).To(Equal(4))
+				Expect(len(myText)).To(Equal(4), "Failed, length = 4")
 			})
 		})
 
@@ -62,4 +62,5 @@ var _ = Describe("TestDemo01", func() {
 			})
 		})
 	})
+
 })
