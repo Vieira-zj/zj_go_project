@@ -135,6 +135,7 @@ func myTrace(msg string) func() {
 }
 
 func flagTest() {
+	// run cmd: $ ./io_demos -period 5s
 	period := flag.Duration("period", 1*time.Second, "sleep period")
 
 	flag.Parse()
@@ -142,7 +143,7 @@ func flagTest() {
 	time.Sleep(*period)
 }
 
-// MainIO : main function for IO demos.
+// MainIO : main function for IO examples.
 func MainIO() {
 	// readArgsExamples()
 
@@ -151,9 +152,8 @@ func MainIO() {
 
 	// countLineTest()
 
-	// deferTest()
+	deferTest()
 
-	// run cmd: $ ./io_demos -period 5s
 	// flagTest()
 
 	fmt.Println("io demo.")

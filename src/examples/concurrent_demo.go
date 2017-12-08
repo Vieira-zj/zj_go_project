@@ -43,7 +43,7 @@ func myFetchAllTest() {
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
-// MainConcurrent : main function for concurrent demos.
+// MainConcurrent : main function for concurrent examples.
 func MainConcurrent() {
 	myFetchAllTest()
 

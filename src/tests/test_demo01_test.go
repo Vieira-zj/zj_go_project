@@ -14,16 +14,17 @@ func init() {
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
 
+// cmd: ginkgo -v --focus="demo01" src/tests/
 var _ = Describe("TestDemo01", func() {
 	var myText string
 
 	BeforeSuite(func() {
 		GinkgoWriter.Write([]byte("TEST: exec BeforeSuite\n"))
+		By("my flag value: " + myFlag) // get external var
 	})
 
 	AfterSuite(func() {
 		GinkgoWriter.Write([]byte("TEST: exec AfterSuite\n"))
-		By("my flag value: " + myFlag)
 	})
 
 	BeforeEach(func() {
@@ -41,7 +42,7 @@ var _ = Describe("TestDemo01", func() {
 
 	Describe("Test string", func() {
 		Context("Test context", func() {
-			It("string is not null", func() {
+			It("[demo01] text is not null", func() {
 				GinkgoWriter.Write([]byte("TEST: run test01\n"))
 				By("sub step description")
 				Expect(myText != "").Should(BeTrue(), "Failed, not null")
@@ -49,18 +50,17 @@ var _ = Describe("TestDemo01", func() {
 		})
 
 		Context("Test context", func() {
-			It("string length should be 4", func() {
+			It("[demo01] text length should be 4", func() {
 				GinkgoWriter.Write([]byte("TEST: run test02\n"))
-				Expect(len(myText)).To(Equal(4), "Failed, length = 4")
+				Expect(len(myText)).To(Equal(4), "Failed, text length = 4")
 			})
 		})
 
 		Context("Test context", func() {
-			It("Marking Specs as Failed", func() {
-				GinkgoWriter.Write([]byte("TEST: run test03\n"))
+			It("[demo01] Marking Specs as Failed", func() {
+				By("TEST: run test03")
 				Fail("Mark failed")
 			})
 		})
 	})
-
 })

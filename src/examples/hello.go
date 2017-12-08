@@ -284,7 +284,7 @@ func printGoEnvValues() {
 	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
 }
 
-// MainHello : main function for hello demos.
+// MainHello : main function for general examples.
 func MainHello() {
 	// varsExamples()
 
@@ -311,5 +311,5 @@ func MainHello() {
 
 	printGoEnvValues()
 
-	fmt.Printf("\nhello, world\n")
+	fmt.Println("hello demo.")
 }

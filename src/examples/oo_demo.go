@@ -93,7 +93,7 @@ func sortTest() {
 	fmt.Println("names after sorted:", names)
 }
 
-// MainOO : main function for struct and interface demos.
+// MainOO : main function for struct and interface examples.
 func MainOO() {
 	// addMethodTest()
 	// valueAndReferenceTest()
