@@ -43,8 +43,8 @@ func myFetchAllTest() {
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
-// MainConcurrent : main function for concurrent examples.
-func MainConcurrent() {
+// MainGoRoutine : main function for goroutine, channel examples.
+func MainGoRoutine() {
 	myFetchAllTest()
 
 	fmt.Println("concurrent demo.")
