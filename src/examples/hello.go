@@ -204,14 +204,16 @@ func argsTest(args ...int) {
 func myPrintf(args ...interface{}) {
 	for _, arg := range args {
 		switch arg.(type) {
+		case nil:
+			fmt.Println("null")
 		case int:
 			fmt.Println(arg, "is an int value.")
-		case string:
-			fmt.Println(arg, "is a string value.")
 		case int64:
 			fmt.Println(arg, "is an int64 value.")
+		case string:
+			fmt.Println(arg, "is a string value.")
 		default:
-			fmt.Println(arg, "is an unknown type.")
+			panic(fmt.Sprintf("unexpected type %T: %v", arg, arg))
 		}
 	}
 }

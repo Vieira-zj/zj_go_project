@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	examples.MainHello()
+	// examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
-	// examples.MainConcurrent()
+	examples.MainConcurrent()
 
 	fmt.Println("main done.")
 }
