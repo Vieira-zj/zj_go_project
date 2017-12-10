@@ -2,6 +2,7 @@ package tests_test
 
 import (
 	"flag"
+	"os"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -10,11 +11,14 @@ import (
 var myFlag string
 
 func init() {
-	// cmd: ginkgo -v src/tests/ -- -myFlag="flag text"
+	By("$GOROOT: " + os.Getenv("GOROOT"))
+	By("$GOPATH: " + os.Getenv("GOPATH"))
+
+	// cmd: ginkgo -v src/demo.tests/tests/ -- -myFlag="flag text"
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
 
-// cmd: ginkgo -v --focus="demo01" src/tests/
+// cmd: ginkgo -v --focus="demo01" src/demo.tests/tests/
 var _ = Describe("TestDemo01", func() {
 	var myText string
 
