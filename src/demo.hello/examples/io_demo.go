@@ -152,9 +152,11 @@ func MainIO() {
 
 	// countLineTest()
 
-	deferTest()
-
+	// deferTest()
 	// flagTest()
+
+	// invoke function of "io.demo.go"
+	PrintGoEnvValues()
 
 	fmt.Println("io demo.")
 }

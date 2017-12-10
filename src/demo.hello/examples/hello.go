@@ -281,7 +281,7 @@ func methodTest() {
 }
 
 // PrintGoEnvValues : print go root and path env values
-func printGoEnvValues() {
+func PrintGoEnvValues() {
 	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
 	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
 }
@@ -310,8 +310,6 @@ func MainHello() {
 	// fnClosureTest()
 
 	// methodTest()
-
-	printGoEnvValues()
 
 	fmt.Println("hello demo.")
 }
