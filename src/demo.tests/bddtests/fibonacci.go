@@ -1,4 +1,4 @@
-package tests
+package bddtests
 
 // Fibonacci : for test benchmark in ginkgo
 func Fibonacci(n int) int {

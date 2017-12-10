@@ -1,7 +1,7 @@
-package tests_test
+package bddtests_test
 
 import (
-	"demo.tests/tests"
+	"demo.tests/bddtests"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -27,10 +27,10 @@ var _ = Describe("TestDemo02", func() {
 
 	Describe("Test benchmark", func() {
 		Context("Test context", func() {
-			// cmd: ginkgo -v --focus="measure" src/demo.tests/tests/
+			// cmd: ginkgo -v --focus="measure" src/demo.tests/bddtests/
 			Measure("[demo02] [measure] it should do something hard efficiently", func(b Benchmarker) {
 				runtime := b.Time("runtime", func() {
-					ouput := tests.Fibonacci(30)
+					ouput := bddtests.Fibonacci(30)
 					Expect(ouput).To(Equal(2178309))
 				})
 

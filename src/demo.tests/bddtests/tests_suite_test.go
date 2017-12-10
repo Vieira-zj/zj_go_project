@@ -1,4 +1,4 @@
-package tests_test
+package bddtests_test
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package tests_test
+package bddtests_test
 
 import (
 	"flag"
@@ -17,7 +17,7 @@ func init() {
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
 
-// cmd: ginkgo -v --focus="demo01" src/demo.tests/tests/
+// cmd: ginkgo -v --focus="demo01" src/demo.tests/bddtests/
 var _ = Describe("TestDemo01", func() {
 	var myText string
 
@@ -67,10 +67,10 @@ var _ = Describe("TestDemo01", func() {
 	})
 
 	Describe("Test flag", func() {
-		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/tests/ -- -myFlag="flag text"
+		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/bddtests/ -- -myFlag="flagtext"
 		It("[demo01] [flagtest] get string flag text", func() {
 			By("my flag value: " + myFlag)
-			Expect(myFlag).To(Equal("flag text"))
+			Expect(myFlag).To(MatchRegexp("flagtext|default"))
 		})
 	})
 })
