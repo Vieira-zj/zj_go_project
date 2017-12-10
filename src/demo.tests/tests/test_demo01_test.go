@@ -14,7 +14,6 @@ func init() {
 	By("$GOROOT: " + os.Getenv("GOROOT"))
 	By("$GOPATH: " + os.Getenv("GOPATH"))
 
-	// cmd: ginkgo -v src/demo.tests/tests/ -- -myFlag="flag text"
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
 
@@ -24,7 +23,6 @@ var _ = Describe("TestDemo01", func() {
 
 	BeforeSuite(func() {
 		GinkgoWriter.Write([]byte("TEST: exec BeforeSuite\n"))
-		By("my flag value: " + myFlag) // get external var
 	})
 
 	AfterSuite(func() {
@@ -65,6 +63,14 @@ var _ = Describe("TestDemo01", func() {
 				By("TEST: run test03")
 				Fail("Mark failed")
 			})
+		})
+	})
+
+	Describe("Test flag", func() {
+		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/tests/ -- -myFlag="flag text"
+		It("[demo01] [flagtest] get string flag text", func() {
+			By("my flag value: " + myFlag)
+			Expect(myFlag).To(Equal("flag text"))
 		})
 	})
 })

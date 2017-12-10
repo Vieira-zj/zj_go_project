@@ -1,6 +1,7 @@
 package tests_test
 
 import (
+	"demo.tests/tests"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -24,18 +25,18 @@ var _ = Describe("TestDemo02", func() {
 		})
 	})
 
-	// Describe("Test benchmark", func() {
-	// 	Context("Test context", func() {
-	// 		// cmd: ginkgo -v --focus="measure" src/demo.tests/tests/
-	// 		Measure("[demo02] [measure] it should do something hard efficiently", func(b Benchmarker) {
-	// 			runtime := b.Time("runtime", func() {
-	// 				ouput := tests.Fibonacci(30)
-	// 				Expect(ouput).To(Equal(2178309))
-	// 			})
+	Describe("Test benchmark", func() {
+		Context("Test context", func() {
+			// cmd: ginkgo -v --focus="measure" src/demo.tests/tests/
+			Measure("[demo02] [measure] it should do something hard efficiently", func(b Benchmarker) {
+				runtime := b.Time("runtime", func() {
+					ouput := tests.Fibonacci(30)
+					Expect(ouput).To(Equal(2178309))
+				})
 
-	// 			Expect(runtime.Seconds()).Should(BeNumerically("<", 0.5),
-	// 				"SomethingHard() shouldn't take too long.")
-	// 		}, 10)
-	// 	})
-	// })
+				Expect(runtime.Seconds()).Should(BeNumerically("<", 0.5),
+					"SomethingHard() shouldn't take too long.")
+			}, 10)
+		})
+	})
 })
