@@ -10,8 +10,8 @@ func init() {
 	fmt.Println("run init")
 }
 
+// cmd: go install src/demo.hello/main/main.go
 func main() {
-	// cmd: go install src/main/main.go
 	examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
