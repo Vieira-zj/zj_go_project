@@ -143,6 +143,28 @@ func flagTest() {
 	time.Sleep(*period)
 }
 
+// printf object
+type myPoint struct {
+	x int
+	y int
+}
+
+func fmtPrintfTest() {
+	p := myPoint{1, 2}
+	fmt.Println("print struct with format.")
+	fmt.Printf("%v\n", p)  // {1 2}
+	fmt.Printf("%+v\n", p) // {x:1 y:2}
+	fmt.Printf("%#v\n", p) // examples.myPoint{x:1, y:2}
+	fmt.Printf("%T\n", p)  // examples.myPoint
+
+	m := map[int]string{1: "one", 2: "two", 3: "three"}
+	fmt.Println("\nprint map with format.")
+	fmt.Printf("%v\n", m)
+	fmt.Printf("%+v\n", m)
+	fmt.Printf("%#v\n", m)
+	fmt.Printf("%T\n", m)
+}
+
 // MainIO : main function for IO examples.
 func MainIO() {
 	// readArgsExamples()
@@ -155,8 +177,10 @@ func MainIO() {
 	// deferTest()
 	// flagTest()
 
+	fmtPrintfTest()
+
 	// invoke function of "io.demo.go"
-	PrintGoEnvValues()
+	// PrintGoEnvValues()
 
 	fmt.Println("io demo.")
 }
