@@ -7,6 +7,7 @@ set -x # show run commands with arguments
 
 # go tests, base $GOPATH
 # go test -v demo.tests/gotests/
+# go test -v demo.tests/gotests/ -run="TestEcho"
 # go test -v src/demo.tests/gotests/word_test.go
 
 # bdd tests
