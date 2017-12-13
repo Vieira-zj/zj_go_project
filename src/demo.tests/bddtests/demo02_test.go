@@ -3,6 +3,7 @@ package bddtests_test
 import (
 	"demo.tests/bddtests"
 	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 )
 
@@ -37,6 +38,15 @@ var _ = Describe("TestDemo02", func() {
 				Expect(runtime.Seconds()).Should(BeNumerically("<", 0.5),
 					"SomethingHard() shouldn't take too long.")
 			}, 10)
+
+			DescribeTable("[describe table] the > inequality",
+				func(x int, y int, expected bool) {
+					Expect(x > y).To(Equal(expected))
+				},
+				Entry("x > y", 1, 0, true),
+				Entry("x = y", 0, 0, false),
+				Entry("x < y", 0, 1, false),
+			)
 		})
 	})
 })
