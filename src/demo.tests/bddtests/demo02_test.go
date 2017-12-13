@@ -7,6 +7,10 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+func init() {
+	By("init from demo02_test.go")
+}
+
 var _ = Describe("TestDemo02", func() {
 	Describe("Assert tests", func() {
 		Context("Context: To and NotTo", func() {

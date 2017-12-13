@@ -11,6 +11,7 @@ import (
 var myFlag string
 
 func init() {
+	By("init from demo01_test.go")
 	By("$GOROOT: " + os.Getenv("GOROOT"))
 	By("$GOPATH: " + os.Getenv("GOPATH"))
 
