@@ -6,6 +6,10 @@ import (
 	"sort"
 )
 
+func hello(firstName, lastName string) {
+	fmt.Printf("hello, %s %s\n", firstName, lastName)
+}
+
 func varsExamples() {
 	// var v1 int = 10
 	var v2 = 10
@@ -288,6 +292,7 @@ func PrintGoEnvValues() {
 
 // MainHello : main function for general examples.
 func MainHello() {
+	hello("zheng", "jin")
 	// varsExamples()
 
 	// _, _, nickName := getName()

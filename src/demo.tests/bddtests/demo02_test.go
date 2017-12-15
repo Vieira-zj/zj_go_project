@@ -30,7 +30,7 @@ var _ = Describe("TestDemo02", func() {
 		})
 	})
 
-	Describe("Test benchmark", func() {
+	Describe("Test external", func() {
 		Context("Test context", func() {
 			// cmd: ginkgo -v --focus="measure" src/demo.tests/bddtests/
 			Measure("[demo02] [measure] it should do something hard efficiently", func(b Benchmarker) {
