@@ -7,57 +7,65 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func readArgsExamples() {
-	var s1, s2 string
-	for i := 1; i < len(os.Args); i++ {
-		s1 += " " + os.Args[i]
+// read and write file
+func readFileTest() {
+	path := filepath.Join(getExamplesDirPath(), "io_input.txt")
+	values, err := readValues(path)
+	if err != nil {
+		fmt.Println("read file error:", err)
+	} else {
+		fmt.Println("file output:", values)
 	}
-	fmt.Println("ex1 arguments:", s1[1:])
+}
 
-	for _, arg := range os.Args[1:] {
-		s2 += " " + arg
+func writeFileTest() {
+	path := filepath.Join(getExamplesDirPath(), "io_output.txt")
+	err := writeValues([]int{1, 11, 123, 1234}, path)
+	if err != nil {
+		fmt.Println("write file error:", err)
 	}
-	fmt.Println("ex2 arguments:", s2[1:])
+}
 
-	fmt.Println("ex3 arguments:", strings.Join(os.Args[1:], " "))
+func getExamplesDirPath() string {
+	return filepath.Join(os.Getenv("ZJGO"), "src", "demo.hello", "examples")
 }
 
 func readValues(inFile string) (values []int, err error) {
 	file, err := os.Open(inFile)
 	if err != nil {
-		fmt.Println("Failed to open the input file ", inFile)
+		fmt.Printf("Failed to open input file %s\n", inFile)
 		return
 	}
+	fmt.Printf("file type: %T\n", file)
 	defer file.Close()
 
 	br := bufio.NewReader(file)
 	values = make([]int, 0)
 	for {
-		line, isPrefix, err1 := br.ReadLine()
-		if err1 != nil {
-			if err1 != io.EOF {
-				err = err1
+		line, isPrefix, errRead := br.ReadLine()
+		if errRead != nil {
+			if errRead != io.EOF {
+				err = errRead
 			}
 			break
 		}
-
 		if isPrefix {
 			fmt.Println("A too long line, seems unexpected.")
 			return
 		}
 
 		str := string(line)
-		value, err1 := strconv.Atoi(str)
-		if err1 != nil {
-			err = err1
+		value, errAtoi := strconv.Atoi(str)
+		if errAtoi != nil {
+			err = errAtoi
 			return
 		}
-
 		values = append(values, value)
 	}
 	return
@@ -66,7 +74,7 @@ func readValues(inFile string) (values []int, err error) {
 func writeValues(values []int, outFile string) error {
 	file, err := os.Create(outFile)
 	if err != nil {
-		fmt.Println("Failed to create the output file ", outFile)
+		fmt.Printf("Failed to create output file %s\n", outFile)
 		return err
 	}
 	defer file.Close()
@@ -78,52 +86,44 @@ func writeValues(values []int, outFile string) error {
 	return nil
 }
 
-func readFileTest() {
-	values, err := readValues("./io_input.txt")
-	if err != nil {
-		fmt.Println("read file error:", err)
-	} else {
-		fmt.Println("file output:", values)
+// get the number of words
+func countLineWordsTest() {
+	path1 := filepath.Join(getExamplesDirPath(), "io_input.txt")
+	path2 := filepath.Join(getExamplesDirPath(), "io_output.txt")
+	paths := [2]string{path1, path2}
+	counts := make(map[string]int)
+
+	for _, path := range paths {
+		f, err := os.Open(path)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			continue
+		}
+		defer f.Close()
+		countLineWords(f, counts) // pass as reference
+	}
+
+	for word, num := range counts {
+		fmt.Printf("%s\t%d\n", word, num)
 	}
 }
 
-func writeFileTest() {
-	err := writeValues([]int{1, 11, 123, 1234}, "./io_output.txt")
-	if err != nil {
-		fmt.Println("write file error:", err)
-	}
-}
-
-func countLines(f *os.File, counts map[string]int) {
+func countLineWords(f *os.File, counts map[string]int) {
 	input := bufio.NewScanner(f)
 	for input.Scan() {
 		counts[input.Text()]++
 	}
 }
 
-func countLineTest() {
-	paths := [2]string{"./io_input.txt", "./io_output.txt"}
-	counts := make(map[string]int) // reference
-
-	for _, path := range paths {
-		f, err := os.Open(path)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "countLineTest: %v\n", err)
-			continue
-		}
-		countLines(f, counts) // pass reference
-		defer f.Close()
-	}
-
-	for line, num := range counts {
-		fmt.Printf("%s\t%d\n", line, num)
-	}
-}
-
 func deferTest() {
+	defer func() {
+		fmt.Println("self run function1 in defer")
+	}()
+	defer func() {
+		fmt.Println("self run function2 in defer")
+	}()
 	defer myTrace("deferTest")()
-	time.Sleep(5 * time.Second)
-	return
+	time.Sleep(3 * time.Second)
 }
 
 func myTrace(msg string) func() {
@@ -134,13 +134,30 @@ func myTrace(msg string) func() {
 	}
 }
 
+func readExternalArgsTest() {
+	var s1, s2 string
+	for i := 1; i < len(os.Args); i++ {
+		s1 += " " + os.Args[i]
+	}
+	fmt.Println("print args:", s1[1:])
+
+	for _, arg := range os.Args[1:] {
+		s2 += " " + arg
+	}
+	fmt.Println("print args:", s2[1:])
+
+	fmt.Println("print args:", strings.Join(os.Args[1:], " "))
+}
+
 func flagTest() {
-	// run cmd: $ ./io_demos -period 5s
+	// run cmd: $ ./main.go -period 3s
 	period := flag.Duration("period", 1*time.Second, "sleep period")
+	fmt.Printf("flag type: %T\n", period)
 
 	flag.Parse()
-	fmt.Printf("sleep for %v...", *period)
+	fmt.Printf("sleep for %v...\n", *period)
 	time.Sleep(*period)
+	fmt.Println("flag test done.")
 }
 
 // printf object
@@ -167,20 +184,17 @@ func fmtPrintfTest() {
 
 // MainIO : main function for IO examples.
 func MainIO() {
-	// readArgsExamples()
-
 	// readFileTest()
 	// writeFileTest()
-
-	// countLineTest()
+	// countLineWordsTest()
 
 	// deferTest()
+
+	// readExternalArgsTest()
 	// flagTest()
 
-	fmtPrintfTest()
-
-	// invoke function of "io.demo.go"
-	// PrintGoEnvValues()
+	// fmtPrintfTest()
+	// PrintGoEnvValues() // from hello.go
 
 	fmt.Println("io demo.")
 }
