@@ -14,17 +14,17 @@ func init() {
 var _ = Describe("TestDemo02", func() {
 	Describe("Assert tests", func() {
 		Context("Context: To and NotTo", func() {
-			It("[demo02] assert NotTo", func() {
+			It("[demo02] [assert] NotTo", func() {
 				Expect(1).NotTo(Equal(2))
 			})
 
-			It("[demo02] assert Zero", func() {
+			It("[demo02] [assert] BeZero", func() {
 				Expect(0).To(BeZero())
 			})
 		})
 
 		Context("Context: Should and ShouldNot", func() {
-			It("[demo02] assert Be", func() {
+			It("[demo02] [assert] BeTrue", func() {
 				Expect(true).Should(BeTrue())
 			})
 		})
@@ -43,7 +43,7 @@ var _ = Describe("TestDemo02", func() {
 					"SomethingHard() shouldn't take too long.")
 			}, 10)
 
-			DescribeTable("[describe table] the > inequality",
+			DescribeTable("[demo02] [describe table] the > inequality",
 				func(x int, y int, expected bool) {
 					Expect(x > y).To(Equal(expected))
 				},
@@ -51,6 +51,16 @@ var _ = Describe("TestDemo02", func() {
 				Entry("x = y", 0, 0, false),
 				Entry("x < y", 0, 1, false),
 			)
+
+			DescribeTable("[demo02] [describe table] [fn] the add function", fnAddTest,
+				Entry("1 + 1 = 2", 1, 1, 2),
+				Entry("1 + -1 = 0", 1, -1, 0),
+				Entry("-1 + -1 = -2", -1, -1, -2),
+			)
 		})
 	})
 })
+
+func fnAddTest(x, y, expected int) {
+	Expect(x + y).To(Equal(expected))
+}

@@ -10,6 +10,15 @@ func hello(firstName, lastName string) {
 	fmt.Printf("hello, %s %s\n", firstName, lastName)
 }
 
+func stringFormatTest() {
+	myRegExp := `[0-9]\{1,\}`
+	filePath := "/home/qboxserver/service_config/_package/iorate.conf"
+	cmd := fmt.Sprintf("sed -i '13s/%s/100/' %s", myRegExp, filePath)
+	fmt.Println(cmd)
+	cmd = fmt.Sprintf(`sed -i '13s/%s/100/' %s`, myRegExp, filePath)
+	fmt.Println(cmd)
+}
+
 func getNames() (firstName, lastName, nickName string) {
 	return "May", "Chan", "Chibi Maruko"
 }
@@ -304,6 +313,8 @@ func PrintGoEnvValues() {
 // MainHello : main function for general examples.
 func MainHello() {
 	// hello("zheng", "jin")
+	stringFormatTest()
+
 	// firstName, _, _ := getNames()
 	// _, lastName, _ := getNames()
 	// fmt.Printf("name: %s %s\n", firstName, lastName)

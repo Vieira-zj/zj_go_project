@@ -60,14 +60,33 @@ var _ = Describe("TestDemo01", func() {
 		})
 
 		Context("Test context", func() {
-			It("[demo01] Marking Specs as Failed", func() {
+			BeforeEach(func() {
+				By("exec BeforeEach in defer test")
+			})
+
+			AfterEach(func() {
+				By("exec AfterEach in defer test")
+			})
+
+			It("[demo01] [defertest] Marking Specs as Failed", func() {
 				By("TEST: run test03")
+				defer func() {
+					By("Defer test")
+				}()
 				Fail("Mark failed")
 			})
 		})
 	})
 
 	Describe("Test flag", func() {
+		BeforeEach(func() {
+			By("exec BeforeEach in flag test")
+		})
+
+		AfterEach(func() {
+			By("exec AfterEach in flag test")
+		})
+
 		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/bddtests/ -- -myFlag="flagtext"
 		It("[demo01] [flagtest] get string flag text", func() {
 			By("my flag value: " + myFlag)
