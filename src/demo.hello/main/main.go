@@ -14,8 +14,8 @@ func init() {
 func main() {
 	// examples.MainHello()
 	// examples.MainIO()
-	examples.MainOO()
-	// examples.MainGoRoutine()
+	// examples.MainOO()
+	examples.MainGoRoutine()
 
 	fmt.Println("main done.")
 }

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// example 01
+// example 01-01
 func spinner1(delay time.Duration) {
 	for {
 		for _, r := range `-\|/` {
@@ -25,6 +25,7 @@ func routineTest1() {
 	time.Sleep(5 * time.Second)
 }
 
+// example 01-02
 func spinner2(ch chan<- string) {
 	for i := 0; i < 10; i++ {
 		for _, r := range `-\|/` {
@@ -43,6 +44,41 @@ func routineTest2() {
 	// get values for channel until close(ch)
 	for str := range ch {
 		fmt.Printf("%s", str)
+	}
+}
+
+// example 01-03, chan type as struct
+type numStringAndInt struct {
+	numInt    int
+	numString string
+}
+
+func myFormatRoutine(num int, ch chan<- numStringAndInt) {
+	var ret numStringAndInt
+	switch num {
+	case 1:
+		ret = numStringAndInt{numString: "one", numInt: 1}
+	case 2:
+		ret = numStringAndInt{numString: "two", numInt: 2}
+	case 3:
+		ret = numStringAndInt{numString: "three", numInt: 3}
+	default:
+		ret = numStringAndInt{numString: "nine", numInt: 9}
+	}
+	time.Sleep(time.Duration(3) * time.Second)
+	ch <- ret
+}
+
+func routineTest3() {
+	const count = 5
+	ch := make(chan numStringAndInt)
+	for i := 0; i < count; i++ {
+		go myFormatRoutine(i, ch)
+	}
+
+	for i := 0; i < count; i++ {
+		ret := <-ch
+		fmt.Printf("results: %d => %s\n", ret.numInt, ret.numString)
 	}
 }
 
@@ -197,6 +233,7 @@ loop:
 func MainGoRoutine() {
 	// routineTest1()
 	// routineTest2()
+	// routineTest3()
 
 	// channelTest()
 	// selectTest()
@@ -207,5 +244,5 @@ func MainGoRoutine() {
 	// getDirTotalSize1(dir)
 	// getDirTotalSize2(dir)
 
-	fmt.Println("\nconcurrent demo.")
+	fmt.Println("\nparallel demo.")
 }
