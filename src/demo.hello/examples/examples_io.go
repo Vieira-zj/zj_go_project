@@ -184,6 +184,8 @@ func fmtPrintfTest() {
 
 // MainIO : main function for IO examples.
 func MainIO() {
+	hello("fname", "lastname")
+
 	// readFileTest()
 	// writeFileTest()
 	// countLineWordsTest()

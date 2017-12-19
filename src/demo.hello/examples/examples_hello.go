@@ -313,7 +313,7 @@ func PrintGoEnvValues() {
 // MainHello : main function for general examples.
 func MainHello() {
 	// hello("zheng", "jin")
-	stringFormatTest()
+	// stringFormatTest()
 
 	// firstName, _, _ := getNames()
 	// _, lastName, _ := getNames()
