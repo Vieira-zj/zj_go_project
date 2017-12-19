@@ -12,9 +12,9 @@ func init() {
 
 // cmd: go install src/demo.hello/main/main.go
 func main() {
-	examples.MainHello()
+	// examples.MainHello()
 	// examples.MainIO()
-	// examples.MainOO()
+	examples.MainOO()
 	// examples.MainGoRoutine()
 
 	fmt.Println("main done.")

@@ -74,6 +74,28 @@ func myUpdateStructByRef(p *person) {
 	fmt.Println("in update by ref, struct:", *p)
 }
 
+// struct
+type fullName struct {
+	firstName string
+	lastName  string
+	nickName  string
+}
+
+func myPrintFullName(name fullName) {
+	fmt.Printf("Full name: %s %s, nick name: %s\n",
+		name.firstName, name.lastName, name.nickName)
+}
+
+func structArgsTest() {
+	name1 := fullName{
+		firstName: "fname1",
+		lastName:  "lname1",
+		nickName:  "nname1",
+	}
+	myPrintFullName(name1)
+	myPrintFullName(fullName{firstName: "fname2", lastName: "lname2", nickName: "nname2"})
+}
+
 // method, int
 type myInteger int
 
@@ -308,6 +330,8 @@ func MainOO() {
 	// valueAndRefTest()
 
 	// updateStructTest()
+	structArgsTest()
+
 	// myIntMethodTest()
 	// myStringMethodTest()
 
