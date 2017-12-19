@@ -2,7 +2,10 @@ package bddtests_test
 
 import (
 	"flag"
+	"fmt"
 	"os"
+	"sync"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -68,12 +71,42 @@ var _ = Describe("TestDemo01", func() {
 				By("exec AfterEach in defer test")
 			})
 
-			It("[demo01] [defertest] Marking Specs as Failed", func() {
+			It("[demo01] [failed] [defertest] Marking Specs as Failed", func() {
 				By("TEST: run test03")
 				defer func() {
 					By("Defer test")
 				}()
 				Fail("Mark failed")
+				By("message after make failed") // skip
+
+			})
+
+			It("[demo01] [parallel] [recover] run parallel", func() {
+				By("parallel test: start")
+				var wg sync.WaitGroup
+				for i := 0; i < 10; i++ {
+					wg.Add(1)
+					go func() {
+						defer wg.Done()
+						defer GinkgoRecover()
+						fmt.Println("myPrintRoutine start")
+						time.Sleep(time.Duration(3) * time.Second)
+						fmt.Println("myPrintRoutine end")
+					}()
+				}
+				wg.Wait()
+				By("parallel test: done")
+			})
+
+			It("[demo01] [parallel] [recover] [fn] run parallel", func() {
+				By("parallel test: start")
+				var wg sync.WaitGroup
+				for i := 0; i < 10; i++ {
+					wg.Add(1)
+					go fnMyPrint(&wg)
+				}
+				wg.Wait()
+				By("parallel test: done")
 			})
 		})
 	})
@@ -94,3 +127,11 @@ var _ = Describe("TestDemo01", func() {
 		})
 	})
 })
+
+func fnMyPrint(wg *sync.WaitGroup) {
+	defer wg.Done()
+	defer GinkgoRecover()
+	fmt.Println("myPrintRoutine start")
+	time.Sleep(time.Duration(3) * time.Second)
+	fmt.Println("myPrintRoutine end")
+}
