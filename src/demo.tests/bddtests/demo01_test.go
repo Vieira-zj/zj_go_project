@@ -3,7 +3,9 @@ package bddtests_test
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -14,9 +16,9 @@ import (
 var myFlag string
 
 func init() {
-	By("init from demo01_test.go")
-	By("$GOROOT: " + os.Getenv("GOROOT"))
-	By("$GOPATH: " + os.Getenv("GOPATH"))
+	fmt.Println("init from demo01_test.go")
+	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
+	fmt.Printf("$GOPATH: %v\n", strings.Split(os.Getenv("GOPATH"), ":")[0:3])
 
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
@@ -26,11 +28,11 @@ var _ = Describe("TestDemo01", func() {
 	var myText string
 
 	BeforeSuite(func() {
-		GinkgoWriter.Write([]byte("TEST: exec BeforeSuite\n"))
+		fmt.Println("TEST: exec BeforeSuite")
 	})
 
 	AfterSuite(func() {
-		GinkgoWriter.Write([]byte("TEST: exec AfterSuite\n"))
+		log.Println("\nTEST: exec AfterSuite")
 	})
 
 	BeforeEach(func() {
@@ -64,21 +66,20 @@ var _ = Describe("TestDemo01", func() {
 
 		Context("Test context", func() {
 			BeforeEach(func() {
-				By("exec BeforeEach in defer test")
+				fmt.Println("exec BeforeEach in defer test")
 			})
 
 			AfterEach(func() {
-				By("exec AfterEach in defer test")
+				fmt.Println("exec AfterEach in defer test")
 			})
 
 			It("[demo01] [failed] [defertest] Marking Specs as Failed", func() {
-				By("TEST: run test03")
+				fmt.Println("TEST: run test03")
 				defer func() {
 					By("Defer test")
 				}()
 				Fail("Mark failed")
-				By("message after make failed") // skip
-
+				By("message after make failed") // skipped
 			})
 
 			It("[demo01] [parallel] [recover] run parallel", func() {
@@ -98,7 +99,7 @@ var _ = Describe("TestDemo01", func() {
 				By("parallel test: done")
 			})
 
-			It("[demo01] [parallel] [recover] [fn] run parallel", func() {
+			It("[demo01] [parallel fn] [recover] run parallel", func() {
 				By("parallel test: start")
 				var wg sync.WaitGroup
 				for i := 0; i < 10; i++ {
@@ -113,11 +114,11 @@ var _ = Describe("TestDemo01", func() {
 
 	Describe("Test flag", func() {
 		BeforeEach(func() {
-			By("exec BeforeEach in flag test")
+			fmt.Println("exec BeforeEach in flag test")
 		})
 
 		AfterEach(func() {
-			By("exec AfterEach in flag test")
+			fmt.Println("exec AfterEach in flag test")
 		})
 
 		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/bddtests/ -- -myFlag="flagtext"

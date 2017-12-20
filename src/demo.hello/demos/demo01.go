@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// demo 01, inner function
 func printFormatName(firstName, lastName string) {
 	getShortNameFn := func(firstName, lastName string) string {
 		tmp := fmt.Sprintf("%c%c", firstName[0], lastName[0])
