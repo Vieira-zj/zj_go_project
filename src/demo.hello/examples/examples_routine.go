@@ -21,8 +21,8 @@ func spinner1(delay time.Duration) {
 }
 
 func routineTest1() {
-	go spinner1(100 * time.Millisecond)
-	time.Sleep(5 * time.Second)
+	go spinner1(time.Duration(100) * time.Millisecond)
+	time.Sleep(time.Duration(5) * time.Second)
 }
 
 // example 01-02
@@ -30,7 +30,7 @@ func spinner2(ch chan<- string) {
 	for i := 0; i < 10; i++ {
 		for _, r := range `-\|/` {
 			ch <- fmt.Sprintf("\r%c", r)
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(time.Duration(100) * time.Millisecond)
 		}
 	}
 	close(ch) // close channel
@@ -48,22 +48,22 @@ func routineTest2() {
 }
 
 // example 01-03, chan type as struct
-type numStringAndInt struct {
+type typeStrAndInt struct {
 	numInt    int
 	numString string
 }
 
-func myFormatRoutine(num int, ch chan<- numStringAndInt) {
-	var ret numStringAndInt
+func myFormatRoutine(num int, ch chan<- typeStrAndInt) {
+	var ret typeStrAndInt
 	switch num {
 	case 1:
-		ret = numStringAndInt{numString: "one", numInt: 1}
+		ret = typeStrAndInt{numString: "one", numInt: 1}
 	case 2:
-		ret = numStringAndInt{numString: "two", numInt: 2}
+		ret = typeStrAndInt{numString: "two", numInt: 2}
 	case 3:
-		ret = numStringAndInt{numString: "three", numInt: 3}
+		ret = typeStrAndInt{numString: "three", numInt: 3}
 	default:
-		ret = numStringAndInt{numString: "nine", numInt: 9}
+		ret = typeStrAndInt{numString: "nine", numInt: 9}
 	}
 	time.Sleep(time.Duration(3) * time.Second)
 	ch <- ret
@@ -71,7 +71,7 @@ func myFormatRoutine(num int, ch chan<- numStringAndInt) {
 
 func routineTest3() {
 	const count = 5
-	ch := make(chan numStringAndInt)
+	ch := make(chan typeStrAndInt)
 	for i := 0; i < count; i++ {
 		go myFormatRoutine(i, ch)
 	}
@@ -85,29 +85,48 @@ func routineTest3() {
 // example 02
 func myUpdateRoutine(num int, ch chan<- string) {
 	fmt.Println("start: update goroutine:", num)
-	time.Sleep(200 * time.Millisecond)
-	ch <- fmt.Sprintf("%s: %d", "test", num) // send
+	time.Sleep(time.Duration(200) * time.Millisecond)
+	ch <- fmt.Sprintf("test: %d", num) // send
 	fmt.Println("end: update goroutine", num)
 }
 
-func channelTest() {
-	// output 5 goroutine start
-	// if no buffered ch, output 3 goroutine end
-	// if buffered(1) ch, output 4 goroutine end
+func bufferredChannelTest() {
+	// bufferred channel, for goroutine send, output:
+	// print 5 goroutine start
+	// if no buffered ch, print 3 goroutine end
+	// if buffered(2) ch, print 5 goroutine end
 	const count = 5
-	ch := make(chan string, 1)
+	ch := make(chan string, 2)
 
 	for i := 0; i < count; i++ {
 		go myUpdateRoutine(i, ch) // start goroutine
 	}
 
+	// if run_count < 5, ex run_count = 3, 2 goroutine will be pending for send;
+	// but when main goroutine finished, these 2 goroutine will be killed.
+	// if run_count > 5, ex run_count = 6, all goroutine will be done;
+	// but main goroutine will be pending for receive, process pending.
 	for i := 0; i < count-2; i++ {
 		fmt.Println(<-ch) // receive
 	}
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(time.Duration(3) * time.Second)
 }
 
-// example 03
+// example 04
+func channelSelectTest() {
+	ch := make(chan int, 1) // buffer 1
+	for i := 0; i < 10; i++ {
+		select {
+		case x := <-ch:
+			fmt.Println("receive at", i)
+			fmt.Println(x)
+		case ch <- i:
+			fmt.Println("send at", i)
+		}
+	}
+}
+
+// example 05
 func myFetch(url string, ch chan<- string) {
 	start := time.Now()
 
@@ -141,20 +160,6 @@ func myFetchAllTest() {
 	}
 
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
-}
-
-// example 04
-func selectTest() {
-	ch := make(chan int, 1)
-	for i := 0; i < 10; i++ {
-		select {
-		case x := <-ch:
-			fmt.Println("receive at", i)
-			fmt.Println(x)
-		case ch <- i:
-			fmt.Println("send at", i)
-		}
-	}
 }
 
 // example 05
@@ -208,7 +213,7 @@ func getDirTotalSize2(dir string) {
 
 	// print the results periodically
 	var tick <-chan time.Time
-	tick = time.Tick(100 * time.Millisecond)
+	tick = time.Tick(time.Duration(100) * time.Millisecond)
 
 	var nfiles, nbytes int64
 loop:
@@ -227,16 +232,14 @@ loop:
 	printDiskUsage(nfiles, nbytes)
 }
 
-// TODO: ch8-09, abort
-
 // MainGoRoutine : main function for goroutine, channel examples.
 func MainGoRoutine() {
 	// routineTest1()
 	// routineTest2()
 	// routineTest3()
 
-	// channelTest()
-	// selectTest()
+	// bufferredChannelTest()
+	// channelSelectTest()
 
 	// myFetchAllTest()
 

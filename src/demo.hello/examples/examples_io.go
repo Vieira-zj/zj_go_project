@@ -115,6 +115,7 @@ func countLineWords(f *os.File, counts map[string]int) {
 	}
 }
 
+// examples
 func deferTest() {
 	defer func() {
 		fmt.Println("self run function1 in defer")

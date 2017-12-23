@@ -37,10 +37,40 @@ func testPrintStructValue() {
 	fmt.Printf("full name with nick name: %v\n", zjFullName)
 }
 
+// demo 03, recover
+func myDivision(x, y int) (ret int, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = fmt.Errorf("internal error: %v", p)
+		}
+	}()
+
+	if y == 0 {
+		panic("y value is zero!")
+	}
+	ret = x / y
+	return
+}
+
+func testRecover() {
+	if ret, err := myDivision(4, 0); err != nil {
+		fmt.Printf("error, %v\n", err)
+	} else {
+		fmt.Printf("results 4/0: %v\n", ret)
+	}
+
+	if ret, err := myDivision(4, 2); err != nil {
+		fmt.Printf("error, %v\n", err)
+	} else {
+		fmt.Printf("results 4/2: %v\n", ret)
+	}
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
-	testPrintStructValue()
+	// testPrintStructValue()
+	// testRecover()
 
 	fmt.Println("demo 01 done.")
 }
