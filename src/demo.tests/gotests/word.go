@@ -21,3 +21,39 @@ func IsPalindrome(s string) bool {
 	}
 	return true
 }
+
+// IsPalindrome2 : update iterator count "n" for benchmark.
+func IsPalindrome2(s string) bool {
+	var letters []rune
+	for _, r := range s {
+		if unicode.IsLetter(r) {
+			letters = append(letters, unicode.ToLower(r))
+		}
+	}
+
+	n := len(letters) / 2
+	for i := 0; i < n; i++ {
+		if letters[i] != letters[len(letters)-1-i] {
+			return false
+		}
+	}
+	return true
+}
+
+// IsPalindrome3 : pre-init array "letters" for benchmark.
+func IsPalindrome3(s string) bool {
+	letters := make([]rune, 0, len(s))
+	for _, r := range s {
+		if unicode.IsLetter(r) {
+			letters = append(letters, unicode.ToLower(r))
+		}
+	}
+
+	n := len(letters) / 2
+	for i := 0; i < n; i++ {
+		if letters[i] != letters[len(letters)-1-i] {
+			return false
+		}
+	}
+	return true
+}

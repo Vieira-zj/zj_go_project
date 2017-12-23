@@ -1,0 +1,25 @@
+mode: set
+demo.tests/gotests/echo.go:14.58,16.13 2 1
+demo.tests/gotests/echo.go:19.2,19.12 1 1
+demo.tests/gotests/echo.go:16.13,18.3 1 1
+demo.tests/gotests/word.go:9.34,11.22 2 1
+demo.tests/gotests/word.go:17.2,17.25 1 1
+demo.tests/gotests/word.go:22.2,22.13 1 1
+demo.tests/gotests/word.go:11.22,12.26 1 1
+demo.tests/gotests/word.go:12.26,14.4 1 1
+demo.tests/gotests/word.go:17.25,18.46 1 1
+demo.tests/gotests/word.go:18.46,20.4 1 1
+demo.tests/gotests/word.go:26.35,28.22 2 0
+demo.tests/gotests/word.go:34.2,35.25 2 0
+demo.tests/gotests/word.go:40.2,40.13 1 0
+demo.tests/gotests/word.go:28.22,29.26 1 0
+demo.tests/gotests/word.go:29.26,31.4 1 0
+demo.tests/gotests/word.go:35.25,36.46 1 0
+demo.tests/gotests/word.go:36.46,38.4 1 0
+demo.tests/gotests/word.go:44.35,46.22 2 0
+demo.tests/gotests/word.go:52.2,53.25 2 0
+demo.tests/gotests/word.go:58.2,58.13 1 0
+demo.tests/gotests/word.go:46.22,47.26 1 0
+demo.tests/gotests/word.go:47.26,49.4 1 0
+demo.tests/gotests/word.go:53.25,54.46 1 0
+demo.tests/gotests/word.go:54.46,56.4 1 0
