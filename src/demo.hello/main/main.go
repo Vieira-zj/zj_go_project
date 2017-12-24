@@ -18,7 +18,7 @@ func main() {
 	// examples.MainIO()
 	// examples.MainOO()
 	// examples.MainGoRoutine()
-	examples.MainLinks()
+	examples.MainCrawl()
 
 	demos.MainDemo01()
 

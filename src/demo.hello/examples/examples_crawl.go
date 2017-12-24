@@ -241,8 +241,8 @@ func testCrawl3() {
 	}
 }
 
-// MainLinks : the main for crawl links examples
-func MainLinks() {
+// MainCrawl : the main for crawl links examples
+func MainCrawl() {
 	// testFetch()
 	// testFindLinks()
 	// testExtract()
@@ -251,5 +251,5 @@ func MainLinks() {
 	// testCrawl2()
 	// testCrawl3()
 
-	fmt.Println("links example done.")
+	fmt.Println("crawl example done.")
 }
