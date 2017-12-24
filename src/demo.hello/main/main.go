@@ -11,7 +11,7 @@ func init() {
 	fmt.Println("run init")
 }
 
-// invoke struct from demos/demo01
+// testAccessControl : use struct from demos/demo01
 func testAccessControl() {
 	// obj := demos.MyObject{"pub", "pri"} // error
 	obj := demos.GetMyObject()
