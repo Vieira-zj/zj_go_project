@@ -3,6 +3,7 @@ package examples
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -29,7 +30,7 @@ func fetch(url string) (respContent []byte) {
 }
 
 func testFetch() {
-	const url = "http://gopl.io"
+	const url string = "http://gopl.io"
 	fmt.Printf("%s\n", fetch(url))
 }
 
@@ -64,7 +65,8 @@ func testFindLinks() {
 		os.Exit(1)
 	}
 
-	for _, link := range visit(nil, doc) {
+	links := visit(nil, doc)
+	for _, link := range links {
 		fmt.Println(link)
 	}
 }
@@ -83,7 +85,7 @@ func extract(url string) ([]string, error) {
 	}
 
 	doc, err := html.Parse(resp.Body)
-	resp.Body.Close()
+	defer resp.Body.Close()
 	if err != nil {
 		return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
 	}
@@ -104,6 +106,7 @@ func extract(url string) ([]string, error) {
 		}
 	}
 	forEachNode(doc, visitNode, nil)
+
 	return links, nil
 }
 
@@ -123,7 +126,7 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 }
 
 func testExtract() {
-	const url string = "http://gopl.io"
+	const url = "http://gopl.io"
 	links, err := extract(url)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "extract: %v\n", err)
@@ -135,13 +138,118 @@ func testExtract() {
 }
 
 // example 04, ch8-06
-// TODO
+func crawl(url string) []string {
+	fmt.Printf("crawl: %s\n", url)
+	list, err := extract(url)
+	if err != nil {
+		log.Printf("extract error: %v\n", err)
+	}
+	return list
+}
+
+// 一个worklist是一个记录了需要处理的元素的队列，每一个元素都是一个需要抓取的URL列表，
+// 不过这一次我们用channel代替slice来做这个队列。
+// 每一个对crawl的调用都会在他们自己的goroutine中进行并且会把他们抓到的链接发送回worklist.
+func testCrawl() {
+	urls := []string{"http://gopl.io"}
+	worklist := make(chan []string)
+
+	go func() { worklist <- urls }()
+
+	// Crawl the web concurrently.
+	seen := make(map[string]bool)
+	for list := range worklist {
+		for _, link := range list {
+			if !seen[link] {
+				seen[link] = true
+				go func(link string) {
+					worklist <- crawl(link)
+				}(link)
+			}
+		}
+	}
+}
+
+// example 05
+// tokens is a counting semaphore
+// used to enforce a limit of 20 concurrent requests.
+var tokens = make(chan struct{}, 20)
+
+func crawl2(url string) []string {
+	fmt.Printf("crawl: %s\n", url)
+	tokens <- struct{}{} // acquire a token
+	list, err := extract(url)
+	<-tokens // release token
+	if err != nil {
+		log.Printf("extract error: %v\n", err)
+	}
+	return list
+}
+
+func testCrawl2() {
+	urls := []string{"http://gopl.io"}
+	worklist := make(chan []string)
+	var n int // number of pending sends to worklist
+
+	n++
+	go func() { worklist <- urls }()
+
+	// Crawl the web concurrently.
+	seen := make(map[string]bool)
+	for ; n > 0; n-- {
+		list := <-worklist
+		for _, link := range list {
+			if !seen[link] {
+				seen[link] = true
+				n++
+				go func(link string) {
+					worklist <- crawl2(link)
+				}(link)
+			}
+		}
+	}
+}
+
+// example 06
+func testCrawl3() {
+	urls := []string{"http://gopl.io"}
+	worklist := make(chan []string) // lists of URLs, may have duplicates
+	unseenLink := make(chan string) // de-duplicated URLs
+
+	go func() { worklist <- urls }()
+
+	// Create 20 crawler goroutines to fetch each unseen link.
+	for i := 0; i < 20; i++ {
+		go func() {
+			for link := range unseenLink {
+				foundLinks := crawl(link)
+				go func() { worklist <- foundLinks }()
+			}
+		}()
+	}
+
+	// The main goroutine de-duplicates worklist items
+	// and sends the unseen ones to the crawlers.
+	seen := make(map[string]bool)
+	for list := range worklist {
+		for _, link := range list {
+			if !seen[link] {
+				seen[link] = true
+				unseenLink <- link
+			}
+		}
+	}
+}
 
 // MainLinks : the main for crawl links examples
 func MainLinks() {
 	// testFetch()
 	// testFindLinks()
 	// testExtract()
+
+	// testCrawl()
+	// testCrawl2()
+	// testCrawl3()
 
 	fmt.Println("links example done.")
 }
