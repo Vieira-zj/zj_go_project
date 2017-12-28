@@ -1,10 +1,12 @@
 package demos
 
 import (
+	"context"
 	"fmt"
 	"image/color"
 	"math"
 	"strings"
+	"time"
 )
 
 // demo 01, inner function
@@ -209,6 +211,58 @@ func testAccessControl() {
 	fmt.Printf("private method get: %s\n", obj.methodPrivateGet())
 }
 
+// demo 06, context
+func inc(a int) int {
+	res := a + 1
+	time.Sleep(time.Duration(1) * time.Second)
+	return res
+}
+
+func myAdd(ctx context.Context, a, b int) int {
+	res := 0
+	for i := 0; i < a; i++ {
+		res = inc(res)
+		select {
+		case <-ctx.Done():
+			return -1
+		default:
+		}
+	}
+	for i := 0; i < b; i++ {
+		res = inc(res)
+		select {
+		case <-ctx.Done():
+			return -1
+		default:
+		}
+	}
+	return res
+}
+
+func testContext01() {
+	a := 1
+	b := 2
+	timeout := time.Duration(2) * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	res := myAdd(ctx, 1, 2)
+	go func() {
+		cancel = nil
+	}()
+	fmt.Printf("Compute: %d+%d, result: %d\n", a, b, res)
+}
+
+func testContext02() {
+	a := 1
+	b := 2
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(time.Duration(2) * time.Second)
+		cancel()
+	}()
+	res := myAdd(ctx, 1, 2)
+	fmt.Printf("Compute: %d+%d, result: %d\n", a, b, res)
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
@@ -220,6 +274,9 @@ func MainDemo01() {
 	// testTranslateBy()
 
 	// testAccessControl()
+
+	// testContext01()
+	// testContext02()
 
 	fmt.Println("demo 01 done.")
 }

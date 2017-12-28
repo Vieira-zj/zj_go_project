@@ -30,8 +30,8 @@ func main() {
 	// examples.MainGoRoutine()
 	examples.MainCrawl()
 
+	// testAccessControl()
 	demos.MainDemo01()
-	testAccessControl()
 
 	fmt.Println("main done.")
 }

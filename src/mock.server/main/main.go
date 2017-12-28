@@ -26,7 +26,7 @@ func index(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(200)
 	time.Sleep(time.Second * 3)
 	log.Println("index body")
-	io.Copy(rw, bytes.NewReader([]byte("aaaaaaaa")))
+	io.Copy(rw, bytes.NewReader([]byte("stream data mock")))
 }
 
 func index2(rw http.ResponseWriter, req *http.Request) {
@@ -37,7 +37,7 @@ func index2(rw http.ResponseWriter, req *http.Request) {
 	for i := 0; i < 100000; i++ {
 		time.Sleep(time.Duration(500) * time.Millisecond)
 		log.Println("index2 body")
-		_, err := io.Copy(rw, bytes.NewReader([]byte("aaaaaaaa")))
+		_, err := io.Copy(rw, bytes.NewReader([]byte("stream data mock")))
 		rw.(http.Flusher).Flush()
 		if err != nil {
 			log.Printf("error: %v\n", err)
