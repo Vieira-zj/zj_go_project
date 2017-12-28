@@ -48,17 +48,15 @@ var _ = Describe("TestDemo01", func() {
 		GinkgoWriter.Write([]byte("TEST: exec JustBeforeEach\n"))
 	})
 
-	Describe("Test string", func() {
+	Describe("Desc", func() {
 		Context("Test context", func() {
-			It("[demo01] text is not null", func() {
+			It("[demo01.asserter] text is not null", func() {
 				GinkgoWriter.Write([]byte("TEST: run test01\n"))
 				By("sub step description")
 				Expect(myText != "").Should(BeTrue(), "Failed, not null")
 			})
-		})
 
-		Context("Test context", func() {
-			It("[demo01] text length should be 4", func() {
+			It("[demo01.asserter] text length should be 4", func() {
 				GinkgoWriter.Write([]byte("TEST: run test02\n"))
 				Expect(len(myText)).To(Equal(4), "Failed, text length = 4")
 			})
@@ -73,46 +71,60 @@ var _ = Describe("TestDemo01", func() {
 				fmt.Println("exec AfterEach in defer test")
 			})
 
-			It("[demo01] [failed] [defertest] Marking Specs as Failed", func() {
-				fmt.Println("TEST: run test03")
-				defer func() {
-					By("Defer test")
-				}()
-				Fail("Mark failed")
-				By("message after make failed") // skipped
-			})
-
-			It("[demo01] [parallel] [recover] run parallel", func() {
+			It("[demo01.snyc] run parallel", func() {
 				By("parallel test: start")
 				var wg sync.WaitGroup
-				for i := 0; i < 10; i++ {
+				for i := 0; i < 3; i++ {
 					wg.Add(1)
 					go func() {
 						defer wg.Done()
 						defer GinkgoRecover()
 						fmt.Println("myPrintRoutine start")
-						time.Sleep(time.Duration(3) * time.Second)
+						time.Sleep(time.Duration(1) * time.Second)
+						Fail("make failed test")
 						fmt.Println("myPrintRoutine end")
 					}()
 				}
 				wg.Wait()
-				By("parallel test: done")
+				fmt.Println("parallel test: done")
 			})
 
-			It("[demo01] [parallel fn] [recover] run parallel", func() {
+			It("[demo01.sync.recover] run parallel", func() {
 				By("parallel test: start")
 				var wg sync.WaitGroup
-				for i := 0; i < 10; i++ {
+				for i := 0; i < 3; i++ {
 					wg.Add(1)
 					go fnMyPrint(&wg)
 				}
 				wg.Wait()
-				By("parallel test: done")
+				fmt.Println("parallel test: done")
+			})
+		})
+
+		Context("Test context", func() {
+			It("[demo01.routine.done] run parallel", func(done Done) {
+				go func() {
+					time.Sleep(time.Duration(500) * time.Millisecond)
+					Expect(true).To(BeTrue())
+					fmt.Println("routine done.")
+					close(done)
+				}()
+				fmt.Println("parallel test: done")
+			})
+
+			It("[demo01.routine.wait] run parallel", func() {
+				const count = 3
+				for i := 0; i < count; i++ {
+					go routineMyPrint()
+				}
+				time.Sleep(time.Duration(2) * time.Second)
+				Fail("make failed")
+				fmt.Println("parallel test: done")
 			})
 		})
 	})
 
-	Describe("Test flag", func() {
+	Describe("desc", func() {
 		BeforeEach(func() {
 			fmt.Println("exec BeforeEach in flag test")
 		})
@@ -121,8 +133,17 @@ var _ = Describe("TestDemo01", func() {
 			fmt.Println("exec AfterEach in flag test")
 		})
 
-		// cmd: ginkgo -v --focus="flagtest" src/demo.tests/bddtests/ -- -myFlag="flagtext"
-		It("[demo01] [flagtest] get string flag text", func() {
+		It("[demo01.defer] Marking Specs as Failed", func() {
+			fmt.Println("TEST: run test03")
+			defer func() {
+				fmt.Println("defer test")
+			}()
+			Fail("mark failed in test")
+			fmt.Println("message after make failed") // skipped
+		})
+
+		// cmd: ginkgo -v --focus="flag" src/demo.tests/bddtests/ -- -myFlag="flagtext"
+		It("[demo01.flag] get string flag text", func() {
 			By("my flag value: " + myFlag)
 			Expect(myFlag).To(MatchRegexp("flagtext|default"))
 		})
@@ -133,6 +154,23 @@ func fnMyPrint(wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer GinkgoRecover()
 	fmt.Println("myPrintRoutine start")
-	time.Sleep(time.Duration(3) * time.Second)
+	time.Sleep(time.Duration(1) * time.Second)
 	fmt.Println("myPrintRoutine end")
+}
+
+var i int
+var m *sync.Mutex
+
+func routineMyPrint() {
+	defer GinkgoRecover()
+
+	m = new(sync.Mutex)
+	m.Lock()
+	i++
+	fmt.Printf("run test routine at: %d\n", i)
+	m.Unlock()
+
+	time.Sleep(time.Duration(500) * time.Millisecond)
+	Fail("make failed in routine")
+	fmt.Println("routineMyPrint end")
 }

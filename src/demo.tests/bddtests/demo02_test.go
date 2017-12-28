@@ -12,19 +12,23 @@ func init() {
 }
 
 var _ = Describe("TestDemo02", func() {
-	Describe("Assert tests", func() {
-		Context("Context: To and NotTo", func() {
-			It("[demo02] [assert] NotTo", func() {
+	Describe("Asserter tests", func() {
+		Context("Context", func() {
+			It("[demo02.asserter] NotTo", func() {
 				Expect(1).NotTo(Equal(2))
 			})
 
-			It("[demo02] [assert] BeZero", func() {
+			It("[demo02.asserter] BeZero", func() {
 				Expect(0).To(BeZero())
+			})
+
+			It("[demo02.asserter] Or", func() {
+				Expect(2).To(BeNumerically(">", 1), BeNumerically("<", 3))
 			})
 		})
 
-		Context("Context: Should and ShouldNot", func() {
-			It("[demo02] [assert] BeTrue", func() {
+		Context("Context", func() {
+			It("[demo02.asserter] BeTrue", func() {
 				Expect(true).Should(BeTrue())
 			})
 		})
@@ -33,7 +37,7 @@ var _ = Describe("TestDemo02", func() {
 	Describe("Test external", func() {
 		Context("Test context", func() {
 			// cmd: ginkgo -v --focus="measure" src/demo.tests/bddtests/
-			Measure("[demo02] [measure] it should do something hard efficiently", func(b Benchmarker) {
+			Measure("[demo02.measure] it should do something hard efficiently", func(b Benchmarker) {
 				runtime := b.Time("runtime", func() {
 					ouput := bddtests.Fibonacci(30)
 					Expect(ouput).To(Equal(2178309))
@@ -43,7 +47,7 @@ var _ = Describe("TestDemo02", func() {
 					"SomethingHard() shouldn't take too long.")
 			}, 10)
 
-			DescribeTable("[demo02] [describe table] the > inequality",
+			DescribeTable("[demo02.DescribeTable] the > inequality",
 				func(x int, y int, expected bool) {
 					Expect(x > y).To(Equal(expected))
 				},
@@ -52,7 +56,7 @@ var _ = Describe("TestDemo02", func() {
 				Entry("x < y", 0, 1, false),
 			)
 
-			DescribeTable("[demo02] [describe table] [fn] the add function", fnAddTest,
+			DescribeTable("[demo02.DescribeTable.fn] the add function", fnAddTest,
 				Entry("1 + 1 = 2", 1, 1, 2),
 				Entry("1 + -1 = 0", 1, -1, 0),
 				Entry("-1 + -1 = -2", -1, -1, -2),
