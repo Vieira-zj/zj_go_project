@@ -63,6 +63,27 @@ var _ = Describe("TestDemo01", func() {
 		})
 
 		Context("Test context", func() {
+			It("[demo01.routine.done] run parallel", func(done Done) {
+				go func() {
+					time.Sleep(time.Duration(2) * time.Second)
+					Expect(true).To(BeTrue())
+					fmt.Println("routine done")
+					close(done)
+				}()
+				fmt.Println("parallel test: done")
+			}, 5) // timeout = 5s
+
+			It("[demo01.routine.lock] run parallel", func() {
+				const count = 3
+				for i := 0; i < count; i++ {
+					go routineMyPrint()
+				}
+				time.Sleep(time.Duration(2) * time.Second)
+				fmt.Println("parallel test: done")
+			})
+		})
+
+		Context("Test context", func() {
 			BeforeEach(func() {
 				fmt.Println("exec BeforeEach in defer test")
 			})
@@ -97,28 +118,7 @@ var _ = Describe("TestDemo01", func() {
 					go fnMyPrint(&wg)
 				}
 				wg.Wait()
-				fmt.Println("parallel test: done")
-			})
-		})
-
-		Context("Test context", func() {
-			It("[demo01.routine.done] run parallel", func(done Done) {
-				go func() {
-					time.Sleep(time.Duration(500) * time.Millisecond)
-					Expect(true).To(BeTrue())
-					fmt.Println("routine done.")
-					close(done)
-				}()
-				fmt.Println("parallel test: done")
-			})
-
-			It("[demo01.routine.wait] run parallel", func() {
-				const count = 3
-				for i := 0; i < count; i++ {
-					go routineMyPrint()
-				}
-				time.Sleep(time.Duration(2) * time.Second)
-				Fail("make failed")
+				Expect("recover").ToNot(BeEmpty(), "skip")
 				fmt.Println("parallel test: done")
 			})
 		})
@@ -153,9 +153,10 @@ var _ = Describe("TestDemo01", func() {
 func fnMyPrint(wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer GinkgoRecover()
-	fmt.Println("myPrintRoutine start")
+	fmt.Println("fnMyPrint start")
 	time.Sleep(time.Duration(1) * time.Second)
-	fmt.Println("myPrintRoutine end")
+	Fail("make failed in routine")
+	fmt.Println("fnMyPrint end")
 }
 
 var i int
@@ -171,6 +172,5 @@ func routineMyPrint() {
 	m.Unlock()
 
 	time.Sleep(time.Duration(500) * time.Millisecond)
-	Fail("make failed in routine")
 	fmt.Println("routineMyPrint end")
 }

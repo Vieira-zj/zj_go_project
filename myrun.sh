@@ -27,7 +27,6 @@ echo "here"
 
 # bdd tests
 # ginkgo -v -focus="demo01" src/demo.tests/bddtests/
-# ginkgo -v -focus="defer" src/demo.tests/bddtests/
-ginkgo -v -focus="routine02" src/demo.tests/bddtests/
+ginkgo -v -focus="demo01.sync.recover" src/demo.tests/bddtests/
 
 set +x # set config x off

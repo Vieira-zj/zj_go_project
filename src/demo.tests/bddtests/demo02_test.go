@@ -23,7 +23,7 @@ var _ = Describe("TestDemo02", func() {
 			})
 
 			It("[demo02.asserter] Or", func() {
-				Expect(2).To(BeNumerically(">", 1), BeNumerically("<", 3))
+				Expect(2).To(And(BeNumerically(">", 1), BeNumerically("<", 3)))
 			})
 		})
 
