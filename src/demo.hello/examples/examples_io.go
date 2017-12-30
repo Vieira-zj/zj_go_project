@@ -2,6 +2,7 @@ package examples
 
 import (
 	"bufio"
+	"encoding/base64"
 	"flag"
 	"fmt"
 	"io"
@@ -12,6 +13,28 @@ import (
 	"strings"
 	"time"
 )
+
+// encode file content
+func encodeFileContentTest() {
+	// build input stream
+	f, err := os.Open(filepath.Join(getExamplesDirPath(), "io_input.txt"))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
+
+	// build output stream
+	fEnc, err := os.Create(filepath.Join(getExamplesDirPath(), "io_enc_output.txt"))
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer fEnc.Close()
+
+	// copy
+	w := base64.NewEncoder(base64.StdEncoding, fEnc)
+	io.Copy(w, f)
+	w.Close()
+}
 
 // read and write file
 func readFileTest() {
@@ -187,6 +210,7 @@ func fmtPrintfTest() {
 func MainIO() {
 	hello("fname", "lastname")
 
+	encodeFileContentTest()
 	// readFileTest()
 	// writeFileTest()
 	// countLineWordsTest()
