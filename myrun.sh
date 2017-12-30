@@ -5,8 +5,8 @@ echo "here"
 # main
 go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
-# go run src/demo.hello/main/main.go -period 3s
-# go run src/demo.tests/main/test.go
+# go run src/demo.hello/main/main.go -h
+# go run src/demo.hello/main/main.go -p 7890 -c 404
 
 
 # go tests, root_dir = $GOPATH

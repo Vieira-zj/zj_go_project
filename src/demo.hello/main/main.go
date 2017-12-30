@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 
 	"demo.hello/demos"
@@ -21,6 +22,27 @@ func testAccessControl() {
 	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
 }
 
+// flag test
+var (
+	retCode = 200
+	port    = 8080
+	help    = false
+)
+
+func testFlagParser() {
+	fmt.Println("flag test")
+	flag.IntVar(&retCode, "c", 200, "return status code")
+	flag.IntVar(&port, "p", 8080, "port number")
+	flag.BoolVar(&help, "h", false, "help")
+
+	flag.Parse()
+	if help {
+		flag.Usage()
+		return
+	}
+	fmt.Printf("url=>local:%d, status code=>%d\n", port, retCode)
+}
+
 // cmd: go install src/demo.hello/main/main.go
 func main() {
 	// https://github.com/gopl-zh/gopl-zh.github.com.git
@@ -31,6 +53,8 @@ func main() {
 	examples.MainCrawl()
 
 	// testAccessControl()
+	// testFlagParser()
+
 	demos.MainDemo01()
 
 	fmt.Println("main done.")
