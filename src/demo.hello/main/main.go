@@ -55,7 +55,8 @@ func main() {
 	// testAccessControl()
 	// testFlagParser()
 
-	demos.MainDemo01()
+	// demos.MainDemo01()
+	demos.MainDemo02()
 
 	fmt.Println("main done.")
 }

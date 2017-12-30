@@ -49,19 +49,19 @@ var _ = Describe("TestDemo01", func() {
 	})
 
 	Describe("Desc", func() {
-		Context("Test context", func() {
-			It("[demo01.asserter] text is not null", func() {
-				GinkgoWriter.Write([]byte("TEST: run test01\n"))
-				By("sub step description")
-				Expect(myText != "").Should(BeTrue(), "Failed, not null")
-			})
-
-			It("[demo01.asserter] text length should be 4", func() {
-				GinkgoWriter.Write([]byte("TEST: run test02\n"))
-				Expect(len(myText)).To(Equal(4), "Failed, text length = 4")
-			})
+		It("[demo01.asserter] text is not null", func() {
+			GinkgoWriter.Write([]byte("TEST: run test01\n"))
+			By("sub step description")
+			Expect(myText != "").Should(BeTrue(), "Failed: not null")
 		})
 
+		It("[demo01.asserter] text length should be 4", func() {
+			GinkgoWriter.Write([]byte("TEST: run test02\n"))
+			Expect(len(myText)).To(Equal(4), "Failed: text length = 4")
+		})
+	})
+
+	Describe("Desc", func() {
 		Context("Test context", func() {
 			It("[demo01.routine.done] run parallel", func(done Done) {
 				go func() {
