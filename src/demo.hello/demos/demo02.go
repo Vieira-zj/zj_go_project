@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"sync"
+	"time"
 )
 
 // demo 01-01, interface
@@ -173,14 +175,46 @@ func testBase64() {
 	base64EncodeAndDecode(base64.RawURLEncoding, str)
 }
 
+// demo 05, mutex
+func testRwMutex() {
+	mutex := new(sync.RWMutex)
+	fmt.Println("ready in main")
+	mutex.Lock()
+	fmt.Println("mutex locked in main")
+
+	chs := make([]chan int, 4)
+	for i := 0; i < 4; i++ {
+		chs[i] = make(chan int)
+		go func(i int, ch chan<- int) {
+			fmt.Println("ready in routine:", i)
+			mutex.RLock()
+			fmt.Println("mutex read locked in routine:", i)
+			time.Sleep(2 * time.Second)
+			fmt.Println("mutex read unlocked in routine:", i)
+			mutex.RUnlock()
+			ch <- i
+		}(i, chs[i])
+	}
+
+	time.Sleep(2 * time.Second)
+	fmt.Println("mutex unlocked in main")
+	mutex.Unlock()
+
+	for _, ch := range chs {
+		<-ch
+	}
+}
+
 // MainDemo02 : main
 func MainDemo02() {
-	testMyFloatInterface()
+	// testMyFloatInterface()
 	// testInterface()
 
 	// testPanicAndRecover()
 	// testErrorType()
 	// testBase64()
+
+	testRwMutex()
 
 	fmt.Println("demo 02 done.")
 }
