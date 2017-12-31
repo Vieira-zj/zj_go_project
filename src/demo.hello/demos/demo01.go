@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"image/color"
@@ -263,6 +264,34 @@ func testContext02() {
 	fmt.Printf("Compute: %d+%d, result: %d\n", a, b, res)
 }
 
+// demo 07, update bytes
+func myUpdateBytesByValue(b []byte) {
+	b = bytes.ToUpper(b)
+	b = append(b, '!')
+	fmt.Printf("in update by value: %s\n", string(b))
+}
+
+func myUpdateBytesByPointer(b *[]byte) {
+	*b = bytes.ToUpper(*b)
+	*b = append(*b, '!')
+	fmt.Printf("in update by pointer: %s\n", string(*b))
+}
+
+func testUpdateBytes() {
+	s := "it's a test"
+	b := []byte(s)
+
+	fmt.Println("1) by value:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByValue(b)
+	fmt.Printf("after update: %s\n", string(b))
+
+	fmt.Println("2) by pointer:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByPointer(&b)
+	fmt.Printf("after update: %s\n", string(b))
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
@@ -277,6 +306,8 @@ func MainDemo01() {
 
 	// testContext01()
 	// testContext02()
+
+	// testUpdateBytes()
 
 	fmt.Println("demo 01 done.")
 }

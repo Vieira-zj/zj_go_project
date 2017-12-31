@@ -4,9 +4,37 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math"
 )
 
-// demo 01, interface
+// demo 01-01, interface
+type abser interface {
+	abs() float64
+	string() string
+}
+
+type myFloat float64
+
+func (f myFloat) abs() float64 {
+	if f < 0 {
+		return float64(-f)
+	}
+	return float64(f)
+}
+
+func (f *myFloat) string() string {
+	return fmt.Sprintf("%.2f", f.abs())
+}
+
+func testMyFloatInterface() {
+	var a abser
+	f := myFloat(-math.Sqrt2)
+	a = &f // pointer here
+	fmt.Println(a.abs())
+	fmt.Println(a.string())
+}
+
+// demo 01-02, interface
 type myGetter interface {
 	myGet() string
 }
@@ -53,13 +81,18 @@ func zjInitAndPrintInfoByInterface(input myGetterAndSetter) {
 }
 
 func testInterface() {
-	data := zjGetterAndSetter{
+	zjData := zjGetterAndSetter{
 		name: "zhengjin",
 		age:  30,
 	}
-	zjInitAndPrintInfoByStruct(data)     // object
-	zjInitAndPrintInfoByPointer(&data)   // pointer
-	zjInitAndPrintInfoByInterface(&data) // pointer
+
+	var getAndSet myGetterAndSetter
+	getAndSet = &zjData
+	fmt.Println(getAndSet.myGet())
+
+	zjInitAndPrintInfoByStruct(zjData)     // object
+	zjInitAndPrintInfoByPointer(&zjData)   // pointer
+	zjInitAndPrintInfoByInterface(&zjData) // pointer
 }
 
 // demo 02, panic and recover
@@ -142,6 +175,7 @@ func testBase64() {
 
 // MainDemo02 : main
 func MainDemo02() {
+	testMyFloatInterface()
 	// testInterface()
 
 	// testPanicAndRecover()

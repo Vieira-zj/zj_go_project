@@ -43,7 +43,6 @@ func testFlagParser() {
 	fmt.Printf("url=>local:%d, status code=>%d\n", port, retCode)
 }
 
-// cmd: go install src/demo.hello/main/main.go
 func main() {
 	// https://github.com/gopl-zh/gopl-zh.github.com.git
 	// examples.MainHello()
@@ -55,8 +54,8 @@ func main() {
 	// testAccessControl()
 	// testFlagParser()
 
-	// demos.MainDemo01()
-	demos.MainDemo02()
+	demos.MainDemo01()
+	// demos.MainDemo02()
 
 	fmt.Println("main done.")
 }
