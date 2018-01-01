@@ -210,7 +210,7 @@ func fmtPrintfTest() {
 func MainIO() {
 	hello("fname", "lastname")
 
-	encodeFileContentTest()
+	// encodeFileContentTest()
 	// readFileTest()
 	// writeFileTest()
 	// countLineWordsTest()

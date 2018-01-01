@@ -46,10 +46,11 @@ func testFlagParser() {
 func main() {
 	// https://github.com/gopl-zh/gopl-zh.github.com.git
 	// examples.MainHello()
-	examples.MainIO()
+	// examples.MainIO()
 	// examples.MainOO()
 	// examples.MainGoRoutine()
 	// examples.MainCrawl()
+	examples.MainReflect()
 
 	// testAccessControl()
 	// testFlagParser()

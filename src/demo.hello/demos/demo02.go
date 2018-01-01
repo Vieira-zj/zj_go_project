@@ -214,7 +214,7 @@ func MainDemo02() {
 	// testErrorType()
 	// testBase64()
 
-	testRwMutex()
+	// testRwMutex()
 
 	fmt.Println("demo 02 done.")
 }
