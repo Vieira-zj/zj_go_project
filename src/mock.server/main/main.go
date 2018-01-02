@@ -13,6 +13,7 @@ func init() {
 }
 
 // build cmd: $ GOOS=linux GOARCH=amd64 go build
+// $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 func main() {
 	http.HandleFunc("/index1/", mocks.Mock01)
 	http.HandleFunc("/index2/", mocks.Mock02)

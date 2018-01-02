@@ -17,21 +17,25 @@ import (
 // Mock01 : mock user_src_server, qiniuproxy pull file from user_src_server
 func Mock01(rw http.ResponseWriter, req *http.Request) {
 	log.Println("200")
-	// mock error md5 value
-	rw.Header().Set("Content-Md5", "db742740b369a1c8be6115268c3d358d")
+	rw.Header().Set("Content-Md5", "f900b997e6f8a772994876dff023801e") // mock md5
 	rw.WriteHeader(200)
-	time.Sleep(time.Second * 3)
+
+	// b := []byte("stream data mock")
+	b := readBytesFromFile("./test.mp3")
+
 	log.Println("mock body")
-	io.Copy(rw, bytes.NewReader([]byte("stream data mock"))) // short string
+	time.Sleep(time.Second * 3)
+	io.Copy(rw, bytes.NewReader(b))
+	log.Println("send data done")
 }
 
 // Mock02 : user_src_server, qiniuproxy pull file from user_src_server
 func Mock02(rw http.ResponseWriter, req *http.Request) {
 	log.Println("200")
-	// mock error md5 value
-	rw.Header().Set("Content-Md5", "db742740b369a1c8be6115268c3d358d")
+	rw.Header().Set("Content-Md5", "db742740b369a1c8be6115268c3d358d") // mock md5
 	rw.Header().Set("Content-Length", "1000000")
 	rw.WriteHeader(200)
+
 	for i := 0; i < 100000; i++ {
 		time.Sleep(time.Duration(500) * time.Millisecond)
 		log.Println("mock body")
@@ -71,6 +75,8 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 
 var total04 int
 
+const waitForReader = 100
+
 // Mock04 : user_src_server, qiniuproxy pull file by range from user_src_server
 func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// download: curl -o ./test.mp3 http://127.0.0.1:17890/index4/
@@ -91,6 +97,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// rr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
 	rr := createMockReader(buf)
 	rw.(rpc.ResponseWriter).ReplyRange(rr, int64(len(buf)), &rpc.Metas{}, req)
+	log.Println("send blocked data done")
 }
 
 func initBytesBySize(size int) []byte {
@@ -120,7 +127,7 @@ type mockReader struct {
 
 // wait between each block read
 func (mr *mockReader) Read(b []byte) (int, error) {
-	time.Sleep(time.Duration(50) * time.Millisecond)
+	time.Sleep(time.Duration(waitForReader) * time.Millisecond)
 	return mr.r.Read(b)
 }
 
