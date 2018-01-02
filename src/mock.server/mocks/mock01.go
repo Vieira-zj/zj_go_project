@@ -37,8 +37,8 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(200)
 
 	for i := 0; i < 100000; i++ {
-		time.Sleep(time.Duration(500) * time.Millisecond)
 		log.Println("mock body")
+		time.Sleep(time.Duration(500) * time.Millisecond)
 		_, err := io.Copy(rw, bytes.NewReader([]byte("stream data mock")))
 		rw.(http.Flusher).Flush()
 		if err != nil {
@@ -75,7 +75,7 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 
 var total04 int
 
-const waitForReader = 100
+const waitForReader = 20
 
 // Mock04 : user_src_server, qiniuproxy pull file by range from user_src_server
 func Mock04(rw http.ResponseWriter, req *http.Request) {
