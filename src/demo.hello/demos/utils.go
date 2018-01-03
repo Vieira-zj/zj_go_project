@@ -5,7 +5,15 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
+)
+
+const (
+	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.down"
 )
 
 // md5 check
@@ -32,17 +40,56 @@ func getEncodedMd5(b []byte, md5Type string) string {
 }
 
 func testMd5Check() {
-	path := "/Users/zhengjin/Downloads/tmp_files/test.mp3"
-	fileMd5, _ := getFileMd5(path)
+	fileMd5, _ := getFileMd5(testFilePath)
 	fmt.Println("file md5:", fileMd5)
 
-	b, _ := ioutil.ReadFile(path)
+	b, _ := ioutil.ReadFile(testFilePath)
 	fmt.Println("hex encoded md5:", getEncodedMd5(b, "hex"))
+}
+
+// file download
+func fileDownloadAndSave(reqURL, filePath string) error {
+	fmt.Printf("request url: %s\n", reqURL)
+	resp, err := http.Get(reqURL)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("ret code: %d\n", resp.StatusCode)
+
+	f, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	fmt.Printf("saving at: %s\n", filePath)
+	io.Copy(f, resp.Body)
+	defer resp.Body.Close()
+
+	fmt.Println("downfile file done.")
+	return nil
+}
+
+func testFileDownload() {
+	query := &url.Values{}
+	query.Add("uid", "1380469261")
+	query.Add("bucket", "publicbucket_z0")
+	query.Add("url", "http://10.200.20.21:17890/index4/")
+	url := "http://qiniuproxy.kodo.zhengjin.cs-spock.cloudappl.com/mirror?"
+	url += query.Encode()
+
+	if err := fileDownloadAndSave(url, testFilePath); err != nil {
+		panic(err.Error())
+	}
+
+	fileMd5, _ := getFileMd5(testFilePath)
+	fmt.Println("file md5:", fileMd5)
 }
 
 // MainUtils : main for utils
 func MainUtils() {
-	testMd5Check()
+	// testMd5Check()
+	testFileDownload()
 
-	fmt.Printf("utils done.")
+	fmt.Println("utils done.")
 }

@@ -175,7 +175,7 @@ func testBase64() {
 	base64EncodeAndDecode(base64.RawURLEncoding, str)
 }
 
-// demo 05, mutex
+// demo 05, rw mutex
 func testRwMutex() {
 	mutex := new(sync.RWMutex)
 	fmt.Println("ready in main")

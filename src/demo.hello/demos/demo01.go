@@ -267,13 +267,13 @@ func testContext02() {
 // demo 07, update bytes
 func myUpdateBytesByValue(b []byte) {
 	b = bytes.ToUpper(b)
-	b = append(b, '!')
+	b = append(b, '!', '!', '!')
 	fmt.Printf("in update by value: %s\n", string(b))
 }
 
 func myUpdateBytesByPointer(b *[]byte) {
 	*b = bytes.ToUpper(*b)
-	*b = append(*b, '!')
+	*b = append(*b, []byte{'!', '!', '!'}...)
 	fmt.Printf("in update by pointer: %s\n", string(*b))
 }
 
