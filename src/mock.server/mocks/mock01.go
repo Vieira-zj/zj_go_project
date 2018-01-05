@@ -57,22 +57,23 @@ var total03 int
 
 // Mock03 : mock diff ret code from query "retCode", ex 404, 503
 func Mock03(rw http.ResponseWriter, req *http.Request) {
+	total03++
+	log.Printf("access at %d time\n", total03)
+
 	const keyRetCode = "retCode"
-	reqCode := 200
+	retCode := 200
 	req.ParseForm()
 	if len(req.Form) > 0 {
 		for k, v := range req.Form {
 			if k == keyRetCode {
-				reqCode, _ = strconv.Atoi(v[0])
+				retCode, _ = strconv.Atoi(v[0])
 				break
 			}
 		}
 	}
 
-	total03++
-	log.Printf("access at %d time\n", total03)
-	log.Printf("%d\n", reqCode)
-	rw.WriteHeader(reqCode)
+	log.Printf("%d\n", retCode)
+	rw.WriteHeader(retCode)
 	log.Println("mock body")
 	io.Copy(rw, bytes.NewReader([]byte("stram data mock")))
 }
@@ -93,20 +94,35 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(string(reqHeader))
 
-	// connection retry test
-	// if total04%3 == 0 {
-	// 	rw.WriteHeader(500)
-	// 	return
-	// }
+	const keyRetCode = "retCode"
+	retCode := 200
+	req.ParseForm()
+	if len(req.Form) > 0 {
+		for k, v := range req.Form {
+			if k == keyRetCode {
+				retCode, _ = strconv.Atoi(v[0])
+				break
+			}
+		}
+	}
+
+	// check error msg "unexpected status"
+	// for 5xx, connection retry
+	// for 4xx, no connection retry
+	if total04 >= 3 && retCode != 200 {
+		log.Printf("ret code: %d\n", retCode)
+		rw.WriteHeader(retCode)
+		return
+	}
+
+	// md5 check
+	// rw.Header().Set("Content-MD5", "314398b1025a0d6a522fbdc1fb456a00")
 
 	// etag check
 	// rw.Header().Set("Etag", "f900b997e6f8a772994876dff023801e")
 	// if total04%3 == 0 {
 	// 	rw.Header().Set("Etag", "f900b997e6f8a772994876dff0238000")
 	// }
-
-	// md5 check
-	// rw.Header().Set("Content-MD5", "314398b1025a0d6a522fbdc1fb456a00")
 
 	// buf := initBytesBySize(4096 * 1024)
 	buf := readBytesFromFile("./test.mp3")
