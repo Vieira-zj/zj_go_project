@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -86,10 +87,62 @@ func testFileDownload() {
 	fmt.Println("file md5:", fileMd5)
 }
 
+// json parser
+func testJSONObjectToString() {
+	type ColorGroup struct {
+		ID     int
+		Name   string
+		Colors []string
+	}
+
+	group := &ColorGroup{
+		ID:     1,
+		Name:   "Reds",
+		Colors: []string{"Crimson", "Red", "Ruby", "Maroon"},
+	}
+	fmt.Printf("before encode: %+v\n", group)
+
+	b, err := json.Marshal(group)
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	fmt.Printf("encode string: %s\n", string(b))
+}
+
+func testJSONStringToObject() {
+	jsonBlob := []byte(`[
+		{"Name": "Platypus", "Order": "Monotremata"},
+		{"Name": "Quoll",    "Order": "Dasyuromorphia"}
+	]`)
+	fmt.Printf("before decode: %s\n", string(jsonBlob))
+
+	type Animal struct {
+		Name  string
+		Order string
+	}
+
+	var animals []Animal
+	err := json.Unmarshal(jsonBlob, &animals)
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	fmt.Printf("decode object: %+v\n", animals)
+
+	fmt.Println("animals info:")
+	for _, a := range animals {
+		fmt.Printf("name=%s, order=%s\n", a.Name, a.Order)
+	}
+}
+
 // MainUtils : main for utils
 func MainUtils() {
 	// testMd5Check()
-	testFileDownload()
+	// testFileDownload()
+
+	// testJSONObjectToString()
+	// testJSONStringToObject()
 
 	fmt.Println("utils done.")
 }

@@ -71,7 +71,7 @@ var _ = Describe("TestDemo01", func() {
 					close(done)
 				}()
 				fmt.Println("parallel test: done")
-			}, 5) // timeout = 5s
+			}, 3) // timeout = 3s
 
 			It("[demo01.routine.lock] run parallel", func() {
 				const count = 3
