@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -205,6 +206,42 @@ func testRwMutex() {
 	}
 }
 
+// demo 06, []string in array
+func testStringArrayInArray() {
+	fmt.Println("\n#1. by map:")
+	m := make(map[int][]string, 3)
+	m[0] = []string{"a1", "a2", "a3"}
+	m[1] = []string{"b1", "b2", "b3"}
+	m[2] = []string{"c1", "c2", "c3"}
+	fmt.Printf("map length: %d\n", len(m))
+	for k, v := range m {
+		fmt.Printf("%d=%v\n", k, v)
+	}
+
+	fmt.Println("\n#2. by array:")
+	tmpArr := [...][3]string{
+		{"a1", "a2", "a3"},
+		{"b1", "b2", "b3"},
+		{"c1", "c2", "c3"},
+	}
+	for idx, item := range tmpArr {
+		fmt.Printf("%d=%v\n", idx, item)
+	}
+
+	fmt.Println("\n#3. by slice:")
+	var s [][]string
+	for i := 0; i < 3; i++ {
+		var tmpArr []string
+		for j := 0; j < 3; j++ {
+			tmpArr = append(tmpArr, strconv.Itoa(j))
+		}
+		s = append(s, tmpArr)
+	}
+	for idx, item := range s {
+		fmt.Printf("%d=%v\n", idx, item)
+	}
+}
+
 // MainDemo02 : main
 func MainDemo02() {
 	// testMyFloatInterface()
@@ -215,6 +252,8 @@ func MainDemo02() {
 	// testBase64()
 
 	// testRwMutex()
+
+	// testStringArrayInArray()
 
 	fmt.Println("demo 02 done.")
 }

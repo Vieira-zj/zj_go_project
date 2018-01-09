@@ -56,9 +56,8 @@ func main() {
 	// testFlagParser()
 
 	// demos.MainDemo01()
-	// demos.MainDemo02()
-
-	demos.MainUtils()
+	demos.MainDemo02()
+	// demos.MainUtils()
 
 	fmt.Println("main done.")
 }
