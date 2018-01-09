@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -90,9 +91,9 @@ func testFileDownload() {
 // json parser
 func testJSONObjectToString() {
 	type ColorGroup struct {
-		ID     int
-		Name   string
-		Colors []string
+		ID     int      `json:"cg_id" bson:"cg_id"`
+		Name   string   `json:"cg_name" bson:"cg_name"`
+		Colors []string `json:"cg_colors" bson:"cg_colors"`
 	}
 
 	group := &ColorGroup{
@@ -112,20 +113,20 @@ func testJSONObjectToString() {
 
 func testJSONStringToObject() {
 	jsonBlob := []byte(`[
-		{"Name": "Platypus", "Order": "Monotremata"},
-		{"Name": "Quoll",    "Order": "Dasyuromorphia"}
+		{"a_name": "Platypus", "a_order": "Monotremata"},
+		{"a_name": "Quoll",    "a_order": "Dasyuromorphia"}
 	]`)
 	fmt.Printf("before decode: %s\n", string(jsonBlob))
 
 	type Animal struct {
-		Name  string
-		Order string
+		Name  string `json:"a_name"`
+		Order string `json:"a_order"`
 	}
 
 	var animals []Animal
 	err := json.Unmarshal(jsonBlob, &animals)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Printf("error: %v\n", err)
 		return
 	}
 	fmt.Printf("decode object: %+v\n", animals)
@@ -136,6 +137,57 @@ func testJSONStringToObject() {
 	}
 }
 
+func testJSONStringToRawObject() {
+	type skill struct {
+		Name  string `json:"skill_name"`
+		Level string `json:"skill_level"`
+	}
+
+	type tester struct {
+		ID     string  `json:"tester_id"`
+		Name   string  `json:"tester_name"`
+		Skills []skill `json:"tester_skills"`
+	}
+
+	t := tester{
+		ID:   "id01",
+		Name: "tester01",
+		Skills: []skill{
+			skill{
+				Name:  "automation",
+				Level: "junior",
+			},
+			skill{
+				Name:  "manual",
+				Level: "senior",
+			},
+		},
+	}
+
+	b, err := json.Marshal(t)
+	if err != nil {
+		log.Panicf("error: %v\n", err)
+		return
+	}
+	fmt.Printf("json string: %s\n", string(b))
+
+	// use interface instead by struct, json object map to map[string]interface{}
+	var m map[string]interface{}
+	err = json.Unmarshal(b, &m)
+	if err != nil {
+		log.Panicf("panic: %v\n", err)
+	}
+	fmt.Printf("json object: %v\n", m)
+
+	testers := m["tester_id"]
+	fmt.Printf("stills for %s:\n", testers.(string))
+	skills := m["tester_skills"]
+	for idx, skill := range skills.([]interface{}) {
+		name := skill.(map[string]interface{})["skill_name"]
+		fmt.Printf("%d) %s\n", idx, name.(string))
+	}
+}
+
 // MainUtils : main for utils
 func MainUtils() {
 	// testMd5Check()
@@ -143,6 +195,7 @@ func MainUtils() {
 
 	// testJSONObjectToString()
 	// testJSONStringToObject()
+	// testJSONStringToRawObject()
 
 	fmt.Println("utils done.")
 }

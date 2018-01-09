@@ -30,7 +30,7 @@ go run src/demo.hello/main/main.go
 
 
 # bdd tests
+# ginkgo -v -focus="demo01.routine.done" src/demo.tests/bddtests/
 # ginkgo -v -focus="demo02.DescribeTable" src/demo.tests/bddtests/
-# ginkgo -v -focus="demo01.sync.recover" src/demo.tests/bddtests/
 
 set +x # set config x off

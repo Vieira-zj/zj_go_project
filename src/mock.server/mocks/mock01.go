@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -172,4 +173,21 @@ func (mr *mockReader) Read(b []byte) (int, error) {
 
 func (mr *mockReader) Seek(offset int64, whence int) (int64, error) {
 	return mr.r.Seek(offset, whence)
+}
+
+var total05 int
+
+// Mock05 : print request info, and cache callback data
+func Mock05(rw http.ResponseWriter, req *http.Request) {
+	total05++
+	log.Printf("access at %d time\n", total05)
+	reqHeader, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		log.Printf("error: %v\n", err)
+		return
+	}
+	log.Println(string(reqHeader))
+
+	rw.WriteHeader(http.StatusOK)
+	fmt.Printf("return code: %d\n", http.StatusOK)
 }
