@@ -22,15 +22,27 @@ const (
 
 // Mock01 : mock short bytes stream / file donwload, diff md5
 func Mock01(rw http.ResponseWriter, req *http.Request) {
+	reqHeader, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		log.Fatalf("error: %v\n", err)
+		return
+	}
+	log.Println(string(reqHeader))
+
+	isFile := getQueryValueByName(req, "isFile")
+	if isFile == "" {
+		isFile = "false"
+	}
+
 	log.Println("200")
-	rw.Header().Set("Content-Md5", mockMd5) // mock md5
+	// rw.Header().Set("Content-Md5", mockMd5) // mock md5
 	rw.WriteHeader(200)
+	time.Sleep(time.Second)
 
-	// b := []byte("stream data mock")
-	b := readBytesFromFile(filePathMp3)
-
-	log.Println("mock body")
-	time.Sleep(time.Second * 3)
+	b := []byte("stream data mock")
+	if isFile, _ := strconv.ParseBool(isFile); isFile {
+		b = readBytesFromFile(filePathMp3)
+	}
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("send data done")
 }
@@ -42,10 +54,15 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Length", "1000000")
 	rw.WriteHeader(200)
 
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 10000; i++ {
+		if i == 10 {
+			const proxyReadbodyTimeout = 15
+			time.Sleep(proxyReadbodyTimeout * time.Second)
+		}
+
 		log.Println("mock body")
 		time.Sleep(time.Duration(500) * time.Millisecond)
-		_, err := io.Copy(rw, bytes.NewReader([]byte("stream data mock")))
+		_, err := io.Copy(rw, bytes.NewReader(initBytesBySize(2048)))
 		rw.(http.Flusher).Flush()
 		if err != nil {
 			log.Printf("error: %v\n", err)
@@ -61,22 +78,30 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 	total03++
 	log.Printf("access at %d time\n", total03)
 
-	const keyRetCode = "retCode"
-	retCode := 200
+	retCode := getQueryValueByName(req, "retCode")
+	b := []byte("mock return code pass")
+	if retCode == "" {
+		retCode = "200"
+		b = []byte("arg retCode not found in query!")
+	}
+
+	time.Sleep(time.Second)
+	code, _ := strconv.Atoi(retCode)
+	log.Printf("%d\n", code)
+	rw.WriteHeader(code)
+	io.Copy(rw, bytes.NewReader(b))
+}
+
+func getQueryValueByName(req *http.Request, argName string) string {
 	req.ParseForm()
 	if len(req.Form) > 0 {
 		for k, v := range req.Form {
-			if k == keyRetCode {
-				retCode, _ = strconv.Atoi(v[0])
-				break
+			if k == argName {
+				return v[0]
 			}
 		}
 	}
-
-	log.Printf("%d\n", retCode)
-	rw.WriteHeader(retCode)
-	log.Println("mock body")
-	io.Copy(rw, bytes.NewReader([]byte("stram data mock")))
+	return ""
 }
 
 var total04 int
