@@ -7,4 +7,5 @@ src/gopkg.in/
 src/sourcegraph.com/
 src/qbox.us/
 
+src/mock.server/main/main
 *.mp3

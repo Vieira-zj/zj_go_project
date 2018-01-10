@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 const (
@@ -49,7 +50,48 @@ func testMd5Check() {
 	fmt.Println("hex encoded md5:", getEncodedMd5(b, "hex"))
 }
 
-// file download
+// get request, read content by range
+func getContentByRange(reqURL string) error {
+	log.Printf("request url: %s\n", reqURL)
+	resp, err := http.Get(reqURL)
+	if err != nil {
+		return err
+	}
+	log.Printf("ret code: %d\n", resp.StatusCode)
+	defer resp.Body.Close()
+
+	var (
+		rRange int64 = 64
+		total  int64
+	)
+	for i := 0; i < 100; i++ {
+		log.Println("read and wait...")
+		time.Sleep(time.Duration(500) * time.Millisecond)
+		length, err := io.CopyN(os.Stdout, resp.Body, rRange)
+		fmt.Println()
+
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return err
+		}
+		total += length
+	}
+
+	log.Printf("content length: %v\n", total)
+	return nil
+}
+
+func testGetContentByRange() {
+	const url = "http://localhost:17890/index1/"
+	err := getContentByRange(url)
+	if err != nil {
+		log.Panicf("error: %v\n", err)
+	}
+}
+
+// file download and save
 func fileDownloadAndSave(reqURL, filePath string) error {
 	fmt.Printf("request url: %s\n", reqURL)
 	resp, err := http.Get(reqURL)
@@ -191,6 +233,7 @@ func testJSONStringToRawObject() {
 // MainUtils : main for utils
 func MainUtils() {
 	// testMd5Check()
+	// testGetContentByRange()
 	// testFileDownload()
 
 	// testJSONObjectToString()

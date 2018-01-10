@@ -40,6 +40,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	time.Sleep(time.Second)
 
 	b := []byte("stream data mock")
+	// b := initBytesBySize(1024)
 	if isFile, _ := strconv.ParseBool(isFile); isFile {
 		b = readBytesFromFile(filePathMp3)
 	}
@@ -55,10 +56,10 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(200)
 
 	for i := 0; i < 10000; i++ {
-		if i == 10 {
-			const proxyReadbodyTimeout = 15
-			time.Sleep(proxyReadbodyTimeout * time.Second)
-		}
+		// if i == 10 {
+		// 	const proxyReadbodyTimeout = 15
+		// 	time.Sleep(proxyReadbodyTimeout * time.Second)
+		// }
 
 		log.Println("mock body")
 		time.Sleep(time.Duration(500) * time.Millisecond)
