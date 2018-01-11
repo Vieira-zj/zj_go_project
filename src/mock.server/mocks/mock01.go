@@ -56,10 +56,10 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 	rw.WriteHeader(200)
 
 	for i := 0; i < 50; i++ {
-		if i == 10 {
-			const proxyReadbodyTimeout = 15
-			time.Sleep(proxyReadbodyTimeout * time.Second)
-		}
+		// if i == 10 {
+		// 	const proxyReadbodyTimeout = 15
+		// 	time.Sleep(proxyReadbodyTimeout * time.Second)
+		// }
 
 		log.Println("mock body")
 		time.Sleep(time.Duration(500) * time.Millisecond)
