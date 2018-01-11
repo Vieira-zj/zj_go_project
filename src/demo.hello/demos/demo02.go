@@ -98,6 +98,37 @@ func testInterface() {
 	zjInitAndPrintInfoByInterface(&zjData) // pointer
 }
 
+// demo 01-03, inherit
+type super struct {
+	Name string
+}
+
+func (s *super) Print() {
+	fmt.Println("name:", s.Name)
+}
+
+type sub struct {
+	super
+	Desc string
+}
+
+func (s *sub) PrintDesc() {
+	fmt.Println("description:", s.Desc)
+}
+
+func testInherit() {
+	su := super{Name: "super1"}
+	s1 := sub{super: su, Desc: "test inherit, s1 from super"}
+	s1.Print()
+	s1.PrintDesc()
+
+	s2 := new(sub)
+	s2.Name = "sub1"
+	s2.Desc = "test inherit, sub from super"
+	s2.Print()
+	s2.PrintDesc()
+}
+
 // demo 02, panic and recover
 func myWork(isOccur bool) {
 	myLog("myWork start")
@@ -246,6 +277,7 @@ func testStringArrayInArray() {
 func MainDemo02() {
 	// testMyFloatInterface()
 	// testInterface()
+	// testInherit()
 
 	// testPanicAndRecover()
 	// testErrorType()
