@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	mockMd5     = "f900b997e6f8a772994876dff023801e"
-	filePathMp3 = "./test.mp3"
+	mockMd5      = "f900b997e6f8a772994876dff023801e"
+	testFilePath = "./test.file"
 )
 
 // Mock01 : mock short bytes stream / file donwload, diff md5
@@ -42,7 +42,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	b := []byte("stream data mock")
 	// b := initBytesBySize(1024)
 	if isFile, _ := strconv.ParseBool(isFile); isFile {
-		b = readBytesFromFile(filePathMp3)
+		b = readBytesFromFile(testFilePath)
 	}
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("send data done")
@@ -55,11 +55,11 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Length", "1000000")
 	rw.WriteHeader(200)
 
-	for i := 0; i < 10000; i++ {
-		// if i == 10 {
-		// 	const proxyReadbodyTimeout = 15
-		// 	time.Sleep(proxyReadbodyTimeout * time.Second)
-		// }
+	for i := 0; i < 50; i++ {
+		if i == 10 {
+			const proxyReadbodyTimeout = 15
+			time.Sleep(proxyReadbodyTimeout * time.Second)
+		}
 
 		log.Println("mock body")
 		time.Sleep(time.Duration(500) * time.Millisecond)
@@ -70,6 +70,10 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
+
+	b := []byte("stream data mock")
+	io.Copy(rw, bytes.NewReader(b))
+	log.Println("send data done")
 }
 
 var total03 int
@@ -111,7 +115,7 @@ const waitForReader = 20
 
 // Mock04 : mock server for file download by range 4M
 func Mock04(rw http.ResponseWriter, req *http.Request) {
-	// download: curl -o ./test.mp3 http://127.0.0.1:17890/index4/
+	// download: curl -o ./test.file http://127.0.0.1:17890/index4/
 	total04++
 	log.Printf("access at %d time\n", total04)
 	reqHeader, err := httputil.DumpRequest(req, true)
@@ -152,7 +156,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// }
 
 	// buf := initBytesBySize(4096 * 1024)
-	buf := readBytesFromFile("./test.mp3")
+	buf := readBytesFromFile(testFilePath)
 	// file size check
 	// if total04%3 == 0 {
 	// 	buf = initBytesBySize(1024 * 1024 * 20)

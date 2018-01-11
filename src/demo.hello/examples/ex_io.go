@@ -14,17 +14,38 @@ import (
 	"time"
 )
 
+// check file exist
+func checkIsFileExist(filepath string) bool {
+	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func getProjectExDirPath() string {
+	return filepath.Join(os.Getenv("ZJGO"), "src", "demo.hello", "examples")
+}
+
+func testFileExist() {
+	path := filepath.Join(getProjectExDirPath(), "io_input.log")
+	if checkIsFileExist(path) {
+		fmt.Printf("file exist: %s\n", filepath.Base(path))
+	} else {
+		fmt.Printf("file not exist: %s\n", filepath.Base(path))
+	}
+}
+
 // encode file content
 func encodeFileContentTest() {
 	// build input stream
-	f, err := os.Open(filepath.Join(getExamplesDirPath(), "io_input.txt"))
+	f, err := os.Open(filepath.Join(getProjectExDirPath(), "io_input.txt"))
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer f.Close()
 
 	// build output stream
-	fEnc, err := os.Create(filepath.Join(getExamplesDirPath(), "io_enc_output.txt"))
+	fEnc, err := os.Create(filepath.Join(getProjectExDirPath(), "io_enc_output.txt"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -38,7 +59,7 @@ func encodeFileContentTest() {
 
 // read and write file
 func readFileTest() {
-	path := filepath.Join(getExamplesDirPath(), "io_input.txt")
+	path := filepath.Join(getProjectExDirPath(), "io_input.txt")
 	values, err := readValues(path)
 	if err != nil {
 		fmt.Println("read file error:", err)
@@ -48,15 +69,11 @@ func readFileTest() {
 }
 
 func writeFileTest() {
-	path := filepath.Join(getExamplesDirPath(), "io_output.txt")
+	path := filepath.Join(getProjectExDirPath(), "io_output.txt")
 	err := writeValues([]int{1, 11, 123, 1234}, path)
 	if err != nil {
 		fmt.Println("write file error:", err)
 	}
-}
-
-func getExamplesDirPath() string {
-	return filepath.Join(os.Getenv("ZJGO"), "src", "demo.hello", "examples")
 }
 
 func readValues(inFile string) (values []int, err error) {
@@ -111,8 +128,8 @@ func writeValues(values []int, outFile string) error {
 
 // get the number of words
 func countLineWordsTest() {
-	path1 := filepath.Join(getExamplesDirPath(), "io_input.txt")
-	path2 := filepath.Join(getExamplesDirPath(), "io_output.txt")
+	path1 := filepath.Join(getProjectExDirPath(), "io_input.txt")
+	path2 := filepath.Join(getProjectExDirPath(), "io_output.txt")
 	paths := [2]string{path1, path2}
 	counts := make(map[string]int)
 
@@ -210,6 +227,7 @@ func fmtPrintfTest() {
 func MainIO() {
 	hello("fname", "lastname")
 
+	// testFileExist()
 	// encodeFileContentTest()
 	// readFileTest()
 	// writeFileTest()
