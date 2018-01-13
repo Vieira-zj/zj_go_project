@@ -2,6 +2,7 @@ package examples
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/base64"
 	"flag"
 	"fmt"
@@ -33,6 +34,39 @@ func testFileExist() {
 	} else {
 		fmt.Printf("file not exist: %s\n", filepath.Base(path))
 	}
+}
+
+// io, writer and reader interface
+// Writer.Write(), Reader.Read()
+func testIOWriterReader() {
+	var buf bytes.Buffer
+	buf.Write([]byte("writer test.\n"))
+	buf.WriteTo(os.Stdout)
+
+	// read by range
+	fmt.Fprint(&buf, "reader test, this is a long buffer content text.")
+	const rRange = 10
+	var (
+		p     [rRange]byte
+		b     []byte
+		total int
+	)
+	for {
+		n, err := buf.Read(p[:])
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			panic(err.Error())
+		}
+
+		fmt.Printf("read %d bytes\n", n)
+		total += n
+		for i := 0; i < n; i++ {
+			b = append(b, p[i])
+		}
+	}
+	fmt.Println(string(b))
 }
 
 // encode file content
@@ -228,6 +262,7 @@ func MainIO() {
 	hello("fname", "lastname")
 
 	// testFileExist()
+	// testIOWriterReader()
 	// encodeFileContentTest()
 	// readFileTest()
 	// writeFileTest()

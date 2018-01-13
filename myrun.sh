@@ -3,7 +3,7 @@ set -x # show run commands with arguments
 echo "here"
 
 # main
-# go run src/demo.hello/main/main.go
+go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
@@ -50,5 +50,12 @@ echo "here"
 # done
 # echo ${tmp_list3[@]}
 # echo "length: ${#tmp_list3[@]}"
+
+# custom functions
+# echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
+# setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}
+# setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
+# run function
+# echoEnv
 
 set +x # set config x off
