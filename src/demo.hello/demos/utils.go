@@ -31,7 +31,7 @@ func getFileMd5(path string) (string, error) {
 func getEncodedMd5(b []byte, md5Type string) string {
 	md5hash := md5.New()
 	md5hash.Write(b)
-	bMd5 := md5hash.Sum(nil)
+	bMd5 := md5hash.Sum(nil) // bin
 
 	if md5Type == "hex" {
 		return hex.EncodeToString(bMd5)
@@ -47,7 +47,8 @@ func testMd5Check() {
 	fmt.Println("file md5:", fileMd5)
 
 	b, _ := ioutil.ReadFile(testFilePath)
-	fmt.Println("hex encoded md5:", getEncodedMd5(b, "hex"))
+	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
+	fmt.Println("md5 base64 encode:", getEncodedMd5(b, "std64"))
 }
 
 // get request, read content by range

@@ -21,5 +21,10 @@ func main() {
 	http.HandleFunc("/index3/", mocks.Mock03)
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
+
+	http.HandleFunc("/mock01", mocks.Mock21)
+	http.HandleFunc("/mock02", mocks.Mock22)
+	http.HandleFunc("/mock03", mocks.Mock23)
+
 	log.Fatal(http.ListenAndServe(":17890", nil))
 }
