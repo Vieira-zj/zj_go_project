@@ -273,6 +273,36 @@ func testStringArrayInArray() {
 	}
 }
 
+// demo 07-01, sequence in slice
+func testSliceSequence() {
+	s := make([]string, 0, 10)
+	s = append(s, "one")
+	s = append(s, "two")
+	s = append(s, "three")
+	s = append(s, "3")
+	s = append(s, "2")
+	s = append(s, "4")
+	s = append(s, "1")
+
+	for i := 0; i < len(s); i++ {
+		fmt.Printf("ele at %d => %s\n", i, s[i])
+	}
+}
+
+// demo 07-02, no sequence in map
+func testMapSequence() {
+	m := make(map[int]string)
+	m[1] = "one"
+	m[5] = "five"
+	m[2] = "two"
+	m[4] = "four"
+	m[3] = "three"
+
+	for k, v := range m {
+		fmt.Printf("%d=%s\n", k, v)
+	}
+}
+
 // MainDemo02 : main
 func MainDemo02() {
 	// testMyFloatInterface()
@@ -286,6 +316,8 @@ func MainDemo02() {
 	// testRwMutex()
 
 	// testStringArrayInArray()
+	// testSliceSequence()
+	// testMapSequence()
 
 	fmt.Println("demo 02 done.")
 }
