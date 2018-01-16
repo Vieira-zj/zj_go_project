@@ -29,6 +29,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	}
 	log.Println(string(reqHeader))
 
+	req.ParseForm()
 	isFile := getQueryValueByName(req, "isFile")
 	if isFile == "" {
 		isFile = "false"
@@ -83,6 +84,7 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 	total03++
 	log.Printf("access at %d time\n", total03)
 
+	req.ParseForm()
 	retCode := getQueryValueByName(req, "retCode")
 	b := []byte("mock return code pass")
 	if retCode == "" {
@@ -98,13 +100,8 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 }
 
 func getQueryValueByName(req *http.Request, argName string) string {
-	req.ParseForm()
 	if len(req.Form) > 0 {
-		for k, v := range req.Form {
-			if k == argName {
-				return v[0]
-			}
-		}
+		return req.Form[argName][0]
 	}
 	return ""
 }

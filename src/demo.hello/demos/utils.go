@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"hash/fnv"
 	"io"
 	"io/ioutil"
 	"log"
@@ -19,7 +20,7 @@ const (
 	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.down"
 )
 
-// md5 check
+// hash check - md5
 func getFileMd5(path string) (string, error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -49,6 +50,22 @@ func testMd5Check() {
 	b, _ := ioutil.ReadFile(testFilePath)
 	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
 	fmt.Println("md5 base64 encode:", getEncodedMd5(b, "std64"))
+}
+
+// hash check - fnv32
+func hashFNV32(text string) uint32 {
+	f := fnv.New32()
+	f.Write([]byte(text))
+	return f.Sum32()
+}
+
+func testHashFNV32() {
+	url := "www.qiniu.io.com"
+	hashedNum := hashFNV32(url)
+	fmt.Printf("fnv32 hash number: %v\n", hashedNum)
+
+	res := hashedNum % 2
+	fmt.Printf("mod value: %d\n", res)
 }
 
 // get request, read content by range
@@ -234,6 +251,7 @@ func testJSONStringToRawObject() {
 // MainUtils : main for utils
 func MainUtils() {
 	// testMd5Check()
+	// testHashFNV32()
 	// testGetContentByRange()
 	// testFileDownload()
 
