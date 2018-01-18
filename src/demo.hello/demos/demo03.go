@@ -18,7 +18,7 @@ func testMapGetEmpty() {
 
 // MainDemo03 : main
 func MainDemo03() {
-	testMapGetEmpty()
+	// testMapGetEmpty()
 
 	fmt.Println("demo 03 done.")
 }

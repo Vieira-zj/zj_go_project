@@ -11,14 +11,25 @@ import (
 
 // client test scripts in ex_http.go
 
-// Mock21 : parse get request, => /mock01?userid="xxx"&username="xxx"
+// Mock21 : parse get request, => /mock1?userid="xxx"&username="xxx"&url=url1&url=url2
 func Mock21(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 
-	r.ParseForm()
-	fmt.Println("method:", r.Method)
-	fmt.Println("userid:", r.Form["userid"][0])
-	fmt.Println("username:", r.Form["username"][0])
+	// #1
+	// r.ParseForm()
+	// fmt.Println("method:", r.Method)
+	// fmt.Println("userid:", r.Form["userid"][0])
+	// fmt.Println("username:", r.Form["username"][0])
+
+	// #2
+	values := r.URL.Query()
+	fmt.Println("userid:", values["userid"][0])
+	fmt.Println("username:", values["username"][0])
+	if len(values["url"]) > 0 {
+		for _, v := range values["url"] {
+			fmt.Println("url:", v)
+		}
+	}
 
 	w.WriteHeader(200)
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
@@ -43,7 +54,7 @@ type serverList struct {
 	ServersID string   `json:"servers_group_id"`
 }
 
-// Mock22 : parse post request, => /mock02 + json_body
+// Mock22 : parse post request, => /mock2 + json_body
 func Mock22(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 
@@ -81,7 +92,7 @@ func printServersInfoByInterface(jsonBody []byte) {
 	}
 }
 
-// Mock23 : get post request data, => /mock03 + header + body(k=v)
+// Mock23 : get post request data, => /mock3 + header + body(k=v)
 func Mock23(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 

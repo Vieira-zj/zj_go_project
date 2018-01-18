@@ -13,12 +13,18 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"time"
 )
 
 const (
 	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.down"
 )
+
+// file path handle
+func testFilePathHandle() {
+	fmt.Println("file name:", filepath.Base(testFilePath))
+}
 
 // hash check - md5
 func getFileMd5(path string) (string, error) {
@@ -250,6 +256,8 @@ func testJSONStringToRawObject() {
 
 // MainUtils : main for utils
 func MainUtils() {
+	// testFilePathHandle()
+
 	// testMd5Check()
 	// testHashFNV32()
 	// testGetContentByRange()

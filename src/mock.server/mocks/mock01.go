@@ -123,7 +123,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	log.Println(string(reqHeader))
 
 	req.ParseForm()
-	retCode := getQueryValueByName("retCode")
+	retCode := getQueryValueByName(req, "retCode")
 	if retCode == "" {
 		retCode = "200"
 	}
@@ -134,7 +134,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// for 4xx, no connection retry
 	if total04 >= 3 && code != http.StatusOK {
 		log.Printf("ret code: %d\n", code)
-		rw.WriteHeader(retCode)
+		rw.WriteHeader(code)
 		return
 	}
 

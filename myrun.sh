@@ -51,6 +51,14 @@ go run src/demo.hello/main/main.go
 # echo ${tmp_list3[@]}
 # echo "length: ${#tmp_list3[@]}"
 
+# run download parallel, wait and stop
+for (( i=0; i<20; i++)); do
+echo "run at: $i"
+curl -v "http://p1vvj0112.bkt.clouddn.com/512M" -x iovip-z2.qbox.me:80 > /dev/null &
+done
+sleep 3m
+ps -ef | grep "curl" | grep -v "grep" | awk '{print $2}' | xargs kill -9
+
 # custom functions
 # echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
 # setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}

@@ -22,9 +22,9 @@ func main() {
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 
-	http.HandleFunc("/mock01", mocks.Mock21)
-	http.HandleFunc("/mock02", mocks.Mock22)
-	http.HandleFunc("/mock03", mocks.Mock23)
+	http.HandleFunc("/mock1", mocks.Mock21)
+	http.HandleFunc("/mock2", mocks.Mock22)
+	http.HandleFunc("/mock3", mocks.Mock23)
 
 	log.Fatal(http.ListenAndServe(":17890", nil))
 }
