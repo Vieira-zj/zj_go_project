@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
-	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"qbox.us/rpc"
@@ -20,27 +20,33 @@ const (
 	testFilePath = "./test.file"
 )
 
-// Mock01 : mock short bytes stream / file donwload, diff md5
+var total01 int
+
+// Mock01 : mock bytes stream, file donwload, with isFile, wait
 func Mock01(rw http.ResponseWriter, req *http.Request) {
-	reqHeader, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Fatalf("error: %v\n", err)
-		return
-	}
-	log.Println(string(reqHeader))
+	total01++
+	log.Printf("access at %d time\n", total01)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	req.ParseForm()
 	isFile := getQueryValueByName(req, "isFile")
 	if isFile == "" {
 		isFile = "false"
 	}
+	wait := getQueryValueByName(req, "wait")
+	if wait != "" {
+		fmt.Printf("wait %s seconds\n", wait)
+		w, _ := strconv.Atoi(wait)
+		time.Sleep(time.Duration(w) * time.Second)
+	}
 
-	log.Println("200")
+	log.Println("return 200")
 	// rw.Header().Set("Content-Md5", mockMd5) // mock md5
-	rw.WriteHeader(200)
+	rw.WriteHeader(http.StatusOK)
 	time.Sleep(time.Second)
 
-	b := []byte("stream data mock")
+	b := []byte("mock string data")
 	// b := initBytesBySize(1024)
 	if isFile, _ := strconv.ParseBool(isFile); isFile {
 		b = readBytesFromFile(testFilePath)
@@ -49,58 +55,58 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	log.Println("send data done")
 }
 
-// Mock02 : mock long bytes stream, diff md5
+// Mock02 : mock bytes stream by flush
 func Mock02(rw http.ResponseWriter, req *http.Request) {
 	log.Println("200")
 	rw.Header().Set("Content-Md5", mockMd5) // mock md5
 	rw.Header().Set("Content-Length", "1000000")
-	rw.WriteHeader(200)
+	rw.WriteHeader(http.StatusOK)
 
 	for i := 0; i < 50; i++ {
-		// if i == 10 {
-		// 	const proxyReadbodyTimeout = 15
-		// 	time.Sleep(proxyReadbodyTimeout * time.Second)
-		// }
-
 		log.Println("mock body")
-		time.Sleep(time.Duration(500) * time.Millisecond)
+		time.Sleep(time.Duration(200) * time.Millisecond)
 		_, err := io.Copy(rw, bytes.NewReader(initBytesBySize(2048)))
-		rw.(http.Flusher).Flush()
 		if err != nil {
-			log.Printf("error: %v\n", err)
+			log.Fatalf("error: %v\n", err)
 			return
 		}
+		rw.(http.Flusher).Flush()
+
+		// if i == 10 {
+		// 	const wait = 15
+		// 	time.Sleep(wait * time.Second)
+		// }
 	}
 
-	b := []byte("stream data mock")
+	b := []byte("mock string data")
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("send data done")
 }
 
 var total03 int
 
-// Mock03 : mock diff ret code from query "retCode", ex 404, 503
+// Mock03 : mock ret code by "retCode", ex 404, 503
 func Mock03(rw http.ResponseWriter, req *http.Request) {
 	total03++
 	log.Printf("access at %d time\n", total03)
 
 	req.ParseForm()
 	retCode := getQueryValueByName(req, "retCode")
-	b := []byte("mock return code pass")
 	if retCode == "" {
 		retCode = "200"
-		b = []byte("arg retCode not found in query!")
 	}
 
 	time.Sleep(time.Second)
 	code, _ := strconv.Atoi(retCode)
-	log.Printf("%d\n", code)
+	log.Printf("return %d\n", code)
 	rw.WriteHeader(code)
+
+	b := []byte("mock string data")
 	io.Copy(rw, bytes.NewReader(b))
 }
 
 func getQueryValueByName(req *http.Request, argName string) string {
-	if len(req.Form) > 0 {
+	if len(req.Form) > 0 && len(req.Form[argName]) > 0 {
 		return req.Form[argName][0]
 	}
 	return ""
@@ -108,37 +114,26 @@ func getQueryValueByName(req *http.Request, argName string) string {
 
 var total04 int
 
-const waitForReader = 20
-
 // Mock04 : mock server for file download by range 4M
 func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// download: curl -o ./test.file http://127.0.0.1:17890/index4/
 	total04++
 	log.Printf("access at %d time\n", total04)
-	reqHeader, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Printf("error: %v\n", err)
-		return
-	}
+	reqHeader, _ := httputil.DumpRequest(req, true)
 	log.Println(string(reqHeader))
 
-	const keyRetCode = "retCode"
-	retCode := 200
 	req.ParseForm()
-	if len(req.Form) > 0 {
-		for k, v := range req.Form {
-			if k == keyRetCode {
-				retCode, _ = strconv.Atoi(v[0])
-				break
-			}
-		}
+	retCode := getQueryValueByName("retCode")
+	if retCode == "" {
+		retCode = "200"
 	}
+	code, _ := strconv.Atoi(retCode)
 
 	// check error msg "unexpected status"
 	// for 5xx, connection retry
 	// for 4xx, no connection retry
-	if total04 >= 3 && retCode != 200 {
-		log.Printf("ret code: %d\n", retCode)
+	if total04 >= 3 && code != http.StatusOK {
+		log.Printf("ret code: %d\n", code)
 		rw.WriteHeader(retCode)
 		return
 	}
@@ -162,7 +157,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// send data
 	rw = rpc.ResponseWriter{rw}
 	// rr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
-	rr := createMockReader(buf)
+	rr := createMockReader(buf, 20)
 	rw.(rpc.ResponseWriter).ReplyRange(rr, int64(len(buf)), &rpc.Metas{}, req)
 	log.Println("send blocked data done")
 }
@@ -178,22 +173,23 @@ func initBytesBySize(size int) []byte {
 func readBytesFromFile(path string) []byte {
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
-		log.Printf("error: %v\n", err)
-		os.Exit(1)
+		panic(err.Error())
 	}
 	return buf
 }
 
-func createMockReader(buf []byte) rpc.ReadSeeker2RangeReader {
-	return rpc.ReadSeeker2RangeReader{&mockReader{r: bytes.NewReader(buf)}}
+func createMockReader(buf []byte, waitForReader int) rpc.ReadSeeker2RangeReader {
+	return rpc.ReadSeeker2RangeReader{&mockReader{wait: waitForReader, r: bytes.NewReader(buf)}}
 }
 
 type mockReader struct {
-	r *bytes.Reader
+	wait int
+	r    *bytes.Reader
 }
 
 func (mr *mockReader) Read(b []byte) (int, error) {
-	time.Sleep(time.Duration(waitForReader) * time.Millisecond) // custom wait
+	fmt.Printf("wait %d ms\n", mr.wait)
+	time.Sleep(time.Duration(mr.wait) * time.Millisecond)
 	len, err := mr.r.Read(b)
 	return len, err
 }
@@ -204,17 +200,28 @@ func (mr *mockReader) Seek(offset int64, whence int) (int64, error) {
 
 var total05 int
 
-// Mock05 : print request info, and cache callback data
+// Mock05 : mock stream data by wait and kb
 func Mock05(rw http.ResponseWriter, req *http.Request) {
 	total05++
 	log.Printf("access at %d time\n", total05)
-	reqHeader, err := httputil.DumpRequest(req, true)
-	if err != nil {
-		log.Printf("error: %v\n", err)
-		return
-	}
+	reqHeader, _ := httputil.DumpRequest(req, true)
 	log.Println(string(reqHeader))
 
+	req.ParseForm()
+	wait := 20
+	contentWait := getQueryValueByName(req, "wait")
+	if contentWait != "" {
+		wait, _ = strconv.Atoi(contentWait)
+	}
+	kb := 1
+	contentKb := getQueryValueByName(req, "kb")
+	if contentWait != "" {
+		kb, _ = strconv.Atoi(contentKb)
+	}
+
 	rw.WriteHeader(http.StatusOK)
-	fmt.Printf("return code: %d\n", http.StatusOK)
+
+	b := initBytesBySize(1024 * kb)
+	io.Copy(rw, &mockReader{wait: wait, r: bytes.NewReader(b)})
+	log.Println("send data done")
 }
