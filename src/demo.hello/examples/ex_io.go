@@ -37,34 +37,66 @@ func testFileExist() {
 }
 
 // io, writer and reader interface
+// reader
+func testIOReader() {
+	reader := strings.NewReader("Clear is better than clever")
+	p := make([]byte, 4)
+
+	for {
+		n, err := reader.Read(p)
+		if err != nil {
+			if err == io.EOF {
+				// should handle any remainding bytes
+				fmt.Println(string(p[:n]))
+				break
+			}
+			panic(err.Error())
+		}
+		fmt.Println(string(p[:n]))
+	}
+}
+
+// write
+func testIOWriter() {
+	proverbs := []string{
+		"Channels orchestrate mutexes serialize",
+		"Cgo is not Go",
+		"Errors are values",
+		"Don't panic",
+	}
+	var writer bytes.Buffer
+
+	for _, p := range proverbs {
+		n, err := writer.Write([]byte(p))
+		if err != nil {
+			panic(err.Error())
+		}
+		if n != len(p) {
+			panic("failed to write data")
+		}
+	}
+	fmt.Println(writer.String())
+}
+
 // Writer.Write(), Reader.Read()
 func testIOWriterReader() {
 	var buf bytes.Buffer
 	buf.Write([]byte("writer test.\n"))
 	buf.WriteTo(os.Stdout)
+	fmt.Fprint(&buf, "writer test, add buffer text.")
 
-	// read by range
-	fmt.Fprint(&buf, "reader test, this is a long buffer content text.")
-	const rRange = 10
-	var (
-		p     [rRange]byte
-		b     []byte
-		total int
-	)
+	p := make([]byte, 4)
+	var b []byte
 	for {
-		n, err := buf.Read(p[:])
+		n, err := buf.Read(p)
 		if err != nil {
 			if err == io.EOF {
+				b = append(b, p[:n]...)
 				break
 			}
 			panic(err.Error())
 		}
-
-		fmt.Printf("read %d bytes\n", n)
-		total += n
-		for i := 0; i < n; i++ {
-			b = append(b, p[i])
-		}
+		b = append(b, p[:n]...)
 	}
 	fmt.Println(string(b))
 }
@@ -262,7 +294,10 @@ func MainIO() {
 	hello("fname", "lastname")
 
 	// testFileExist()
+	// testIOReader()
+	// testIOWriter()
 	// testIOWriterReader()
+
 	// encodeFileContentTest()
 	// readFileTest()
 	// writeFileTest()
