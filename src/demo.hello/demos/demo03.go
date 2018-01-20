@@ -3,7 +3,9 @@ package demos
 import (
 	"fmt"
 	"io"
+	"math/rand"
 	"strings"
+	"time"
 )
 
 // demo 01, map
@@ -121,6 +123,100 @@ func testAlphaReader2() {
 }
 
 // demo 02-03, custom writer
+type chanWriter struct {
+	ch chan byte
+}
+
+func newChanWriter() *chanWriter {
+	return &chanWriter{make(chan byte, 1024)}
+}
+
+func (w *chanWriter) Chan() <-chan byte {
+	return w.ch
+}
+
+func (w *chanWriter) Write(p []byte) (int, error) {
+	n := 0
+	for _, b := range p {
+		w.ch <- b
+		n++
+	}
+	return n, nil
+}
+
+func (w *chanWriter) Close() error {
+	close(w.ch)
+	return nil
+}
+
+func testChanWriter() {
+	writer := newChanWriter()
+	go func() {
+		defer writer.Close()
+		writer.Write([]byte("Stream "))
+		writer.Write([]byte("me"))
+	}()
+	for c := range writer.Chan() {
+		fmt.Printf("%c", c)
+	}
+	fmt.Println()
+}
+
+// demo 03, buffered channel
+func producers(queue chan int) {
+	item := rand.Intn(10)
+OUTER:
+	for i := 0; i < 10; i++ {
+		select {
+		case queue <- item:
+			fmt.Println("true => enqueued without blocking")
+			break OUTER
+		default:
+			fmt.Println("false => not enqueued, would have blocked because of queue full")
+		}
+		time.Sleep(time.Second)
+	}
+}
+
+func consumer(queue chan int) {
+OUTER:
+	for i := 0; i < 3; i++ {
+		select {
+		case item, valid := <-queue:
+			if valid {
+				fmt.Println("ok && valid => item is good, use it")
+				fmt.Printf("pop off item: %d\n", item)
+			} else {
+				fmt.Println("ok && !valid => channel closed, quit polling")
+			}
+			break OUTER
+		default:
+			fmt.Println("!ok => channel open, but empty, try later")
+		}
+		time.Sleep(time.Second)
+	}
+}
+
+func testChanQueue() {
+	queue := make(chan int, 3)
+	count := 6
+
+	go func() {
+		for i := 0; i < count; i++ {
+			producers(queue)
+			time.Sleep(300 * time.Millisecond)
+		}
+	}()
+
+	go func() {
+		for i := 0; i < count; i++ {
+			consumer(queue)
+			time.Sleep(time.Second)
+		}
+	}()
+
+	time.Sleep(15 * time.Second)
+}
 
 // MainDemo03 : main
 func MainDemo03() {
@@ -128,6 +224,9 @@ func MainDemo03() {
 
 	// testAlphaReader1()
 	// testAlphaReader2()
+	// testChanWriter()
+
+	// testChanQueue()
 
 	fmt.Println("demo 03 done.")
 }
