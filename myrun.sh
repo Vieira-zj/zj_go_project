@@ -51,7 +51,7 @@ go run src/demo.hello/main/main.go
 # echo ${tmp_list3[@]}
 # echo "length: ${#tmp_list3[@]}"
 
-# run download parallel, wait and stop
+# run download parallel
 # for (( i=0; i<20; i++)); do
 # echo "run at: $i"
 # curl -v "http://7zkl9d.com1.z1.glb.clouddn.com/slowResponse" -x iovip-z1.qbox.me:80 > /dev/null &

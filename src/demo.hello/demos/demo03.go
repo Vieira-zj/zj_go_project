@@ -162,11 +162,34 @@ func testChanWriter() {
 	fmt.Println()
 }
 
-// demo 03, buffered channel
+// demo 03, channel queue
+func testChanQueue() {
+	const total = 5
+	queue := make(chan int, total)
+	for i := 0; i < total; i++ {
+		queue <- rand.Intn(10)
+		time.Sleep(300 * time.Millisecond)
+	}
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			queue <- rand.Intn(20)
+			time.Sleep(300 * time.Millisecond)
+		}
+		close(queue)
+	}()
+
+	for v := range queue {
+		fmt.Printf("queue value: %d\n", v)
+	}
+}
+
+// demo 04, buffered channel
 func producers(queue chan int) {
 	item := rand.Intn(10)
 OUTER:
 	for i := 0; i < 10; i++ {
+		time.Sleep(time.Second)
 		select {
 		case queue <- item:
 			fmt.Println("true => enqueued without blocking")
@@ -174,7 +197,6 @@ OUTER:
 		default:
 			fmt.Println("false => not enqueued, would have blocked because of queue full")
 		}
-		time.Sleep(time.Second)
 	}
 }
 
@@ -197,25 +219,26 @@ OUTER:
 	}
 }
 
-func testChanQueue() {
+func testBufferedChan() {
 	queue := make(chan int, 3)
 	count := 6
 
 	go func() {
 		for i := 0; i < count; i++ {
 			producers(queue)
-			time.Sleep(300 * time.Millisecond)
+			time.Sleep(500 * time.Millisecond)
 		}
 	}()
 
 	go func() {
 		for i := 0; i < count; i++ {
+			time.Sleep(2 * time.Second)
 			consumer(queue)
-			time.Sleep(time.Second)
 		}
 	}()
 
 	time.Sleep(15 * time.Second)
+	close(queue)
 }
 
 // MainDemo03 : main
@@ -227,6 +250,7 @@ func MainDemo03() {
 	// testChanWriter()
 
 	// testChanQueue()
+	// testBufferedChan()
 
 	fmt.Println("demo 03 done.")
 }
