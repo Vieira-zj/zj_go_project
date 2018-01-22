@@ -1,9 +1,11 @@
 #!/bin/bash
-set -x # show run commands with arguments
+set -x -e
+# -x, show run commands with arguments
+# -e, tell bash exit script if any statement returns a non-true value
 echo "here"
 
 # main
-go run src/demo.hello/main/main.go
+# go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
@@ -35,10 +37,18 @@ go run src/demo.hello/main/main.go
 
 
 
-# check field exist
-# export is_exist=y
+# field exist check
+# is_exist=y
 # if [[ "${is_exist}" ]]; then
 #     echo "is exist"
+# fi
+
+# field length check
+# tmp_str="test"
+# if [[ -n $tmp_str ]]; then
+#     echo 'string exist.'
+# else
+#     echo 'string not exist.'
 # fi
 
 # check array
@@ -50,6 +60,14 @@ go run src/demo.hello/main/main.go
 # done
 # echo ${tmp_list3[@]}
 # echo "length: ${#tmp_list3[@]}"
+
+# if-else with regexp
+# node_name="go1.9_fix"
+# if [[ ($node_name =~ "go1.9") && ($node_name =~ "fix") ]]; then
+#     echo 'version check ok.'
+# else
+#     echo 'version should be go1.9 with fix.'
+# fi
 
 # run download parallel
 # for (( i=0; i<20; i++)); do
@@ -67,4 +85,4 @@ go run src/demo.hello/main/main.go
 # run function
 # echoEnv
 
-set +x # set config x off
+set +x +e # set configs off
