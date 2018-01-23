@@ -15,13 +15,15 @@ var _ = Describe("TestDemo02", func() {
 	Describe("Asserter tests", func() {
 		Context("Context, part1", func() {
 			It("[demo02.asserter.part1] Not", func() {
-				Expect(1).ShouldNot(Equal(2), "assert equal")
+				const tag = "Should:"
+				Expect(1).ShouldNot(Equal(2), "%s assert equal", tag)
 			})
 
 			It("[demo02.asserter.part1] BeXXX", func() {
-				Expect(1 == 1).To(BeTrue(), "assert bool")
-				Expect(0 == 1).To(BeFalse(), "assert bool")
-				Expect(0).To(BeZero(), "assert zero")
+				const tag = "To:"
+				Expect(1 == 1).To(BeTrue(), "%s assert true", tag)
+				Expect(0 == 1).To(BeFalse(), "%s assert false", tag)
+				Expect(0).To(BeZero(), "%s assert zero", tag)
 				Expect(func() error {
 					return nil
 				}()).To(BeNil(), "assert nil")
@@ -58,14 +60,15 @@ var _ = Describe("TestDemo02", func() {
 				Expect(m).Should(HaveKeyWithValue(2, "two"), "assert map key-value")
 
 				Expect(map[string]string{"Foo": "Bar", "BazFoo": "Duck"}).Should(
-					HaveKey(MatchRegexp(`.+Foo$`)))
+					HaveKey(MatchRegexp(`.+Foo$`)), "assert map key by regexp")
 				Expect(map[string]int{"Foo": 2, "BazFoo": 4}).Should(
-					HaveKeyWithValue(MatchRegexp(`.+Foo$`), BeNumerically(">", 3)))
+					HaveKeyWithValue(MatchRegexp(`.+Foo$`), BeNumerically(">", 3)),
+					"assert map key-valu by regexp")
 			})
 
 			It("[demo02.asserter.part1] And, Or", func() {
-				Expect(2).To(And(BeNumerically(">", 1), BeNumerically("<", 3)), "assert by and")
-				Expect(2).To(Or(BeNumerically(">", 1), BeNumerically("<", 3)), "assert by or")
+				Expect(2).To(And(BeNumerically(">", 1), BeNumerically("<", 3)), "assert number by and")
+				Expect(2).To(Or(BeNumerically(">", 1), BeNumerically("<", 3)), "assert number by or")
 			})
 		})
 
@@ -77,7 +80,7 @@ var _ = Describe("TestDemo02", func() {
 					}
 					return nil
 				}
-				Expect(fnMockErr(false)).To(Succeed())
+				Expect(fnMockErr(false)).To(Succeed(), "assert no error in method")
 				err := fnMockErr(true)
 				Expect(err).To(HaveOccurred(), "FAILED: error occurred: %v\n", err)
 			})
@@ -86,7 +89,7 @@ var _ = Describe("TestDemo02", func() {
 				fnMockPanic := func() {
 					panic("mock panic")
 				}
-				Expect(fnMockPanic).Should(Panic(), "assert panic")
+				Expect(fnMockPanic).Should(Panic(), "assert panic in method")
 			})
 
 			It("[demo02.asserter.part2] file handle", func() {
@@ -118,6 +121,34 @@ var _ = Describe("TestDemo02", func() {
 					fmt.Printf("ret code %d\n", i)
 				}
 			})
+		})
+	})
+
+	Describe("Test share", func() {
+		var data interface{}
+
+		AssertTureBehavior := func() {
+			It("[demo02.share] return value should not be nil", func() {
+				Expect(data).ShouldNot(BeNil())
+			})
+
+			It("[demo02.share] return value should not be empty", func() {
+				Expect(data).ShouldNot(BeEmpty())
+			})
+		}
+
+		Context("string verification", func() {
+			BeforeEach(func() {
+				data = "hello world"
+			})
+			AssertTureBehavior()
+		})
+
+		Context("bytes verification", func() {
+			BeforeEach(func() {
+				data = []byte("Golang")
+			})
+			AssertTureBehavior()
 		})
 	})
 
