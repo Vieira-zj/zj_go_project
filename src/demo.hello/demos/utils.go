@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
@@ -24,6 +25,15 @@ const (
 // file path handle
 func testFilePathHandle() {
 	fmt.Println("file name:", filepath.Base(testFilePath))
+}
+
+func testCopyStreamDataToNull() {
+	b := bytes.NewReader([]byte("content text put to /dev/null"))
+	len, err := io.Copy(ioutil.Discard, b)
+	if err != nil {
+		fmt.Println("error: ", err.Error())
+	}
+	fmt.Printf("file handler length: %d\n", len)
 }
 
 // hash check - md5
@@ -257,6 +267,7 @@ func testJSONStringToRawObject() {
 // MainUtils : main for utils
 func MainUtils() {
 	// testFilePathHandle()
+	testCopyStreamDataToNull()
 
 	// testMd5Check()
 	// testHashFNV32()
