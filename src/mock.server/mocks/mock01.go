@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -224,4 +225,63 @@ func Mock05(rw http.ResponseWriter, req *http.Request) {
 	b := initBytesBySize(1024 * kb)
 	io.Copy(rw, &mockReader{wait: wait, r: bytes.NewReader(b)})
 	log.Println("send data done")
+}
+
+var total06 int
+
+// Mock06 : mock httpdns server
+func Mock06(rw http.ResponseWriter, req *http.Request) {
+	total06++
+	log.Printf("access dns server at %d time\n", total06)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	retCode := 200
+	if total06%5 == 0 {
+		retCode = 500
+	}
+	log.Printf("return %d\n", retCode)
+	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(retCode)
+
+	wait := 5
+	if total06%4 == 0 {
+		log.Printf("sleep %d seconds\n", wait)
+		time.Sleep(time.Duration(wait) * time.Second)
+	}
+
+	// ret := `{"errno":-1, "iplist":[]}`
+	retIP := `"10.200.20.21"`
+	// retIP := `"42.48.232.7", "10.200.20.21"`
+	ret := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
+	io.Copy(rw, strings.NewReader(ret))
+	log.Printf("return %s\n", ret)
+}
+
+var total07 int
+
+// Mock07 : mock mirror file server
+func Mock07(rw http.ResponseWriter, req *http.Request) {
+	total07++
+	log.Printf("access mirror at %d time\n", total07)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	log.Println("return 200")
+	rw.WriteHeader(http.StatusOK)
+	io.Copy(rw, strings.NewReader("success"))
+	rw.(http.Flusher).Flush()
+
+	wait := 3
+	if total07%2 == 0 {
+		log.Printf("sleep %d seconds\n", wait)
+		time.Sleep(time.Duration(wait) * time.Second)
+	}
+
+	// io.Copy(rw, Strings.NewReader("** test content"))
+	f, _ := os.Open(testFilePath)
+	defer f.Close()
+	io.Copy(rw, f)
+
+	log.Println("data returned")
 }

@@ -22,9 +22,13 @@ func main() {
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 
+	http.HandleFunc("/http_dns", mocks.Mock06)
+	http.HandleFunc("/dir_path/file_path", mocks.Mock07)
+
 	http.HandleFunc("/mock1", mocks.Mock21)
 	http.HandleFunc("/mock2", mocks.Mock22)
 	http.HandleFunc("/mock3", mocks.Mock23)
 
-	log.Fatal(http.ListenAndServe(":17890", nil))
+	const port = 17890
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
