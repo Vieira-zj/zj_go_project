@@ -162,7 +162,22 @@ func testChanWriter() {
 	fmt.Println()
 }
 
-// demo 03, channel queue
+// demo 03, time ticker
+func testTimeTicker() {
+	ticker := time.NewTicker(3 * time.Second)
+	for i := 0; i < 10; i++ {
+		select {
+		case time := <-ticker.C:
+			fmt.Printf("%v\n", time)
+		default: // not block
+			fmt.Println("wait...")
+			time.Sleep(time.Second)
+		}
+	}
+	ticker.Stop()
+}
+
+// demo 04, channel queue
 func testChanQueue() {
 	const total = 5
 	queue := make(chan int, total)
@@ -184,7 +199,7 @@ func testChanQueue() {
 	}
 }
 
-// demo 04, buffered channel
+// demo 05, buffered channel
 func producers(queue chan int) {
 	item := rand.Intn(10)
 OUTER:
@@ -249,6 +264,7 @@ func MainDemo03() {
 	// testAlphaReader2()
 	// testChanWriter()
 
+	// testTimeTicker()
 	// testChanQueue()
 	// testBufferedChan()
 
