@@ -37,7 +37,7 @@ func testCopyStreamDataToNull() {
 }
 
 // hash check - md5
-func getFileMd5(path string) (string, error) {
+func getFileMd5sum(path string) (string, error) {
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return "", err
@@ -60,7 +60,7 @@ func getEncodedMd5(b []byte, md5Type string) string {
 }
 
 func testMd5Check() {
-	fileMd5, _ := getFileMd5(testFilePath)
+	fileMd5, _ := getFileMd5sum(testFilePath)
 	fmt.Println("file md5:", fileMd5)
 
 	b, _ := ioutil.ReadFile(testFilePath)
@@ -160,7 +160,7 @@ func testFileDownload() {
 		panic(err.Error())
 	}
 
-	fileMd5, _ := getFileMd5(testFilePath)
+	fileMd5, _ := getFileMd5sum(testFilePath)
 	fmt.Println("file md5:", fileMd5)
 }
 
@@ -267,7 +267,7 @@ func testJSONStringToRawObject() {
 // MainUtils : main for utils
 func MainUtils() {
 	// testFilePathHandle()
-	testCopyStreamDataToNull()
+	// testCopyStreamDataToNull()
 
 	// testMd5Check()
 	// testHashFNV32()
