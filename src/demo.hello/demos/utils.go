@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -187,17 +188,17 @@ func testJSONObjectToString() {
 	fmt.Printf("encode string: %s\n", string(b))
 }
 
-func testJSONStringToObject() {
+func testJSONStringToObject1() {
+	type Animal struct {
+		Name  string `json:"a_name"`
+		Order string `json:"a_order"`
+	}
+
 	jsonBlob := []byte(`[
 		{"a_name": "Platypus", "a_order": "Monotremata"},
 		{"a_name": "Quoll",    "a_order": "Dasyuromorphia"}
 	]`)
 	fmt.Printf("before decode: %s\n", string(jsonBlob))
-
-	type Animal struct {
-		Name  string `json:"a_name"`
-		Order string `json:"a_order"`
-	}
 
 	var animals []Animal
 	err := json.Unmarshal(jsonBlob, &animals)
@@ -210,6 +211,49 @@ func testJSONStringToObject() {
 	fmt.Println("animals info:")
 	for _, a := range animals {
 		fmt.Printf("name=%s, order=%s\n", a.Name, a.Order)
+	}
+}
+
+func testJSONStringToObject2() {
+	type Job struct {
+		Title  string   `json:"title"`
+		Skills []string `json:"skills"`
+	}
+
+	type Person struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+		Desc Job    `json:"desc"`
+	}
+
+	jsonTesters := []byte(`[
+		{
+		  "id":1, 
+		  "name":"person1", 
+		  "desc":{
+			"title":"tester",
+			"skills":["automation test","interface test"]
+		  }
+		},
+		{
+		  "id":2, 
+		  "name":"person2",
+		  "desc":{
+			"title":"developer",
+			"skills":["python","java","golang"]
+		  }
+		}
+	]`)
+
+	var persons []Person
+	err := json.Unmarshal(jsonTesters, &persons)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	for _, p := range persons {
+		tmpStr := fmt.Sprintf("%s (id=%d name=%s) skills:", p.Desc.Title, p.ID, p.Name)
+		fmt.Println(tmpStr, strings.Join(p.Desc.Skills, ", "))
 	}
 }
 
@@ -275,7 +319,8 @@ func MainUtils() {
 	// testFileDownload()
 
 	// testJSONObjectToString()
-	// testJSONStringToObject()
+	// testJSONStringToObject1()
+	// testJSONStringToObject2()
 	// testJSONStringToRawObject()
 
 	fmt.Println("utils done.")
