@@ -82,7 +82,7 @@ func (c *cache) set(key string, object interface{}, d time.Duration) {
 func (c *cache) Get(key string) (interface{}, bool) {
 	c.mu.RLock()
 	item, found := c.items[key]
-	if !found || (item.Expiration < time.Now().Unix()) {
+	if !found || item.Expired() {
 		c.mu.RUnlock()
 		return nil, false
 	}
@@ -92,10 +92,7 @@ func (c *cache) Get(key string) (interface{}, bool) {
 
 func (c *cache) get(key string) (interface{}, bool) {
 	item, found := c.items[key]
-	if !found {
-		return nil, false
-	}
-	if item.Expiration > 0 && item.Expired() {
+	if !found || item.Expired() {
 		return nil, false
 	}
 	return item.Object, true
@@ -154,24 +151,23 @@ func (c *cache) Increment(k string, n int64) error {
 	return nil
 }
 
-// Delete : delete an item from the cache. Does nothing if the key is not in the cache.
-func (c *cache) Delete(key string) {
+// Remove : remove an item from the cache. Does nothing if the key is not in the cache.
+func (c *cache) Remove(key string) {
 	c.mu.Lock()
-	val, evicted := c.delete(key)
+	val, evicted := c.remove(key)
 	c.mu.Unlock()
 	if evicted {
 		c.onEvicted(key, val)
 	}
 }
 
-func (c *cache) delete(key string) (interface{}, bool) {
-	if c.onEvicted != nil {
-		if val, found := c.items[key]; found {
-			delete(c.items, key)
+func (c *cache) remove(key string) (interface{}, bool) {
+	if val, found := c.items[key]; found {
+		delete(c.items, key)
+		if c.onEvicted != nil {
 			return val.Object, true
 		}
 	}
-	delete(c.items, key)
 	return nil, false
 }
 
@@ -186,8 +182,8 @@ func (c *cache) DeleteExpired() {
 
 	c.mu.Lock()
 	for k, v := range c.items {
-		if v.Expiration > 0 && v.Expired() {
-			v, evicted := c.delete(k)
+		if v.Expired() {
+			v, evicted := c.remove(k)
 			if evicted {
 				evictedItems = append(evictedItems, kv{k, v})
 			}
@@ -242,13 +238,15 @@ func (j *janitor) Run(c *cache) {
 	for {
 		select {
 		case <-ticker.C:
+			fmt.Println("delete expired items")
 			c.DeleteExpired()
 		case <-j.stop:
+			fmt.Println("stopped")
 			ticker.Stop()
 			return
 		default:
-			time.Sleep(3 * time.Second)
 			fmt.Println("sleep...")
+			time.Sleep(time.Second)
 		}
 	}
 }
@@ -280,12 +278,11 @@ func newCache(de time.Duration, m map[string]Item) *cache {
 
 func newCacheWithJanitor(defaultExpiration time.Duration, cleanupInterval time.Duration, items map[string]Item) *Cache {
 	c := newCache(defaultExpiration, items)
-	C := &Cache{c}
 	if cleanupInterval > 0 {
 		runJanitor(c, cleanupInterval)
 		runtime.SetFinalizer(c, stopJanitor)
 	}
-	return C
+	return &Cache{c}
 }
 
 // New : return a new cache with a given default expiration duration and cleanup interval.

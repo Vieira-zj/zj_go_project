@@ -21,7 +21,7 @@ func MainCache() {
 		fmt.Println(val)
 	}
 
-	// Set the value of the key "num" to 10, with the default expiration time.And add 1 to it.
+	// Set value of the key "num" to 10, with the default expiration time. And add 1 to it
 	c.Set("num", 10, cache.DefaultExpiration)
 	if err := c.Increment("num", 1); err != nil {
 		fmt.Println(err)
@@ -44,9 +44,10 @@ func MainCache() {
 	}
 	c.OnEvicted(printDel)
 
-	// Delete the item in the cache
-	c.Delete("foo")
+	// Delete the item in cache
+	c.Remove("foo")
 	if _, found := c.Get("foo"); !found {
 		fmt.Println("deleted")
 	}
+	time.Sleep(4 * time.Second)
 }
