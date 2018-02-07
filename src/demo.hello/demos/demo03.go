@@ -256,6 +256,21 @@ func testBufferedChan() {
 	close(queue)
 }
 
+// demo 06, iterator for chars
+func testIteratorChars() {
+	s := "hello"
+	for _, c := range s {
+		fmt.Printf("%c", c)
+	}
+	fmt.Println()
+
+	b := []byte("world")
+	for _, c := range b {
+		fmt.Printf("%c", c)
+	}
+	fmt.Println()
+}
+
 // MainDemo03 : main
 func MainDemo03() {
 	// testMapGetEmpty()
@@ -267,6 +282,8 @@ func MainDemo03() {
 	// testTimeTicker()
 	// testChanQueue()
 	// testBufferedChan()
+
+	testIteratorChars()
 
 	fmt.Println("demo 03 done.")
 }

@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -284,4 +285,36 @@ func Mock07(rw http.ResponseWriter, req *http.Request) {
 	io.Copy(rw, f)
 
 	log.Println("data returned")
+}
+
+var total08 = 0
+
+type refreshRet struct {
+	Code      int    `json:"code"`
+	Error     string `json:"error"`
+	RequestID string `json:"requestId"`
+}
+
+// Mock08 : handle cdn refresh post request, and return
+func Mock08(rw http.ResponseWriter, req *http.Request) {
+	total08++
+	log.Printf("access mirror at %d time\n", total08)
+	reqData, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqData), "\n"))
+
+	// result, _ := ioutil.ReadAll(req.Body)
+	// defer req.Body.Close()
+	// fmt.Printf("request body: %s\n", string(result))
+
+	rw.WriteHeader(http.StatusOK)
+	retJSONObj := refreshRet{
+		Code:      http.StatusOK,
+		Error:     "null",
+		RequestID: "cdn-refresh-test",
+	}
+	if retBytes, err := json.Marshal(retJSONObj); err == nil {
+		fmt.Fprintf(rw, string(retBytes))
+	} else {
+		fmt.Println(err.Error())
+	}
 }

@@ -25,6 +25,8 @@ func main() {
 	http.HandleFunc("/http_dns", mocks.Mock06)
 	http.HandleFunc("/dir_path/file_path", mocks.Mock07)
 
+	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
+
 	http.HandleFunc("/mock1", mocks.Mock21)
 	http.HandleFunc("/mock2", mocks.Mock22)
 	http.HandleFunc("/mock3", mocks.Mock23)
