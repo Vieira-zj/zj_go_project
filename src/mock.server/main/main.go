@@ -12,7 +12,7 @@ func init() {
 	fmt.Println("mock server init")
 }
 
-// build cmd: $ GOOS=linux GOARCH=amd64 go build
+// build cmd: /main$ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 // http://10.200.20.21:17890/index1/
 func main() {
@@ -22,8 +22,8 @@ func main() {
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 
-	http.HandleFunc("/http_dns", mocks.Mock06)
-	http.HandleFunc("/dir_path/file_path", mocks.Mock07)
+	http.HandleFunc("/httpdns", mocks.Mock06)
+	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
 
 	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
 

@@ -298,7 +298,7 @@ type refreshRet struct {
 // Mock08 : handle cdn refresh post request, and return
 func Mock08(rw http.ResponseWriter, req *http.Request) {
 	total08++
-	log.Printf("access mirror at %d time\n", total08)
+	log.Printf("\n***** access mirror at %d time\n", total08)
 	reqData, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqData), "\n"))
 
