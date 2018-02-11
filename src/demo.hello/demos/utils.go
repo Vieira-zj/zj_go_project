@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -37,13 +38,25 @@ func testCopyStreamDataToNull() {
 	fmt.Printf("file handler length: %d\n", len)
 }
 
+// format and encode
+func testURLEncode() {
+	str := "/query?key=value"
+	fmt.Println("path escape:", url.PathEscape(str))
+	fmt.Println("query escape:", url.QueryEscape(str))
+
+	var uid int64 = 1380469261
+	fmt.Println("results:", strconv.FormatInt(uid, 36))
+}
+
 // hash check - md5
-func getFileMd5sum(path string) (string, error) {
-	b, err := ioutil.ReadFile(path)
-	if err != nil {
-		return "", err
+func getTextMd5Sum(text, path string) string {
+	var b []byte
+	if len(path) > 0 {
+		b, _ = ioutil.ReadFile(path)
+	} else {
+		b = []byte(text)
 	}
-	return fmt.Sprintf("%x", md5.Sum(b)), nil
+	return fmt.Sprintf("%x", md5.Sum(b))
 }
 
 func getEncodedMd5(b []byte, md5Type string) string {
@@ -60,12 +73,15 @@ func getEncodedMd5(b []byte, md5Type string) string {
 	return base64.URLEncoding.EncodeToString(bMd5)
 }
 
-func testMd5Check() {
-	fileMd5, _ := getFileMd5sum(testFilePath)
+func testMd5Encode() {
+	fileMd5 := getTextMd5Sum("", testFilePath)
 	fmt.Println("file md5:", fileMd5)
+	textMd5 := getTextMd5Sum("ok", "")
+	fmt.Println("text md5:", textMd5)
 
 	b, _ := ioutil.ReadFile(testFilePath)
 	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
+	fmt.Println("text md5:", getEncodedMd5([]byte("ok"), "hex"))
 	fmt.Println("md5 base64 encode:", getEncodedMd5(b, "std64"))
 }
 
@@ -86,7 +102,7 @@ func testHashFNV32() {
 }
 
 // get request, read content by range
-func getContentByRange(reqURL string) error {
+func getFileByRange(reqURL string) error {
 	log.Printf("request url: %s\n", reqURL)
 	resp, err := http.Get(reqURL)
 	if err != nil {
@@ -118,9 +134,9 @@ func getContentByRange(reqURL string) error {
 	return nil
 }
 
-func testGetContentByRange() {
+func testGetFileByRange() {
 	const url = "http://localhost:17890/index1/"
-	err := getContentByRange(url)
+	err := getFileByRange(url)
 	if err != nil {
 		log.Panicf("error: %v\n", err)
 	}
@@ -161,7 +177,7 @@ func testFileDownload() {
 		panic(err.Error())
 	}
 
-	fileMd5, _ := getFileMd5sum(testFilePath)
+	fileMd5 := getTextMd5Sum("", testFilePath)
 	fmt.Println("file md5:", fileMd5)
 }
 
@@ -313,9 +329,10 @@ func MainUtils() {
 	// testFilePathHandle()
 	// testCopyStreamDataToNull()
 
-	// testMd5Check()
+	// testURLEncode()
+	// testMd5Encode()
 	// testHashFNV32()
-	// testGetContentByRange()
+	// testGetFileByRange()
 	// testFileDownload()
 
 	// testJSONObjectToString()
