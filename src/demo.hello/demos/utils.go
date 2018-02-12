@@ -29,7 +29,7 @@ func testFilePathHandle() {
 	fmt.Println("file name:", filepath.Base(testFilePath))
 }
 
-func testCopyStreamDataToNull() {
+func testCopyBytesToNull() {
 	b := bytes.NewReader([]byte("content text put to /dev/null"))
 	len, err := io.Copy(ioutil.Discard, b)
 	if err != nil {
@@ -40,12 +40,23 @@ func testCopyStreamDataToNull() {
 
 // format and encode
 func testURLEncode() {
-	str := "/query?key=value"
-	fmt.Println("path escape:", url.PathEscape(str))
-	fmt.Println("query escape:", url.QueryEscape(str))
+	baseURL := "http://localhost"
+	callbackURL := "http://server/callback?k1=v1&k2=v2"
 
+	// query escape
+	fmt.Println("path escape:", url.PathEscape(callbackURL))
+	fmt.Println("query escape:", url.QueryEscape(callbackURL))
+
+	// build query
+	query := url.Values{}
+	query.Add("key", "value")
+	query.Add("url", callbackURL)
+	fullURL := baseURL + "/query?" + query.Encode()
+	fmt.Println("full url:", fullURL)
+
+	// int format
 	var uid int64 = 1380469261
-	fmt.Println("results:", strconv.FormatInt(uid, 36))
+	fmt.Println("\nformat results:", strconv.FormatInt(uid, 36))
 }
 
 // hash check - md5
@@ -327,7 +338,7 @@ func testJSONStringToRawObject() {
 // MainUtils : main for utils
 func MainUtils() {
 	// testFilePathHandle()
-	// testCopyStreamDataToNull()
+	// testCopyBytesToNull()
 
 	// testURLEncode()
 	// testMd5Encode()
