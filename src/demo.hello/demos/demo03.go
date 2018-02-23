@@ -162,8 +162,8 @@ func testChanWriter() {
 	fmt.Println()
 }
 
-// demo 03, time ticker
-func testTimeTicker() {
+// demo 03-01, time ticker in select block
+func testSelectForTimeTicker() {
 	ticker := time.NewTicker(3 * time.Second)
 	for i := 0; i < 10; i++ {
 		select {
@@ -175,6 +175,25 @@ func testTimeTicker() {
 		}
 	}
 	ticker.Stop()
+}
+
+// demo 03-02, time after in select block
+func testSelectForTimeAfter() {
+	ch := make(chan string)
+
+	go func() {
+		wait := 20
+		fmt.Printf("wait %d second in go routine...\n", wait)
+		time.Sleep(time.Duration(wait) * time.Second)
+		ch <- "done"
+	}()
+
+	select {
+	case ret := <-ch:
+		fmt.Println("return from go routine:", ret)
+	case <-time.After(5 * time.Second):
+		fmt.Println("timeout for return from go routine")
+	}
 }
 
 // demo 04, channel queue
@@ -271,6 +290,30 @@ func testIteratorChars() {
 	fmt.Println()
 }
 
+// demo 07, function as argument
+func fnMyAdd(num1 int, num2 int) int {
+	return num1 + num2
+}
+
+func fnMyMin(num1 int, num2 int) int {
+	if num1 > num2 {
+		return num1 - num2
+	}
+	return num2 - num1
+}
+
+func myCalculation(testNum1 int, testNum2 int, fnCal func(num1 int, num2 int) int) int {
+	return fnCal(testNum1, testNum2)
+}
+
+func testFuncPointer() {
+	ret := myCalculation(2, 2, fnMyAdd)
+	fmt.Printf("results for add: %d\n", ret)
+
+	ret = myCalculation(8, 2, fnMyMin)
+	fmt.Printf("results for min: %d\n", ret)
+}
+
 // MainDemo03 : main
 func MainDemo03() {
 	// testMapGetEmpty()
@@ -279,11 +322,14 @@ func MainDemo03() {
 	// testAlphaReader2()
 	// testChanWriter()
 
-	// testTimeTicker()
+	// testSelectForTimeTicker()
+	// testSelectForTimeAfter()
+
 	// testChanQueue()
 	// testBufferedChan()
 
-	testIteratorChars()
+	// testIteratorChars()
+	// testFuncPointer()
 
 	fmt.Println("demo 03 done.")
 }
