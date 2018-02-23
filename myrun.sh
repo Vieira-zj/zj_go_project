@@ -37,13 +37,13 @@ go run src/demo.hello/main/main.go
 
 
 
-# field exist check
+# EX01, field exist check
 # is_exist=y
 # if [[ "${is_exist}" ]]; then
 #     echo "is exist"
 # fi
 
-# field length check
+# EX02, field length check
 # tmp_str="test"
 # if [[ -n $tmp_str ]]; then
 #     echo 'string exist.'
@@ -51,7 +51,7 @@ go run src/demo.hello/main/main.go
 #     echo 'string not exist.'
 # fi
 
-# check array
+# EX03-01, array
 # tmp_list1=("ele1")
 # tmp_list2=("ele2" "ele3")
 # tmp_list3=(${tmp_list1[@]} ${tmp_list2[@]})
@@ -61,7 +61,21 @@ go run src/demo.hello/main/main.go
 # echo ${tmp_list3[@]}
 # echo "length: ${#tmp_list3[@]}"
 
-# if-else with regexp
+# EX03-02
+# focus_pkg=()
+# temp_pkg1=("a1" "a2")
+# focus_pkg=(${focus_pkg[@]} ${temp_pkg1[@]})
+# temp_pkg2=("a3" "a4" "a5")
+# focus_pkg=(${focus_pkg[@]} ${temp_pkg2[@]})
+
+# skip_pkg="a1,a2,a3,a4,a5,a6,a7"
+# for v in ${focus_pkg[@]}; do
+#     skip_pkg=${skip_pkg/${v},/}
+# done
+# echo "focus packages => ${focus_pkg[@]}"
+# echo "skip packages => ${skip_pkg}"
+
+# EX04, if-else with regexp
 # node_name="go1.9_fix"
 # if [[ ($node_name =~ "go1.9") && ($node_name =~ "fix") ]]; then
 #     echo 'version check ok.'
@@ -69,7 +83,7 @@ go run src/demo.hello/main/main.go
 #     echo 'version should be go1.9 with fix.'
 # fi
 
-# run download parallel
+# EX05, run download parallel
 # for (( i=0; i<20; i++)); do
 # echo "run at: $i"
 # curl -v "http://7zkl9d.com1.z1.glb.clouddn.com/slowResponse" -x iovip-z1.qbox.me:80 > /dev/null &
@@ -78,7 +92,7 @@ go run src/demo.hello/main/main.go
 # sleep 15m
 # ps -ef | grep "curl" | grep -v "grep" | awk '{print $2}' | xargs kill -9
 
-# custom functions
+# EX06, custom functions
 # echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
 # setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}
 # setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
