@@ -58,7 +58,8 @@ func main() {
 
 	// demos.MainDemo01()
 	// demos.MainDemo02()
-	demos.MainDemo03()
+	// demos.MainDemo03()
+	demos.MainDemo04()
 
 	// demos.MainCache()
 	demos.MainUtils()
