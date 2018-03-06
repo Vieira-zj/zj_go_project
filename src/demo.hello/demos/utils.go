@@ -47,12 +47,12 @@ func testURLEncode() {
 	fmt.Println("path escape:", url.PathEscape(callbackURL))
 	fmt.Println("query escape:", url.QueryEscape(callbackURL))
 
-	// build query
+	// build encode query
 	query := url.Values{}
 	query.Add("key", "value")
 	query.Add("url", callbackURL)
 	fullURL := baseURL + "/query?" + query.Encode()
-	fmt.Println("full url:", fullURL)
+	fmt.Println("full encode url:", fullURL)
 
 	// int format
 	var uid int64 = 1380469261
@@ -60,20 +60,17 @@ func testURLEncode() {
 }
 
 // hash check - md5
-func getTextMd5Sum(text, path string) string {
-	var b []byte
-	if len(path) > 0 {
-		b, _ = ioutil.ReadFile(path)
-	} else {
-		b = []byte(text)
-	}
-	return fmt.Sprintf("%x", md5.Sum(b))
+func getTextMd5Sum(b []byte) string {
+	bMd5 := md5.Sum(b)
+	fmt.Printf("md5 bytes: %v\n", bMd5)
+	return fmt.Sprintf("%x", bMd5)
 }
 
 func getEncodedMd5(b []byte, md5Type string) string {
 	md5hash := md5.New()
 	md5hash.Write(b)
-	bMd5 := md5hash.Sum(nil) // bin
+	bMd5 := md5hash.Sum(nil)
+	fmt.Printf("md5 bytes: %v\n", bMd5)
 
 	if md5Type == "hex" {
 		return hex.EncodeToString(bMd5)
@@ -85,14 +82,15 @@ func getEncodedMd5(b []byte, md5Type string) string {
 }
 
 func testMd5Encode() {
-	fileMd5 := getTextMd5Sum("", testFilePath)
-	fmt.Println("file md5:", fileMd5)
-	textMd5 := getTextMd5Sum("ok", "")
-	fmt.Println("text md5:", textMd5)
-
-	b, _ := ioutil.ReadFile(testFilePath)
-	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
+	fmt.Println("get text md5:")
+	fmt.Println("text md5:", getTextMd5Sum([]byte("ok")))
 	fmt.Println("text md5:", getEncodedMd5([]byte("ok"), "hex"))
+
+	fmt.Println("get file content md5:")
+	b, _ := ioutil.ReadFile(testFilePath)
+	// fmt.Printf("src file data stream bytes: %v\n", b)
+	fmt.Println("file md5:", getTextMd5Sum(b)) // byte = 2 hex, 138 = 8a
+	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
 	fmt.Println("md5 base64 encode:", getEncodedMd5(b, "std64"))
 }
 
@@ -153,7 +151,7 @@ func testGetFileByRange() {
 	}
 }
 
-// file download and save
+// file download and save by http Get
 func fileDownloadAndSave(reqURL, filePath string) error {
 	fmt.Printf("request url: %s\n", reqURL)
 	resp, err := http.Get(reqURL)
@@ -188,8 +186,10 @@ func testFileDownload() {
 		panic(err.Error())
 	}
 
-	fileMd5 := getTextMd5Sum("", testFilePath)
-	fmt.Println("file md5:", fileMd5)
+	if b, err := ioutil.ReadFile(testFilePath); err == nil {
+		fileMd5 := getTextMd5Sum(b)
+		fmt.Println("file md5:", fileMd5)
+	}
 }
 
 // json parser

@@ -16,7 +16,7 @@ import (
 //     SpecSuiteDidEnd(summary *types.SuiteSummary)
 // }
 
-// CustomReport : custome report demo
+// CustomReport : custom report demo
 type CustomReport struct {
 	Tag string
 }
