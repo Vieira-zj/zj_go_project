@@ -44,11 +44,16 @@ go run src/demo.hello/main/main.go
 # fi
 
 # EX02, field length check
-# tmp_str="test"
-# if [[ -n $tmp_str ]]; then
-#     echo 'string exist.'
+# empty_str=""
+# if [ -z $empty_str ]; then
+# echo "string empty."
+# fi
+
+# test_str="test"
+# if [[ -n $test_str ]]; then
+#     echo 'string empty.'
 # else
-#     echo 'string not exist.'
+#     echo 'string not empty.'
 # fi
 
 # EX03-01, array
@@ -98,5 +103,21 @@ go run src/demo.hello/main/main.go
 # setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
 # run function
 # echoEnv
+
+# EX07, ${} usage
+# tmp_file=/dir1/dir2/dir3/my.file.txt
+# # sub string start 0, len = 5
+# echo ${tmp_file:0:5}
+# # sub string start 5, len = 5
+# echo ${tmp_file:5:5}
+# # replace first "dir" with "path"
+# echo ${tmp_file/dir/path}
+# # replace all "dir" with "path"
+# echo ${tmp_file//dir/path}
+
+# EX08, exit
+# echo "test exit with error code 1."
+# exit 1
+
 
 set +x +e # set configs off
