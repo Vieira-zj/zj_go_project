@@ -4,7 +4,20 @@ import (
 	"fmt"
 )
 
-// struct reference
+// demo 01, init value
+func init() {
+	fmt.Println("start run demo04") // #2
+}
+
+func sayHello() string {
+	fmt.Println("start run sayHello()") // #1
+	return "hello world!"
+}
+
+// HelloMessage : test init value
+var HelloMessage = sayHello()
+
+// demo 02, struct reference
 type mySubStruct struct {
 	id  uint
 	val string

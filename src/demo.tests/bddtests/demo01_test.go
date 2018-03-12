@@ -48,6 +48,13 @@ var _ = Describe("TestDemo01", func() {
 		GinkgoWriter.Write([]byte("TEST: exec JustBeforeEach\n"))
 	})
 
+	It("[demo01] test {return} in It", func() {
+		fmt.Println("test statement {return} in It")
+		return
+		// Expect(true).Should(Equal(true))
+		// fmt.Println("after returned")
+	})
+
 	Describe("Desc", func() {
 		It("[demo01.asserter] text is not null", func() {
 			GinkgoWriter.Write([]byte("TEST: run test01\n"))

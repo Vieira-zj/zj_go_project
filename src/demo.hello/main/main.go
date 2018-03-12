@@ -64,5 +64,6 @@ func main() {
 	// demos.MainCache()
 	demos.MainUtils()
 
+	fmt.Println("message:", demos.HelloMessage)
 	fmt.Println("main done.")
 }
