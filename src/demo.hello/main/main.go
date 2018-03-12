@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"runtime"
 
 	"demo.hello/demos"
 	"demo.hello/examples"
@@ -10,6 +11,7 @@ import (
 
 func init() {
 	fmt.Println("run init")
+	fmt.Println("go version:", runtime.Version())
 }
 
 // testAccessControl : use struct from demos/demo01

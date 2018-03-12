@@ -2,6 +2,9 @@ package demos
 
 import (
 	"fmt"
+	"runtime"
+	"strconv"
+	"strings"
 )
 
 // demo 01, init value
@@ -56,9 +59,34 @@ func testStructRefValue() {
 	fmt.Printf("after => sub struct Ref: %+v\n", superRef.sub)
 }
 
+// demo 03, verify go version
+func isGoVersionOK(baseVersion string) bool {
+	currVersion := runtime.Version()[2:]
+	currArr := strings.Split(currVersion, ".")
+	baseArr := strings.Split(baseVersion, ".")
+
+	for i := 0; i < 2; i++ { // check first 2 digits
+		curr, _ := strconv.ParseInt(currArr[i], 10, 32)
+		base, _ := strconv.ParseInt(baseArr[i], 10, 32)
+		if curr == base {
+			continue
+		}
+		return curr > base
+	}
+	return true // curr == base
+}
+
+func testGoVersion() {
+	currVersion := runtime.Version()
+	fmt.Printf("%s >= go1.15 is ok: %v\n", currVersion, isGoVersionOK("1.15"))
+	fmt.Printf("%s >= go1.10 is ok: %v\n", currVersion, isGoVersionOK("1.10"))
+	fmt.Printf("%s >= go1.9.3 is ok: %v\n", currVersion, isGoVersionOK("1.9.3"))
+}
+
 // MainDemo04 : main
 func MainDemo04() {
-	testStructRefValue()
+	// testStructRefValue()
+	// testGoVersion()
 
 	fmt.Println("demo 04 done.")
 }
