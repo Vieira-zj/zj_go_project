@@ -147,6 +147,7 @@ func mapExamples() {
 	}
 	tmpMap1["three"] = 3
 	fmt.Printf("map1 type: %T\n", tmpMap1)
+	fmt.Printf("map1 length: %d\n", len(tmpMap1))
 	for k, v := range tmpMap1 {
 		fmt.Printf("%d=%s\n", v, k)
 	}

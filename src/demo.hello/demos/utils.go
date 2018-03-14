@@ -207,12 +207,12 @@ func testJSONObjectToString() {
 	}
 	fmt.Printf("before encode: %+v\n", group)
 
-	b, err := json.Marshal(group)
-	if err != nil {
-		fmt.Println("error:", err)
-		return
+	if b, err := json.Marshal(group); err == nil {
+		fmt.Println("encode string:", string(b))
 	}
-	fmt.Printf("encode string: %s\n", string(b))
+	if b, err := json.MarshalIndent(group, "", "  "); err == nil {
+		fmt.Println("encode string (pretty):", string(b))
+	}
 }
 
 func testJSONStringToObject1() {
@@ -234,6 +234,8 @@ func testJSONStringToObject1() {
 		return
 	}
 	fmt.Printf("decode object: %+v\n", animals)
+	prettyJSON, _ := json.MarshalIndent(animals, "", "  ")
+	fmt.Println("pretty json:", string(prettyJSON))
 
 	fmt.Println("animals info:")
 	for _, a := range animals {
@@ -318,7 +320,7 @@ func testJSONStringToRawObject() {
 	}
 	fmt.Printf("json string: %s\n", string(b))
 
-	// use interface instead by struct, json object map to map[string]interface{}
+	// use interface instead by pre-defined struct, json object map to map[string]interface{}
 	var m map[string]interface{}
 	err = json.Unmarshal(b, &m)
 	if err != nil {
