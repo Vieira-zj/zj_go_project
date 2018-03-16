@@ -5,14 +5,14 @@ set -x -e
 echo "here"
 
 # main
-# go run src/demo.hello/main/main.go
+go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
 
 
 # db test
-go run src/data.db/main/main.go
+# go run src/data.db/main/main.go
 
 
 # go tests, root_dir = $GOPATH
@@ -122,6 +122,13 @@ go run src/data.db/main/main.go
 # EX08, exit
 # echo "test exit with error code 1."
 # exit 1
+
+# EX09, +=
+# src="hello"
+# src=${src}" world"
+# echo ${src}
+# src="test, ${src}"
+# echo ${src}
 
 
 set +x +e # set configs off

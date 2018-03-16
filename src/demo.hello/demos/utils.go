@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -53,20 +52,16 @@ func testURLEncode() {
 	query.Add("url", callbackURL)
 	fullURL := baseURL + "/query?" + query.Encode()
 	fmt.Println("full encode url:", fullURL)
-
-	// int format
-	var uid int64 = 1380469261
-	fmt.Println("\nformat results:", strconv.FormatInt(uid, 36))
 }
 
-// hash check - md5
+// md5 hash, and base64 encode
 func getTextMd5Sum(b []byte) string {
 	bMd5 := md5.Sum(b)
 	fmt.Printf("md5 bytes: %v\n", bMd5)
 	return fmt.Sprintf("%x", bMd5)
 }
 
-func getEncodedMd5(b []byte, md5Type string) string {
+func textEncoded(b []byte, md5Type string) string {
 	md5hash := md5.New()
 	md5hash.Write(b)
 	bMd5 := md5hash.Sum(nil)
@@ -75,6 +70,8 @@ func getEncodedMd5(b []byte, md5Type string) string {
 	if md5Type == "hex" {
 		return hex.EncodeToString(bMd5)
 	}
+	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字, 和加号"+", 斜杠"/", 一共64个字符, 等号"="用来作为后缀用途
+	// 其中的 +, /, = 都是需要urlencode的
 	if md5Type == "std64" {
 		return base64.StdEncoding.EncodeToString(bMd5)
 	}
@@ -84,14 +81,16 @@ func getEncodedMd5(b []byte, md5Type string) string {
 func testMd5Encode() {
 	fmt.Println("get text md5:")
 	fmt.Println("text md5:", getTextMd5Sum([]byte("ok")))
-	fmt.Println("text md5:", getEncodedMd5([]byte("ok"), "hex"))
+	fmt.Println("text md5:", textEncoded([]byte("ok"), "hex"))
 
 	fmt.Println("get file content md5:")
 	b, _ := ioutil.ReadFile(testFilePath)
 	// fmt.Printf("src file data stream bytes: %v\n", b)
 	fmt.Println("file md5:", getTextMd5Sum(b)) // byte = 2 hex, 138 = 8a
-	fmt.Println("file md5:", getEncodedMd5(b, "hex"))
-	fmt.Println("md5 base64 encode:", getEncodedMd5(b, "std64"))
+	fmt.Println("file md5:", textEncoded(b, "hex"))
+
+	fmt.Println("md5 base64 encode:", textEncoded(b, "std64"))
+	fmt.Println("md5 base64 url-encode:", textEncoded(b, "url"))
 }
 
 // hash check - fnv32

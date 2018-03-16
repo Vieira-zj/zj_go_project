@@ -67,7 +67,7 @@ func InsertRecordsToRsDb() {
 	fmt.Println("delete done.")
 }
 
-// InsertRecordsToRsDbParallel : insert records in rs db parallel
+// InsertRecordsToRsDbParallel : insert file records in rs db parallel, 100W data
 func InsertRecordsToRsDbParallel() {
 	addr := "10.200.30.11:8001"
 	session, err := mgo.Dial(addr)
@@ -79,14 +79,17 @@ func InsertRecordsToRsDbParallel() {
 	session.SetMode(mgo.Monotonic, true)
 	c := session.DB("beta_rs1").C("rs")
 
-	const count = 2 * 10000
+	const (
+		threads = 10 // max: 100
+		count   = 100
+	)
 	var wg sync.WaitGroup
-	for i := 0; i < 30; i++ {
+	for i := 0; i < threads; i++ {
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, idx int) {
 			defer wg.Done()
 			record := fileRecord{
-				FDel:     1,
+				FDel:     0, // 1 - deleted
 				FSize:    51523,
 				Hash:     "FkBhdo9odL2Xjvu-YdwtDIw79fXX",
 				IP:       []byte("172.21.6.102"),
@@ -94,8 +97,8 @@ func InsertRecordsToRsDbParallel() {
 				PutTime:  15211684857206267,
 			}
 			for j := 0; j < count; j++ {
-				record.ID = fmt.Sprintf(fmt.Sprintf("zjtest:/zhengjin/data/rstest%dg%d", idx, j))
-				record.FH = []byte(fmt.Sprintf("rs-test-%dg-%d", idx, j))
+				record.ID = fmt.Sprintf(fmt.Sprintf("8h050x:/zhengjin/dataB/test%dc%d", idx, j))
+				record.FH = []byte(fmt.Sprintf("rs-test-%dc%d", idx, j))
 				err := c.Insert(&record)
 				if err != nil {
 					fmt.Println(err.Error())

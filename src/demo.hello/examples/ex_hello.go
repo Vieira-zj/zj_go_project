@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 )
 
 func hello(firstName, lastName string) {
 	fmt.Printf("hello, %s %s\n", firstName, lastName)
+
+	// int format
+	var uid int64 = 1380469261
+	fmt.Println("\nformat results:", strconv.FormatInt(uid, 36))
 }
 
 func stringFormatTest() {
