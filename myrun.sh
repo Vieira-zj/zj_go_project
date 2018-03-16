@@ -5,10 +5,14 @@ set -x -e
 echo "here"
 
 # main
-go run src/demo.hello/main/main.go
+# go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
+
+
+# db test
+go run src/data.db/main/main.go
 
 
 # go tests, root_dir = $GOPATH

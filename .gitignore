@@ -8,4 +8,5 @@ src/sourcegraph.com/
 src/qbox.us/
 
 src/mock.server/main/main
+src/data.db/main/main
 *.mp3
