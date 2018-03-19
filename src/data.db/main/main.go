@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"data.db/mongodb"
+	"data.db/redis"
 )
 
 // build cmd: $ GOOS=linux GOARCH=amd64 go build
@@ -11,9 +11,10 @@ import (
 func main() {
 
 	// mongodb.ConnectToDbAndTest()
-
 	// mongodb.InsertRecordsToRsDb()
-	mongodb.InsertRecordsToRsDbParallel()
+	// mongodb.InsertRecordsToRsDbParallel()
+
+	redis.ConnectToRedisAndTest()
 
 	fmt.Println("db main done.")
 }
