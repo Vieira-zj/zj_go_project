@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"strconv"
@@ -83,10 +84,39 @@ func testGoVersion() {
 	fmt.Printf("%s >= go1.9.3 is ok: %v\n", currVersion, isGoVersionOK("1.9.3"))
 }
 
+// demo 04, json keyword "omitempty"
+func testJSONOmitEmpty() {
+	type project struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+		Desc string `json:"desc"`
+		Docs string `json:"docs,omitempty"`
+	}
+
+	p1 := project{
+		Name: "CleverGo",
+		URL:  "https://github.com/headwindfly/clevergo",
+		Desc: "CleverGo Perf Framework",
+		Docs: "https://github.com/headwindfly/clevergo/tree/master/docs",
+	}
+	if data, err := json.MarshalIndent(p1, "", "  "); err == nil {
+		fmt.Println("json string:", string(data))
+	}
+
+	p2 := project{
+		Name: "CleverGo",
+		URL:  "https://github.com/headwindfly/clevergo",
+	}
+	if data, err := json.MarshalIndent(p2, "", "  "); err == nil {
+		fmt.Println("json string:", string(data))
+	}
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
 	// testGoVersion()
+	testJSONOmitEmpty()
 
 	fmt.Println("demo 04 done.")
 }
