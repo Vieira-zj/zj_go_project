@@ -14,7 +14,8 @@ func main() {
 	// mongodb.InsertRecordsToRsDb()
 	// mongodb.InsertRecordsToRsDbParallel()
 
-	redis.ConnectToRedisAndTest()
+	// redis.ConnectToRedisAndTest()
+	redis.MainRedis()
 
 	fmt.Println("db main done.")
 }
