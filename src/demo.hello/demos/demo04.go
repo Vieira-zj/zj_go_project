@@ -1,11 +1,15 @@
 package demos
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"runtime"
 	"strconv"
 	"strings"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 // demo 01, init value
@@ -112,11 +116,41 @@ func testJSONOmitEmpty() {
 	}
 }
 
+// demo 05, bson
+func testBSONCases() {
+	type testStruct struct {
+		FH  []byte `bson:"fh"`
+		NFH []byte `bson:"nfh"`
+	}
+
+	srcFh := "Bpb_fwEAAAB3eK148Y4dFSvzt1ILAAAAMUMVAAAAAAAKqnHPAAAAAAny-rvibYqoFP-lPkI53JfmoIx5"
+	srcNfh := "CJYxQxUAAAAAAAny-rvibYqoFP-lPkI53JfmoIx5a29kby10ZXN0LwUAAHJjUUyDsxizWg=="
+	fh, err := base64.URLEncoding.DecodeString(srcFh)
+	if err != nil {
+		panic(err)
+	}
+	nfh, err := base64.URLEncoding.DecodeString(srcNfh)
+	if err != nil {
+		panic(err)
+	}
+
+	s := testStruct{
+		FH:  fh,
+		NFH: nfh,
+	}
+	if data, err := bson.Marshal(&s); err == nil {
+		// parse bson bin file => $ bsondump fh.test1.bson
+		ioutil.WriteFile("/Users/zhengjin/Downloads/tmp_files/fh.test.bson", data, 0666)
+	}
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
 	// testGoVersion()
-	testJSONOmitEmpty()
+
+	// testJSONOmitEmpty()
+	// testBSONCases()
 
 	fmt.Println("demo 04 done.")
 }
