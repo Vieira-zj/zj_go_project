@@ -22,6 +22,29 @@ const (
 	testFilePath = "./test.file"
 )
 
+var total = 0
+
+// MockDefault : default page
+func MockDefault(rw http.ResponseWriter, req *http.Request) {
+	total++
+	log.Printf("access at %d time\n", total01)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	log.Println("return 200")
+	rw.WriteHeader(http.StatusOK)
+	time.Sleep(time.Second)
+
+	req.ParseForm()
+	var lines []string
+	lines = append(lines, "not found!")
+	lines = append(lines, fmt.Sprint("request uri: ", req.RequestURI))
+	lines = append(lines, fmt.Sprintf("request query: %+v", req.Form))
+	b := []byte(strings.Join(lines, "\n"))
+	io.Copy(rw, bytes.NewReader(b))
+	log.Println("send data done")
+}
+
 var total01 int
 
 // Mock01 : mock bytes stream, file donwload, with isFile, wait

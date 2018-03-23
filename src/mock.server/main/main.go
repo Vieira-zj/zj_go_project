@@ -16,6 +16,8 @@ func init() {
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 // http://10.200.20.21:17890/index1/
 func main() {
+	http.HandleFunc("/", mocks.MockDefault)
+
 	http.HandleFunc("/index1/", mocks.Mock01)
 	http.HandleFunc("/index2/", mocks.Mock02)
 	http.HandleFunc("/index3/", mocks.Mock03)
