@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -144,6 +146,105 @@ func testBSONCases() {
 	}
 }
 
+// demo 06-01, go template, parse string
+func testGoTemplate01() {
+	name := "zhengjin"
+	tmpl, err := template.New("test").Parse("hello, {{.}}\n")
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.Execute(os.Stdout, name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// Inventory : struct used for template test
+type Inventory struct {
+	Material string
+	Count    uint
+}
+
+// demo 06-02, go template, parse struct
+func testGoTemplate02() {
+	pattern := "{{.Count}} items are made of {{.Material}}\n"
+	tmpl, err := template.New("test").Parse(pattern)
+	if err != nil {
+		panic(err)
+	}
+
+	sweaters := Inventory{"wool", 17}
+	err = tmpl.Execute(os.Stdout, sweaters)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// demo 06-03, go template, multiple tmpls
+func testGoTemplate03() {
+	tagEn := "English"
+	tagCn := "Chinese"
+	patternEn := "{{.Count}} items are made of {{.Material}}\n"
+	patternCn := "{{.Count}}个物料的材料是{{.Material}}\n"
+	tmpl, err := template.New(tagEn).Parse(patternEn)
+	if err != nil {
+		panic(err)
+	}
+	tmpl, err = tmpl.New(tagCn).Parse(patternCn)
+	if err != nil {
+		panic(err)
+	}
+
+	sweaters := Inventory{"wool", 17}
+	tmpl = tmpl.Lookup(tagEn)
+	fmt.Println("Current template:", tmpl.Name())
+	err = tmpl.ExecuteTemplate(os.Stdout, tagEn, sweaters)
+	if err != nil {
+		panic(err)
+	}
+	tmpl = tmpl.Lookup(tagCn)
+	fmt.Println("Current template:", tmpl.Name())
+	err = tmpl.ExecuteTemplate(os.Stdout, tagCn, sweaters)
+	if err != nil {
+		panic(err)
+	}
+}
+
+const projectPath = "/Users/zhengjin/Workspaces/zj_projects/ZjGoProject/"
+
+// demo 06-04, go template, parse single file
+func testGoTemplate04() {
+	filePath := projectPath + "src/demo.hello/demos/tmpl_en.txt"
+	tmpl, err := template.ParseFiles(filePath)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Current template:", tmpl.Name())
+	err = tmpl.Execute(os.Stdout, Inventory{"wool", 21})
+	if err != nil {
+		panic(err)
+	}
+}
+
+// demo 06-05, go template, parse files
+func testGoTemplate05() {
+	filePath := projectPath + "src/demo.hello/demos/tmpl_*.txt"
+	tmpl, err := template.ParseGlob(filePath)
+	if err != nil {
+		panic(err)
+	}
+
+	err = tmpl.ExecuteTemplate(os.Stdout, "tmpl_en.txt", Inventory{"wool", 21})
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.ExecuteTemplate(os.Stdout, "tmpl_cn.txt", Inventory{"wool", 27})
+	if err != nil {
+		panic(err)
+	}
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -151,6 +252,12 @@ func MainDemo04() {
 
 	// testJSONOmitEmpty()
 	// testBSONCases()
+
+	// testGoTemplate01()
+	// testGoTemplate02()
+	// testGoTemplate03()
+	// testGoTemplate04()
+	// testGoTemplate05()
 
 	fmt.Println("demo 04 done.")
 }
