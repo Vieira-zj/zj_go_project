@@ -1,1 +1,11 @@
+{{ define "main" }}
 {{.Count}} items are made of {{.Material}}
+item size: {{ template "size" }}
+item weight: {{ template "weight" }}
+/* conditions: eq, ne, lt, le, gt, ge */
+{{ if gt .Count 20 }}
+number of items is greater than 20
+{{ else }}
+number of items is less than 20
+{{ end }}
+{{ end }}

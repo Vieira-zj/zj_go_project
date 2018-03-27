@@ -227,15 +227,30 @@ func testGoTemplate04() {
 	}
 }
 
-// demo 06-05, go template, parse files
+// demo 06-05, parse files with nest template
 func testGoTemplate05() {
+	fileBase := projectPath + "src/demo.hello/demos/tmpl_base.txt"
+	fileTmpl := projectPath + "src/demo.hello/demos/tmpl_en.txt"
+	tmpl, err := template.ParseFiles(fileBase, fileTmpl)
+	if err != nil {
+		panic(err)
+	}
+
+	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
+	if err != nil {
+		panic(err)
+	}
+}
+
+// demo 06-06, parse files with nest template
+func testGoTemplate06() {
 	filePath := projectPath + "src/demo.hello/demos/tmpl_*.txt"
 	tmpl, err := template.ParseGlob(filePath)
 	if err != nil {
 		panic(err)
 	}
 
-	err = tmpl.ExecuteTemplate(os.Stdout, "tmpl_en.txt", Inventory{"wool", 21})
+	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
 	if err != nil {
 		panic(err)
 	}
@@ -243,6 +258,39 @@ func testGoTemplate05() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// demo 07, if or map
+var fnGetMsgByID = func(id string) {
+	fmt.Println("message id:", id)
+}
+
+var fnGetMsgByName = func(name string) {
+	fmt.Println("message name:", name)
+}
+
+func getMsgByIf(tag, input string) {
+	if tag == "id" {
+		fnGetMsgByID(input)
+	} else if tag == "name" {
+		fnGetMsgByName(input)
+	} else {
+		fmt.Println("invalid argument!")
+	}
+}
+
+func getMsgByMap(tag, input string) {
+	fns := make(map[string]func(string))
+	fns["id"] = fnGetMsgByID
+	fns["name"] = fnGetMsgByName
+	fns[tag](input)
+}
+
+func testGetMsgByIfAndMap() {
+	tag := "name"
+	name := "test"
+	getMsgByIf(tag, name)
+	getMsgByMap(tag, name)
 }
 
 // MainDemo04 : main
@@ -253,11 +301,15 @@ func MainDemo04() {
 	// testJSONOmitEmpty()
 	// testBSONCases()
 
+	// https://www.cnblogs.com/jkko123/p/7018406.html
 	// testGoTemplate01()
 	// testGoTemplate02()
 	// testGoTemplate03()
 	// testGoTemplate04()
 	// testGoTemplate05()
+	// testGoTemplate06()
+
+	// testGetMsgByIfAndMap()
 
 	fmt.Println("demo 04 done.")
 }
