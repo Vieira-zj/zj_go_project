@@ -341,3 +341,34 @@ func Mock08(rw http.ResponseWriter, req *http.Request) {
 		fmt.Println(err.Error())
 	}
 }
+
+var total09 int
+
+// Mock09 : mock download file by arg "start"
+func Mock09(rw http.ResponseWriter, req *http.Request) {
+	total09++
+	log.Printf("access at %d time\n", total09)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	var filepath string
+	req.ParseForm()
+	start := getQueryValueByName(req, "start")
+	tmp, err := strconv.Atoi(start)
+	if err != nil {
+		panic(err)
+	}
+	if tmp < 1000 {
+		filepath = "./test1.file"
+	} else {
+		filepath = "./test2.file"
+	}
+
+	log.Println("return 200")
+	rw.WriteHeader(http.StatusOK)
+	time.Sleep(500 * time.Millisecond)
+
+	b := readBytesFromFile(filepath)
+	io.Copy(rw, bytes.NewReader(b))
+	log.Println("mock09 => send data done")
+}

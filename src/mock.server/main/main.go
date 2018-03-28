@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	fmt.Println("mock server init")
+	fmt.Println("mock server started.")
 }
 
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
@@ -28,6 +28,7 @@ func main() {
 	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
 
 	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
+	http.HandleFunc("/videos/file.ts", mocks.Mock09)
 
 	http.HandleFunc("/mock1", mocks.Mock21)
 	http.HandleFunc("/mock2", mocks.Mock22)
