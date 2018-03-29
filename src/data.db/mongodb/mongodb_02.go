@@ -20,8 +20,8 @@ type fileRecord struct {
 	PutTime  int64  `bson:"putTime"`
 }
 
-// InsertRecordsToRsDb : insert file records in kodo rs db
-func InsertRecordsToRsDb() {
+// InsertToRsDb : insert file records in kodo rs db
+func InsertToRsDb() {
 	addr := "10.200.30.11:8001"
 	session, err := mgo.Dial(addr)
 	if err != nil {
@@ -67,8 +67,8 @@ func InsertRecordsToRsDb() {
 	fmt.Println("delete done.")
 }
 
-// InsertRecordsToRsDbParallel : insert file records in rs db parallel, 100W data
-func InsertRecordsToRsDbParallel() {
+// InsertToRsDbParallel : insert 100W+ records in mongodb parallel
+func InsertToRsDbParallel() {
 	addr := "10.200.30.11:8001"
 	session, err := mgo.Dial(addr)
 	if err != nil {

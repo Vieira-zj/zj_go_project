@@ -14,8 +14,8 @@ func main() {
 	isMongodbTest := true
 	if isMongodbTest {
 		// mongodb.ConnectToDbAndTest()
-		// mongodb.InsertRecordsToRsDb()
-		// mongodb.InsertRecordsToRsDbParallel()
+		// mongodb.InsertToRsDb()
+		// mongodb.InsertToRsDbParallel()
 		// cmd: ./main 10.200.30.11:8001
 		mongodb.PrintMongoOpLog()
 	}
