@@ -80,8 +80,8 @@ func InsertToRsDbParallel() {
 	c := session.DB("beta_rs1").C("rs")
 
 	const (
-		threads = 1 // max: 100
-		count   = 10
+		threads = 100 // max: 100
+		count   = 10000
 	)
 	var wg sync.WaitGroup
 	for i := 0; i < threads; i++ {
@@ -97,13 +97,14 @@ func InsertToRsDbParallel() {
 				PutTime:  15211684857206267,
 			}
 			for j := 0; j < count; j++ {
-				record.ID = fmt.Sprintf(fmt.Sprintf("8h050x:/zhengjin/test%dy%d", idx, j))
-				record.FH = []byte(fmt.Sprintf("rs-test-%dy%d", idx, j))
+				// bucket: test_api_bucket_urts6VPcDs => 8h0ayi
+				record.ID = fmt.Sprintf(fmt.Sprintf("8h0ayi:/zhengjin/dataE/test%de%d", idx, j))
+				record.FH = []byte(fmt.Sprintf("rsAtestA%de%d", idx, j))
 				err := c.Insert(&record)
 				if err != nil {
 					fmt.Println(err.Error())
 				}
-				if j%3000 == 0 {
+				if j%2000 == 0 {
 					fmt.Printf("***** thread %d, insert %d records\n", idx, j)
 				}
 			}
