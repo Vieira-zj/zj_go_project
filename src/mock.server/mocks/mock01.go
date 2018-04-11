@@ -22,17 +22,17 @@ const (
 	testFilePath = "./test.file"
 )
 
-var total = 0
+var total int
 
 // MockDefault : default page
 func MockDefault(rw http.ResponseWriter, req *http.Request) {
 	total++
-	log.Printf("access at %d time\n", total01)
+	log.Printf("access default at %d time\n", total)
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
-	log.Println("return 200")
-	rw.WriteHeader(http.StatusOK)
+	log.Println("return 404")
+	rw.WriteHeader(http.StatusNotFound)
 	time.Sleep(time.Second)
 
 	req.ParseForm()
@@ -351,12 +351,18 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
-	var filepath string
-	req.ParseForm()
-	start := getQueryValueByName(req, "start")
-	tmp, err := strconv.Atoi(start)
-	if err != nil {
-		panic(err)
+	var (
+		filepath string
+		tmp      int
+		err      error
+	)
+	if err = req.ParseForm(); err != nil {
+		log.Fatalln(err.Error())
+	}
+	if start := getQueryValueByName(req, "start"); len(start) > 0 {
+		if tmp, err = strconv.Atoi(start); err != nil {
+			log.Fatalln(err.Error())
+		}
 	}
 	if tmp < 1000 {
 		filepath = "./test1.file"

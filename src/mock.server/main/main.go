@@ -26,9 +26,17 @@ func main() {
 
 	http.HandleFunc("/httpdns", mocks.Mock06)
 	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
-
 	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
+
 	http.HandleFunc("/videos/file.ts", mocks.Mock09)
+	http.HandleFunc("/videos/other/723c0f1d75a08397/file.m2ts", mocks.Mock09)
+	http.HandleFunc("/videos/file.flv", mocks.Mock09)
+	http.HandleFunc("/videos/other/723c0f1d75a08397/file.mp4", mocks.Mock09)
+
+	http.HandleFunc("/videos/ots/file1.ts", mocks.Mock09)
+	http.HandleFunc("/qpdxv/ots/file2.ts", mocks.Mock09)
+	http.HandleFunc("/videos/vts/file3.m2ts", mocks.Mock09)
+	http.HandleFunc("/qpdxv/vts/file4.m2ts", mocks.Mock09)
 
 	http.HandleFunc("/mock1", mocks.Mock21)
 	http.HandleFunc("/mock2", mocks.Mock22)
