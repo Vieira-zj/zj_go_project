@@ -41,50 +41,60 @@ go run src/demo.hello/main/main.go
 
 
 
-# EX01, field exist check
+# EX01, field check
+# https://blog.csdn.net/longyinyushi/article/details/50728049
+
+# EX01-01, field exist check
 # is_exist=y
 # if [[ "${is_exist}" ]]; then
-#     echo "is exist"
+#     echo "is exist."
 # fi
 
-# EX02, field length check
+# EX01-02, field length check
 # empty_str=""
 # if [ -z $empty_str ]; then
-# echo "string empty."
+#     echo "string length = 0."
+# else
+#     echo "string length > 0."
 # fi
 
+# EX01-03, field empty check
 # test_str="test"
 # if [[ -n $test_str ]]; then
-#     echo 'string empty.'
-# else
 #     echo 'string not empty.'
+# else
+#     echo 'string empty.'
 # fi
 
-# EX03-01, array
+# EX02-01, array
 # tmp_list1=("ele1")
 # tmp_list2=("ele2" "ele3")
 # tmp_list3=(${tmp_list1[@]} ${tmp_list2[@]})
 # for ele in ${tmp_list3[@]}; do
 #     echo $ele
 # done
-# echo ${tmp_list3[@]}
+# echo ${tmp_list3[@]} # echo all elements
 # echo "length: ${#tmp_list3[@]}"
 
-# EX03-02
+# EX02-02
 # focus_pkg=()
 # temp_pkg1=("a1" "a2")
-# focus_pkg=(${focus_pkg[@]} ${temp_pkg1[@]})
+# focus_pkg=(${focus_pkg[@]} ${temp_pkg1[@]}) # append
+# echo ${focus_pkg[@]}
 # temp_pkg2=("a3" "a4" "a5")
 # focus_pkg=(${focus_pkg[@]} ${temp_pkg2[@]})
+# echo ${focus_pkg[@]}
 
+# EX02-03
+# focus_pkg=("a1" "a2" "a3" "a4")
 # skip_pkg="a1,a2,a3,a4,a5,a6,a7"
 # for v in ${focus_pkg[@]}; do
-#     skip_pkg=${skip_pkg/${v},/}
+#     skip_pkg=${skip_pkg/${v},/} # replace {$v}, with ""
 # done
 # echo "focus packages => ${focus_pkg[@]}"
 # echo "skip packages => ${skip_pkg}"
 
-# EX04, if-else with regexp
+# EX03, if-else with regexp
 # node_name="go1.9_fix"
 # if [[ ($node_name =~ "go1.9") && ($node_name =~ "fix") ]]; then
 #     echo 'version check ok.'
@@ -92,23 +102,7 @@ go run src/demo.hello/main/main.go
 #     echo 'version should be go1.9 with fix.'
 # fi
 
-# EX05, run download parallel
-# for (( i=0; i<20; i++)); do
-# echo "run at: $i"
-# curl -v "http://7zkl9d.com1.z1.glb.clouddn.com/slowResponse" -x iovip-z1.qbox.me:80 > /dev/null &
-# sleep 2s
-# done
-# sleep 15m
-# ps -ef | grep "curl" | grep -v "grep" | awk '{print $2}' | xargs kill -9
-
-# EX06, custom functions
-# echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
-# setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}
-# setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
-# run function
-# echoEnv
-
-# EX07, ${} usage
+# EX04, ${} usage
 # tmp_file=/dir1/dir2/dir3/my.file.txt
 # # sub string start 0, len = 5
 # echo ${tmp_file:0:5}
@@ -119,16 +113,32 @@ go run src/demo.hello/main/main.go
 # # replace all "dir" with "path"
 # echo ${tmp_file//dir/path}
 
-# EX08, exit
+# EX05, exit
 # echo "test exit with error code 1."
 # exit 1
 
-# EX09, +=
+# EX06, +=
 # src="hello"
 # src=${src}" world"
 # echo ${src}
 # src="test, ${src}"
 # echo ${src}
+
+# EX07, run download parallel
+# for (( i=0; i<20; i++)); do
+# echo "run at: $i"
+# curl -v "http://7zkl9d.com1.z1.glb.clouddn.com/slowResponse" -x iovip-z1.qbox.me:80 > /dev/null &
+# sleep 2s
+# done
+# sleep 15m
+# ps -ef | grep "curl" | grep -v "grep" | awk '{print $2}' | xargs kill -9
+
+# EX08, custom functions
+# echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
+# setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}
+# setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
+# run function
+# echoEnv
 
 
 set +x +e # set configs off

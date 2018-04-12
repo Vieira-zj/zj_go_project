@@ -31,16 +31,28 @@ func MockDefault(rw http.ResponseWriter, req *http.Request) {
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
-	log.Println("return 404")
-	rw.WriteHeader(http.StatusNotFound)
+	// log.Println("return 404")
+	// rw.WriteHeader(http.StatusNotFound)
+	log.Println("return 200")
+	rw.WriteHeader(http.StatusOK)
 	time.Sleep(time.Second)
 
 	req.ParseForm()
 	var lines []string
-	lines = append(lines, "not found!")
+	// lines = append(lines, "not found!")
 	lines = append(lines, fmt.Sprint("request uri: ", req.RequestURI))
-	lines = append(lines, fmt.Sprintf("request query: %+v", req.Form))
-	b := []byte(strings.Join(lines, "\n"))
+	if len(req.Form) > 0 {
+		lines = append(lines, fmt.Sprintf("request query: %+v", req.Form))
+	}
+
+	var b []byte
+	if len(lines) > 1 {
+		b = []byte(strings.Join(lines, "\n"))
+	} else if len(lines) == 1 {
+		b = []byte(lines[0])
+	} else {
+		b = []byte("default")
+	}
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("send data done")
 }
