@@ -137,8 +137,12 @@ go run src/demo.hello/main/main.go
 # echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
 # setEnv() { export TEST_ENV=$1; echo "TEST_ENV=$TEST_ENV";}
 # setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
+
+# findStr() { grep "$1" ./*;}
+# findStrAll() { grep -r "$1" ./;}
+
 # run function
 # echoEnv
-
+# findStrAll "search_text"
 
 set +x +e # set configs off

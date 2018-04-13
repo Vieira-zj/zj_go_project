@@ -192,7 +192,7 @@ func testFileDownload() {
 }
 
 // json parser
-func testJSONObjectToString() {
+func testJSONObjToStr() {
 	type ColorGroup struct {
 		ID     int      `json:"cg_id" bson:"cg_id"`
 		Name   string   `json:"cg_name" bson:"cg_name"`
@@ -214,7 +214,7 @@ func testJSONObjectToString() {
 	}
 }
 
-func testJSONStringToObject1() {
+func testJSONStrToObj1() {
 	type Animal struct {
 		Name  string `json:"a_name"`
 		Order string `json:"a_order"`
@@ -242,7 +242,7 @@ func testJSONStringToObject1() {
 	}
 }
 
-func testJSONStringToObject2() {
+func testJSONStrToObj2() {
 	type Job struct {
 		Title  string   `json:"title"`
 		Skills []string `json:"skills"`
@@ -285,7 +285,7 @@ func testJSONStringToObject2() {
 	}
 }
 
-func testJSONStringToRawObject() {
+func testJSONStrToRawObj() {
 	type skill struct {
 		Name  string `json:"skill_name"`
 		Level string `json:"skill_level"`
@@ -336,6 +336,22 @@ func testJSONStringToRawObject() {
 	}
 }
 
+func testArrayStrToSlice() {
+	strArray := `["item1", "item2", "item3", "item4", "item5"]`
+	// strArray = "null"
+	var tmpSlice []string
+
+	json.Unmarshal([]byte(strArray), &tmpSlice)
+	fmt.Println("items:")
+	if len(tmpSlice) > 0 {
+		for idx, item := range tmpSlice {
+			fmt.Printf("at %d: %s\n", idx, item)
+		}
+	} else {
+		fmt.Printf("%v\n", tmpSlice)
+	}
+}
+
 // MainUtils : main for utils
 func MainUtils() {
 	// testFilePathHandle()
@@ -347,10 +363,12 @@ func MainUtils() {
 	// testGetFileByRange()
 	// testFileDownload()
 
-	// testJSONObjectToString()
-	// testJSONStringToObject1()
-	// testJSONStringToObject2()
-	// testJSONStringToRawObject()
+	// testJSONObjToStr()
+	// testJSONStrToObj1()
+	// testJSONStrToObj2()
+	// testJSONStrToRawObj()
+
+	// testArrayStrToSlice()
 
 	fmt.Println("utils done.")
 }
