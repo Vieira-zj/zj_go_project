@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"gopkg.in/mgo.v2/bson"
 )
@@ -293,6 +294,19 @@ func testGetMsgByIfAndMap() {
 	getMsgByMap(tag, name)
 }
 
+// demo 08, time calculation
+func testTimeSub() {
+	start := time.Now()
+	time.Sleep(2 * time.Second)
+	duration := time.Now().Sub(start)
+	fmt.Printf("time duration: %.2f\n", duration.Seconds())
+
+	for int(time.Now().Sub(start).Seconds()) < 5 {
+		fmt.Println("wait 1 second ...")
+		time.Sleep(time.Second)
+	}
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -310,6 +324,7 @@ func MainDemo04() {
 	// testGoTemplate06()
 
 	// testGetMsgByIfAndMap()
+	// testTimeSub()
 
 	fmt.Println("demo 04 done.")
 }
