@@ -10,6 +10,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
+	"time"
 )
 
 // demo 01, http get request
@@ -94,7 +96,7 @@ func testClientHTTP() {
 	fmt.Printf("response body:\n%s\n", string(body))
 }
 
-// demo 04, read stream data function
+// demo 04, read stream data
 type consumeMsgArgs struct {
 	User      string
 	QueueName string
@@ -108,52 +110,106 @@ type streamMsg struct {
 	Message  string `json:"message"`
 }
 
-func streamRead(args consumeMsgArgs, limit int, verifiedMsg string) {
-	u := "http://10.200.20.38:12500/kmq/queues/" + args.QueueName + "/consume"
+func streamRead(args consumeMsgArgs, verifiedMsg string) {
+	u := "http://10.200.20.36:14532" + "/queues/" + args.QueueName + "/consume"
 	v := url.Values{}
+	v.Add("stream", strconv.FormatBool(args.Stream))
+	if len(args.Limit) > 0 {
+		v.Add("limit", args.Limit)
+	}
 	if len(args.Position) > 0 {
 		v.Add("position", args.Position)
 	}
-	v.Add("stream", strconv.FormatBool(true))
 	url := u + "?" + v.Encode()
 
-	req, err := http.NewRequest("Get", url, nil)
+	// fmt.Println("***** request url:", url)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		panic(err)
 	}
-	req.Header.Add("Authorization", "QBox "+args.User)
+	req.Header.Add("Authorization", "QBox token")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("***** Response status code:", resp.StatusCode)
+	fmt.Println("***** Status:", resp.StatusCode)
+	fmt.Printf("***** Response header %v\n", resp.Header)
 	if resp.StatusCode != 200 {
+		time.Sleep(time.Second)
 		output, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("***** Response err message:", string(output))
+		resp.Body.Close()
+
+		if len(output) > 0 {
+			fmt.Println("***** Error message:", string(output))
+		}
 		return
 	}
 
 	// stream read
-	decStream := json.NewDecoder(resp.Body)
-	fmt.Println("***** Stream data:")
-	for i := 0; i < limit; i++ {
-		var msg streamMsg
-		err := decStream.Decode(&msg)
-		if err != nil {
-			panic(err)
+	// one client produce stream data, and another client read data sync
+	ch := make(chan bool)
+	go func() {
+		fmt.Println("***** Stream data:")
+		total := 0
+		decStream := json.NewDecoder(resp.Body)
+		for {
+			total++
+			var msg streamMsg
+			err := decStream.Decode(&msg)
+			if err != nil {
+				fmt.Println(err.Error())
+				ch <- false
+				return
+			}
+			if total%1000 == 0 {
+				fmt.Printf("***** iterator at %d\n", total)
+				fmt.Printf("{position: %s, msg: %s}\n", msg.Position, msg.Message)
+			}
+			if msg.Message == verifiedMsg {
+				ch <- true
+				return
+			}
+			// time.Sleep(800 * time.Millisecond)
 		}
-		fmt.Printf("{position: %s, msg: %s}\n", msg.Position, msg.Message)
-		if msg.Message == verifiedMsg {
-			fmt.Println("***** Message found!")
-			return
+	}()
+	// stream read connection will not be closed by server,
+	// and here set a timeout(60s) to close connection.
+	select {
+	case <-time.After(60 * time.Second):
+		fmt.Println("***** stream read timeout.")
+	case ret := <-ch:
+		if ret {
+			fmt.Println("***** message found")
+		} else {
+			fmt.Println("***** message not found")
 		}
-		// time.Sleep(300 * time.Millisecond)
 	}
+}
+
+func testStreamRead() {
+	const threads = 10
+	var wg sync.WaitGroup
+	args := consumeMsgArgs{
+		User:      "user",
+		QueueName: "queueName",
+		Stream:    true,
+		Limit:     "100",
+		// Position:  "",
+	}
+	for i := 0; i < threads; i++ {
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, idx int) {
+			defer wg.Done()
+			streamRead(args, "zj_test_verified_msg")
+			fmt.Printf("***** stream consume thread-%d done\n", idx)
+		}(&wg, i)
+	}
+	wg.Wait()
 }
 
 // MainHTTP : main for the http client test demos for mock server.
