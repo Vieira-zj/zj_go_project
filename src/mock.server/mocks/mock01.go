@@ -81,7 +81,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	log.Println("return 200")
 	// rw.Header().Set("Content-Md5", mockMd5) // mock md5
 	rw.WriteHeader(http.StatusOK)
-	time.Sleep(time.Second)
+	// time.Sleep(time.Second)
 
 	b := []byte("mock string data")
 	// b := initBytesBySize(1024)
@@ -160,41 +160,53 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	log.Println(string(reqHeader))
 
 	req.ParseForm()
-	retCode := getQueryValueByName(req, "retCode")
-	if retCode == "" {
-		retCode = "200"
+	parmRetCode := getQueryValueByName(req, "retCode")
+	if parmRetCode == "" {
+		parmRetCode = "200"
 	}
-	code, _ := strconv.Atoi(retCode)
+	parmIsFile := getQueryValueByName(req, "isFile")
+	if len(parmIsFile) == 0 {
+		parmIsFile = "false"
+	}
 
-	// check error msg "unexpected status"
 	// for 5xx, connection retry
 	// for 4xx, no connection retry
-	if total04 >= 3 && code != http.StatusOK {
-		log.Printf("ret code: %d\n", code)
-		rw.WriteHeader(code)
-		return
+	if parmRetCode != "200" {
+		if errCode, err := strconv.Atoi(parmRetCode); err == nil && total04 >= 3 {
+			log.Printf("ret code: %d\n", errCode)
+			rw.WriteHeader(errCode)
+			return
+		}
 	}
 
 	// md5 check
 	// rw.Header().Set("Content-MD5", "314398b1025a0d6a522fbdc1fb456a00")
-
 	// etag check
 	// rw.Header().Set("Etag", "f900b997e6f8a772994876dff023801e")
 	// if total04%3 == 0 {
 	// 	rw.Header().Set("Etag", "f900b997e6f8a772994876dff0238000")
 	// }
 
-	// buf := initBytesBySize(4096 * 1024)
-	buf := readBytesFromFile(testFilePath)
+	// data block is set from request header => [Range]:[bytes=0-4095]
+	// for qiniuproxy, default block is 4M
+	var buf []byte
+	if isFile, err := strconv.ParseBool(parmIsFile); err == nil && isFile {
+		fmt.Println("read bytes from file")
+		buf = readBytesFromFile(testFilePath)
+	} else {
+		fmt.Println("mock bytes")
+		buf = initBytesBySize(4096 * 16)
+	}
 	// file size check
 	// if total04%3 == 0 {
 	// 	buf = initBytesBySize(1024 * 1024 * 20)
 	// }
 
 	// send data
+	waitForEachRead := 0
 	rw = rpc.ResponseWriter{rw}
 	// rr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
-	rr := createMockReader(buf, 20)
+	rr := createMockReader(buf, waitForEachRead)
 	rw.(rpc.ResponseWriter).ReplyRange(rr, int64(len(buf)), &rpc.Metas{}, req)
 	log.Println("send blocked data done")
 }
@@ -225,8 +237,10 @@ type mockReader struct {
 }
 
 func (mr *mockReader) Read(b []byte) (int, error) {
-	fmt.Printf("wait %d ms\n", mr.wait)
-	time.Sleep(time.Duration(mr.wait) * time.Millisecond)
+	if mr.wait > 0 {
+		fmt.Printf("wait %d ms\n", mr.wait)
+		time.Sleep(time.Duration(mr.wait) * time.Millisecond)
+	}
 	len, err := mr.r.Read(b)
 	return len, err
 }

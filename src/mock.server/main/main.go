@@ -21,6 +21,7 @@ func main() {
 	http.HandleFunc("/index1/", mocks.Mock01)
 	http.HandleFunc("/index2/", mocks.Mock02)
 	http.HandleFunc("/index3/", mocks.Mock03)
+	// curl -v "http://10.200.20.21:17890/index4/?isFile=true" -H "Range":"bytes=16-32"
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 
