@@ -20,8 +20,10 @@ func main() {
 
 	http.HandleFunc("/index1/", mocks.Mock01)
 	http.HandleFunc("/index2/", mocks.Mock02)
+	// curl -v "http://10.200.20.21:17890/index3/?retCode=206"
 	http.HandleFunc("/index3/", mocks.Mock03)
-	// curl -v "http://10.200.20.21:17890/index4/?isFile=true" -H "Range":"bytes=16-32"
+	// ret 200 => curl -v "http://10.200.20.21:17890/index4/?isFile=true"
+	// ret 206 => curl -v "http://10.200.20.21:17890/index4/?isFile=true" -H "Range":"bytes=0-1023"
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 

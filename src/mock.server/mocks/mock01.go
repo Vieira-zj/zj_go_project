@@ -180,11 +180,12 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// md5 check
-	// rw.Header().Set("Content-MD5", "314398b1025a0d6a522fbdc1fb456a00")
+	// rw.Header().Set("Content-MD5", "0980a9e10670ccc4895432d4b4ae9963")
+	// rw.Header().Set("Content-MD5", "6yidsdRS4vShWYNU2RtX4A==")
 	// etag check
-	// rw.Header().Set("Etag", "f900b997e6f8a772994876dff023801e")
+	rw.Header().Set("Etag", "FiqubDXJT8-0FdvpX0CLnOke6Ebt.gz")
 	// if total04%3 == 0 {
-	// 	rw.Header().Set("Etag", "f900b997e6f8a772994876dff0238000")
+	// 	rw.Header().Set("Etag", "FiqubDXJT8-0FdvpX0CLnOke6Ebt.gz")
 	// }
 
 	// data block is set from request header => [Range]:[bytes=0-4095]
