@@ -6,7 +6,6 @@ src/golang.org/
 src/gopkg.in/
 src/sourcegraph.com/
 src/qbox.us/
-src/tools.kodo/
 
 src/mock.server/main/main
 src/data.db/main/main

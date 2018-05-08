@@ -15,6 +15,8 @@ import (
 	"time"
 
 	"qbox.us/rpc"
+	"utils.project/encode"
+	"utils.project/etag"
 )
 
 const (
@@ -164,11 +166,6 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	if parmRetCode == "" {
 		parmRetCode = "200"
 	}
-	parmIsFile := getQueryValueByName(req, "isFile")
-	if len(parmIsFile) == 0 {
-		parmIsFile = "false"
-	}
-
 	// for 5xx, connection retry
 	// for 4xx, no connection retry
 	if parmRetCode != "200" {
@@ -179,14 +176,10 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// md5 check
-	// rw.Header().Set("Content-MD5", "0980a9e10670ccc4895432d4b4ae9963")
-	// rw.Header().Set("Content-MD5", "6yidsdRS4vShWYNU2RtX4A==")
-	// etag check
-	rw.Header().Set("Etag", "FiqubDXJT8-0FdvpX0CLnOke6Ebt.gz")
-	// if total04%3 == 0 {
-	// 	rw.Header().Set("Etag", "FiqubDXJT8-0FdvpX0CLnOke6Ebt.gz")
-	// }
+	parmIsFile := getQueryValueByName(req, "isFile")
+	if len(parmIsFile) == 0 {
+		parmIsFile = "false"
+	}
 
 	// data block is set from request header => [Range]:[bytes=0-4095]
 	// for qiniuproxy, default block is 4M
@@ -196,11 +189,40 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		buf = readBytesFromFile(testFilePath)
 	} else {
 		fmt.Println("mock bytes")
-		buf = initBytesBySize(4096 * 16)
+		// buf = initBytesBySize(4096 * 16)
+		buf = []byte("mock return string")
 	}
 	// file size check
 	// if total04%3 == 0 {
 	// 	buf = initBytesBySize(1024 * 1024 * 20)
+	// }
+
+	parmMd5Check := getQueryValueByName(req, "md5")
+	if len(parmMd5Check) > 0 {
+		md5check, err := strconv.ParseBool(parmMd5Check)
+		if err == nil && md5check {
+			rw.Header().Set("Content-MD5", encode.GetMd5ForText(string(buf)))
+			// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
+		} else {
+			rw.Header().Set("Content-MD5", "0980a9e10670ccc4895432d4b4ae99ff")
+		}
+	}
+
+	parmEtagCheck := getQueryValueByName(req, "etag")
+	if len(parmEtagCheck) > 0 {
+		strEtag, err := etag.GetEtagForText(string(buf))
+		if err != nil {
+			panic(err)
+		}
+		etagcheck, err := strconv.ParseBool(parmEtagCheck)
+		if err == nil && etagcheck {
+			rw.Header().Set("ETag", strEtag)
+		} else {
+			rw.Header().Set("ETag", "FmDc-7ioTJvtbSdoD7X3hHioXCPt")
+		}
+	}
+	// if total04%3 == 0 {
+	// 	rw.Header().Set("ETag", "FuujQKlyfG21iOsvBumnJuGNzjp1")
 	// }
 
 	// send data
