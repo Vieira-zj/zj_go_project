@@ -8,8 +8,10 @@ import (
 	"mock.server/mocks"
 )
 
+const port = 17890
+
 func init() {
-	fmt.Println("mock server started.")
+	fmt.Printf("mock server started, and listen on %d.\n", port)
 }
 
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
@@ -18,6 +20,7 @@ func init() {
 func main() {
 	http.HandleFunc("/", mocks.MockDefault)
 
+	// curl -v "http://10.200.20.21:17890/index1/?isFile=false&wait=1"
 	http.HandleFunc("/index1/", mocks.Mock01)
 	http.HandleFunc("/index2/", mocks.Mock02)
 	// curl -v "http://10.200.20.21:17890/index3/?retCode=206"
@@ -45,6 +48,5 @@ func main() {
 	http.HandleFunc("/mock2", mocks.Mock22)
 	http.HandleFunc("/mock3", mocks.Mock23)
 
-	const port = 17890
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }

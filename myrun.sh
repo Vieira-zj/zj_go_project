@@ -11,6 +11,14 @@ go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go -p 7890 -c 404
 
 
+# build bin
+# go build -o mockserver src/mock.server/main/main.go
+
+# target_bin=mockserver
+# GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
+# scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+
+
 # db test
 # go run src/data.db/main/main.go
 
