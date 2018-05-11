@@ -4,6 +4,11 @@ set -x -e
 # -e, tell bash exit script if any statement returns a non-true value
 echo "here"
 
+# env var
+ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
+GOPATH=${ZJGOPRJ}:${GOPATH}
+
+
 # main
 go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
@@ -11,10 +16,16 @@ go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go -p 7890 -c 404
 
 
+# pre build
+# source $QBOXROOT/kodo/env.sh
+# source $QBOXROOT/base/env.sh
+# ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
+# GOPATH=${ZJGOPRJ}:${GOPATH}
+
 # build bin
 # go build -o mockserver src/mock.server/main/main.go
 
-# target_bin=mockserver
+# build bin for linux
 # GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
 # scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 
