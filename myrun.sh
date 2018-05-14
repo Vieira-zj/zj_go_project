@@ -2,21 +2,26 @@
 set -x -e
 # -x, show run commands with arguments
 # -e, tell bash exit script if any statement returns a non-true value
-echo "here"
+echo "myrun.sh"
 
-# env var
+# ENV VAR SET
 ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
 GOPATH=${ZJGOPRJ}:${GOPATH}
 
 
-# main
+# MAIN
+# demo test
 go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
 
+# db test
+# go run src/data.db/main/main.go
 
-# pre build
+
+# BIN
+# pre build bin
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
 # ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
@@ -30,10 +35,7 @@ go run src/demo.hello/main/main.go
 # scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 
 
-# db test
-# go run src/data.db/main/main.go
-
-
+# GO TEST
 # go tests, root_dir = $GOPATH
 # go help test
 # go test -v demo.tests/gotests/
@@ -54,12 +56,15 @@ go run src/demo.hello/main/main.go
 # go test -v -bench=. -benchmem src/demo.tests/gotests/word_ben_test.go
 
 
-# bdd tests
+# BDD TEST
+# bddtest="/Users/zhengjin/gopath/bin/ginkgo"
+# ${bddtest} -v -focus="test.hooks" src/demo.tests/bddtests/
+
 # ginkgo -v -focus="demo01.routine.done" src/demo.tests/bddtests/
 # ginkgo -v -focus="demo02.share" src/demo.tests/bddtests/
 
 
-
+# SHELL EXAMPLES
 # EX01, field check
 # https://blog.csdn.net/longyinyushi/article/details/50728049
 

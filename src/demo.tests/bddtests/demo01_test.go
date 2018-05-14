@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -18,7 +17,7 @@ var myFlag string
 func init() {
 	fmt.Println("init from demo01_test.go")
 	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
-	fmt.Printf("$GOPATH: %v\n", strings.Split(os.Getenv("GOPATH"), ":")[0:3])
+	fmt.Printf("$GOPATH: %v\n", os.Getenv("GOPATH"))
 
 	flag.StringVar(&myFlag, "myFlag", "default", "myFlag is used to control my behavior")
 }
@@ -48,11 +47,27 @@ var _ = Describe("TestDemo01", func() {
 		GinkgoWriter.Write([]byte("TEST: exec JustBeforeEach\n"))
 	})
 
-	It("[demo01] test {return} in It", func() {
-		fmt.Println("test statement {return} in It")
-		return
-		// Expect(true).Should(Equal(true))
-		// fmt.Println("after returned")
+	Describe("[test.hooks]", func() {
+		// panic: You may only call BeforeSuite once!
+		// BeforeSuite(func() {
+		// 	fmt.Println("TEST: exec BeforeSuite in sub")
+		// })
+
+		BeforeEach(func() {
+			fmt.Println("TEST: exec BeforeEach in sub")
+		})
+	
+		JustBeforeEach(func() {
+			fmt.Println("TEST: exec JustBeforeEach in sub")
+		})
+	
+		It("[demo01] test {return} in It", func() {
+			fmt.Println("test statement {return} in It")
+			return
+			// Expect(true).Should(Equal(true))
+			// fmt.Println("after returned")
+		})
+	
 	})
 
 	Describe("Desc", func() {
@@ -131,7 +146,7 @@ var _ = Describe("TestDemo01", func() {
 		})
 	})
 
-	Describe("desc", func() {
+	Describe("Desc", func() {
 		BeforeEach(func() {
 			fmt.Println("exec BeforeEach in flag test")
 		})
