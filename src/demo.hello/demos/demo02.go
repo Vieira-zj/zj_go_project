@@ -199,7 +199,7 @@ func base64EncodeAndDecode(enc *base64.Encoding, input string) {
 	}
 }
 
-func testBase64() {
+func testBase64Code() {
 	const str = "Go 言语编程 "
 	base64EncodeAndDecode(base64.StdEncoding, str)
 	base64EncodeAndDecode(base64.URLEncoding, str)
@@ -311,7 +311,7 @@ func MainDemo02() {
 
 	// testPanicAndRecover()
 	// testErrorType()
-	// testBase64()
+	// testBase64Code()
 
 	// testRwMutex()
 

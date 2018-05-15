@@ -39,19 +39,17 @@ func testCopyBytesToNull() {
 
 // format and encode
 func testURLEncode() {
-	baseURL := "http://localhost"
-	callbackURL := "http://server/callback?k1=v1&k2=v2"
-
 	// query escape
-	fmt.Println("path escape:", url.PathEscape(callbackURL))
+	baseURL := "http://zj.test.io"
+	fmt.Println("path escape:", url.PathEscape(baseURL))
+	callbackURL := "http://zj.test.server/callback?k1=v1&k2=v2"
 	fmt.Println("query escape:", url.QueryEscape(callbackURL))
 
-	// build encode query
+	// url with encode query
 	query := url.Values{}
-	query.Add("key", "value")
-	query.Add("url", callbackURL)
-	fullURL := baseURL + "/query?" + query.Encode()
-	fmt.Println("full encode url:", fullURL)
+	query.Add("mirror", callbackURL)
+	fullURL := baseURL + "?" + query.Encode()
+	fmt.Println("encode url:", fullURL)
 }
 
 // md5 hash, and base64 encode
@@ -70,8 +68,8 @@ func textEncoded(b []byte, md5Type string) string {
 	if md5Type == "hex" {
 		return hex.EncodeToString(bMd5)
 	}
-	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字, 和加号"+", 斜杠"/", 一共64个字符, 等号"="用来作为后缀用途
-	// 其中的 +, /, = 都是需要urlencode的
+	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字,
+	// 和加号"+", 斜杠"/", 一共64个字符, 等号"="用来作为后缀用途, 其中的 +, /, = 都是需要urlencode的
 	if md5Type == "std64" {
 		return base64.StdEncoding.EncodeToString(bMd5)
 	}
@@ -101,7 +99,7 @@ func hashFNV32(text string) uint32 {
 }
 
 func testHashFNV32() {
-	url := "www.qiniu.io.com"
+	url := "www.qiniu.io"
 	hashedNum := hashFNV32(url)
 	fmt.Printf("fnv32 hash number: %v\n", hashedNum)
 
