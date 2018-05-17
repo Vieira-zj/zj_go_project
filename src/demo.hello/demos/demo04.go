@@ -149,11 +149,12 @@ func testBSONCases() {
 
 // demo 06-01, go template, parse string
 func testGoTemplate01() {
-	name := "zhengjin"
 	tmpl, err := template.New("test").Parse("hello, {{.}}\n")
 	if err != nil {
 		panic(err)
 	}
+
+	name := "zhengjin"
 	err = tmpl.Execute(os.Stdout, name)
 	if err != nil {
 		panic(err)
@@ -184,13 +185,13 @@ func testGoTemplate02() {
 // demo 06-03, go template, multiple tmpls
 func testGoTemplate03() {
 	tagEn := "English"
-	tagCn := "Chinese"
 	patternEn := "{{.Count}} items are made of {{.Material}}\n"
-	patternCn := "{{.Count}}个物料的材料是{{.Material}}\n"
 	tmpl, err := template.New(tagEn).Parse(patternEn)
 	if err != nil {
 		panic(err)
 	}
+	tagCn := "Chinese"
+	patternCn := "{{.Count}}个物料的材料是{{.Material}}\n"
 	tmpl, err = tmpl.New(tagCn).Parse(patternCn)
 	if err != nil {
 		panic(err)

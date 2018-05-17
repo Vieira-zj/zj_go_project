@@ -5,7 +5,7 @@ set -x -e
 echo "myrun.sh"
 
 # ENV VAR SET
-ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
+ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
 GOPATH=${ZJGOPRJ}:${GOPATH}
 
 
@@ -24,7 +24,7 @@ go run src/demo.hello/main/main.go
 # pre build bin
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
-# ZJGOPRJ="/Users/zhengjin/Workspaces/zj_projects/ZjGoProject"
+# ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
 # GOPATH=${ZJGOPRJ}:${GOPATH}
 
 # build bin
