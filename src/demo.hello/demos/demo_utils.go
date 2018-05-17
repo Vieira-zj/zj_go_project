@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.down"
+	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.file"
 )
 
 // file path handle
@@ -53,42 +53,46 @@ func testURLEncode() {
 }
 
 // md5 hash, and base64 encode
-func getTextMd5Sum(b []byte) string {
+func getTextMD5Sum(b []byte) string {
 	bMd5 := md5.Sum(b)
 	fmt.Printf("md5 bytes: %v\n", bMd5)
+	fmt.Printf("md5 hex: %x\n", bMd5)
 	return fmt.Sprintf("%x", bMd5)
 }
 
-func textEncoded(b []byte, md5Type string) string {
+func textEncode(b []byte, md5Type string) string {
 	md5hash := md5.New()
 	md5hash.Write(b)
 	bMd5 := md5hash.Sum(nil)
-	fmt.Printf("md5 bytes: %v\n", bMd5)
 
-	if md5Type == "hex" {
-		return hex.EncodeToString(bMd5)
-	}
+	fmt.Printf("md5 bytes: %v\n", bMd5)
 	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字,
 	// 和加号"+", 斜杠"/", 一共64个字符, 等号"="用来作为后缀用途, 其中的 +, /, = 都是需要urlencode的
 	if md5Type == "std64" {
 		return base64.StdEncoding.EncodeToString(bMd5)
 	}
-	return base64.URLEncoding.EncodeToString(bMd5)
+	if md5Type == "url" {
+		return base64.URLEncoding.EncodeToString(bMd5)
+	}
+	return hex.EncodeToString(bMd5)
 }
 
 func testMd5Encode() {
-	fmt.Println("get text md5:")
-	fmt.Println("text md5:", getTextMd5Sum([]byte("ok")))
-	fmt.Println("text md5:", textEncoded([]byte("ok"), "hex"))
+	// hex
+	fmt.Println("hex value:")
+	fmt.Printf("hex: %x\n", "ok")
+	fmt.Println("hex:", hex.EncodeToString([]byte("ok")))
 
-	fmt.Println("get file content md5:")
-	b, _ := ioutil.ReadFile(testFilePath)
-	// fmt.Printf("src file data stream bytes: %v\n", b)
-	fmt.Println("file md5:", getTextMd5Sum(b)) // byte = 2 hex, 138 = 8a
-	fmt.Println("file md5:", textEncoded(b, "hex"))
+	// md5
+	tmpstr := "hello world"
+	fmt.Println("\nmd5 encode:")
+	// getTextMD5Sum([]byte(tmpstr)) // byte = 2 hex, 138 = 8a
+	fmt.Println("md5 hex:", textEncode([]byte(tmpstr), "hex"))
 
-	fmt.Println("md5 base64 encode:", textEncoded(b, "std64"))
-	fmt.Println("md5 base64 url-encode:", textEncoded(b, "url"))
+	// base64
+	fmt.Println("\nget base64 and url-base64 encode:")
+	fmt.Println("base64 encode:", textEncode([]byte(tmpstr), "std64"))
+	fmt.Println("url-base64 encode:", textEncode([]byte(tmpstr), "url"))
 }
 
 // hash check - fnv32
@@ -184,7 +188,7 @@ func testFileDownload() {
 	}
 
 	if b, err := ioutil.ReadFile(testFilePath); err == nil {
-		fileMd5 := getTextMd5Sum(b)
+		fileMd5 := getTextMD5Sum(b)
 		fmt.Println("file md5:", fileMd5)
 	}
 }
