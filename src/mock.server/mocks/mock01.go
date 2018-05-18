@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	httpv1 "qbox.us/httputil.v1"
 	"qbox.us/rpc"
 	"utils.project/encode"
 	"utils.project/etag"
@@ -426,4 +427,56 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 	b := readBytesFromFile(filepath)
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("mock09 => send data done")
+}
+
+var total10 int
+
+// Mock10 : mock server disconnect
+func Mock10(rw http.ResponseWriter, req *http.Request) {
+	total10++
+	log.Printf("access at %d time\n", total10)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	req.ParseForm()
+	wait := 3
+	parmWait := getQueryValueByName(req, "wait")
+	if parmWait != "" {
+		wait, _ = strconv.Atoi(parmWait)
+	}
+	isSetLen := false
+	parmIsSetLen := getQueryValueByName(req, "isSetLen")
+	if parmIsSetLen != "" {
+		isSetLen, _ = strconv.ParseBool(parmIsSetLen)
+	}
+
+	b := readBytesFromFile(testFilePath)
+	log.Println("return 200")
+	if isSetLen {
+		rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
+	}
+	rw.WriteHeader(http.StatusOK)
+
+	go func() {
+		time.Sleep(time.Duration(wait) * time.Second)
+		if jacker, ok := httpv1.GetHijacker(rw); ok {
+			conn, _, err := jacker.Hijack()
+			if err != nil {
+				fmt.Printf("hijack err: %v\n", err)
+			} else {
+				log.Println("response can hijack, connection closed")
+				conn.Close()
+			}
+		} else {
+			fmt.Printf("http.ResponseWriter not http.Hijacker")
+		}
+	}()
+
+	len, err := io.Copy(rw, bytes.NewReader(b))
+	if err != nil {
+		log.Println("copy resp writer error:", err.Error())
+		fmt.Printf("copied length: %d\n", len)
+		return
+	}
+	log.Println("mock10 => send data done")
 }

@@ -44,6 +44,9 @@ func main() {
 	http.HandleFunc("/videos/vts/file3.m2ts", mocks.Mock09)
 	http.HandleFunc("/qpdxv/vts/file4.m2ts", mocks.Mock09)
 
+	// curl -v "http://10.200.20.21:17890/disconnect?wait=3&isSetLen=true"
+	http.HandleFunc("/disconnect", mocks.Mock10)
+
 	http.HandleFunc("/mock1", mocks.Mock21)
 	http.HandleFunc("/mock2", mocks.Mock22)
 	http.HandleFunc("/mock3", mocks.Mock23)
