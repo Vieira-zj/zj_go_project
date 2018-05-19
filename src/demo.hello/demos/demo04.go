@@ -271,8 +271,8 @@ func testGoTemplate06() {
 }
 
 // demo 07, read configs and set template
-// $ go get github.com/larspensjo/config
 func readValuesFromConfigs(path, section string) map[string]string {
+	// $ go get github.com/larspensjo/config
 	cfg, err := config.ReadDefault(path)
 	if err != nil {
 		fmt.Errorf("Fail to find %s, error: %s", path, err)
@@ -319,6 +319,8 @@ func testReadConfigs() {
 
 func testBuildTemplate() {
 	fmt.Println("sub.tmpl + test.conf => test_tmpl.conf => output.txt")
+
+	// for sub tmpl, it supports diff data types, like array
 	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
 	fileTmpl := "src/demo.hello/demos/test_tmpl.conf"
 	tmpl, err := template.ParseFiles(fileTmpl, fileSubTmpl)
@@ -326,6 +328,7 @@ func testBuildTemplate() {
 		panic(err)
 	}
 
+	// for conf, it supports only key and value
 	testInfos := readValuesFromConfigs(confFile, "test")
 
 	pathOutput := "src/demo.hello/demos/output.txt"
@@ -395,7 +398,6 @@ func MainDemo04() {
 	// testJSONOmitEmpty()
 	// testBSONCases()
 
-	// https://www.cnblogs.com/jkko123/p/7018406.html
 	// testGoTemplate01()
 	// testGoTemplate02()
 	// testGoTemplate03()
