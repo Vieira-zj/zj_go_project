@@ -213,11 +213,9 @@ func testGoTemplate03() {
 	}
 }
 
-const projectPath = "/Users/zhengjin/Workspaces/zj_projects/ZjGoProject/"
-
 // demo 06-04, parse single file
 func testGoTemplate04() {
-	// filePath := projectPath + "src/demo.hello/demos/tmpl_cn.txt"
+	// filePath := os.Getenv("ZJGOPRJ") + "src/demo.hello/demos/tmpl_cn.txt"
 	filePath := "src/demo.hello/demos/tmpl_cn.txt"
 	tmpl, err := template.ParseFiles(filePath)
 	if err != nil {
@@ -321,8 +319,8 @@ func testReadConfigs() {
 
 func testBuildTemplate() {
 	fmt.Println("sub.tmpl + test.conf => test_tmpl.conf => output.txt")
-	fileSubTmpl := projectPath + "src/demo.hello/demos/sub.tmpl"
-	fileTmpl := projectPath + "src/demo.hello/demos/test_tmpl.conf"
+	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
+	fileTmpl := "src/demo.hello/demos/test_tmpl.conf"
 	tmpl, err := template.ParseFiles(fileTmpl, fileSubTmpl)
 	if err != nil {
 		panic(err)
@@ -403,7 +401,7 @@ func MainDemo04() {
 	// testGoTemplate03()
 	// testGoTemplate04()
 	// testGoTemplate05()
-	testGoTemplate06()
+	// testGoTemplate06()
 
 	// testReadConfigs()
 	// testBuildTemplate()
