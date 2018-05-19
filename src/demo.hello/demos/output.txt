@@ -1,0 +1,5 @@
+
+description="test read configs"
+url=http://zj.test.io
+mirror_url="http://zj.dev.io"
+date="2018-05-18"

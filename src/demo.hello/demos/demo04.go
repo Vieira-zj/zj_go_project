@@ -12,6 +12,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/larspensjo/config"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -214,9 +215,10 @@ func testGoTemplate03() {
 
 const projectPath = "/Users/zhengjin/Workspaces/zj_projects/ZjGoProject/"
 
-// demo 06-04, go template, parse single file
+// demo 06-04, parse single file
 func testGoTemplate04() {
-	filePath := projectPath + "src/demo.hello/demos/tmpl_en.txt"
+	// filePath := projectPath + "src/demo.hello/demos/tmpl_cn.txt"
+	filePath := "src/demo.hello/demos/tmpl_cn.txt"
 	tmpl, err := template.ParseFiles(filePath)
 	if err != nil {
 		panic(err)
@@ -229,15 +231,16 @@ func testGoTemplate04() {
 	}
 }
 
-// demo 06-05, parse files with nest template
+// demo 06-05, parse file with nest template
 func testGoTemplate05() {
-	fileBase := projectPath + "src/demo.hello/demos/tmpl_base.txt"
-	fileTmpl := projectPath + "src/demo.hello/demos/tmpl_en.txt"
-	tmpl, err := template.ParseFiles(fileBase, fileTmpl)
+	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
+	fileTmpl := "src/demo.hello/demos/tmpl_en.txt"
+	tmpl, err := template.ParseFiles(fileSubTmpl, fileTmpl)
 	if err != nil {
 		panic(err)
 	}
 
+	// sub.tmpl + Inventory => tmpl_en.txt => stdout
 	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
 	if err != nil {
 		panic(err)
@@ -246,23 +249,101 @@ func testGoTemplate05() {
 
 // demo 06-06, parse files with nest template
 func testGoTemplate06() {
-	filePath := projectPath + "src/demo.hello/demos/tmpl_*.txt"
-	tmpl, err := template.ParseGlob(filePath)
+	pattern := "src/demo.hello/demos/tmpl_*.txt"
+	tmpl, err := template.ParseGlob(pattern)
+	if err != nil {
+		panic(err)
+	}
+	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
+	tmpl, err = tmpl.New("sub").ParseFiles(fileSubTmpl)
 	if err != nil {
 		panic(err)
 	}
 
+	fmt.Println("#1. template en output:")
 	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("#2. template cn output:")
 	err = tmpl.ExecuteTemplate(os.Stdout, "tmpl_cn.txt", Inventory{"wool", 27})
 	if err != nil {
 		panic(err)
 	}
 }
 
-// demo 07, if or map
+// demo 07, read configs and set template
+// $ go get github.com/larspensjo/config
+func readValuesFromConfigs(path, section string) map[string]string {
+	cfg, err := config.ReadDefault(path)
+	if err != nil {
+		fmt.Errorf("Fail to find %s, error: %s", path, err)
+	}
+
+	retMap := make(map[string]string)
+	if cfg.HasSection(section) {
+		options, err := cfg.SectionOptions(section)
+		if err == nil {
+			for _, option := range options {
+				value, err := cfg.String(section, option)
+				if err == nil {
+					retMap[option] = value
+				}
+			}
+		}
+	}
+	if len(retMap) == 0 {
+		panic(fmt.Sprintf("no options in section [%s]", section))
+	}
+	return retMap
+}
+
+const confFile = "src/demo.hello/demos/test.conf"
+
+func testReadConfigs() {
+	fmt.Println("read configs and set template string")
+	goInfos := readValuesFromConfigs(confFile, "default")
+	fmt.Println("go infos:")
+	for k, v := range goInfos {
+		fmt.Printf("%s=%s\n", k, v)
+	}
+
+	pattern := "Go version {{.version}}, and bin path {{.path}}\n"
+	tmpl, err := template.New("goInfos").Parse(pattern)
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.Execute(os.Stdout, goInfos) // map instead of struct
+	if err != nil {
+		panic(err)
+	}
+}
+
+func testBuildTemplate() {
+	fmt.Println("sub.tmpl + test.conf => test_tmpl.conf => output.txt")
+	fileSubTmpl := projectPath + "src/demo.hello/demos/sub.tmpl"
+	fileTmpl := projectPath + "src/demo.hello/demos/test_tmpl.conf"
+	tmpl, err := template.ParseFiles(fileTmpl, fileSubTmpl)
+	if err != nil {
+		panic(err)
+	}
+
+	testInfos := readValuesFromConfigs(confFile, "test")
+
+	pathOutput := "src/demo.hello/demos/output.txt"
+	fOutput, err := os.OpenFile(pathOutput, os.O_WRONLY, 0666)
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.ExecuteTemplate(fOutput, "testInfos", testInfos)
+	if err != nil {
+		panic(err)
+	}
+	fOutput.Close()
+	fmt.Println("write configs done.")
+}
+
+// demo 08, if or map
 var fnGetMsgByID = func(id string) {
 	fmt.Println("message id:", id)
 }
@@ -295,7 +376,7 @@ func testGetMsgByIfAndMap() {
 	getMsgByMap(tag, name)
 }
 
-// demo 08, time calculation
+// demo 09, time calculation
 func testTimeSub() {
 	start := time.Now()
 	time.Sleep(2 * time.Second)
@@ -322,7 +403,10 @@ func MainDemo04() {
 	// testGoTemplate03()
 	// testGoTemplate04()
 	// testGoTemplate05()
-	// testGoTemplate06()
+	testGoTemplate06()
+
+	// testReadConfigs()
+	// testBuildTemplate()
 
 	// testGetMsgByIfAndMap()
 	// testTimeSub()
