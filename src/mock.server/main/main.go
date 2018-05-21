@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,16 +9,13 @@ import (
 	"mock.server/mocks"
 )
 
-const port = 17890
-
-func init() {
-	fmt.Printf("mock server started, and listen on %d.\n", port)
-}
-
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 // http://10.200.20.21:17890/index1/
 func main() {
+	port := flag.Int("p", 17891, "mock server listen port")
+	flag.Parse()
+
 	http.HandleFunc("/", mocks.MockDefault)
 
 	// curl -v "http://10.200.20.21:17890/index1/?isFile=false&wait=1"
@@ -51,5 +49,6 @@ func main() {
 	http.HandleFunc("/mock2", mocks.Mock22)
 	http.HandleFunc("/mock3", mocks.Mock23)
 
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+	fmt.Printf("mock server start, and listen on %d.\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

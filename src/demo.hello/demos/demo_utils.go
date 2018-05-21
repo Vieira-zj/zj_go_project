@@ -66,8 +66,8 @@ func textEncode(b []byte, md5Type string) string {
 	bMd5 := md5hash.Sum(nil)
 
 	fmt.Printf("md5 bytes: %v\n", bMd5)
-	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字,
-	// 和加号"+", 斜杠"/", 一共64个字符, 等号"="用来作为后缀用途, 其中的 +, /, = 都是需要urlencode的
+	// Base64编码 使用的字符包括大小写字母各26个, 加上10个数字, 和加号"+", 斜杠"/", 一共64个字符,
+	// 等号"="用来作为后缀用途, 其中的"+"和"/"都是需要urlencode的
 	if md5Type == "std64" {
 		return base64.StdEncoding.EncodeToString(bMd5)
 	}

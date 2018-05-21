@@ -211,12 +211,12 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 
 	parmEtagCheck := getQueryValueByName(req, "etag")
 	if len(parmEtagCheck) > 0 {
-		strEtag, err := etag.GetEtagForText(string(buf))
-		if err != nil {
-			panic(err)
-		}
 		etagcheck, err := strconv.ParseBool(parmEtagCheck)
 		if err == nil && etagcheck {
+			strEtag, err := etag.GetEtagForText(string(buf))
+			if err != nil {
+				panic(err)
+			}
 			rw.Header().Set("ETag", strEtag)
 		} else {
 			rw.Header().Set("ETag", "FmDc-7ioTJvtbSdoD7X3hHioXCPt")
@@ -444,7 +444,7 @@ func Mock10(rw http.ResponseWriter, req *http.Request) {
 	if parmWait != "" {
 		wait, _ = strconv.Atoi(parmWait)
 	}
-	isSetLen := false
+	isSetLen := false // set resp header Content-Length
 	parmIsSetLen := getQueryValueByName(req, "isSetLen")
 	if parmIsSetLen != "" {
 		isSetLen, _ = strconv.ParseBool(parmIsSetLen)
