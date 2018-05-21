@@ -9,13 +9,13 @@ import (
 
 func hello(firstName, lastName string) {
 	fmt.Printf("hello, %s %s\n", firstName, lastName)
-
-	// int format
-	var uid int64 = 1380469261
-	fmt.Println("\nformat results:", strconv.FormatInt(uid, 36))
 }
 
-func stringFormatTest() {
+func varFormatTest() {
+	// 10进制转36进制
+	var num int64 = 1380469261
+	fmt.Println("\nformat results:", strconv.FormatInt(num, 36))
+
 	myRegExp := `[0-9]\{1,\}`
 	filePath := "/home/qboxserver/service_config/_package/iorate.conf"
 	cmd := fmt.Sprintf("sed -i '13s/%s/100/' %s", myRegExp, filePath)
@@ -24,29 +24,34 @@ func stringFormatTest() {
 	fmt.Println(cmd)
 }
 
+func returnTest() {
+	firstName, _, _ := getNames()
+	_, lastName, _ := getNames()
+	fmt.Printf("name: %s %s\n", firstName, lastName)
+}
+
 func getNames() (firstName, lastName, nickName string) {
 	return "May", "Chan", "Chibi Maruko"
 }
 
 func varsExamples() {
+	fmt.Println("vars examples:")
+	fmt.Println("#1. vars define and init:")
 	// var v1 int = 10
 	var v2 = 10
 	v3 := 10
-
-	fmt.Println("vars examples:")
-	fmt.Println("vars define and init:")
 	// fmt.Println(v1)
 	fmt.Println(v2)
 	fmt.Println(v3)
 
-	fmt.Println("vars exchange:")
+	fmt.Println("#2. vars exchange:")
 	i := 1
 	j := 3
 	i, j = j, i
 	fmt.Println(i)
 	fmt.Println(j)
 
-	fmt.Println("enum type:")
+	fmt.Println("#3. enum type:")
 	type weekday int
 	const (
 		Sunday weekday = iota
@@ -60,14 +65,15 @@ func varsExamples() {
 	)
 	fmt.Println(Monday)
 
-	fmt.Println("string examples:")
+	fmt.Println("\nstring examples:")
+	fmt.Println("#4. string basic:")
 	str := "hello world"
-	ch := str[0]
 	fmt.Printf("length of %s is %d.\n", str, len(str))
-	fmt.Printf("first char of %s is %c.\n", str, ch)
+	fmt.Printf("first char of %s is %c.\n", str, str[0])
 	fmt.Printf("char at 0 to 5 is %v.\n", str[0:5])
 
-	fmt.Println("iterator on string:")
+	fmt.Println("#5. iterator on string:")
+	str = "hello"
 	for i := 0; i < len(str); i++ {
 		fmt.Printf("str[%d] = %c,", i, str[i]) // char
 	}
@@ -77,50 +83,58 @@ func varsExamples() {
 	}
 	fmt.Println()
 
-	fmt.Println("create value by new:")
+	fmt.Println("#6. create value by new:")
 	p := new(int)
-	fmt.Printf("p type: %T\n", p) // pointer
+	fmt.Printf("p type: %T\n", p) // type pointer
 	fmt.Printf("p value: %d\n", *p)
 	*p = 2
 	fmt.Printf("update p value: %d\n", *p)
 }
 
 func arrayExamples() {
+	fmt.Println("array examples:")
+	fmt.Println("#1. define array:")
 	q := [...]int{1, 2, 3}
 	fmt.Printf("array q: %T\n", q)
 
-	fmt.Println("array examples:")
-	fmt.Println("array pass as value not reference:")
+	fmt.Println("#2. array pass as value (not reference):")
 	array := [5]int{1, 2, 3, 4, 5}
 	modifyArray(array)
 	fmt.Println("In main(), array values:", array)
 
-	fmt.Println("create slice from array:")
+	fmt.Println("#3. create slice from array:")
 	myArray := [10]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	var mySlice = myArray[:5]
 
-	fmt.Println("Elements of myArray: ")
+	fmt.Println("Elements of myArray:")
 	for _, v := range myArray {
 		fmt.Printf("%d ", v)
 	}
+	fmt.Println()
 
-	fmt.Println("\nElements of mySlice: ")
+	myArray[0] = 10
+	fmt.Println("Elements of mySlice:")
 	for _, v := range mySlice {
 		fmt.Printf("%d ", v)
 	}
+	fmt.Println()
 
-	fmt.Println("\ninit slice:")
+	fmt.Println("\nslice examples:")
+	fmt.Println("#4. init slice:")
 	// init 5 elements with default value 0, capbility is 10
 	mySlice2 := make([]int, 5, 10)
 	fmt.Println("slice length:", len(mySlice2))
 	fmt.Println("slice capbility:", cap(mySlice2))
 
-	fmt.Println("slice pass as value:")
+	fmt.Println("#5. slice pass as value:")
 	mySlice2 = append(mySlice2, 1, 2, 3)
+	tmpSlice := []int{11, 12}
+	mySlice2 = append(mySlice2, tmpSlice...)
 	fmt.Println("slice after append:", mySlice2)
 	myUpdateSlice(mySlice2)
 	fmt.Println("in main(), slice:", mySlice2)
 
+	fmt.Println("#6. copy slice:")
 	mySlice3 := []int{11, 12, 13}
 	copy(mySlice2, mySlice3)
 	fmt.Printf("slices2 after copied: %v\n", mySlice2)
@@ -133,8 +147,8 @@ func modifyArray(array [5]int) {
 }
 
 func myUpdateSlice(s []int) {
-	s = append(s, 4, 5)
-	fmt.Println("in update(), slice:", s)
+	s = append(s, 99)
+	fmt.Println("in updateSlice(), slice:", s)
 }
 
 type personInfo struct {
@@ -145,7 +159,7 @@ type personInfo struct {
 
 func mapExamples() {
 	fmt.Println("map examples:")
-	fmt.Println("map init and iterator:")
+	fmt.Println("#1. map init and iterator:")
 	tmpMap1 := map[string]int{
 		"one": 1,
 		"two": 2,
@@ -153,6 +167,8 @@ func mapExamples() {
 	tmpMap1["three"] = 3
 	fmt.Printf("map1 type: %T\n", tmpMap1)
 	fmt.Printf("map1 length: %d\n", len(tmpMap1))
+
+	fmt.Println("#2. iterator on map:")
 	for k, v := range tmpMap1 {
 		fmt.Printf("%d=%s\n", v, k)
 	}
@@ -165,7 +181,7 @@ func mapExamples() {
 		fmt.Printf("key: %s\n", k)
 	}
 
-	fmt.Println("map pass as reference:")
+	fmt.Println("#3. map pass as reference:")
 	var persons map[string]personInfo
 	persons = make(map[string]personInfo)
 	persons["test1"] = personInfo{"test1", "Tom", "Room 203,..."}
@@ -173,7 +189,7 @@ func mapExamples() {
 	myUpdateMap(persons)
 	fmt.Printf("in main(), person map: %v\n", persons)
 
-	fmt.Println("print map values as sorted:")
+	fmt.Println("#4. print map as sorted:")
 	// var ids []string
 	ids := make([]string, 0, len(persons))
 	for id := range persons {
@@ -184,12 +200,12 @@ func mapExamples() {
 		fmt.Printf("%s\t%s\n", id, persons[id].Name)
 	}
 
-	fmt.Println("delete map entry by key:")
+	fmt.Println("#5. delete map entry by key:")
 	delete(persons, "test1")
 	if person, ok := persons["test1"]; ok {
 		fmt.Println("Person found:", person.Name)
 	} else {
-		fmt.Println("Did not find.")
+		fmt.Println("Entry not find.")
 	}
 }
 
@@ -223,24 +239,45 @@ JLoop:
 	}
 }
 
-func argsTest(args ...int) {
-	fmt.Println("input args:")
-	for _, arg := range args {
-		fmt.Println(arg)
+func argsTest() {
+	printNumbers := func(args ...int) {
+		fmt.Println("input args:")
+		for _, arg := range args {
+			fmt.Println(arg)
+		}
 	}
+	printNumbers(1, 2, 3)
 }
 
-func fnTest() {
+func innerFnTest() {
 	fn := func(x, y int) int {
 		return x + y
 	}
-	fmt.Printf("fn type: %T\n", fnTest)
+	fmt.Printf("fn type: %T\n", fn)
 	results := fn(1, 2)
 	fmt.Println(results)
 
 	func() {
 		fmt.Println("fnTest done.")
 	}()
+}
+
+func fnVarsTest() {
+	add := func(x, y int) int {
+		return x + y
+	}
+	subtract := func(x, y int) int {
+		return x - y
+	}
+	myClaculation := func(x, y int, fn func(int, int) int) int {
+		fmt.Printf("function => %T\n", fn)
+		return fn(x, y)
+	}
+
+	x := 10
+	y := 5
+	fmt.Printf("x + y = %d\n", myClaculation(x, y, add))
+	fmt.Printf("x - y = %d\n", myClaculation(x, y, subtract))
 }
 
 func fnClosureTest() {
@@ -263,15 +300,23 @@ func myPrintf(args ...interface{}) {
 		case nil:
 			fmt.Println("nil")
 		case int:
-			fmt.Println(arg, "int")
+			fmt.Println(arg, "=> type int")
 		case int64:
-			fmt.Println(arg, "int64")
+			fmt.Println(arg, "=> type int64")
 		case string:
-			fmt.Println(arg, "string")
+			fmt.Println(arg, "=> type string")
 		default:
 			panic(fmt.Sprintf("unexpected type %T: %v", arg, arg))
 		}
 	}
+}
+
+func typeVerifyTest() {
+	var v1 = 1
+	var v2 int64 = 1234
+	var v3 = "test"
+	var v4 float32 = 1.234
+	myPrintf(v1, v2, v3, nil, v4)
 }
 
 type point struct {
@@ -289,20 +334,22 @@ func (p point) String() string {
 	return fmt.Sprintf("x=%d, y=%d", p.x, p.y)
 }
 
-func methodTest() {
+func objMethodTest() {
 	fmt.Println("invoke methods of struct:")
+	fmt.Println("#1")
 	p := &point{1, 2}
 	p.scaleBy(2)
 	fmt.Printf("invoke1: %s\n", (*p).String())
 	fmt.Printf("invoke2: %s\n", p.String())
 
-	fmt.Println("method value:")
+	fmt.Println("#2")
 	p1 := point{1, 3}
 	fnScale1 := p1.scaleBy
 	fnScale1(2)
 	fmt.Printf("fnScale1 type: %T\n", fnScale1)
 	fmt.Println("after scale:", p1.String())
 
+	fmt.Println("#3")
 	p2 := point{2, 4}
 	fnScale2 := (*point).scaleBy
 	fnScale2(&p2, 2)
@@ -319,11 +366,8 @@ func PrintGoEnvValues() {
 // MainHello : main function for general examples.
 func MainHello() {
 	// hello("zheng", "jin")
-	// stringFormatTest()
-
-	// firstName, _, _ := getNames()
-	// _, lastName, _ := getNames()
-	// fmt.Printf("name: %s %s\n", firstName, lastName)
+	// varFormatTest()
+	// returnTest()
 
 	// varsExamples()
 	// arrayExamples()
@@ -331,18 +375,15 @@ func MainHello() {
 
 	// switchTest(7)
 	// controlTest()
-	// argsTest(1, 2, 3)
+	// argsTest()
 
-	// fnTest()
+	// innerFnTest()
+	// fnVarsTest()
 	// fnClosureTest()
 
-	// var v1 = 1
-	// var v2 int64 = 1234
-	// var v3 = "test"
-	// var v4 float32 = 1.234
-	// myPrintf(v1, v2, v3, nil, v4)
+	// typeVerifyTest()
 
-	// methodTest()
+	// objMethodTest()
 
 	fmt.Println("hello demo.")
 }
