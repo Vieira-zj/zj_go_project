@@ -16,13 +16,10 @@ import (
 	httpv1 "qbox.us/httputil.v1"
 	"qbox.us/rpc"
 	"utils.project/encode"
-	"utils.project/etag"
+	utilsEtag "utils.project/etag"
 )
 
-const (
-	mockMd5      = "f900b997e6f8a772994876dff023801e"
-	testFilePath = "./test.file"
-)
+const testFilePath = "./test.file"
 
 var total int
 
@@ -34,33 +31,26 @@ func MockDefault(rw http.ResponseWriter, req *http.Request) {
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	req.ParseForm()
-	var lines []string
-	lines = append(lines, "PAGE NOT FOUND!")
-	lines = append(lines, fmt.Sprint("request uri: ", req.RequestURI))
+	retContent := "PAGE NOT FOUND!\n"
+	retContent += fmt.Sprintf("request uri: %s\n", req.RequestURI)
 	if len(req.Form) > 0 {
-		lines = append(lines, fmt.Sprintf("raw query: %+v", req.Form))
+		retContent += fmt.Sprintf("raw query: %+v\n", req.Form)
+	}
+	if len(retContent) == 0 {
+		retContent = "null\n"
 	}
 
-	var b []byte
-	if len(lines) > 1 {
-		b = []byte(strings.Join(lines, "\n"))
-	} else if len(lines) == 1 {
-		b = []byte(lines[0])
-	} else {
-		b = []byte("null")
-	}
-
-	rw.Header().Set("Content-Md5", strconv.Itoa(len(b)))
+	rw.Header().Set("Content-Md5", strconv.Itoa(len([]byte(retContent))))
 	rw.WriteHeader(http.StatusNotFound)
 	log.Println("return 404")
 
-	io.Copy(rw, bytes.NewReader(b))
+	io.Copy(rw, strings.NewReader(retContent))
 	log.Println("===> MockDefault, send data done\n")
 }
 
 var total01 int
 
-// Mock01 : mock common data stream and file download
+// Mock01 : mock data stream and file download
 func Mock01(rw http.ResponseWriter, req *http.Request) {
 	total01++
 	log.Printf("\n===> Mock01, access at %d time\n", total01)
@@ -68,8 +58,8 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	req.ParseForm()
-	isFile := GetBoolInReqForm(req, "isFile")
 	var b []byte
+	isFile := GetBoolInReqForm(req, "isFile")
 	if isFile {
 		b = ReadBytesFromFile(testFilePath)
 	} else {
@@ -78,26 +68,33 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	wait := GetNumberInReqForm(req, "wait")
+	// wait before send header
 	if wait > 0 {
 		fmt.Printf("wait %s seconds\n", wait)
-		time.Sleep(time.Duration(wait) * time.Second) // wait before send header
+		time.Sleep(time.Duration(wait) * time.Second)
 	}
 
+	// mockMD5 := "f900b997e6f8a772994876dff023801e"
+	// rw.Header().Set("Content-Md5", mockMD5) // mock md5
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
-	// rw.Header().Set("Content-Md5", mockMd5) // mock md5
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return 200")
 
+	// wait after send header
 	// if wait > 0 {
 	// 	fmt.Printf("wait %s seconds\n", wait)
-	// 	time.Sleep(wait * time.Second) // wait after send header
+	// 	time.Sleep(wait * time.Second)
 	// }
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("===> Mock01, send data done\n")
 }
 
+var total02 int
+
 // Mock02 : mock bytes stream by flush
 func Mock02(rw http.ResponseWriter, req *http.Request) {
+	total02++
+	log.Printf("\n===> Mock01, access at %d time\n", total02)
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
@@ -111,7 +108,7 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 		_, err := io.Copy(rw, bytes.NewReader(InitBytesBySize(contentLen)))
 		if err != nil {
 			log.Fatalf("error: %v\n", err)
-			return
+			break
 		}
 		rw.(http.Flusher).Flush()
 	}
@@ -123,7 +120,7 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 
 var total03 int
 
-// Mock03 : mock returned code, ex 404, 503
+// Mock03 : mock ret error code, ex 404, 503
 func Mock03(rw http.ResponseWriter, req *http.Request) {
 	total03++
 	log.Printf("\n===> Mock03, access at %d time\n", total03)
@@ -153,55 +150,65 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("\n===> Mock04, access at %d time\n", total04)
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-	isFile := GetBoolInReqForm(req, "isFile")
 	// data block is set from request header => [Range]:[bytes=0-4095]
 	// for qiniuproxy, default range is 4M
+
+	req.ParseForm()
+	retCode := GetNumberInReqForm(req, "retCode")
+	if retCode == 0 {
+		retCode = 200
+	}
+
+	// for 4xx, no connection retry; 5xx, connection retry
+	if retCode != 200 {
+		rw.WriteHeader(retCode)
+		log.Printf("return code: %d\n", retCode)
+		io.Copy(rw, strings.NewReader("Mock04, mock error string"))
+		log.Println("===> Mock04, send blocked data done\n")
+		return
+	}
+
+	isFile := GetBoolInReqForm(req, "isFile")
 	var buf []byte
 	if isFile {
 		fmt.Println("read bytes from file")
 		buf = ReadBytesFromFile(testFilePath)
 	} else {
 		fmt.Println("mock body")
-		buf = InitBytesBySize(1024 * 1024 * 20)
+		buf = InitBytesBySize(1024 * 1024 * 10)
 		// buf = []byte("from Mock03, mock returned text")
 	}
-	// file size check
-	// if total04%3 == 0 {
-	// 	buf = InitBytesBySize(1024 * 1024 * 20)
-	// }
 
-	req.ParseForm()
-	isMD5 := GetBoolInReqForm(req, "md5")
+	isMD5 := GetBoolInReqForm(req, "isMd5")
 	if isMD5 {
-		rw.Header().Set("Content-MD5", encode.GetMd5ForText(string(buf)))
-		// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
-	} else {
-		errMD5 := "0980a9e10670ccc4895432d4b4ae9err"
-		rw.Header().Set("Content-MD5", errMD5)
+		md5 := GetBoolInReqForm(req, "md5")
+		if md5 {
+			rw.Header().Set("Content-MD5", encode.GetMd5ForText(string(buf)))
+			// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
+		} else {
+			errMD5 := "0980a9e10670ccc4895432d4b4ae9err"
+			rw.Header().Set("Content-MD5", errMD5)
+		}
 	}
 
-	isEtag := GetBoolInReqForm(req, "etag")
+	isEtag := GetBoolInReqForm(req, "isEtag")
 	if isEtag {
-		if strEtag, err := etag.GetEtagForText(string(buf)); err == nil {
-			rw.Header().Set("ETag", strEtag)
-		} else {
+		isSet := false
+		etag := GetBoolInReqForm(req, "etag")
+		if etag {
+			if strEtag, err := utilsEtag.GetEtagForText(string(buf)); err == nil {
+				rw.Header().Set("ETag", strEtag)
+				isSet = true
+			}
+		}
+		if !isSet {
 			errEtag := "FmDc-7ioTJvtbSdoD7X3hHioXERR"
 			rw.Header().Set("ETag", errEtag)
 		}
 	}
 
-	retCode := GetNumberInReqForm(req, "retCode")
-	if retCode == 0 {
-		retCode = 200
-	}
-	// for 4xx, no connection retry; 5xx, connection retry
 	rw.WriteHeader(retCode)
-	log.Printf("return code: %d\n", retCode)
-	if retCode != 200 {
-		io.Copy(rw, strings.NewReader("Mock04, mock error string"))
-		return
-	}
+	fmt.Println("return 200")
 
 	// send data by range
 	waitForEachRead := 0
@@ -246,7 +253,7 @@ func Mock05(rw http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	wait := GetNumberInReqForm(req, "wait")
 	if wait == 0 {
-		wait = 5
+		wait = 3
 	}
 	kb := GetNumberInReqForm(req, "kb")
 	if kb == 0 {
@@ -282,11 +289,11 @@ func Mock06(rw http.ResponseWriter, req *http.Request) {
 	}
 	rw.Header().Set("Content-Length", strconv.Itoa(len(ret)))
 	rw.Header().Set("Content-Type", "application/json")
-	log.Printf("return %d\n", retCode)
 	rw.WriteHeader(retCode)
+	log.Printf("return %d\n", retCode)
 
-	wait := 5
 	if total06%4 == 0 {
+		wait := 3
 		time.Sleep(time.Duration(wait) * time.Second)
 		log.Printf("sleep %d seconds\n", wait)
 	}
@@ -309,8 +316,8 @@ func Mock07(rw http.ResponseWriter, req *http.Request) {
 	io.Copy(rw, strings.NewReader("success"))
 	rw.(http.Flusher).Flush()
 
-	wait := 3
 	if total07%2 == 0 {
+		wait := 3
 		time.Sleep(time.Duration(wait) * time.Second)
 		log.Printf("sleep %d seconds\n", wait)
 	}
@@ -340,19 +347,22 @@ func Mock08(rw http.ResponseWriter, req *http.Request) {
 	// defer req.Body.Close()
 	// fmt.Printf("request body: %s\n", string(result))
 
+	JSONObj := refreshRet{
+		Code:      http.StatusOK,
+		Error:     "null",
+		RequestID: "cdnrefresh-test-01",
+	}
+	b, err := json.Marshal(JSONObj)
+	if err != nil {
+		log.Fatalln(err.Error())
+		b = []byte("json encode error")
+	}
+
+	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return 200")
 
-	retJSONObj := refreshRet{
-		Code:      http.StatusOK,
-		Error:     "null",
-		RequestID: "cdn-refresh-test",
-	}
-	if retBytes, err := json.Marshal(retJSONObj); err == nil {
-		io.Copy(rw, bytes.NewReader(retBytes))
-	} else {
-		log.Fatalln(err.Error())
-	}
+	io.Copy(rw, bytes.NewReader(b))
 	log.Println("===> Mock08, data returned\n")
 }
 
@@ -368,6 +378,7 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
 		log.Fatalln(err.Error())
 	}
+
 	var filepath string
 	start := GetNumberInReqForm(req, "start")
 	if start < 1000 {
@@ -375,12 +386,13 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 	} else {
 		filepath = "./test2.file"
 	}
+	b := ReadBytesFromFile(filepath)
 
+	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return 200")
 
 	time.Sleep(500 * time.Millisecond)
-	b := ReadBytesFromFile(filepath)
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("===> mock09, send data done\n")
 }
@@ -445,9 +457,8 @@ func GetNumberInReqForm(req *http.Request, argName string) int {
 	tmp := GetStringInReqForm(req, argName)
 	if ret, err := strconv.Atoi(tmp); err == nil {
 		return ret
-	} else {
-		return 0
 	}
+	return 0
 }
 
 // GetBoolInReqForm : return bool value from request query form
@@ -455,9 +466,8 @@ func GetBoolInReqForm(req *http.Request, argName string) bool {
 	tmp := GetStringInReqForm(req, argName)
 	if ret, err := strconv.ParseBool(tmp); err == nil {
 		return ret
-	} else {
-		return false
 	}
+	return false
 }
 
 // InitBytesBySize : get mock bytes by size

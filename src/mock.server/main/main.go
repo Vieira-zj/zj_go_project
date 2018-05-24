@@ -21,12 +21,12 @@ func main() {
 	// curl -v "http://10.200.20.21:17891/index?isFile=false&wait=1"
 	http.HandleFunc("/index", mocks.Mock01)
 	http.HandleFunc("/index2", mocks.Mock02)
-	// curl -v "http://10.200.20.21:17891/index3/?retCode=206"
+	// curl -v "http://10.200.20.21:17891/error?retCode=206"
 	http.HandleFunc("/error", mocks.Mock03)
-	// ret 200 => curl -v "http://10.200.20.21:17891/index4/?isFile=true&md5=true&etag=true"
-	// ret 206 => curl -v "http://10.200.20.21:17891/index4/?isFile=true" -H "Range":"bytes=0-1023"
-	http.HandleFunc("/index4/", mocks.Mock04)
-	http.HandleFunc("/index5/", mocks.Mock05)
+	// ret 200 => curl -v "http://10.200.20.21:17891/common?isFile=true&md5=true&etag=true"
+	// ret 206 => curl -v "http://10.200.20.21:17891/common?isFile=true" -H "Range":"bytes=0-1023"
+	http.HandleFunc("/common", mocks.Mock04)
+	http.HandleFunc("/index5", mocks.Mock05)
 
 	http.HandleFunc("/httpdns", mocks.Mock06)
 	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
@@ -45,9 +45,9 @@ func main() {
 	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
 
-	http.HandleFunc("/mock1", mocks.Mock21)
-	http.HandleFunc("/mock2", mocks.Mock22)
-	http.HandleFunc("/mock3", mocks.Mock23)
+	http.HandleFunc("/test1", mocks.Mock21)
+	http.HandleFunc("/test2", mocks.Mock22)
+	http.HandleFunc("/test3", mocks.Mock23)
 
 	fmt.Printf("mock server start, and listen on %d.\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
