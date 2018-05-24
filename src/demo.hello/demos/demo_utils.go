@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -338,7 +339,7 @@ func testJSONStrToRawObj() {
 	}
 }
 
-func testArrayStrToSlice() {
+func testJSONArrayToSlice() {
 	strArray := `["item1", "item2", "item3", "item4", "item5"]`
 	// strArray = "null"
 	var tmpSlice []string
@@ -351,6 +352,13 @@ func testArrayStrToSlice() {
 		}
 	} else {
 		fmt.Printf("%v\n", tmpSlice)
+	}
+}
+
+func testRegExp() {
+	tmpStr := "test1, hello, test2, test3, test4"
+	if r, err := regexp.Compile(`hello|world`); err == nil {
+		fmt.Println("#1. regexp match string:", r.MatchString(tmpStr))
 	}
 }
 
@@ -369,8 +377,9 @@ func MainUtils() {
 	// testJSONStrToObj1()
 	// testJSONStrToObj2()
 	// testJSONStrToRawObj()
+	// testJSONArrayToSlice()
 
-	// testArrayStrToSlice()
+	// testRegExp()
 
 	fmt.Println("utils done.")
 }

@@ -5,13 +5,13 @@ set -x -e
 echo "myrun.sh"
 
 # ENV VAR SET
-ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
-GOPATH=${ZJGOPRJ}:${GOPATH}
+# ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
+# GOPATH=${ZJGOPRJ}:${GOPATH}
 
 
 # MAIN
 # demo test
-go run src/demo.hello/main/main.go
+# go run src/demo.hello/main/main.go
 # go run src/demo.hello/main/main.go hello world
 # go run src/demo.hello/main/main.go -h
 # go run src/demo.hello/main/main.go -p 7890 -c 404
@@ -22,13 +22,13 @@ go run src/demo.hello/main/main.go
 
 # BIN
 # pre build bin
-# source $QBOXROOT/kodo/env.sh
-# source $QBOXROOT/base/env.sh
-# ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
-# GOPATH=${ZJGOPRJ}:${GOPATH}
+source $QBOXROOT/kodo/env.sh
+source $QBOXROOT/base/env.sh
+ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
+GOPATH=${ZJGOPRJ}:${GOPATH}
 
 # build bin
-# go build -o mockserver src/mock.server/main/main.go
+go build -o mockserver src/mock.server/main/main.go
 
 # build bin for linux
 # target_bin="mockserver"

@@ -11,20 +11,20 @@ import (
 
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
-// http://10.200.20.21:17890/index1/
 func main() {
 	port := flag.Int("p", 17891, "mock server listen port")
 	flag.Parse()
 
+	// http://10.200.20.21:17891/test/
 	http.HandleFunc("/", mocks.MockDefault)
 
-	// curl -v "http://10.200.20.21:17890/index1/?isFile=false&wait=1"
-	http.HandleFunc("/index1/", mocks.Mock01)
-	http.HandleFunc("/index2/", mocks.Mock02)
-	// curl -v "http://10.200.20.21:17890/index3/?retCode=206"
-	http.HandleFunc("/index3/", mocks.Mock03)
-	// ret 200 => curl -v "http://10.200.20.21:17890/index4/?isFile=true&md5=true&etag=true"
-	// ret 206 => curl -v "http://10.200.20.21:17890/index4/?isFile=true" -H "Range":"bytes=0-1023"
+	// curl -v "http://10.200.20.21:17891/index?isFile=false&wait=1"
+	http.HandleFunc("/index", mocks.Mock01)
+	http.HandleFunc("/index2", mocks.Mock02)
+	// curl -v "http://10.200.20.21:17891/index3/?retCode=206"
+	http.HandleFunc("/error", mocks.Mock03)
+	// ret 200 => curl -v "http://10.200.20.21:17891/index4/?isFile=true&md5=true&etag=true"
+	// ret 206 => curl -v "http://10.200.20.21:17891/index4/?isFile=true" -H "Range":"bytes=0-1023"
 	http.HandleFunc("/index4/", mocks.Mock04)
 	http.HandleFunc("/index5/", mocks.Mock05)
 
@@ -42,7 +42,7 @@ func main() {
 	http.HandleFunc("/videos/vts/file3.m2ts", mocks.Mock09)
 	http.HandleFunc("/qpdxv/vts/file4.m2ts", mocks.Mock09)
 
-	// curl -v "http://10.200.20.21:17890/disconnect?wait=3&isSetLen=true"
+	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
 
 	http.HandleFunc("/mock1", mocks.Mock21)
