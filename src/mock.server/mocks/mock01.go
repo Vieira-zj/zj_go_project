@@ -438,9 +438,9 @@ func Mock10(rw http.ResponseWriter, req *http.Request) {
 	len, err := io.Copy(rw, bytes.NewReader(b))
 	if err != nil {
 		log.Println("copy resp writer error:", err.Error())
-		fmt.Printf("copied length: %d\n", len)
 		return
 	}
+	fmt.Printf("copied length: %d\n", len)
 	log.Println("===> mock10, send data done\n")
 }
 

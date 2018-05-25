@@ -11,7 +11,7 @@ import (
 
 // client test scripts in ex_http.go
 
-// Mock21 : parse get request, => /mock1?userid="xxx"&username="xxx"&url=url1&url=url2
+// Mock21 : parse get request, => /test1?userid="xxx"&username="xxx"&url=url1&url=url2
 func Mock21(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 
@@ -54,12 +54,12 @@ type serverList struct {
 	ServersID string   `json:"servers_group_id"`
 }
 
-// Mock22 : parse post request, => /mock2 + json_body
+// Mock22 : parse post request, => /test2 + json_body
 func Mock22(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 
 	result, _ := ioutil.ReadAll(r.Body)
-	r.Body.Close()
+	defer r.Body.Close()
 	printServersInfoByStruct(result)
 	printServersInfoByInterface(result)
 
@@ -92,7 +92,7 @@ func printServersInfoByInterface(jsonBody []byte) {
 	}
 }
 
-// Mock23 : get post request data, => /mock3 + header + body(k=v)
+// Mock23 : get post request data, => /test3 + header + body(k=v)
 func Mock23(w http.ResponseWriter, r *http.Request) {
 	printRequestData(r)
 
