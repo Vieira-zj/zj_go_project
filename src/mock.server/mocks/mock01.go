@@ -70,7 +70,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	wait := GetNumberInReqForm(req, "wait")
 	// wait before send header
 	if wait > 0 {
-		fmt.Printf("wait %s seconds\n", wait)
+		fmt.Printf("wait %d seconds\n", wait)
 		time.Sleep(time.Duration(wait) * time.Second)
 	}
 
@@ -82,7 +82,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 
 	// wait after send header
 	// if wait > 0 {
-	// 	fmt.Printf("wait %s seconds\n", wait)
+	// 	fmt.Printf("wait %d seconds\n", wait)
 	// 	time.Sleep(wait * time.Second)
 	// }
 	io.Copy(rw, bytes.NewReader(b))

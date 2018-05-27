@@ -45,9 +45,10 @@ func main() {
 	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
 
-	http.HandleFunc("/test1", mocks.Mock21)
-	http.HandleFunc("/test2", mocks.Mock22)
-	http.HandleFunc("/test3", mocks.Mock23)
+	// curl -v "http://127.0.0.1:17891/mock/test1?userid="xxx"&username="xxx"&url=url1&url=url2"
+	http.HandleFunc("/mock/test1", mocks.Mock21)
+	http.HandleFunc("/mock/test2", mocks.Mock22)
+	http.HandleFunc("/mock/test3", mocks.Mock23)
 
 	fmt.Printf("mock server start, and listen on %d.\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
