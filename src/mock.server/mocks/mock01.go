@@ -45,7 +45,7 @@ func MockDefault(rw http.ResponseWriter, req *http.Request) {
 	log.Println("return 404")
 
 	io.Copy(rw, strings.NewReader(retContent))
-	log.Println("===> MockDefault, send data done\n")
+	log.Print("===> MockDefault, send data done\n\n")
 }
 
 var total01 int
@@ -86,7 +86,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	// 	time.Sleep(wait * time.Second)
 	// }
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> Mock01, send data done\n")
+	log.Print("===> Mock01, send data done\n\n")
 }
 
 var total02 int
@@ -115,7 +115,7 @@ func Mock02(rw http.ResponseWriter, req *http.Request) {
 
 	b := []byte("from Mock02, mock text end")
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("Mock02, send data done\n")
+	log.Print("Mock02, send data done\n\n")
 }
 
 var total03 int
@@ -139,7 +139,7 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 	log.Printf("return code => %d", retCode)
 
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> Mock03, send data done\n")
+	log.Print("===> Mock03, send data done\n\n")
 }
 
 var total04 int
@@ -164,7 +164,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(retCode)
 		log.Printf("return code => %d\n", retCode)
 		io.Copy(rw, strings.NewReader("Mock04, mock error string"))
-		log.Println("===> Mock04, send blocked data done\n")
+		log.Print("===> Mock04, send blocked data done\n\n")
 		return
 	}
 
@@ -216,7 +216,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// rr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
 	rr := createMockReader(buf, waitForEachRead)
 	rw.(rpc.ResponseWriter).ReplyRange(rr, int64(len(buf)), &rpc.Metas{}, req)
-	log.Println("===> Mock04, send blocked data done\n")
+	log.Print("===> Mock04, send blocked data done\n\n")
 }
 
 func createMockReader(buf []byte, waitForReader int) rpc.ReadSeeker2RangeReader {
@@ -266,7 +266,7 @@ func Mock05(rw http.ResponseWriter, req *http.Request) {
 	log.Println("return code => 200")
 
 	io.Copy(rw, &mockReader{wait: wait, r: bytes.NewReader(b)})
-	log.Println("===> Mock05, send data done\n")
+	log.Print("===> Mock05, send data done\n\n")
 }
 
 var total06 int
@@ -299,7 +299,7 @@ func Mock06(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	io.Copy(rw, strings.NewReader(ret))
-	log.Println("===> Mock06, send data done\n")
+	log.Print("===> Mock06, send data done\n\n")
 }
 
 var total07 int
@@ -325,7 +325,7 @@ func Mock07(rw http.ResponseWriter, req *http.Request) {
 	// io.Copy(rw, Strings.NewReader("** test content"))
 	b := ReadBytesFromFile(testFilePath)
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> Mock07, data returned\n")
+	log.Print("===> Mock07, data returned\n\n")
 }
 
 var total08 = 0
@@ -363,7 +363,7 @@ func Mock08(rw http.ResponseWriter, req *http.Request) {
 	log.Println("return code => 200")
 
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> Mock08, data returned\n")
+	log.Print("===> Mock08, data returned\n\n")
 }
 
 var total09 int
@@ -394,7 +394,7 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 
 	time.Sleep(500 * time.Millisecond)
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> mock09, send data done\n")
+	log.Print("===> mock09, send data done\n\n")
 }
 
 var total10 int
@@ -441,7 +441,7 @@ func Mock10(rw http.ResponseWriter, req *http.Request) {
 		return
 	}
 	fmt.Printf("copied length: %d\n", len)
-	log.Println("===> mock10, send data done\n")
+	log.Print("===> mock10, send data done\n\n")
 }
 
 // GetStringInReqForm : return string value from request query form

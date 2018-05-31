@@ -35,5 +35,5 @@ func Mock4775(rw http.ResponseWriter, req *http.Request) {
 	log.Println("return code =>", retCode)
 
 	io.Copy(rw, bytes.NewReader(b))
-	log.Println("===> Mock4775, send data done\n")
+	log.Print("===> Mock4775, send data done\n\n")
 }
