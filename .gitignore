@@ -1,12 +1,10 @@
 pkg/
 bin/
 
-src/github.com/
-src/golang.org/
-src/gopkg.in/
-src/sourcegraph.com/
-src/qbox.us/
+src/data.db/vendor
+src/demo.hello/vendor
+src/mock.server/vendor
 
-src/mock.server/main/main
+src/mock.server/main/mockserver
 src/data.db/main/main
 *.mp3

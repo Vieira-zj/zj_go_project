@@ -1,0 +1,11 @@
+Dependency:
+
+demo.hello
+"gopkg.in/go-mgo/mgo.v2/bson"
+
+data.db
+"golang.org/x/net"
+
+mock.server
+"qbox.us/httputil.v1"
+"qbox.us/rpc"
