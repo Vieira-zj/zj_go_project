@@ -78,7 +78,7 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	// rw.Header().Set("Content-Md5", mockMD5) // mock md5
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	// wait after send header
 	// if wait > 0 {
@@ -94,12 +94,12 @@ var total02 int
 // Mock02 : mock bytes stream by flush
 func Mock02(rw http.ResponseWriter, req *http.Request) {
 	total02++
-	log.Printf("\n===> Mock01, access at %d time\n", total02)
+	log.Printf("\n===> Mock02, access at %d time\n", total02)
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	const contentLen = 2048
 	for i := 0; i < 50; i++ {
@@ -136,7 +136,7 @@ func Mock03(rw http.ResponseWriter, req *http.Request) {
 	b := []byte("from Mock03, mock returned text")
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(retCode)
-	log.Printf("return %d", retCode)
+	log.Printf("return code => %d", retCode)
 
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("===> Mock03, send data done\n")
@@ -162,7 +162,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// for 4xx, no connection retry; 5xx, connection retry
 	if retCode != 200 {
 		rw.WriteHeader(retCode)
-		log.Printf("return code: %d\n", retCode)
+		log.Printf("return code => %d\n", retCode)
 		io.Copy(rw, strings.NewReader("Mock04, mock error string"))
 		log.Println("===> Mock04, send blocked data done\n")
 		return
@@ -208,7 +208,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	rw.WriteHeader(retCode)
-	fmt.Println("return 200")
+	log.Println("return code => 200")
 
 	// send data by range
 	waitForEachRead := 0
@@ -263,7 +263,7 @@ func Mock05(rw http.ResponseWriter, req *http.Request) {
 	b := InitBytesBySize(1024 * kb)
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	io.Copy(rw, &mockReader{wait: wait, r: bytes.NewReader(b)})
 	log.Println("===> Mock05, send data done\n")
@@ -290,7 +290,7 @@ func Mock06(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Length", strconv.Itoa(len(ret)))
 	rw.Header().Set("Content-Type", "application/json")
 	rw.WriteHeader(retCode)
-	log.Printf("return %d\n", retCode)
+	log.Printf("return code => %d\n", retCode)
 
 	if total06%4 == 0 {
 		wait := 3
@@ -312,7 +312,7 @@ func Mock07(rw http.ResponseWriter, req *http.Request) {
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 	io.Copy(rw, strings.NewReader("success"))
 	rw.(http.Flusher).Flush()
 
@@ -360,7 +360,7 @@ func Mock08(rw http.ResponseWriter, req *http.Request) {
 
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	io.Copy(rw, bytes.NewReader(b))
 	log.Println("===> Mock08, data returned\n")
@@ -390,7 +390,7 @@ func Mock09(rw http.ResponseWriter, req *http.Request) {
 
 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	time.Sleep(500 * time.Millisecond)
 	io.Copy(rw, bytes.NewReader(b))
@@ -414,7 +414,7 @@ func Mock10(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	rw.WriteHeader(http.StatusOK)
-	log.Println("return 200")
+	log.Println("return code => 200")
 
 	wait := GetNumberInReqForm(req, "wait")
 	if wait == 0 {

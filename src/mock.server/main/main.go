@@ -30,6 +30,7 @@ func main() {
 
 	http.HandleFunc("/httpdns", mocks.Mock06)
 	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
+	// curl -v "http://10.200.20.21:17891/post/cdnrefresh"
 	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
 
 	http.HandleFunc("/videos/file.ts", mocks.Mock09)
@@ -45,10 +46,13 @@ func main() {
 	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
 
+	// issue handler
+	http.HandleFunc("/kodo/4775", mocks.Mock4775)
+
 	// curl -v "http://127.0.0.1:17891/mock/test1?userid="xxx"&username="xxx"&url=url1&url=url2"
-	http.HandleFunc("/mock/test1", mocks.Mock21)
-	http.HandleFunc("/mock/test2", mocks.Mock22)
-	http.HandleFunc("/mock/test3", mocks.Mock23)
+	http.HandleFunc("/test1", mocks.Mock21)
+	http.HandleFunc("/test2", mocks.Mock22)
+	http.HandleFunc("/test3", mocks.Mock23)
 
 	fmt.Printf("mock server start, and listen on %d.\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
