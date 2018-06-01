@@ -5,6 +5,5 @@ src/data.db/vendor
 src/demo.hello/vendor
 src/mock.server/vendor
 
-src/mock.server/main/mockserver
+mockserver
 src/data.db/main/main
-*.mp3

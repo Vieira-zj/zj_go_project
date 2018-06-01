@@ -15,7 +15,7 @@ func main() {
 	port := flag.Int("p", 17891, "mock server listen port")
 	flag.Parse()
 
-	// http://10.200.20.21:17891/test/
+	// http://10.200.20.21:17891/test
 	http.HandleFunc("/", mocks.MockDefault)
 
 	// curl -v "http://10.200.20.21:17891/index?isFile=false&wait=1"

@@ -12,6 +12,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/jmcvetta/randutil"
 	"github.com/larspensjo/config"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -390,6 +391,23 @@ func testTimeSub() {
 	}
 }
 
+// demo 10, test get random strings
+func testRandomValues() {
+	if num, err := randutil.IntRange(1, 10); err == nil {
+		fmt.Println("get a random number:", num)
+	}
+
+	if str, err := randutil.String(10, randutil.Numerals); err == nil {
+		fmt.Println("get string of random numbers:", str)
+	}
+	if str, err := randutil.String(10, randutil.Alphabet); err == nil {
+		fmt.Println("get string of random string:", str)
+	}
+	if str, err := randutil.String(10, randutil.Alphanumeric); err == nil {
+		fmt.Println("get string of random string:", str)
+	}
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -410,6 +428,7 @@ func MainDemo04() {
 
 	// testGetMsgByIfAndMap()
 	// testTimeSub()
+	// testRandomValues()
 
 	fmt.Println("demo 04 done.")
 }

@@ -14,22 +14,30 @@ GOPATH=${ZJGOPRJ}:${GOPATH}
 # MAIN
 # demo test
 go run src/demo.hello/main/main.go
-# go run src/demo.hello/main/main.go hello world
-# go run src/demo.hello/main/main.go -h
-# go run src/demo.hello/main/main.go -p 7890 -c 404
+if [[ "$1" == "main" ]]; then
+    go run src/demo.hello/main/main.go hello world
+    # go run src/demo.hello/main/main.go -h
+    # go run src/demo.hello/main/main.go -p 7890 -c 404
+fi
 
 # db test
-# go run src/data.db/main/main.go
+if [[ "$1" == "db" ]]; then
+    go run src/data.db/main/main.go
+fi
 
 
 # BIN
 # build bin
-# go build -o mockserver src/mock.server/main/main.go
+if [[ "$1" == "bin" ]]; then
+    go build -o mockserver src/mock.server/main/main.go
+fi
 
 # build bin for linux
-# target_bin="mockserver"
-# GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
-# scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+if [[ "$1" == "lxbin" ]]; then
+    target_bin="mockserver"
+    GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
+    scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+fi
 
 
 # GO TEST
