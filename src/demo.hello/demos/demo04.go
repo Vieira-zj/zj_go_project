@@ -5,15 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"runtime"
 	"strconv"
 	"strings"
-	"text/template"
 	"time"
 
 	"github.com/jmcvetta/randutil"
-	"github.com/larspensjo/config"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -149,203 +146,7 @@ func testBSONCases() {
 	}
 }
 
-// demo 06-01, go template, parse string
-func testGoTemplate01() {
-	tmpl, err := template.New("test").Parse("hello, {{.}}\n")
-	if err != nil {
-		panic(err)
-	}
-
-	name := "zhengjin"
-	err = tmpl.Execute(os.Stdout, name)
-	if err != nil {
-		panic(err)
-	}
-}
-
-// Inventory : struct used for template test
-type Inventory struct {
-	Material string
-	Count    uint
-}
-
-// demo 06-02, go template, parse struct
-func testGoTemplate02() {
-	pattern := "{{.Count}} items are made of {{.Material}}\n"
-	tmpl, err := template.New("test").Parse(pattern)
-	if err != nil {
-		panic(err)
-	}
-
-	sweaters := Inventory{"wool", 17}
-	err = tmpl.Execute(os.Stdout, sweaters)
-	if err != nil {
-		panic(err)
-	}
-}
-
-// demo 06-03, go template, multiple tmpls
-func testGoTemplate03() {
-	tagEn := "English"
-	patternEn := "{{.Count}} items are made of {{.Material}}\n"
-	tmpl, err := template.New(tagEn).Parse(patternEn)
-	if err != nil {
-		panic(err)
-	}
-	tagCn := "Chinese"
-	patternCn := "{{.Count}}个物料的材料是{{.Material}}\n"
-	tmpl, err = tmpl.New(tagCn).Parse(patternCn)
-	if err != nil {
-		panic(err)
-	}
-
-	sweaters := Inventory{"wool", 17}
-	tmpl = tmpl.Lookup(tagEn)
-	fmt.Println("Current template:", tmpl.Name())
-	err = tmpl.ExecuteTemplate(os.Stdout, tagEn, sweaters)
-	if err != nil {
-		panic(err)
-	}
-	tmpl = tmpl.Lookup(tagCn)
-	fmt.Println("Current template:", tmpl.Name())
-	err = tmpl.ExecuteTemplate(os.Stdout, tagCn, sweaters)
-	if err != nil {
-		panic(err)
-	}
-}
-
-// demo 06-04, parse single file
-func testGoTemplate04() {
-	// filePath := os.Getenv("ZJGOPRJ") + "src/demo.hello/demos/tmpl_cn.txt"
-	filePath := "src/demo.hello/demos/tmpl_cn.txt"
-	tmpl, err := template.ParseFiles(filePath)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Current template:", tmpl.Name())
-	err = tmpl.Execute(os.Stdout, Inventory{"wool", 21})
-	if err != nil {
-		panic(err)
-	}
-}
-
-// demo 06-05, parse file with nest template
-func testGoTemplate05() {
-	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
-	fileTmpl := "src/demo.hello/demos/tmpl_en.txt"
-	tmpl, err := template.ParseFiles(fileSubTmpl, fileTmpl)
-	if err != nil {
-		panic(err)
-	}
-
-	// sub.tmpl + Inventory => tmpl_en.txt => stdout
-	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
-	if err != nil {
-		panic(err)
-	}
-}
-
-// demo 06-06, parse files with nest template
-func testGoTemplate06() {
-	pattern := "src/demo.hello/demos/tmpl_*.txt"
-	tmpl, err := template.ParseGlob(pattern)
-	if err != nil {
-		panic(err)
-	}
-	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
-	tmpl, err = tmpl.New("sub").ParseFiles(fileSubTmpl)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("#1. template en output:")
-	err = tmpl.ExecuteTemplate(os.Stdout, "main", Inventory{"wool", 21})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("#2. template cn output:")
-	err = tmpl.ExecuteTemplate(os.Stdout, "tmpl_cn.txt", Inventory{"wool", 27})
-	if err != nil {
-		panic(err)
-	}
-}
-
-// demo 07, read configs and set template
-func readValuesFromConfigs(path, section string) map[string]string {
-	// $ go get github.com/larspensjo/config
-	cfg, err := config.ReadDefault(path)
-	if err != nil {
-		fmt.Errorf("Fail to find %s, error: %s", path, err)
-	}
-
-	retMap := make(map[string]string)
-	if cfg.HasSection(section) {
-		options, err := cfg.SectionOptions(section)
-		if err == nil {
-			for _, option := range options {
-				value, err := cfg.String(section, option)
-				if err == nil {
-					retMap[option] = value
-				}
-			}
-		}
-	}
-	if len(retMap) == 0 {
-		panic(fmt.Sprintf("no options in section [%s]", section))
-	}
-	return retMap
-}
-
-const confFile = "src/demo.hello/demos/test.conf"
-
-func testReadConfigs() {
-	fmt.Println("read configs and set template string")
-	goInfos := readValuesFromConfigs(confFile, "default")
-	fmt.Println("go infos:")
-	for k, v := range goInfos {
-		fmt.Printf("%s=%s\n", k, v)
-	}
-
-	pattern := "Go version {{.version}}, and bin path {{.path}}\n"
-	tmpl, err := template.New("goInfos").Parse(pattern)
-	if err != nil {
-		panic(err)
-	}
-	err = tmpl.Execute(os.Stdout, goInfos) // map instead of struct
-	if err != nil {
-		panic(err)
-	}
-}
-
-func testBuildTemplate() {
-	fmt.Println("sub.tmpl + test.conf => test_tmpl.conf => output.txt")
-
-	// for sub tmpl, it supports diff data types, like array
-	fileSubTmpl := "src/demo.hello/demos/sub.tmpl"
-	fileTmpl := "src/demo.hello/demos/test_tmpl.conf"
-	tmpl, err := template.ParseFiles(fileTmpl, fileSubTmpl)
-	if err != nil {
-		panic(err)
-	}
-
-	// for conf, it supports only key and value
-	testInfos := readValuesFromConfigs(confFile, "test")
-
-	pathOutput := "src/demo.hello/demos/output.txt"
-	fOutput, err := os.OpenFile(pathOutput, os.O_WRONLY, 0666)
-	if err != nil {
-		panic(err)
-	}
-	err = tmpl.ExecuteTemplate(fOutput, "testInfos", testInfos)
-	if err != nil {
-		panic(err)
-	}
-	fOutput.Close()
-	fmt.Println("write configs done.")
-}
-
-// demo 08, if or map
+// demo 06, if or map
 var fnGetMsgByID = func(id string) {
 	fmt.Println("message id:", id)
 }
@@ -378,7 +179,7 @@ func testGetMsgByIfAndMap() {
 	getMsgByMap(tag, name)
 }
 
-// demo 09, time calculation
+// demo 07, time calculation
 func testTimeSub() {
 	start := time.Now()
 	time.Sleep(2 * time.Second)
@@ -391,7 +192,7 @@ func testTimeSub() {
 	}
 }
 
-// demo 10, test get random strings
+// demo 08, test get random strings
 func testRandomValues() {
 	if num, err := randutil.IntRange(1, 10); err == nil {
 		fmt.Println("get a random number:", num)
@@ -408,6 +209,22 @@ func testRandomValues() {
 	}
 }
 
+// demo 09, init random bytes
+func initBytesBySize(size int) []byte {
+	buf := make([]byte, size)
+	for i := 0; i < len(buf); i++ {
+		buf[i] = uint8(i % 10)
+	}
+	return buf
+}
+
+func testInitBytes() {
+	b := initBytesBySize(16)
+	fmt.Printf("init bytes by number: %d\n", b)
+	fmt.Printf("init bytes by char: %c\n", b)
+	fmt.Printf("init bytes by base64 str: %s\n", base64.StdEncoding.EncodeToString(b))
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -416,19 +233,11 @@ func MainDemo04() {
 	// testJSONOmitEmpty()
 	// testBSONCases()
 
-	// testGoTemplate01()
-	// testGoTemplate02()
-	// testGoTemplate03()
-	// testGoTemplate04()
-	// testGoTemplate05()
-	// testGoTemplate06()
-
-	// testReadConfigs()
-	// testBuildTemplate()
-
 	// testGetMsgByIfAndMap()
 	// testTimeSub()
+
 	// testRandomValues()
+	// testInitBytes()
 
 	fmt.Println("demo 04 done.")
 }
