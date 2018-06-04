@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -448,10 +449,40 @@ var total11 int
 // Mock11 : mock gzip and chunk
 func Mock11(rw http.ResponseWriter, req *http.Request) {
 	total11++
-	log.Printf("\n===> Mock11, access at %d time\n", total10)
+	log.Printf("\n===> Mock11, access at %d time\n", total11)
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
+	errContent := ""
+	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
+	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
+	if !isFileExist(dest) {
+		f, err := os.Open(src)
+		if err != nil {
+			errContent = err.Error()
+			log.Fatalln("read src file error:", err.Error())
+		}
+		err = zjutils.Compress([]*os.File{f}, dest)
+		if err != nil {
+			errContent = err.Error()
+			log.Fatalln("comporess error:", err.Error())
+		}
+	}
+
+	if len(errContent) > 0 {
+		rw.Header().Set("Content-Length", strconv.Itoa(len(errContent)))
+		rw.WriteHeader(597)
+		log.Println("return code => 597")
+		io.Copy(rw, strings.NewReader(errContent))
+		return
+	}
+	rw.Header().Set("Content-Encoding", "gzip")
+	rw.WriteHeader(http.StatusOK)
+	log.Println("return code => 200")
+
+	b := ReadBytesFromFile(dest)
+	io.Copy(rw, bytes.NewReader(b))
+	log.Print("===> mock11, send data done\n\n")
 }
 
 // GetStringInReqForm : return string value from request query form
@@ -497,4 +528,11 @@ func ReadBytesFromFile(path string) []byte {
 		return []byte("null")
 	}
 	return buf
+}
+
+func isFileExist(filepath string) bool {
+	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }

@@ -45,6 +45,8 @@ func main() {
 
 	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
+	// curl -v "http://127.0.0.1:17891/gzip" -H "Accept-Encoding":"gzip" > /dev/null
+	http.HandleFunc("/gzip", mocks.Mock11)
 
 	// issue handler
 	http.HandleFunc("/kodo/4775", mocks.Mock4775)
@@ -54,6 +56,7 @@ func main() {
 	http.HandleFunc("/test2", mocks.Mock22)
 	http.HandleFunc("/test3", mocks.Mock23)
 
-	fmt.Printf("mock server start, and listen on %d.\n", *port)
+	version := "1.1"
+	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

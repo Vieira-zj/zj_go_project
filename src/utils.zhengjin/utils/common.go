@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// Compress : 使用gzip压缩成tar.gz
+// Compress : compress by gzip, and create tar.gz
 func Compress(files []*os.File, dest string) error {
 	d, _ := os.Create(dest)
 	defer d.Close()
@@ -30,14 +30,19 @@ func compress(file *os.File, prefix string, tw *tar.Writer) error {
 	if err != nil {
 		return err
 	}
+
 	if info.IsDir() {
-		prefix = prefix + "/" + info.Name()
+		if len(prefix) == 0 {
+			prefix = info.Name()
+		} else {
+			prefix = prefix + "/" + info.Name()
+		}
 		fileInfos, err := file.Readdir(-1)
 		if err != nil {
 			return err
 		}
-		for _, fi := range fileInfos {
-			f, err := os.Open(file.Name() + "/" + fi.Name())
+		for _, sub := range fileInfos {
+			f, err := os.Open(file.Name() + "/" + sub.Name())
 			if err != nil {
 				return err
 			}
@@ -48,7 +53,9 @@ func compress(file *os.File, prefix string, tw *tar.Writer) error {
 		}
 	} else {
 		header, err := tar.FileInfoHeader(info, "")
-		header.Name = prefix + "/" + header.Name
+		if len(prefix) > 0 {
+			header.Name = prefix + "/" + header.Name
+		}
 		if err != nil {
 			return err
 		}
@@ -65,18 +72,20 @@ func compress(file *os.File, prefix string, tw *tar.Writer) error {
 	return nil
 }
 
-// DeCompress : 解压tar.gz
+// DeCompress : decompress tar.gz file
 func DeCompress(tarFile, dest string) error {
 	srcFile, err := os.Open(tarFile)
 	if err != nil {
 		return err
 	}
 	defer srcFile.Close()
+
 	gr, err := gzip.NewReader(srcFile)
 	if err != nil {
 		return err
 	}
 	defer gr.Close()
+
 	tr := tar.NewReader(gr)
 	for {
 		hdr, err := tr.Next()
@@ -87,7 +96,7 @@ func DeCompress(tarFile, dest string) error {
 				return err
 			}
 		}
-		filename := dest + hdr.Name
+		filename := dest + "/" + hdr.Name
 		file, err := createFile(filename)
 		if err != nil {
 			return err

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/jmcvetta/randutil"
 	"gopkg.in/mgo.v2/bson"
+	zjutils "utils.zhengjin/utils"
 )
 
 // demo 01, init value
@@ -225,6 +227,56 @@ func testInitBytes() {
 	fmt.Printf("init bytes by base64 str: %s\n", base64.StdEncoding.EncodeToString(b))
 }
 
+// demo 10, compress and decompress
+func testGetFileName() {
+	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir_backup"
+	if f, err := os.Open(src); err == nil {
+		fmt.Println("file full name:", f.Name())
+		if info, err := f.Stat(); err == nil {
+			fmt.Println("file base name:", info.Name())
+		}
+	}
+}
+
+func testTarCompressFile() {
+	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
+	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
+
+	f, err := os.Open(src)
+	if err != nil {
+		fmt.Println("read src file error:", err.Error())
+	}
+	err = zjutils.Compress([]*os.File{f}, dest)
+	if err != nil {
+		fmt.Println("comporess error:", err.Error())
+	}
+}
+
+func testTarCompressDir() {
+	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir"
+	dest := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
+
+	if f, err := os.Open(src); err == nil {
+		fmt.Printf("compress file (%s) with tar.gz\n", src)
+		err := zjutils.Compress([]*os.File{f}, dest)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
+}
+
+func testTarDecompress() {
+	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
+	dest := os.Getenv("HOME") + "/Downloads/tmp_files"
+
+	err := zjutils.DeCompress(src, dest)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	fmt.Println("decompress to:", dest)
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -238,6 +290,11 @@ func MainDemo04() {
 
 	// testRandomValues()
 	// testInitBytes()
+
+	// testGetFileName()
+	// testTarCompressFile()
+	// testTarCompressDir()
+	// testTarDecompress()
 
 	fmt.Println("demo 04 done.")
 }
