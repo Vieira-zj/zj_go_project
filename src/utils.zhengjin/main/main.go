@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"utils.project/etag"
+	zjutils "utils.zhengjin/utils"
 )
 
 func init() {
@@ -38,7 +38,7 @@ func printFileEtag() {
 	if err != nil {
 		panic(err)
 	}
-	strEtag, err := etag.GetEtagForText(string(content))
+	strEtag, err := zjutils.GetEtagForText(string(content))
 	if err != nil {
 		panic(err)
 	}

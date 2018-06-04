@@ -15,8 +15,7 @@ import (
 
 	httpv1 "qbox.us/httputil.v1"
 	"qbox.us/rpc"
-	"utils.project/encode"
-	utilsEtag "utils.project/etag"
+	zjutils "utils.zhengjin/utils"
 )
 
 const testFilePath = "./test.file"
@@ -183,7 +182,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	if isMD5 {
 		md5 := GetBoolInReqForm(req, "md5")
 		if md5 {
-			rw.Header().Set("Content-MD5", encode.GetMd5ForText(string(buf)))
+			rw.Header().Set("Content-MD5", zjutils.GetMd5ForText(string(buf)))
 			// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
 		} else {
 			errMD5 := "0980a9e10670ccc4895432d4b4ae9err"
@@ -196,7 +195,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		isSet := false
 		etag := GetBoolInReqForm(req, "etag")
 		if etag {
-			if strEtag, err := utilsEtag.GetEtagForText(string(buf)); err == nil {
+			if strEtag, err := zjutils.GetEtagForText(string(buf)); err == nil {
 				rw.Header().Set("ETag", strEtag)
 				isSet = true
 			}
@@ -442,6 +441,17 @@ func Mock10(rw http.ResponseWriter, req *http.Request) {
 	}
 	fmt.Printf("copied length: %d\n", len)
 	log.Print("===> mock10, send data done\n\n")
+}
+
+var total11 int
+
+// Mock11 : mock gzip and chunk
+func Mock11(rw http.ResponseWriter, req *http.Request) {
+	total11++
+	log.Printf("\n===> Mock11, access at %d time\n", total10)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
 }
 
 // GetStringInReqForm : return string value from request query form
