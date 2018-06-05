@@ -74,9 +74,12 @@ fi
 # https://blog.csdn.net/longyinyushi/article/details/50728049
 
 # EX01-01, field exist check
-# is_exist=y
+# is_exist="test"
+# if [ ${is_exist} ]; then
+#     echo "[] check, is exist."
+# fi
 # if [[ "${is_exist}" ]]; then
-#     echo "is exist."
+#     echo "[[]] check, is exist."
 # fi
 
 # EX01-02, field length check
@@ -94,6 +97,7 @@ fi
 # else
 #     echo 'string empty.'
 # fi
+
 
 # EX02-01, array
 # tmp_list1=("ele1")
@@ -123,6 +127,7 @@ fi
 # echo "focus packages => ${focus_pkg[@]}"
 # echo "skip packages => ${skip_pkg}"
 
+
 # EX03, if-else with regexp
 # node_name="go1.9_fix"
 # if [[ ($node_name =~ "go1.9") && ($node_name =~ "fix") ]]; then
@@ -131,7 +136,8 @@ fi
 #     echo 'version should be go1.9 with fix.'
 # fi
 
-# EX04, ${} usage
+
+# EX04, ${var} usage
 # tmp_file=/dir1/dir2/dir3/my.file.txt
 # # sub string start 0, len = 5
 # echo ${tmp_file:0:5}
@@ -142,16 +148,28 @@ fi
 # # replace all "dir" with "path"
 # echo ${tmp_file//dir/path}
 
-# EX05, exit
-# echo "test exit with error code 1."
-# exit 1
 
-# EX06, +=
+# EX05, +=
 # src="hello"
 # src=${src}" world"
 # echo ${src}
 # src="test, ${src}"
 # echo ${src}
+
+
+# EX06, iterator
+# for i in $(seq 1 3); do
+#     echo "index ${i}"
+# done
+
+# for (( i = 0; i < 3; i++ )); do
+#     echo "index ${i}"
+# done
+
+# for f in $(ls ~/Downloads/tmp_files/test.*); do
+#     echo "test file: ${f}"
+# done
+
 
 # EX07, run download parallel
 # for (( i=0; i<20; i++)); do
@@ -161,6 +179,7 @@ fi
 # done
 # sleep 15m
 # ps -ef | grep "curl" | grep -v "grep" | awk '{print $2}' | xargs kill -9
+
 
 # EX08, custom functions
 # echoEnv() { echo "TEST_ENV=$TEST_ENV"; echo "TEST_ZONE=$TEST_ZONE";}
@@ -173,5 +192,13 @@ fi
 # run function
 # echoEnv
 # findStrAll "search_text"
+
+
+# EX09, tips
+# echo "current dir: $(pwd)"
+
+# echo "test exit with error code 1."
+# exit 1
+
 
 set +x +e # set configs off
