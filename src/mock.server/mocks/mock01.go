@@ -453,36 +453,26 @@ func Mock11(rw http.ResponseWriter, req *http.Request) {
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
-	errContent := ""
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
-	if !isFileExist(dest) {
-		f, err := os.Open(src)
-		if err != nil {
-			errContent = err.Error()
-			log.Fatalln("read src file error:", err.Error())
-		}
-		err = zjutils.Compress([]*os.File{f}, dest)
-		if err != nil {
-			errContent = err.Error()
-			log.Fatalln("comporess error:", err.Error())
-		}
-	}
-
-	if len(errContent) > 0 {
-		rw.Header().Set("Content-Length", strconv.Itoa(len(errContent)))
-		rw.WriteHeader(597)
-		log.Println("return code => 597")
-		io.Copy(rw, strings.NewReader(errContent))
+	srcb := ReadBytesFromFile(testFilePath)
+	retb, err := zjutils.GzipEncode(srcb)
+	if err != nil {
+		retErr := fmt.Sprintln("error in gzip encode:", err.Error())
+		rw.Header().Set("Content-Length", strconv.Itoa(len(retErr)))
+		rw.WriteHeader(599)
+		log.Println("return code => 599")
+		io.Copy(rw, strings.NewReader(retErr))
 		return
 	}
+
 	rw.Header().Set("Content-Encoding", "gzip")
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return code => 200")
 
-	b := ReadBytesFromFile(dest)
-	io.Copy(rw, bytes.NewReader(b))
+	io.Copy(rw, bytes.NewReader(retb))
 	log.Print("===> mock11, send data done\n\n")
+	// resp headers:
+	// Content-Type: application/x-gzip
+	// Transfer-Encoding: chunked
 }
 
 // GetStringInReqForm : return string value from request query form

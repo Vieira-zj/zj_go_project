@@ -1,9 +1,13 @@
 package utils
 
 import (
+	"bytes"
+	"compress/gzip"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
+	"io"
+	"io/ioutil"
 )
 
 // GetMd5ForText : get hex md5 for text
@@ -31,4 +35,33 @@ func getMd5EncodedText(content string, md5Type string) string {
 		return base64.StdEncoding.EncodeToString(md5hash.Sum(nil))
 	}
 	return base64.URLEncoding.EncodeToString(md5hash.Sum(nil))
+}
+
+// GzipEncode : get gzip encode bytes
+func GzipEncode(in []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	w := gzip.NewWriter(&buf)
+	defer w.Close()
+	_, err := w.Write(in)
+	if err != nil {
+		return nil, err
+	}
+	w.Flush()
+	return buf.Bytes(), nil
+}
+
+// GzipDecode : get gzip decode bytes
+func GzipDecode(in []byte) ([]byte, error) {
+	r, err := gzip.NewReader(bytes.NewBuffer(in))
+	defer r.Close()
+	if err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadAll(r)
+	if err != nil {
+		if err != io.ErrUnexpectedEOF {
+			return nil, err
+		}
+	}
+	return b, nil
 }

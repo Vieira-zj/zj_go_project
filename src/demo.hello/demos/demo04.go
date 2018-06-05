@@ -227,7 +227,32 @@ func testInitBytes() {
 	fmt.Printf("init bytes by base64 str: %s\n", base64.StdEncoding.EncodeToString(b))
 }
 
-// demo 10, compress and decompress
+// demo 10, gzip encode and decode
+func testGzipCode() {
+	// srcb := []byte("gzip encode and decode, test.")
+	srcb, err := ioutil.ReadFile(testFilePath)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("src length:", len(srcb))
+
+	destb, err := zjutils.GzipEncode(srcb)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("gzip encode length:", len(destb))
+
+	b, err := zjutils.GzipDecode(destb)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("gzip decode length:", len(b))
+	if len(b) <= 128 {
+		fmt.Println("encode and decode bytes:", string(b))
+	}
+}
+
+// demo 11, compress and decompress
 func testGetFileName() {
 	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir_backup"
 	if f, err := os.Open(src); err == nil {
@@ -291,6 +316,7 @@ func MainDemo04() {
 	// testRandomValues()
 	// testInitBytes()
 
+	testGzipCode()
 	// testGetFileName()
 	// testTarCompressFile()
 	// testTarCompressDir()
