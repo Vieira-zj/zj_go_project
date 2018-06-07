@@ -502,7 +502,9 @@ func Mock12(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", mimetypeTable[mimetype])
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return code => 200")
+	rw.(http.Flusher).Flush() // write response headers
 
+	time.Sleep(3 * time.Second)
 	io.Copy(rw, bytes.NewReader(b))
 	log.Print("===> mock12, send data done\n\n")
 }

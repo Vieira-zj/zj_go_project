@@ -28,13 +28,14 @@ fi
 
 # BIN
 # build bin
+target_bin="mockserver"
 if [[ "$1" == "bin" ]]; then
-    go build -o mockserver src/mock.server/main/main.go
+    go build -o ${target_bin} src/mock.server/main/main.go
+    mv ${target_bin} /Users/zhengjin/Downloads/tmp_files
 fi
 
 # build bin for linux
 if [[ "$1" == "lxbin" ]]; then
-    target_bin="mockserver"
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
     scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 fi
