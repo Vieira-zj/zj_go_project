@@ -175,8 +175,8 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		buf = ReadBytesFromFile(testFilePath)
 	} else {
 		fmt.Println("mock body")
-		buf = InitBytesBySize(1024 * 1024 * 10)
-		// buf = []byte("from Mock03, mock returned text")
+		// buf = InitBytesBySize(1024 * 1024 * 10)
+		buf = []byte("from Mock04, mock returned text")
 	}
 
 	isMD5 := GetBoolInReqForm(req, "isMd5")
@@ -186,7 +186,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 			rw.Header().Set("Content-MD5", zjutils.GetMd5ForText(string(buf)))
 			// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
 		} else {
-			errMD5 := "0980a9e10670ccc4895432d4b4ae9err"
+			errMD5 := "0980a9e10670ccc4895432d4b4ae9fff"
 			rw.Header().Set("Content-MD5", errMD5)
 		}
 	}
@@ -473,6 +473,38 @@ func Mock11(rw http.ResponseWriter, req *http.Request) {
 	// resp headers:
 	// Content-Type: application/x-gzip
 	// Transfer-Encoding: chunked
+}
+
+var total12 int
+
+// Mock12 : mimetype
+func Mock12(rw http.ResponseWriter, req *http.Request) {
+	total12++
+	log.Printf("\n===> Mock12, access at %d time\n", total12)
+	reqHeader, _ := httputil.DumpRequest(req, true)
+	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+
+	mimetypeTable := make(map[string]string)
+	mimetypeTable["txt"] = "text/plain"
+	mimetypeTable["jpg"] = "image/jpeg"
+	mimetypeTable["bin"] = "application/octet-stream"
+
+	req.ParseForm()
+	mimetype := GetStringInReqForm(req, "type")
+	if len(mimetype) == 0 {
+		mimetype = "txt"
+	}
+
+	path := testFilePath + "." + mimetype
+	b := ReadBytesFromFile(path)
+
+	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
+	rw.Header().Set("Content-Type", mimetypeTable[mimetype])
+	rw.WriteHeader(http.StatusOK)
+	log.Println("return code => 200")
+
+	io.Copy(rw, bytes.NewReader(b))
+	log.Print("===> mock12, send data done\n\n")
 }
 
 // GetStringInReqForm : return string value from request query form

@@ -43,10 +43,12 @@ func main() {
 	http.HandleFunc("/videos/vts/file3.m2ts", mocks.Mock09)
 	http.HandleFunc("/qpdxv/vts/file4.m2ts", mocks.Mock09)
 
-	// curl -v "http://10.200.20.21:17891/disconnect?wait=3&isSetLen=true"
+	// curl -v "http://127.0.0.1:17891/disconnect?wait=3&isSetLen=true"
 	http.HandleFunc("/disconnect", mocks.Mock10)
 	// curl -v "http://127.0.0.1:17891/gzip" -H "Accept-Encoding":"gzip" > /dev/null
 	http.HandleFunc("/gzip", mocks.Mock11)
+	// curl -v "http://127.0.0.1:17891/mimetype?type=jpg"
+	http.HandleFunc("/mimetype", mocks.Mock12)
 
 	// issue handler
 	http.HandleFunc("/kodo/4775", mocks.Mock4775)
