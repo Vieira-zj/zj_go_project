@@ -13,9 +13,13 @@ GOPATH=${ZJGOPRJ}:${GOPATH}
 
 # MAIN
 # demo test
-go run src/demo.hello/main/main.go
+if [ -z $1 ]; then
+    go run src/demo.hello/main/main.go
+fi
+
 if [[ "$1" == "main" ]]; then
-    go run src/demo.hello/main/main.go hello world
+    go run src/demo.hello/main/main.go -args hello world
+    # go run src/demo.hello/main/main.go -period 3s
     # go run src/demo.hello/main/main.go -h
     # go run src/demo.hello/main/main.go -p 7890 -c 404
 fi

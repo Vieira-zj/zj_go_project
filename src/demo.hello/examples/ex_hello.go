@@ -214,7 +214,8 @@ func myUpdateMap(persons map[string]personInfo) {
 	persons["test3"] = personInfo{ID: "test3", Name: "henry", Address: "Room 606..."}
 }
 
-func switchTest(number int) {
+func switchTest() {
+	number := 7
 	switch {
 	case 0 <= number && number <= 3:
 		fmt.Printf("0-3")
@@ -366,6 +367,7 @@ func PrintGoEnvValues() {
 // MainHello : main function for general examples.
 func MainHello() {
 	// hello("zheng", "jin")
+
 	// varFormatTest()
 	// returnTest()
 
@@ -373,7 +375,7 @@ func MainHello() {
 	// arrayExamples()
 	// mapExamples()
 
-	// switchTest(7)
+	// switchTest()
 	// controlTest()
 	// argsTest()
 

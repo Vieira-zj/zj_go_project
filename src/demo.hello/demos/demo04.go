@@ -316,7 +316,7 @@ func MainDemo04() {
 	// testRandomValues()
 	// testInitBytes()
 
-	testGzipCode()
+	// testGzipCode()
 	// testGetFileName()
 	// testTarCompressFile()
 	// testTarCompressDir()

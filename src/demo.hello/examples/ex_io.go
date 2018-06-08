@@ -15,21 +15,20 @@ import (
 	"time"
 )
 
-// check file exist
-func checkIsFileExist(filepath string) bool {
-	if _, err := os.Stat(filepath); os.IsNotExist(err) {
+func isFileExist(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
 	return true
 }
 
-func getProjectExDirPath() string {
+func getExamplesPath() string {
 	return filepath.Join(os.Getenv("ZJGO"), "src", "demo.hello", "examples")
 }
 
 func testFileExist() {
-	path := filepath.Join(getProjectExDirPath(), "io_input.log")
-	if checkIsFileExist(path) {
+	path := filepath.Join(getExamplesPath(), "io_input.log")
+	if isFileExist(path) {
 		fmt.Printf("file exist: %s\n", filepath.Base(path))
 	} else {
 		fmt.Printf("file not exist: %s\n", filepath.Base(path))
@@ -80,7 +79,7 @@ func testIOWriter() {
 
 // Writer.Write(), Reader.Read()
 func testIOWriterReader() {
-	var buf bytes.Buffer
+	var buf bytes.Buffer // for rw
 	buf.Write([]byte("writer test.\n"))
 	buf.WriteTo(os.Stdout)
 	fmt.Fprint(&buf, "writer test, add buffer text.")
@@ -102,16 +101,16 @@ func testIOWriterReader() {
 }
 
 // encode file content
-func encodeFileContentTest() {
+func encodeFileTextTest() {
 	// build input stream
-	f, err := os.Open(filepath.Join(getProjectExDirPath(), "io_input.txt"))
+	f, err := os.Open(filepath.Join(getExamplesPath(), "io_input.txt"))
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer f.Close()
 
 	// build output stream
-	fEnc, err := os.Create(filepath.Join(getProjectExDirPath(), "io_enc_output.txt"))
+	fEnc, err := os.Create(filepath.Join(getExamplesPath(), "io_enc_output.txt"))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -123,10 +122,10 @@ func encodeFileContentTest() {
 	w.Close()
 }
 
-// read and write file
-func readFileTest() {
-	path := filepath.Join(getProjectExDirPath(), "io_input.txt")
-	values, err := readValues(path)
+// read and write line from file
+func readLineTest() {
+	path := filepath.Join(getExamplesPath(), "io_input.txt")
+	values, err := readIntValues(path)
 	if err != nil {
 		fmt.Println("read file error:", err)
 	} else {
@@ -134,15 +133,15 @@ func readFileTest() {
 	}
 }
 
-func writeFileTest() {
-	path := filepath.Join(getProjectExDirPath(), "io_output.txt")
-	err := writeValues([]int{1, 11, 123, 1234}, path)
+func writeLineTest() {
+	path := filepath.Join(getExamplesPath(), "io_output.txt")
+	err := writeIntValues([]int{1, 11, 123, 1234}, path)
 	if err != nil {
 		fmt.Println("write file error:", err)
 	}
 }
 
-func readValues(inFile string) (values []int, err error) {
+func readIntValues(inFile string) (values []int, err error) {
 	file, err := os.Open(inFile)
 	if err != nil {
 		fmt.Printf("Failed to open input file %s\n", inFile)
@@ -177,7 +176,7 @@ func readValues(inFile string) (values []int, err error) {
 	return
 }
 
-func writeValues(values []int, outFile string) error {
+func writeIntValues(values []int, outFile string) error {
 	file, err := os.Create(outFile)
 	if err != nil {
 		fmt.Printf("Failed to create output file %s\n", outFile)
@@ -192,10 +191,10 @@ func writeValues(values []int, outFile string) error {
 	return nil
 }
 
-// get the number of words
-func countLineWordsTest() {
-	path1 := filepath.Join(getProjectExDirPath(), "io_input.txt")
-	path2 := filepath.Join(getProjectExDirPath(), "io_output.txt")
+// get total number of words in files
+func countFilesWordsTest() {
+	path1 := filepath.Join(getExamplesPath(), "io_input.txt")
+	path2 := filepath.Join(getExamplesPath(), "io_output.txt")
 	paths := [2]string{path1, path2}
 	counts := make(map[string]int)
 
@@ -206,7 +205,7 @@ func countLineWordsTest() {
 			continue
 		}
 		defer f.Close()
-		countLineWords(f, counts) // pass as reference
+		countWords(f, counts) // pass as reference
 	}
 
 	for word, num := range counts {
@@ -214,7 +213,8 @@ func countLineWordsTest() {
 	}
 }
 
-func countLineWords(f *os.File, counts map[string]int) {
+func countWords(f *os.File, counts map[string]int) {
+	// one word on each line
 	input := bufio.NewScanner(f)
 	for input.Scan() {
 		counts[input.Text()]++
@@ -222,14 +222,14 @@ func countLineWords(f *os.File, counts map[string]int) {
 }
 
 // examples
-func deferTest() {
+func deferFuncTest() {
 	defer func() {
-		fmt.Println("self run function1 in defer")
+		fmt.Println("self run func#1 in defer") // #3
 	}()
 	defer func() {
-		fmt.Println("self run function2 in defer")
+		fmt.Println("self run func#2 in defer") // #2
 	}()
-	defer myTrace("deferTest")()
+	defer myTrace("deferTest")() // #1
 	time.Sleep(3 * time.Second)
 }
 
@@ -241,13 +241,19 @@ func myTrace(msg string) func() {
 	}
 }
 
-func readExternalArgsTest() {
-	var s1, s2 string
+func readPassArgsTest() {
+	if len(os.Args) <= 1 {
+		fmt.Println("no arguments pass in.")
+		return
+	}
+
+	var s1 string
 	for i := 1; i < len(os.Args); i++ {
 		s1 += " " + os.Args[i]
 	}
 	fmt.Println("print args:", s1[1:])
 
+	s2 := ""
 	for _, arg := range os.Args[1:] {
 		s2 += " " + arg
 	}
@@ -256,14 +262,26 @@ func readExternalArgsTest() {
 	fmt.Println("print args:", strings.Join(os.Args[1:], " "))
 }
 
-func flagTest() {
-	// run cmd: $ ./main.go -period 3s
-	period := flag.Duration("period", 1*time.Second, "sleep period")
-	fmt.Printf("flag type: %T\n", period)
+func readFlagTest1() {
+	// run cmd: $ go run ./main.go -w 3
+	waitTime := flag.Int("w", 1, "wait time by seconds")
+	fmt.Printf("flag type: %T\n", waitTime)
 
 	flag.Parse()
-	fmt.Printf("sleep for %v...\n", *period)
-	time.Sleep(*period)
+	fmt.Printf("sleep for %v...\n", *waitTime)
+	time.Sleep(time.Duration(*waitTime) * time.Second)
+	fmt.Println("flag test done.")
+}
+
+func readFlagTest2() {
+	// run cmd: $ go run ./main.go -period 3s
+	var duration time.Duration
+	flag.DurationVar(&duration, "period", time.Second, "sleep period by seconds")
+	fmt.Printf("flag type: %T\n", duration)
+
+	flag.Parse()
+	fmt.Printf("sleep for %v...\n", duration)
+	time.Sleep(duration)
 	fmt.Println("flag test done.")
 }
 
@@ -291,25 +309,27 @@ func fmtPrintfTest() {
 
 // MainIO : main function for IO examples.
 func MainIO() {
-	hello("fname", "lastname")
+	// from hello.go
+	// hello("fname", "lastname")
+	// PrintGoEnvValues()
 
 	// testFileExist()
 	// testIOReader()
 	// testIOWriter()
 	// testIOWriterReader()
 
-	// encodeFileContentTest()
-	// readFileTest()
-	// writeFileTest()
-	// countLineWordsTest()
+	// encodeFileTextTest()
+	// readLineTest()
+	// writeLineTest()
+	// countFilesWordsTest()
 
-	// deferTest()
+	// deferFuncTest()
 
-	// readExternalArgsTest()
-	// flagTest()
+	// readPassArgsTest()
+	// readFlagTest1()
+	// readFlagTest2()
 
 	// fmtPrintfTest()
-	// PrintGoEnvValues() // from hello.go
 
 	fmt.Println("io demo.")
 }
