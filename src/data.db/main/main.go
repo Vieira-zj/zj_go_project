@@ -11,11 +11,18 @@ import (
 // build cmd: $ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 func main() {
-	isMongodbTest := false
+	isMongodbTest := true
 	if isMongodbTest {
-		mongodb.ConnectToDbAndTest()
-		// mongodb.InsertToRsDb()
-		// mongodb.InsertToRsDbParallel()
+		// mongodb.ConnectToDbAndTest()
+
+		// mongodb.QeuryFromTblmgr()
+		// mongodb.QeuryFromUc()
+		// mongodb.QeuryFromPub()
+		mongodb.QeuryFromBucket()
+
+		// mongodb.InsertRsRecords()
+		// mongodb.InsertRsRecordsParallel()
+
 		// cmd: ./main 10.200.30.11:8001
 		// mongodb.PrintMongoOpLog()
 	}
@@ -31,5 +38,5 @@ func main() {
 		memcached.ConnectMemcacheAndTest()
 	}
 
-	fmt.Println("db main done.")
+	fmt.Println("data main done.")
 }
