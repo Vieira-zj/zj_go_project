@@ -12,7 +12,7 @@ import (
 )
 
 //
-// tblmgr, uc, pub => bucket
+// bucket info => tblmgr, uc, pub => bucket
 const (
 	bucket = "test_bucket_transfer_data11"
 	uid    = 1380469264
@@ -100,7 +100,7 @@ func queryDBOneRecord(session *mgo.Session, info queryInfo) interface{} {
 	fmt.Println("total:", num)
 
 	var results interface{} // use interface{} instead of struct
-	err = c.Find(info.Query).One(results)
+	err = c.Find(info.Query).One(&results)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
@@ -116,7 +116,7 @@ func queryDBAllRecords(session *mgo.Session, info queryInfo) []interface{} {
 	}
 	fmt.Println("total:", num)
 
-	var results []interface{}
+	var results []interface{} // use slice
 	err = c.Find(info.Query).All(&results)
 	if err != nil {
 		fmt.Println("error:", err)
