@@ -3,13 +3,18 @@ package mongodb
 import (
 	"encoding/base64"
 	"fmt"
+	"strconv"
 	"sync"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
-const addrMongoBetaZ0 = "10.200.20.38:27017"
+const (
+	addrMongoBetaZ0 = "10.200.20.38:27017"
+	bucket          = "test_bucket_transfer_data03"
+	uid             = 1380469264
+)
 
 //
 // tblmgr
@@ -32,24 +37,17 @@ type tblmgrRecord struct {
 	Perm  uint32 `json:"perm" bson:"perm,omitempty"`
 }
 
-// QeuryFromTblmgr : query records for tblmgr
-func QeuryFromTblmgr() {
-	session, err := mgo.Dial(addrMongoBetaZ0)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	results := tblmgrRecord{}
+func queryFromTblmgr(session *mgo.Session) {
+	// var results tblmgrRecord
+	var results interface{}
 	info := queryInfo{
 		DataBase:   "qbox_rs",
 		Collection: "tblmgr",
-		Query:      bson.M{"tbl": "share_tbl_mkbucket_zXfTDx"},
+		Query:      bson.M{"tbl": bucket},
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("results: %+v\n", results)
+	fmt.Printf("tblmgr search results: %+v\n", results)
 }
 
 //
@@ -61,24 +59,18 @@ type ucRecord struct {
 	Val   string `json:"val" bson:"val"`
 }
 
-// QeuryFromUc : query records for uc
-func QeuryFromUc() {
-	session, err := mgo.Dial(addrMongoBetaZ0)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	results := ucRecord{}
+func queryFromUc(session *mgo.Session) {
+	key := strconv.FormatInt(uid, 36) + ":" + bucket
+	// var results ucRecord
+	var results interface{}
 	info := queryInfo{
 		DataBase:   "qbox_uc",
 		Collection: "uc",
-		Query:      bson.M{"tbl": "mtw8wd:KODO-3058-testUfmjXAWeag"},
+		Query:      bson.M{"key": key},
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("search results: %+v\n", results)
+	fmt.Printf("uc search results: %+v\n", results)
 }
 
 //
@@ -92,24 +84,17 @@ type pubRecord struct {
 	Global  bool   `json:"global" bson:"global"`
 }
 
-// QeuryFromPub : query records for pub domain
-func QeuryFromPub() {
-	session, err := mgo.Dial(addrMongoBetaZ0)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	results := pubRecord{}
+func queryFromPub(session *mgo.Session) {
+	// var results pubRecord
+	var results interface{}
 	info := queryInfo{
 		DataBase:   "qbox_pub",
 		Collection: "pub",
-		Query:      bson.M{"tbl": "KODO-3058-testUfmjXAWeag"},
+		Query:      bson.M{"tbl": bucket},
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("search results: %+v\n", results)
+	fmt.Printf("pub search results: %+v\n", results)
 }
 
 //
@@ -142,24 +127,17 @@ type domainInfo struct {
 	Global  bool   `json:"global" bson:"global"`
 }
 
-// QeuryFromBucket : query records for bucket
-func QeuryFromBucket() {
-	session, err := mgo.Dial(addrMongoBetaZ0)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
-	results := bucketRecord{}
+func queryFromBucket(session *mgo.Session) {
+	// var results bucketRecord
+	var results interface{}
 	info := queryInfo{
 		DataBase:   "qbox_bucket",
 		Collection: "bucket",
-		Query:      bson.M{"itbl": 512345379},
+		Query:      bson.M{"tbl": bucket},
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("search results: %+v\n", results)
+	fmt.Printf("bucket search results: %+v\n", results)
 }
 
 type queryInfo struct {
@@ -173,8 +151,24 @@ func queryDBRecods(session *mgo.Session, info queryInfo) {
 	c := session.DB(info.DataBase).C(info.Collection)
 	err := c.Find(info.Query).One(info.Results)
 	if err != nil {
+		fmt.Println("error:", err)
+	}
+}
+
+//
+// QueryBucketInfo : query bucket info from db
+func QueryBucketInfo() {
+	session, err := mgo.Dial(addrMongoBetaZ0)
+	if err != nil {
 		panic(err)
 	}
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+
+	queryFromTblmgr(session)
+	queryFromUc(session)
+	queryFromPub(session)
+	queryFromBucket(session)
 }
 
 //

@@ -15,10 +15,7 @@ func main() {
 	if isMongodbTest {
 		// mongodb.ConnectToDbAndTest()
 
-		// mongodb.QeuryFromTblmgr()
-		// mongodb.QeuryFromUc()
-		// mongodb.QeuryFromPub()
-		mongodb.QeuryFromBucket()
+		mongodb.QueryBucketInfo()
 
 		// mongodb.InsertRsRecords()
 		// mongodb.InsertRsRecordsParallel()
