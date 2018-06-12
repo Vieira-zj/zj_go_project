@@ -12,7 +12,7 @@ import (
 
 const (
 	addrMongoBetaZ0 = "10.200.20.38:27017"
-	bucket          = "test_bucket_transfer_data03"
+	bucket          = "test_bucket_transfer_data06"
 	uid             = 1380469264
 )
 
@@ -47,7 +47,7 @@ func queryFromTblmgr(session *mgo.Session) {
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("tblmgr search results: %+v\n", results)
+	fmt.Printf("query results: %+v\n", results)
 }
 
 //
@@ -70,7 +70,7 @@ func queryFromUc(session *mgo.Session) {
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("uc search results: %+v\n", results)
+	fmt.Printf("query results: %+v\n", results)
 }
 
 //
@@ -94,7 +94,7 @@ func queryFromPub(session *mgo.Session) {
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("pub search results: %+v\n", results)
+	fmt.Printf("query results: %+v\n", results)
 }
 
 //
@@ -137,7 +137,7 @@ func queryFromBucket(session *mgo.Session) {
 		Results:    &results,
 	}
 	queryDBRecods(session, info)
-	fmt.Printf("bucket search results: %+v\n", results)
+	fmt.Printf("query results: %+v\n", results)
 }
 
 type queryInfo struct {
@@ -148,8 +148,15 @@ type queryInfo struct {
 }
 
 func queryDBRecods(session *mgo.Session, info queryInfo) {
+	fmt.Printf("===> query from %s.%s:\n", info.DataBase, info.Collection)
 	c := session.DB(info.DataBase).C(info.Collection)
-	err := c.Find(info.Query).One(info.Results)
+	num, err := c.Count()
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println("count:", num)
+
+	err = c.Find(info.Query).One(info.Results)
 	if err != nil {
 		fmt.Println("error:", err)
 	}
