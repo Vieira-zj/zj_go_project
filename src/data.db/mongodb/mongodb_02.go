@@ -3,6 +3,7 @@ package mongodb
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
 	"strconv"
 	"sync"
 
@@ -10,162 +11,25 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//
+// tblmgr, uc, pub => bucket
 const (
-	addrMongoBetaZ0 = "10.200.20.38:27017"
-	bucket          = "test_bucket_transfer_data06"
-	uid             = 1380469264
+	bucket = "test_bucket_transfer_data11"
+	uid    = 1380469264
 )
 
-//
-// tblmgr
-//
-type tblmgrRecord struct {
-	Tbl      string `json:"tbl" bson:"tbl"`
-	UID      uint32 `json:"uid" bson:"uid"`
-	Itbl     uint32 `json:"itbl" bson:"itbl"`
-	PhyTbl   string `json:"phy" bson:"phy"`
-	Ctime    int64  `json:"ctime" bson:"ctime"`
-	DropTime int64  `json:"drop" bson:"drop"`
-	Region   string `json:"region" bson:"region"`
-	Zone     string `json:"zone" bson:"zone"`
-	Global   bool   `json:"global" bson:"global"`
-	Line     bool   `json:"line" bson:"line"`
-
-	Ouid  uint32 `json:"ouid" bson:"ouid,omitempty"`
-	Oitbl uint32 `json:"oitbl" bson:"oitbl,omitempty"`
-	Otbl  string `json:"otbl" bson:"otbl,omitempty"`
-	Perm  uint32 `json:"perm" bson:"perm,omitempty"`
-}
-
-func queryFromTblmgr(session *mgo.Session) {
-	// var results tblmgrRecord
-	var results interface{}
-	info := queryInfo{
-		DataBase:   "qbox_rs",
-		Collection: "tblmgr",
-		Query:      bson.M{"tbl": bucket},
-		Results:    &results,
-	}
-	queryDBRecods(session, info)
-	fmt.Printf("query results: %+v\n", results)
-}
-
-//
-// uc
-//
-type ucRecord struct {
-	Key   string `json:"key" bson:"key"`
-	Group string `json:"grp" bson:"grp"`
-	Val   string `json:"val" bson:"val"`
-}
-
-func queryFromUc(session *mgo.Session) {
-	key := strconv.FormatInt(uid, 36) + ":" + bucket
-	// var results ucRecord
-	var results interface{}
-	info := queryInfo{
-		DataBase:   "qbox_uc",
-		Collection: "uc",
-		Query:      bson.M{"key": key},
-		Results:    &results,
-	}
-	queryDBRecods(session, info)
-	fmt.Printf("query results: %+v\n", results)
-}
-
-//
-// pub
-//
-type pubRecord struct {
-	Domain  string `json:"domain" bson:"domain"`
-	Tbl     string `json:"tbl" bson:"tbl"`
-	Owner   int64  `json:"owner" bson:"owner"`
-	Refresh bool   `json:"refresh" bson:"refresh"`
-	Global  bool   `json:"global" bson:"global"`
-}
-
-func queryFromPub(session *mgo.Session) {
-	// var results pubRecord
-	var results interface{}
-	info := queryInfo{
-		DataBase:   "qbox_pub",
-		Collection: "pub",
-		Query:      bson.M{"tbl": bucket},
-		Results:    &results,
-	}
-	queryDBRecods(session, info)
-	fmt.Printf("query results: %+v\n", results)
-}
-
-//
-// bucket
-//
-type bucketRecord struct {
-	Tbl    string `json:"tbl" bson:"tbl"`
-	UID    uint32 `json:"uid" bson:"uid"`
-	Itbl   uint32 `json:"itbl" bson:"itbl"`
-	PhyTbl string `json:"phy" bson:"phy"`
-	Ctime  int64  `json:"ctime" bson:"ctime"`
-	// !=0时, 表示该条目被删除 (包括uc和domain)
-	DropTime int64        `json:"drop" bson:"drop"`
-	Region   string       `json:"region" bson:"region"`
-	Zone     string       `json:"zone" bson:"zone"`
-	Global   bool         `json:"global" bson:"global"`
-	Line     bool         `json:"line" bson:"line"`
-	Val      string       `json:"val" bson:"val,omitempty"`
-	Domains  []domainInfo `json:"domain_info" bson:"domain_info,omitempty"`
-
-	Ouid  uint32 `json:"ouid" bson:"ouid,omitempty"`
-	Oitbl uint32 `json:"oitbl" bson:"oitbl,omitempty"`
-	Otbl  string `json:"otbl" bson:"otbl,omitempty"`
-	Perm  uint32 `json:"perm" bson:"perm,omitempty"`
-}
-
-type domainInfo struct {
-	Domain  string `json:"domain" bson:"domain"`
-	Refresh bool   `json:"refresh" bson:"refresh"`
-	Global  bool   `json:"global" bson:"global"`
-}
-
-func queryFromBucket(session *mgo.Session) {
-	// var results bucketRecord
-	var results interface{}
-	info := queryInfo{
-		DataBase:   "qbox_bucket",
-		Collection: "bucket",
-		Query:      bson.M{"tbl": bucket},
-		Results:    &results,
-	}
-	queryDBRecods(session, info)
-	fmt.Printf("query results: %+v\n", results)
-}
-
-type queryInfo struct {
-	DataBase   string
-	Collection string
-	Query      interface{}
-	Results    interface{}
-}
-
-func queryDBRecods(session *mgo.Session, info queryInfo) {
-	fmt.Printf("===> query from %s.%s:\n", info.DataBase, info.Collection)
-	c := session.DB(info.DataBase).C(info.Collection)
-	num, err := c.Count()
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	fmt.Println("count:", num)
-
-	err = c.Find(info.Query).One(info.Results)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-}
-
-//
 // QueryBucketInfo : query bucket info from db
 func QueryBucketInfo() {
-	session, err := mgo.Dial(addrMongoBetaZ0)
+	const (
+		addrMongoBetaZ0 = "10.200.20.38:27017"
+		addrMongoDevZ0  = "10.200.20.23:27017"
+	)
+
+	dbURI := addrMongoBetaZ0
+	if os.Getenv("TEST_ENV") == "dev" {
+		dbURI = addrMongoDevZ0
+	}
+	session, err := mgo.Dial(dbURI)
 	if err != nil {
 		panic(err)
 	}
@@ -176,11 +40,92 @@ func QueryBucketInfo() {
 	queryFromUc(session)
 	queryFromPub(session)
 	queryFromBucket(session)
+	fmt.Println("query bucket info done.")
+}
+
+func queryFromTblmgr(session *mgo.Session) {
+	info := queryInfo{
+		DataBase:   "qbox_rs",
+		Collection: "tblmgr",
+		Query:      bson.M{"tbl": bucket},
+	}
+	results := queryDBOneRecord(session, info)
+	fmt.Printf("query results: %+v\n", results)
+}
+
+func queryFromUc(session *mgo.Session) {
+	key := strconv.FormatInt(uid, 36) + ":" + bucket
+	info := queryInfo{
+		DataBase:   "qbox_uc",
+		Collection: "uc",
+		Query:      bson.M{"key": key},
+	}
+	results := queryDBOneRecord(session, info)
+	fmt.Printf("query results: %+v\n", results)
+}
+
+func queryFromPub(session *mgo.Session) {
+	info := queryInfo{
+		DataBase:   "qbox_pub",
+		Collection: "pub",
+		Query:      bson.M{"tbl": bucket},
+	}
+	results := queryDBAllRecords(session, info)
+	fmt.Printf("query results: %+v\n", results)
+}
+
+func queryFromBucket(session *mgo.Session) {
+	info := queryInfo{
+		DataBase:   "qbox_bucket",
+		Collection: "bucket",
+		Query:      bson.M{"tbl": bucket},
+	}
+	results := queryDBOneRecord(session, info)
+	fmt.Printf("query results: %+v\n", results)
+}
+
+type queryInfo struct {
+	DataBase   string
+	Collection string
+	Query      interface{}
+}
+
+func queryDBOneRecord(session *mgo.Session, info queryInfo) interface{} {
+	fmt.Printf("===> query one from %s.%s:\n", info.DataBase, info.Collection)
+	c := session.DB(info.DataBase).C(info.Collection)
+	num, err := c.Count()
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println("total:", num)
+
+	var results interface{} // use interface{} instead of struct
+	err = c.Find(info.Query).One(results)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return results
+}
+
+func queryDBAllRecords(session *mgo.Session, info queryInfo) []interface{} {
+	fmt.Printf("===> query all from %s.%s:\n", info.DataBase, info.Collection)
+	c := session.DB(info.DataBase).C(info.Collection)
+	num, err := c.Count()
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println("total:", num)
+
+	var results []interface{}
+	err = c.Find(info.Query).All(&results)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	return results
 }
 
 //
 // rs
-//
 type rsRecord struct {
 	ID       string `bson:"_id"`
 	FDel     uint32 `bson:"fdel"`
