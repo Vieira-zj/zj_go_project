@@ -11,7 +11,7 @@ import (
 // build cmd: $ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 func main() {
-	isMongodbTest := true
+	isMongodbTest := false
 	if isMongodbTest {
 		// mongodb.ConnectToDbAndTest()
 

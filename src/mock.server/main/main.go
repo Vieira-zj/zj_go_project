@@ -47,8 +47,9 @@ func main() {
 	http.HandleFunc("/disconnect", mocks.Mock10)
 	// curl -v "http://127.0.0.1:17891/gzip" -H "Accept-Encoding":"gzip" > /dev/null
 	http.HandleFunc("/gzip", mocks.Mock11)
-	// curl -v "http://127.0.0.1:17891/mimetype?type=jpg"
+	// curl -v "http://127.0.0.1:17891/mimetype?type=txt&lenzero=true"
 	http.HandleFunc("/mimetype", mocks.Mock12)
+	http.HandleFunc("/mimetype.jpg", mocks.Mock12)
 
 	// issue handler
 	http.HandleFunc("/kodo/4775", mocks.Mock4775)
@@ -58,7 +59,7 @@ func main() {
 	http.HandleFunc("/test2", mocks.Mock22)
 	http.HandleFunc("/test3", mocks.Mock23)
 
-	version := "1.1.1"
+	version := "1.1.2"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
