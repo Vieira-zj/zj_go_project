@@ -63,8 +63,12 @@ func Mock01(rw http.ResponseWriter, req *http.Request) {
 	if isFile {
 		b = ReadBytesFromFile(testFilePath)
 	} else {
-		b = []byte("from Mock01, mock returned text")
-		// b := InitBytesBySize(1024)
+		hostname, err := os.Hostname()
+		if err != nil {
+			hostname = "null"
+		}
+		b = []byte(fmt.Sprintf("from Host: %s\n", hostname) + "from Mock01, mock returned text")
+		// b = InitBytesBySize(1024)
 	}
 
 	wait := GetNumberInReqForm(req, "wait")
@@ -169,14 +173,21 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	isFile := GetBoolInReqForm(req, "isFile")
+	isTest := GetBoolInReqForm(req, "isTest")
 	var buf []byte
 	if isFile {
 		fmt.Println("read bytes from file")
 		buf = ReadBytesFromFile(testFilePath)
+	} else if isTest {
+		fmt.Println("mock string body")
+		hostname, err := os.Hostname()
+		if err != nil {
+			hostname = "null"
+		}
+		buf = []byte(fmt.Sprintf("from Host: %s\n", hostname) + "from Mock04, mock returned text")
 	} else {
-		fmt.Println("mock body")
-		// buf = InitBytesBySize(1024 * 1024 * 10)
-		buf = []byte("from Mock04, mock returned text")
+		fmt.Println("mock bytes body")
+		buf = InitBytesBySize(1024 * 1024 * 10)
 	}
 
 	isMD5 := GetBoolInReqForm(req, "isMd5")

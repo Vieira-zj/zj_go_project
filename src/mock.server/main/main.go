@@ -59,7 +59,7 @@ func main() {
 	http.HandleFunc("/test2", mocks.Mock22)
 	http.HandleFunc("/test3", mocks.Mock23)
 
-	version := "1.1.2"
+	version := "1.1.3"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
