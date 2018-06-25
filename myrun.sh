@@ -103,6 +103,28 @@ fi
 #     echo 'string empty.'
 # fi
 
+# EX01-04, file exist check
+# test_path="./c.out"
+
+# if [ -f ${test_path} ];then
+#     echo "file ${test_path} exist."
+# else
+#     echo "file ${test_path} NOT exist."
+# fi
+
+# while [ ! -f ${test_path} ];do
+#     echo 'checking file ${test_path} ...';sleep 3
+# done
+# echo "file ${test_path} exist."
+
+# for (( i = 0; i < 10; i++ ));do
+#     echo 'checking file ${test_path} ...';sleep 3
+#     if [ -f ${test_path} ];then
+#         echo "file ${test_path} exist."
+#         break
+#     fi
+# done
+
 
 # EX02-01, array
 # tmp_list1=("ele1")
