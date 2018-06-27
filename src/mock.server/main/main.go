@@ -25,7 +25,7 @@ func main() {
 	http.HandleFunc("/error", mocks.Mock03)
 	// ret 200 => curl -v "http://10.200.20.21:17891/common?isFile=true&md5=true&etag=true"
 	// ret 206 => curl -v "http://10.200.20.21:17891/common?isFile=true" -H "Range":"bytes=0-1023"
-	http.HandleFunc("/common", mocks.Mock04)
+	http.HandleFunc("/download", mocks.Mock04)
 	http.HandleFunc("/index5", mocks.Mock05)
 
 	http.HandleFunc("/httpdns", mocks.Mock06)
@@ -59,7 +59,7 @@ func main() {
 	http.HandleFunc("/test2", mocks.Mock22)
 	http.HandleFunc("/test3", mocks.Mock23)
 
-	version := "1.1.3"
+	version := "1.1.4"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

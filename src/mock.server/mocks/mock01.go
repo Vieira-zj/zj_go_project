@@ -218,8 +218,8 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	rw.WriteHeader(retCode)
-	log.Println("return code => 200")
+	// rw.WriteHeader(retCode)
+	// log.Println("return code => 200")
 
 	// send data by range
 	waitForEachRead := 0
