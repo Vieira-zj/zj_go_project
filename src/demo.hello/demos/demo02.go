@@ -303,6 +303,19 @@ func testMapSequence() {
 	}
 }
 
+// demo 07-03, get map value
+func testGetMapValue() {
+	m := make(map[string]string)
+	m["1"] = "one"
+
+	val, ok := m["2"]
+	if ok {
+		fmt.Println("map value:", val)
+	} else {
+		fmt.Println("map value not found!")
+	}
+}
+
 // MainDemo02 : main
 func MainDemo02() {
 	// testMyFloatInterface()
@@ -318,6 +331,7 @@ func MainDemo02() {
 	// testStringArrayInArray()
 	// testSliceSequence()
 	// testMapSequence()
+	// testGetMapValue()
 
 	fmt.Println("demo 02 done.")
 }

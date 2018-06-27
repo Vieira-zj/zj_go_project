@@ -158,17 +158,16 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 	// for qiniuproxy, default range is 4M
 
 	req.ParseForm()
-	retCode := GetNumberInReqForm(req, "retCode")
-	if retCode == 0 {
-		retCode = 200
-	}
 
+	retCode := GetNumberInReqForm(req, "retCode")
 	// for 4xx, no connection retry; 5xx, connection retry
-	if retCode != 200 {
+	if retCode != 0 && retCode != 200 {
+		retText := "Mock04, mock error string"
+		rw.Header().Set("Content-Length", strconv.Itoa(len(retText)))
 		rw.WriteHeader(retCode)
 		log.Printf("return code => %d\n", retCode)
-		io.Copy(rw, strings.NewReader("Mock04, mock error string"))
-		log.Print("===> Mock04, send blocked data done\n\n")
+		io.Copy(rw, strings.NewReader(retText))
+		log.Print("===> Mock04, send data done\n\n")
 		return
 	}
 
@@ -190,34 +189,23 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		buf = InitBytesBySize(1024 * 1024 * 10)
 	}
 
-	isMD5 := GetBoolInReqForm(req, "isMd5")
-	if isMD5 {
-		md5 := GetBoolInReqForm(req, "md5")
-		if md5 {
-			rw.Header().Set("Content-MD5", zjutils.GetMd5ForText(string(buf)))
-			// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
-		} else {
-			errMD5 := "0980a9e10670ccc4895432d4b4ae9fff"
-			rw.Header().Set("Content-MD5", errMD5)
-		}
-	}
-
-	isEtag := GetBoolInReqForm(req, "isEtag")
-	if isEtag {
-		isSet := false
-		etag := GetBoolInReqForm(req, "etag")
-		if etag {
-			if strEtag, err := zjutils.GetEtagForText(string(buf)); err == nil {
-				rw.Header().Set("ETag", strEtag)
-				isSet = true
+	// md5 check for non range request
+	_, ok := req.Header["Range"]
+	if !ok {
+		isMD5 := GetBoolInReqForm(req, "isMd5")
+		if isMD5 {
+			md5 := GetBoolInReqForm(req, "md5")
+			if md5 {
+				rw.Header().Set("Content-MD5", zjutils.GetMd5ForText(string(buf)))
+				// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
+			} else {
+				errMD5 := "0980a9e10670ccc4895432d4b4ae9fff"
+				rw.Header().Set("Content-MD5", errMD5)
 			}
 		}
-		if !isSet {
-			errEtag := "FmDc-7ioTJvtbSdoD7X3hHioXERR"
-			rw.Header().Set("ETag", errEtag)
-		}
 	}
 
+	// Content-Length and Return Code handle by ReplyRange()
 	// rw.WriteHeader(retCode)
 	// log.Println("return code => 200")
 
@@ -528,8 +516,11 @@ func Mock12(rw http.ResponseWriter, req *http.Request) {
 
 // GetStringInReqForm : return string value from request query form
 func GetStringInReqForm(req *http.Request, argName string) string {
-	if len(req.Form) > 0 && len(req.Form[argName]) > 0 {
-		return req.Form[argName][0]
+	if len(req.Form) > 0 {
+		val, ok := req.Form[argName]
+		if ok {
+			return val[0]
+		}
 	}
 	return ""
 }
