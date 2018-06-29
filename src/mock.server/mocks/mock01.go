@@ -496,8 +496,8 @@ func Mock12(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", mimetypeTable[mimetype])
 
 	var b []byte
-	isLenZero := GetBoolInReqForm(req, "lenzero")
-	if !isLenZero {
+	isEmpty := GetBoolInReqForm(req, "isempty")
+	if !isEmpty {
 		path := testFilePath + "." + mimetype
 		b = ReadBytesFromFile(path)
 	}
