@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"runtime"
 	"strconv"
@@ -302,6 +303,41 @@ func testTarDecompress() {
 	fmt.Println("decompress to:", dest)
 }
 
+func testGetTotalGoroutines() {
+	printTotalGoroutines := func() {
+		fmt.Println("*** total goroutines:", runtime.NumGoroutine())
+	}
+
+	const waitTime = 5
+	ch := make(chan int, 10)
+
+	printTotalGoroutines()
+	for i := 0; i < 10; i++ {
+		go func(ch chan<- int, num int) {
+			time.Sleep(time.Duration(rand.Intn(waitTime)) * time.Second)
+			ch <- num
+		}(ch, i)
+	}
+
+	go func(ch chan int) {
+		time.Sleep(time.Duration(waitTime+1) * time.Second)
+		fmt.Println("close channel")
+		close(ch)
+		printTotalGoroutines()
+	}(ch)
+
+	printTotalGoroutines()
+	time.Sleep(2 * time.Second)
+	printTotalGoroutines()
+
+	for num := range ch {
+		fmt.Println("iterator at:", num)
+	}
+
+	time.Sleep(2 * time.Second)
+	fmt.Println("testGetTotalGoroutines done.")
+}
+
 // MainDemo04 : main
 func MainDemo04() {
 	// testStructRefValue()
@@ -321,6 +357,8 @@ func MainDemo04() {
 	// testTarCompressFile()
 	// testTarCompressDir()
 	// testTarDecompress()
+
+	// testGetTotalGoroutines()
 
 	fmt.Println("demo 04 done.")
 }
