@@ -20,10 +20,10 @@ type DdArgs struct {
 
 // TestDdCheck : run dd and check files
 func TestDdCheck(args DdArgs) bool {
-	base := "dd if=%s of=%s bs=%d count=%d"
-	cmd := fmt.Sprintf(base+" oflag=direct", "/dev/zero", args.FileName, args.BlockSize, args.Count)
-	if args.Mode == 1 {
-		cmd = fmt.Sprintf(base+" oflag=direct iflag=direct", args.FileName, args.FileName+".out", args.BlockSize, args.Count)
+	base := "dd if=%s of=%s bs=%d count=%d oflag=direct" // w
+	cmd := fmt.Sprintf(base, "/dev/zero", args.FileName, args.BlockSize, args.Count)
+	if args.Mode == 1 { // rw
+		cmd = fmt.Sprintf(base+" iflag=direct", args.FileName, args.FileName+".out", args.BlockSize, args.Count)
 	}
 
 	chDd := make(chan bool)
@@ -48,7 +48,7 @@ func TestDdCheck(args DdArgs) bool {
 				return
 			}
 			lastSize = curSize
-			time.Sleep(8 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 	}(chCheck)
 
@@ -63,7 +63,7 @@ func TestDdCheck(args DdArgs) bool {
 			return true
 		}
 	case <-time.After(time.Duration(args.TimeoutMin) * time.Minute):
-		log.Println("dd timeout")
+		log.Println("dd test timeout")
 	}
 	return false
 }

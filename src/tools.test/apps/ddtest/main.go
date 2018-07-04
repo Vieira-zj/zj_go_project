@@ -31,7 +31,6 @@ func main() {
 	flag.IntVar(&blockSize, "bs", 1, "block size (M).")
 	flag.IntVar(&count, "c", 1, "block count.")
 	flag.IntVar(&timeout, "t", 1, "timeout (minutes) for dd read and write file.")
-
 	flag.BoolVar(&help, "h", false, "help.")
 
 	flag.Parse()

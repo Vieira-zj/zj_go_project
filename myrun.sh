@@ -44,7 +44,7 @@ if [[ "$1" == "lxmock" ]]; then
     scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 fi
 
-# build tool bin for linux 
+# build ddtest bin for linux
 target_bin="ddtest"
 if [[ "$1" == "lxddtest" ]]; then
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/tools.test/apps/ddtest/main.go
@@ -83,6 +83,20 @@ fi
 # SHELL EXAMPLES
 # EX01, field check
 # https://blog.csdn.net/longyinyushi/article/details/50728049
+
+# EX01-00, number comparison
+# remove leading spaces => sed ‘s/^[ \t]*//g'
+# count=`ls | wc -l | sed "s/^[ \t]*//g"`
+# if [ ${count} -gt 0 ]; then
+#     echo "file count: ${count}"
+# fi
+
+# string comparison
+# name="zhengjin"
+# user=$(whoami)
+# if [ ${name} == ${user} ]; then
+#     echo "cur user is zhengjin."
+# fi
 
 # EX01-01, field exist check
 # is_exist="test"
