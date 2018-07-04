@@ -14,7 +14,7 @@ import (
 
 	"github.com/jmcvetta/randutil"
 	"gopkg.in/mgo.v2/bson"
-	zjutils "utils.zhengjin/utils"
+	zjutils "tools.test/utils"
 )
 
 // demo 01, init value

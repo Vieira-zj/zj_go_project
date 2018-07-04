@@ -56,18 +56,18 @@ var _ = Describe("TestDemo01", func() {
 		BeforeEach(func() {
 			fmt.Println("TEST: exec BeforeEach in sub")
 		})
-	
+
 		JustBeforeEach(func() {
 			fmt.Println("TEST: exec JustBeforeEach in sub")
 		})
-	
+
 		It("[demo01] test {return} in It", func() {
 			fmt.Println("test statement {return} in It")
 			return
 			// Expect(true).Should(Equal(true))
 			// fmt.Println("after returned")
 		})
-	
+
 	})
 
 	Describe("Desc", func() {

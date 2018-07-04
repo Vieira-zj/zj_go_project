@@ -46,7 +46,6 @@ func printFileEtag() {
 }
 
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
-// $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 // $ ./main -e -f test.file
 func main() {
 	flagParser()

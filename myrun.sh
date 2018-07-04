@@ -33,17 +33,23 @@ fi
 # BIN
 # build bin
 target_bin="mockserver"
-if [[ "$1" == "bin" ]]; then
+if [[ "$1" == "mock" ]]; then
     go build -o ${target_bin} src/mock.server/main/main.go
     mv ${target_bin} /Users/zhengjin/Downloads/tmp_files
 fi
 
-# build bin for linux
-if [[ "$1" == "lxbin" ]]; then
+# build mockserver bin for linux
+if [[ "$1" == "lxmock" ]]; then
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
     scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 fi
 
+# build tool bin for linux 
+target_bin="ddtest"
+if [[ "$1" == "lxddtest" ]]; then
+    GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/tools.test/apps/ddtest/main.go
+    scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+fi
 
 # GO TEST
 # go tests, root_dir = $GOPATH
