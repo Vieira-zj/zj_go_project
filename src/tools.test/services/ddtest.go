@@ -11,6 +11,7 @@ import (
 
 // DdArgs : dd test arguments
 type DdArgs struct {
+	Mode       int
 	FileName   string
 	BlockSize  int
 	Count      int
@@ -19,9 +20,14 @@ type DdArgs struct {
 
 // TestDdCheck : run dd and check files
 func TestDdCheck(args DdArgs) bool {
+	base := "dd if=%s of=%s bs=%d count=%d"
+	cmd := fmt.Sprintf(base+" oflag=direct", "/dev/zero", args.FileName, args.BlockSize, args.Count)
+	if args.Mode == 1 {
+		cmd = fmt.Sprintf(base+" oflag=direct iflag=direct", args.FileName, args.FileName+".out", args.BlockSize, args.Count)
+	}
+
 	chDd := make(chan bool)
 	go func(ch chan<- bool) {
-		cmd := fmt.Sprintf("dd if=/dev/zero of=%s bs=%d count=%d", args.FileName, args.BlockSize, args.Count)
 		output, err := RunShellCmd(cmd)
 		if err != nil {
 			panic(err)
@@ -35,7 +41,7 @@ func TestDdCheck(args DdArgs) bool {
 	go func(ch chan<- int64) {
 		var lastSize int64
 		for {
-			curSize := GetFileSize(args.FileName) // pending
+			curSize := GetFileSize(args.FileName)
 			log.Println("cur file size:", curSize)
 			if curSize == lastSize {
 				ch <- curSize
