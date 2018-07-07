@@ -7,8 +7,8 @@ echo "myrun.sh"
 # ENV VAR SET
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
-ZJGOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
-GOPATH=${ZJGOPRJ}:${GOPATH}
+ZJ_GOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
+GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
 
 # MAIN
@@ -17,36 +17,42 @@ if [ -z $1 ]; then
     go run src/demo.hello/main/main.go
 fi
 
-if [[ "$1" == "main" ]]; then
+if [ "$1" == "main" ]; then
     go run src/demo.hello/main/main.go -args hello world
     # go run src/demo.hello/main/main.go -period 3s
     # go run src/demo.hello/main/main.go -h
     # go run src/demo.hello/main/main.go -p 7890 -c 404
 fi
 
+if [ "$1" == "util" ]; then
+    cd ${ZJ_GOPRJ}/src/tools.test/apps/utilstest;go run main.go
+fi
+
 # db test
-if [[ "$1" == "db" ]]; then
+if [ "$1" == "db" ]; then
     go run src/data.db/main/main.go
 fi
 
 
 # BIN
-# build bin
+# build mock bin
 target_bin="mockserver"
-if [[ "$1" == "mock" ]]; then
-    go build -o ${target_bin} src/mock.server/main/main.go
-    mv ${target_bin} /Users/zhengjin/Downloads/tmp_files
-fi
-
-# build mockserver bin for linux
-if [[ "$1" == "lxmock" ]]; then
-    GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
-    scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+if [ "$1" == "mock" ]; then
+    if [ -z $2 ]; then
+        cd ${ZJ_GOPRJ}/src/mock.server/main;go build -o ${target_bin} main.go
+        mv ${target_bin} ~/Downloads/tmp_files
+        cp mock_conf.json ~/Downloads/tmp_files
+    fi
+    # for linux
+    if [ "$2" == "lx" ]; then
+        GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
+        scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+    fi
 fi
 
 # build ddtest bin for linux
 target_bin="ddtest"
-if [[ "$1" == "lxddtest" ]]; then
+if [ "$1" == "lxddtest" ]; then
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/tools.test/apps/ddtest/main.go
     scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
 fi

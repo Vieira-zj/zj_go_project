@@ -16,7 +16,7 @@ import (
 
 	httpv1 "qbox.us/httputil.v1"
 	"qbox.us/rpc"
-	zjutils "utils.zhengjin/utils"
+	zjutils "tools.test/utils"
 )
 
 const testFilePath = "./test.file"

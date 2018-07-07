@@ -9,6 +9,10 @@ import (
 	"mock.server/mocks"
 )
 
+func init() {
+	mocks.InitConfigs()
+}
+
 // build cmd: /main$ GOOS=linux GOARCH=amd64 go build
 // $ scp main qboxserver@10.200.20.21:~/zhengjin/main
 func main() {
@@ -53,10 +57,11 @@ func main() {
 	// issue handler
 	http.HandleFunc("/kodo/4775", mocks.Mock4775)
 
-	// curl -v "http://127.0.0.1:17891/mock/test1?userid="xxx"&username="xxx"&url=url1&url=url2"
-	http.HandleFunc("/test1", mocks.Mock21)
-	http.HandleFunc("/test2", mocks.Mock22)
-	http.HandleFunc("/test3", mocks.Mock23)
+	// curl -v "http://127.0.0.1:17891/test/1?userid="xxx"&username="xxx"&url=url1&url=url2"
+	http.HandleFunc("/test/1", mocks.MockTest1)
+	http.HandleFunc("/test/2", mocks.MockTest2)
+	http.HandleFunc("/test/3", mocks.MockTest3)
+	http.HandleFunc("/test/4", mocks.MockTest4)
 
 	version := "1.1.5"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)

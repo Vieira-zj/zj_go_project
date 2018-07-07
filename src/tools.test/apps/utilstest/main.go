@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	zjutils "utils.zhengjin/utils"
+	zjutils "tools.test/utils"
 )
 
 func init() {
@@ -14,22 +14,17 @@ func init() {
 
 var (
 	filePath string
-	isEtag   bool
 	help     bool
 )
 
 func flagParser() {
-	flag.StringVar(&filePath, "f", "null", "file path")
-	flag.BoolVar(&isEtag, "e", false, "get file etag")
+	flag.StringVar(&filePath, "f", "test.file", "file path for etag test.")
 	flag.BoolVar(&help, "h", false, "help")
 
 	flag.Parse()
 	if help {
 		flag.Usage()
 		return
-	}
-	if isEtag {
-		printFileEtag()
 	}
 }
 
@@ -49,4 +44,5 @@ func printFileEtag() {
 // $ ./main -e -f test.file
 func main() {
 	flagParser()
+	printFileEtag()
 }
