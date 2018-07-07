@@ -148,7 +148,7 @@ func getTotalAccessFromRedis() string {
 	log.Println(pong)
 
 	// get
-	const key = "mock_total_access"
+	const key = "mockserver_total_access"
 	total, err := client.Get(key).Result()
 	if err != nil {
 		if strings.Contains(err.Error(), "nil") {
@@ -160,15 +160,11 @@ func getTotalAccessFromRedis() string {
 	}
 
 	// set
-	val, err := strconv.Atoi(total)
-	if err != nil {
-		log.Fatalln(err)
-		return "null"
-	}
-	err = client.Set(key, val+1, 0).Err()
-	if err != nil {
-		log.Fatalln(err)
-		return "null"
+	if val, err := strconv.Atoi(total); err == nil {
+		err = client.Set(key, val+1, 0).Err()
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	return total
