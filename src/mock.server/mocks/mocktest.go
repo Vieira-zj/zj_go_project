@@ -11,6 +11,8 @@ import (
 	"net/http/httputil"
 	"strconv"
 	"strings"
+
+	redis "gopkg.in/redis.v5"
 )
 
 // client test scripts in ex_http.go
@@ -42,7 +44,7 @@ func MockTest1(w http.ResponseWriter, r *http.Request) {
 func printRequestData(r *http.Request) {
 	reqHeader, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		panic(err.Error())
+		fmt.Println("\nREQUEST DUMP ERROR:", err.Error())
 	}
 	fmt.Printf("\nREQUEST:\n%s\n", reqHeader)
 }
@@ -115,16 +117,59 @@ func MockTest3(w http.ResponseWriter, r *http.Request) {
 
 // MockTest4 : test get access count from redis
 func MockTest4(rw http.ResponseWriter, req *http.Request) {
-	log.Println("***** Configs *****\nredis server:", RunConfigs.Server.Redis)
+	totalAccess := getTotalAccessFromRedis()
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
-	retContent := "Total access times:"
+	log.Println("***** Configs *****\nredis server:", RunConfigs.Server.Redis)
+	log.Println("TOTAL ACCESS:", totalAccess)
+
+	retContent := fmt.Sprintln("Total access times: " + totalAccess)
 	rw.Header().Set("Content-Md5", strconv.Itoa(len([]byte(retContent))))
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return 200")
 
 	io.Copy(rw, strings.NewReader(retContent))
 	log.Print("===> MockTest4, send data done\n\n")
+}
 
+func getTotalAccessFromRedis() string {
+	options := redis.Options{
+		Addr:     RunConfigs.Server.Redis,
+		Password: "",
+	}
+	client := redis.NewClient(&options)
+	defer client.Close()
+	pong, err := client.Ping().Result()
+	if err != nil {
+		log.Fatalln(err)
+		return "null"
+	}
+	log.Println(pong)
+
+	// get
+	const key = "mock_total_access"
+	total, err := client.Get(key).Result()
+	if err != nil {
+		if strings.Contains(err.Error(), "nil") {
+			total = "1"
+		} else {
+			log.Fatalln(err)
+			return "null"
+		}
+	}
+
+	// set
+	val, err := strconv.Atoi(total)
+	if err != nil {
+		log.Fatalln(err)
+		return "null"
+	}
+	err = client.Set(key, val+1, 0).Err()
+	if err != nil {
+		log.Fatalln(err)
+		return "null"
+	}
+
+	return total
 }

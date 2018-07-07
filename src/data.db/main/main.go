@@ -26,8 +26,8 @@ func main() {
 
 	isRedisTest := false
 	if isRedisTest {
-		// redis.ConnectToRedisAndTest()
-		redis.MainRedis()
+		redis.ConnectToRedisAndTest()
+		// redis.MainRedis()
 	}
 
 	isMemTest := false

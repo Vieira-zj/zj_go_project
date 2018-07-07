@@ -61,9 +61,10 @@ func main() {
 	http.HandleFunc("/test/1", mocks.MockTest1)
 	http.HandleFunc("/test/2", mocks.MockTest2)
 	http.HandleFunc("/test/3", mocks.MockTest3)
-	http.HandleFunc("/test/4", mocks.MockTest4)
+	// curl -v "http://127.0.0.1:17891/access"
+	http.HandleFunc("/access", mocks.MockTest4)
 
-	version := "1.1.5"
+	version := "1.1.6"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }

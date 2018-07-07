@@ -2,6 +2,7 @@ package redis
 
 import (
 	"fmt"
+	"strings"
 
 	redis "gopkg.in/redis.v3"
 )
@@ -22,15 +23,20 @@ func ConnectToRedisAndTest() {
 	fmt.Println(pong)
 
 	// get key
-	const key = "label"
+	const key = "2"
 	val, err := client.Get(key).Result()
 	if err != nil {
-		panic(err)
+		if strings.Contains(err.Error(), "nil") {
+			fmt.Printf("%s=nil\n", key)
+		} else {
+			panic(err)
+		}
+	} else {
+		fmt.Printf("%s=%s\n", key, val)
 	}
-	fmt.Printf("%s=%s\n", key, val)
 
 	// set key
-	err = client.Set("desc", "fromgo", 0).Err()
+	err = client.Set("2", "two", 0).Err()
 	if err != nil {
 		panic(err)
 	}
