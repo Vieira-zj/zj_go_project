@@ -24,7 +24,7 @@ func main() {
 		// mongodb.PrintMongoOpLog()
 	}
 
-	isRedisTest := false
+	isRedisTest := true
 	if isRedisTest {
 		redis.ConnectToRedisAndTest()
 		// redis.MainRedis()

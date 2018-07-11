@@ -502,7 +502,13 @@ func Mock12(rw http.ResponseWriter, req *http.Request) {
 		b = ReadBytesFromFile(path)
 	}
 
-	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
+	isMismatchContentLen := GetBoolInReqForm(req, "isfaillen")
+	contentLen := len(b)
+	if isMismatchContentLen {
+		contentLen += 10
+	}
+
+	rw.Header().Set("Content-Length", strconv.Itoa(contentLen))
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return code => 200")
 

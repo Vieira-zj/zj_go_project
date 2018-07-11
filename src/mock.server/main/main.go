@@ -51,7 +51,7 @@ func main() {
 	http.HandleFunc("/disconnect", mocks.Mock10)
 	// curl -v "http://127.0.0.1:17891/gzip" -H "Accept-Encoding":"gzip" > /dev/null
 	http.HandleFunc("/gzip", mocks.Mock11)
-	// curl -v "http://127.0.0.1:17891/mimetype?type=txt&isempty=true"
+	// curl -v "http://127.0.0.1:17891/mimetype?type=txt&isempty=true&isfaillen=false"
 	http.HandleFunc("/mimetype", mocks.Mock12)
 
 	// issue handler
