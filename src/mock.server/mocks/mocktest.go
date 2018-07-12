@@ -117,15 +117,18 @@ func MockTest3(w http.ResponseWriter, r *http.Request) {
 
 // MockTest4 : test get access count from redis
 func MockTest4(rw http.ResponseWriter, req *http.Request) {
-	totalAccess := getTotalAccessFromRedis()
 	reqHeader, _ := httputil.DumpRequest(req, true)
 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
 
 	log.Println("***** Configs *****\nredis server:", RunConfigs.Server.Redis)
-	log.Println("TOTAL ACCESS:", totalAccess)
+	accessCount, err := getAccessCount()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Println("TOTAL ACCESS:", accessCount)
 
-	retContent := fmt.Sprintln("Total access times: " + totalAccess)
-	rw.Header().Set("Content-Md5", strconv.Itoa(len([]byte(retContent))))
+	retContent := fmt.Sprintln("Access count: " + accessCount)
+	rw.Header().Set("Content-Length", strconv.Itoa(len([]byte(retContent))))
 	rw.WriteHeader(http.StatusOK)
 	log.Println("return 200")
 
@@ -133,39 +136,37 @@ func MockTest4(rw http.ResponseWriter, req *http.Request) {
 	log.Print("===> MockTest4, send data done\n\n")
 }
 
-func getTotalAccessFromRedis() string {
+func getAccessCount() (string, error) {
 	options := redis.Options{
 		Addr:     RunConfigs.Server.Redis,
 		Password: "",
 	}
 	client := redis.NewClient(&options)
 	defer client.Close()
+
 	pong, err := client.Ping().Result()
 	if err != nil {
-		log.Fatalln(err)
-		return "null"
+		return "-1", err
 	}
 	log.Println(pong)
 
-	// get
-	const key = "mockserver_total_access"
+	const key = "mock_total_access"
 	total, err := client.Get(key).Result()
 	if err != nil {
 		if strings.Contains(err.Error(), "nil") {
+			if err := client.Set(key, 1, 0).Err(); err != nil {
+				return "-1", err
+			}
 			total = "1"
 		} else {
-			log.Fatalln(err)
-			return "null"
+			return "-1", err
 		}
 	}
 
-	// set
-	if val, err := strconv.Atoi(total); err == nil {
-		err = client.Set(key, val+1, 0).Err()
-		if err != nil {
-			log.Fatalln(err)
-		}
+	err = client.Incr(key).Err()
+	if err != nil {
+		return "-1", err
 	}
 
-	return total
+	return total, nil
 }

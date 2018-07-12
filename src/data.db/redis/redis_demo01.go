@@ -74,7 +74,7 @@ func ConnectToRedisAndTest() {
 	}
 
 	// list
-	key = "queue"
+	key = "test_queue"
 	for i := 0; i < 3; i++ {
 		err = client.LPush(key, fmt.Sprintf("msg%d", i)).Err()
 		handleErr(err)
@@ -84,8 +84,8 @@ func ConnectToRedisAndTest() {
 	if len == 0 {
 		panic(errors.New("queue is empty"))
 	}
-	fmt.Println("queue length:", len)
 
+	fmt.Println("queue length:", len)
 	if result, err := client.LRange(key, 0, len).Result(); err == nil {
 		fmt.Println("queue items:", result)
 	}

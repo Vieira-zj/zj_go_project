@@ -64,7 +64,7 @@ func main() {
 	// curl -v "http://127.0.0.1:17891/access"
 	http.HandleFunc("/access", mocks.MockTest4)
 
-	version := "1.1.6"
+	version := "1.1.7"
 	fmt.Printf("mock server start, and listen on %d. version: %s\n", *port, version)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
