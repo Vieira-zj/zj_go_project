@@ -488,7 +488,7 @@ func testGoTemplate06() {
 }
 
 // read configs and set template
-func readValuesFromConfigs(path, section string) map[string]string {
+func readKVsFromConfigs(path, section string) map[string]string {
 	// $ go get github.com/larspensjo/config
 	cfg, err := config.ReadDefault(path)
 	if err != nil {
@@ -515,7 +515,7 @@ const confFile = "src/demo.hello/demos/test.conf"
 
 func testReadConfigs() {
 	fmt.Println("read configs and set template string")
-	goInfos := readValuesFromConfigs(confFile, "default")
+	goInfos := readKVsFromConfigs(confFile, "default")
 	fmt.Println("go infos:")
 	for k, v := range goInfos {
 		fmt.Printf("%s=%s\n", k, v)
@@ -544,7 +544,7 @@ func testBuildTemplate() {
 	}
 
 	// for conf, it supports only key and value
-	testInfos := readValuesFromConfigs(confFile, "test")
+	testInfos := readKVsFromConfigs(confFile, "test")
 
 	pathOutput := "src/demo.hello/demos/output.txt"
 	fOutput, err := os.OpenFile(pathOutput, os.O_WRONLY, 0666)
