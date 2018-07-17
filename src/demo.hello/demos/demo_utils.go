@@ -492,16 +492,14 @@ func readValuesFromConfigs(path, section string) map[string]string {
 	// $ go get github.com/larspensjo/config
 	cfg, err := config.ReadDefault(path)
 	if err != nil {
-		fmt.Errorf("Fail to find %s, error: %s", path, err)
+		panic(fmt.Errorf("Fail to find %s, error: %s", path, err))
 	}
 
 	retMap := make(map[string]string)
 	if cfg.HasSection(section) {
-		options, err := cfg.SectionOptions(section)
-		if err == nil {
+		if options, err := cfg.SectionOptions(section); err == nil {
 			for _, option := range options {
-				value, err := cfg.String(section, option)
-				if err == nil {
+				if value, err := cfg.String(section, option); err == nil {
 					retMap[option] = value
 				}
 			}
