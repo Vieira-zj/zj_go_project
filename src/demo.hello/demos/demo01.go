@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -292,6 +293,18 @@ func testUpdateBytes() {
 	fmt.Printf("after update: %s\n", string(b))
 }
 
+// demo 08, time format
+func testTimeFormat() {
+	t := time.Now()
+	fmt.Printf("week day => %d, time => %d:%d\n", t.Weekday(), t.Hour(), t.Minute())
+
+	s := strconv.FormatInt(t.Unix(), 10)
+	fmt.Println("unix time (seconds from 1970):", s)
+
+	t = time.Unix(t.Unix()+60, 0)
+	fmt.Println("cur date:", t.Format("2006-01-02 15:04:05"))
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
@@ -308,6 +321,7 @@ func MainDemo01() {
 	// testContext02()
 
 	// testUpdateBytes()
+	// testTimeFormat()
 
 	fmt.Println("demo 01 done.")
 }

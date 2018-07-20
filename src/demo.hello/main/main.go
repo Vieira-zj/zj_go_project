@@ -9,6 +9,10 @@ import (
 	"demo.hello/examples"
 )
 
+// Go learn doc => https://github.com/gopl-zh/gopl-zh.github.com.git
+// Go fmt => https://github.com/golang/go/wiki/CodeReviewComments
+// Effective Go => https://golang.org/doc/effective_go.html
+
 func init() {
 	fmt.Println("run init")
 	fmt.Println("go version:", runtime.Version())
@@ -46,7 +50,6 @@ func testFlagParser() {
 }
 
 func main() {
-	// https://github.com/gopl-zh/gopl-zh.github.com.git
 	examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
