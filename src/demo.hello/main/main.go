@@ -61,10 +61,10 @@ func main() {
 	// testAccessControl()
 	// testFlagParser()
 
-	// demos.MainDemo01()
+	demos.MainDemo01()
 	// demos.MainDemo02()
 	// demos.MainDemo03()
-	demos.MainDemo04()
+	// demos.MainDemo04()
 
 	// demos.MainCache()
 	demos.MainUtils()

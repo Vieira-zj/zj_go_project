@@ -305,6 +305,22 @@ func testTimeFormat() {
 	fmt.Println("cur date:", t.Format("2006-01-02 15:04:05"))
 }
 
+// demo 09, code block
+func testCodeBlock() {
+	testSuper := "super"
+	fmt.Println("testSupser=" + testSuper)
+	{
+		testSub1 := "sub1"
+		{
+			testSub2 := "sub2"
+			fmt.Printf("testSupser=%s, testSub1=%s, testSub2=%s\n", testSuper, testSub1, testSub2)
+		}
+		fmt.Printf("testSupser=%s, testSub1=%s\n", testSuper, testSub1)
+		testSuper += ", in sub"
+	}
+	fmt.Println("testSupser=" + testSuper)
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
@@ -322,6 +338,8 @@ func MainDemo01() {
 
 	// testUpdateBytes()
 	// testTimeFormat()
+
+	testCodeBlock()
 
 	fmt.Println("demo 01 done.")
 }
