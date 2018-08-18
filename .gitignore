@@ -1,9 +1,9 @@
 pkg/
 bin/
 
-src/data.db/vendor
-src/demo.hello/vendor
-src/demo.tests/vendor
+#src/data.db/vendor
+#src/demo.hello/vendor
+#src/demo.tests/vendor
 src/mock.server/vendor
 
 mockserver
