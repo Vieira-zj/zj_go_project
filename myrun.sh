@@ -54,8 +54,9 @@ fi
 target_bin="ddtest"
 if [ "$1" == "lxddtest" ]; then
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/tools.test/apps/ddtest/main.go
-    scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+    scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
 fi
+
 
 # GO TEST
 # go tests, root_dir = $GOPATH
@@ -76,7 +77,6 @@ fi
 # go tests, benchmark
 # go test -v -bench=. src/demo.tests/gotests/word_ben_test.go
 # go test -v -bench=. -benchmem src/demo.tests/gotests/word_ben_test.go
-
 
 # BDD TEST
 # bddtest="/Users/zhengjin/gopath/bin/ginkgo"
@@ -208,6 +208,12 @@ fi
 # echo ${src}
 # src="test, ${src}"
 # echo ${src}
+
+# EX05-01, calculation
+# i=5
+# ((i++))
+# ret=$((i+5*2))
+# echo "results: $ret"
 
 
 # EX06, iterator
