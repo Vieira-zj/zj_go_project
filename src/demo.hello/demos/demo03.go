@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -314,6 +315,83 @@ func testFuncPointer() {
 	fmt.Printf("results for min: %d\n", ret)
 }
 
+// demo 08, function decoration
+type apiResponse struct {
+	RetCode uint16
+	Body    string
+	Err     error
+}
+
+type apiArgsUser struct {
+	UID      uint32
+	UserName string
+}
+
+func mockAPIPass(args interface{}) *apiResponse {
+	localArgs := args.(apiArgsUser)
+	retContent := fmt.Sprintf("user desc => Uid=%d, user name=%s\n", localArgs.UID, localArgs.UserName)
+	return &apiResponse{
+		RetCode: 200,
+		Body:    retContent,
+		Err:     nil,
+	}
+}
+
+type apiArgsGroup struct {
+	GID       uint32
+	GroupName string
+}
+
+func mockAPIFailed(args interface{}) *apiResponse {
+	localArgs := args.(apiArgsGroup)
+	retContent := fmt.Sprintf("group not found => Gid=%d, group name=%s\n", localArgs.GID, localArgs.GroupName)
+	return &apiResponse{
+		RetCode: 404,
+		Body:    retContent,
+		Err:     errors.New("EOF"),
+	}
+}
+
+// decoration
+func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiResponse {
+	resp := fn(args)
+	if resp.Err != nil {
+		fmt.Println("failed with error:", resp.Err.Error())
+	}
+	if resp.RetCode != 200 {
+		fmt.Println("failed with status:", resp.RetCode)
+	}
+	return resp
+}
+
+func testDecorateAPIs() {
+	fmt.Println("decoration ex: pass")
+	{
+		args := apiArgsUser{
+			UID:      101,
+			UserName: "Henry",
+		}
+		resp := mockAPIPass(args)
+		fmt.Printf("response: %+v\n", resp)
+		// invoke with decorate
+		resp = assertAPIs(args, mockAPIPass)
+		fmt.Println("pass with response:", resp.Body)
+	}
+
+	fmt.Println("decoration ex: failed")
+	{
+		args := apiArgsGroup{
+			GID:       8,
+			GroupName: "QA",
+		}
+		resp := mockAPIFailed(args)
+		fmt.Printf("response: %+v\n", resp)
+		// invoke with decorate
+		resp = assertAPIs(args, mockAPIFailed)
+		fmt.Println("failed with response:", resp.Body)
+	}
+}
+
 // MainDemo03 : main
 func MainDemo03() {
 	// testMapGetEmpty()
@@ -330,6 +408,7 @@ func MainDemo03() {
 
 	// testIteratorChars()
 	// testFuncPointer()
+	testDecorateAPIs()
 
 	fmt.Println("demo 03 done.")
 }
