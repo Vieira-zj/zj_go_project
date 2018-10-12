@@ -7,4 +7,8 @@ bin/
 src/mock.server/vendor
 
 mockserver
+
+src/github.com
+src/golang.org
+
 src/data.db/main/main
