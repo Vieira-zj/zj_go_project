@@ -19,22 +19,22 @@ func main() {
 	port := flag.Int("p", 17891, "mock server listen port")
 	flag.Parse()
 
-	// http://10.200.20.21:17891/test
+	// http://${TEST_IP}:17891/test
 	http.HandleFunc("/", mocks.MockDefault)
 
-	// curl -v "http://10.200.20.21:17891/index?isFile=false&wait=1"
+	// curl -v "http://${TEST_IP}:17891/index?isFile=false&wait=1"
 	http.HandleFunc("/index", mocks.Mock01)
 	http.HandleFunc("/index2", mocks.Mock02)
-	// curl -v "http://10.200.20.21:17891/error?retCode=206"
+	// curl -v "http://${TEST_IP}:17891/error?retCode=206"
 	http.HandleFunc("/error", mocks.Mock03)
-	// ret 200 => curl -v "http://10.200.20.21:17891/common?isFile=true&md5=true&etag=true"
-	// ret 206 => curl -v "http://10.200.20.21:17891/common?isFile=true" -H "Range":"bytes=0-1023"
+	// ret 200 => curl -v "http://${TEST_IP}:17891/common?isFile=true&md5=true&etag=true"
+	// ret 206 => curl -v "http://${TEST_IP}:17891/common?isFile=true" -H "Range":"bytes=0-1023"
 	http.HandleFunc("/download", mocks.Mock04)
 	http.HandleFunc("/index5", mocks.Mock05)
 
 	http.HandleFunc("/httpdns", mocks.Mock06)
 	http.HandleFunc("/dirpath/filepath", mocks.Mock07)
-	// curl -v "http://10.200.20.21:17891/post/cdnrefresh"
+	// curl -v "http://${TEST_IP}:17891/post/cdnrefresh"
 	http.HandleFunc("/post/cdnrefresh", mocks.Mock08)
 
 	http.HandleFunc("/videos/file.ts", mocks.Mock09)
@@ -61,7 +61,7 @@ func main() {
 	http.HandleFunc("/test/1", mocks.MockTest1)
 	http.HandleFunc("/test/2", mocks.MockTest2)
 	http.HandleFunc("/test/3", mocks.MockTest3)
-	// curl -v "http://127.0.0.1:17891/access"
+	// redis test => curl -v "http://127.0.0.1:17891/access"
 	http.HandleFunc("/access", mocks.MockTest4)
 
 	version := "1.1.7"

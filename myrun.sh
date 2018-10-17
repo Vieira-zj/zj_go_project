@@ -7,7 +7,7 @@ echo "myrun.sh"
 # ENV VAR SET
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
-ZJ_GOPRJ="${HOME}/Workspaces/zj_projects/ZjGoProject"
+ZJ_GOPRJ="${HOME}/Workspaces/ZjGoProject"
 GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
 
@@ -37,16 +37,27 @@ fi
 # BIN
 # build mock bin
 target_bin="mockserver"
+target_dir="${HOME}/Downloads/tmp_files"
 if [ "$1" == "mock" ]; then
     if [ -z $2 ]; then
         cd ${ZJ_GOPRJ}/src/mock.server/main;go build -o ${target_bin} main.go
-        mv ${target_bin} ~/Downloads/tmp_files
-        cp mock_conf.json ~/Downloads/tmp_files
+        mv ${target_bin} ${target_dir}
+        cp mock_conf.json ${target_dir}
     fi
     # for linux
     if [ "$2" == "lx" ]; then
-        GOOS=linux GOARCH=amd64 go build -o ${target_bin} src/mock.server/main/main.go
-        scp ${target_bin} qboxserver@10.200.20.21:~/zhengjin/ && rm ${target_bin}
+        set +e
+        mock_dir="src/mock.server/main"
+        GOOS=linux GOARCH=amd64 go build -o ${target_bin} ${mock_dir}/main.go
+        remote="10.200.20.21"
+        ping $remote -c 1
+        if [ $? == 0 ]; then
+            scp ${target_bin} qboxserver@${remote}:~/zhengjin/ && rm ${target_bin}
+        else
+            mv ${target_bin} ${target_dir}
+            cp ${mock_dir}/mock_conf.json ${target_dir}
+        fi
+        set -e
     fi
 fi
 
