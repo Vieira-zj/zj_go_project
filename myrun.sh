@@ -36,17 +36,27 @@ fi
 
 # BIN
 # build mock bin
-target_bin="mockserver"
+mock_bin="mockserver"
 target_dir="${HOME}/Downloads/tmp_files"
 if [ "$1" == "mock" ]; then
     if [ -z $2 ]; then
+        target_bin="${mock_bin}_mac"
         cd ${ZJ_GOPRJ}/src/mock.server/main;go build -o ${target_bin} main.go
+        mv ${target_bin} ${target_dir}
+        cp mock_conf.json ${target_dir}
+    fi
+    # for arm
+    if [ "$2" == "arm" ]; then
+        target_bin="${mock_bin}_arm"
+        cd ${ZJ_GOPRJ}/src/mock.server/main
+        GOOS=linux GOARCH=arm go build -o ${target_bin} main.go
         mv ${target_bin} ${target_dir}
         cp mock_conf.json ${target_dir}
     fi
     # for linux
     if [ "$2" == "lx" ]; then
         set +e
+        target_bin="${mock_bin}_linux"
         mock_dir="src/mock.server/main"
         GOOS=linux GOARCH=amd64 go build -o ${target_bin} ${mock_dir}/main.go
         remote="10.200.20.21"
