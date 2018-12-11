@@ -1,14 +1,16 @@
 pkg/
 bin/
 
+# vendors
 #src/data.db/vendor
 #src/demo.hello/vendor
 #src/demo.tests/vendor
 src/mock.server/vendor
 
-mockserver
-
+# vscode plugins
 src/github.com
 src/golang.org
 
+# bins
+mockserver
 src/data.db/main/main
