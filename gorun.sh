@@ -8,7 +8,8 @@ echo "gorun.sh"
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
 ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
-GOPATH=${ZJ_GOPRJ}:${GOPATH}
+# if current golang project are not in system path
+# GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
 # GO MAIN
 # Go learn doc: https://github.com/gopl-zh/gopl-zh.github.com.git

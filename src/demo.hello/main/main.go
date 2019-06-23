@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	fmt.Println("run init")
+	fmt.Println("\n[main.go] init")
 	fmt.Println("go version:", runtime.Version())
 }
 
@@ -45,8 +45,8 @@ func testAccessControl() {
 }
 
 func mainExample() {
-	examples.MainHello()
-	// examples.MainIO()
+	// examples.MainHello()
+	examples.MainIO()
 	// examples.MainOO()
 	// examples.MainGoRoutine()
 	// examples.MainCrawl()

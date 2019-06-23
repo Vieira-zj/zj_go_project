@@ -124,24 +124,29 @@ func modifyArray(array [5]int) {
 
 func sliceVarTest() {
 	fmt.Println("\n#1. init slice:")
-	// init 5 elements with default value 0, capbility is 10
-	mySlice2 := make([]int, 5, 10)
-	fmt.Println("slice length:", len(mySlice2))
-	fmt.Println("slice capbility:", cap(mySlice2))
+	mySlice1 := make([]int, 0)
+	fmt.Println("mySlice1 init length:", len(mySlice1))
+	mySlice1 = append(mySlice1, 1, 2)
+	fmt.Printf("mySlice1 length: %d values: %v\n", len(mySlice1), mySlice1)
 
 	fmt.Println("\n#2. slice pass as value:")
+	// init 5 elements with default value 0, capbility is 10
+	mySlice2 := make([]int, 5, 10)
+	fmt.Println("mySlice2 length:", len(mySlice2))
+	fmt.Println("mySlice2 capbility:", cap(mySlice2))
+
 	mySlice2 = append(mySlice2, 1, 2, 3)
 	tmpSlice := []int{11, 12}
 	mySlice2 = append(mySlice2, tmpSlice...)
-	fmt.Println("slice after append:", mySlice2)
+	fmt.Println("mySlice2 values:", mySlice2)
 	myUpdateSlice(mySlice2)
 	fmt.Println("in main(), slice:", mySlice2)
 
 	fmt.Println("\n#3. copy slice:")
 	mySlice3 := []int{21, 22, 23}
 	copy(mySlice2, mySlice3)
-	fmt.Printf("slices2 after copied: %v\n", mySlice2)
-	fmt.Printf("slices3 after copied: %v\n", mySlice3)
+	fmt.Printf("mySlice2 after copied: %v\n", mySlice2)
+	fmt.Printf("mySlice3 after copied: %v\n", mySlice3)
 }
 
 func myUpdateSlice(s []int) {
@@ -377,7 +382,7 @@ func MainHello() {
 	// intVarTest()
 	// stringVarTest()
 	// arrayVarTest()
-	// sliceVarTest()
+	sliceVarTest()
 	// mapVarTest01()
 	// mapVarTest02()
 
@@ -393,5 +398,5 @@ func MainHello() {
 
 	// objectTest()
 
-	fmt.Println("hello demo.")
+	fmt.Println("golang hello demo DONE.")
 }
