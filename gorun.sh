@@ -10,8 +10,10 @@ echo "gorun.sh"
 ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
 GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
-
 # GO MAIN
+# Go learn doc: https://github.com/gopl-zh/gopl-zh.github.com.git
+# Go fmt: https://github.com/golang/go/wiki/CodeReviewComments
+# Effective Go: https://golang.org/doc/effective_go.html
 if [ -z $1 ]; then
     go run src/demo.hello/main/main.go
 fi

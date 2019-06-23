@@ -15,7 +15,18 @@ import (
 	"time"
 )
 
-func isFileExist(path string) bool {
+func isFileExists01(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func isFileExist02(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -28,7 +39,7 @@ func getExamplesPath() string {
 
 func testFileExist() {
 	path := filepath.Join(getExamplesPath(), "io_input.log")
-	if isFileExist(path) {
+	if isFileExist02(path) {
 		fmt.Printf("file exist: %s\n", filepath.Base(path))
 	} else {
 		fmt.Printf("file not exist: %s\n", filepath.Base(path))

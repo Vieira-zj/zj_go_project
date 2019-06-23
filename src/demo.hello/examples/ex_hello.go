@@ -9,19 +9,14 @@ import (
 
 func hello(firstName, lastName string) {
 	fmt.Printf("hello, %s %s\n", firstName, lastName)
+	fmt.Println("col1\tcol2")
+	fmt.Println(`col1\tcol2`)
 }
 
-func varFormatTest() {
+func intFormatTest() {
 	// 10进制转36进制
 	var num int64 = 1380469261
-	fmt.Println("\nformat results:", strconv.FormatInt(num, 36))
-
-	myRegExp := `[0-9]\{1,\}`
-	filePath := "/home/qboxserver/service_config/_package/iorate.conf"
-	cmd := fmt.Sprintf("sed -i '13s/%s/100/' %s", myRegExp, filePath)
-	fmt.Println(cmd)
-	cmd = fmt.Sprintf(`sed -i '13s/%s/100/' %s`, myRegExp, filePath)
-	fmt.Println(cmd)
+	fmt.Println("\nformat int64 / 36:", strconv.FormatInt(num, 36))
 }
 
 func returnTest() {
@@ -34,24 +29,25 @@ func getNames() (firstName, lastName, nickName string) {
 	return "May", "Chan", "Chibi Maruko"
 }
 
-func varsExamples() {
-	fmt.Println("vars examples:")
-	fmt.Println("#1. vars define and init:")
+func intVarTest() {
+	fmt.Println("\n#1. vars declare and init:")
 	// var v1 int = 10
-	var v2 = 10
-	v3 := 10
 	// fmt.Println(v1)
-	fmt.Println(v2)
-	fmt.Println(v3)
+	var v2 = 10
+	// fmt.Println("v2=" + strconv.Itoa(v2))
+	fmt.Printf("v2=%d\n", v2)
+	v3 := 10
+	// fmt.Println("v3=" + strconv.Itoa(v3))
+	fmt.Printf("v3=%d\n", v3)
 
-	fmt.Println("#2. vars exchange:")
+	fmt.Println("\n#2. vars exchange:")
 	i := 1
 	j := 3
 	i, j = j, i
 	fmt.Println(i)
 	fmt.Println(j)
 
-	fmt.Println("#3. enum type:")
+	fmt.Println("\n#3. enum type:")
 	type weekday int
 	const (
 		Sunday weekday = iota
@@ -63,16 +59,19 @@ func varsExamples() {
 		Saturday
 		numberOfDays
 	)
-	fmt.Println(Monday)
 
-	fmt.Println("\nstring examples:")
-	fmt.Println("#4. string basic:")
+	today := Saturday
+	fmt.Println("today:", today)
+}
+
+func stringVarTest() {
+	fmt.Println("\n#1. string basic:")
 	str := "hello world"
-	fmt.Printf("length of %s is %d.\n", str, len(str))
-	fmt.Printf("first char of %s is %c.\n", str, str[0])
-	fmt.Printf("char at 0 to 5 is %v.\n", str[0:5])
+	fmt.Printf("length of %s is %d\n", str, len(str))
+	fmt.Printf("first char of %s is %c\n", str, str[0])
+	fmt.Printf("char at 0 to 5 is %v\n", str[0:5])
 
-	fmt.Println("#5. iterator on string:")
+	fmt.Println("\n#2. iterator on string:")
 	str = "hello"
 	for i := 0; i < len(str); i++ {
 		fmt.Printf("str[%d] = %c,", i, str[i]) // char
@@ -83,7 +82,7 @@ func varsExamples() {
 	}
 	fmt.Println()
 
-	fmt.Println("#6. create value by new:")
+	fmt.Println("\n#3. create value by new:")
 	p := new(int)
 	fmt.Printf("p type: %T\n", p) // type pointer
 	fmt.Printf("p value: %d\n", *p)
@@ -91,42 +90,46 @@ func varsExamples() {
 	fmt.Printf("update p value: %d\n", *p)
 }
 
-func arrayExamples() {
-	fmt.Println("array examples:")
-	fmt.Println("#1. define array:")
+func arrayVarTest() {
+	fmt.Println("\n#1. define array:")
 	q := [...]int{1, 2, 3}
 	fmt.Printf("array q: %T\n", q)
 
-	fmt.Println("#2. array pass as value (not reference):")
+	fmt.Println("\n#2. array pass as value (not reference):")
 	array := [5]int{1, 2, 3, 4, 5}
 	modifyArray(array)
-	fmt.Println("In main(), array values:", array)
+	fmt.Println("in main(), array values:", array)
 
-	fmt.Println("#3. create slice from array:")
+	fmt.Println("\n#3. create slice from array:")
 	myArray := [10]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	var mySlice = myArray[:5]
-
-	fmt.Println("Elements of myArray:")
+	fmt.Println("myArray elements:")
 	for _, v := range myArray {
 		fmt.Printf("%d ", v)
 	}
 	fmt.Println()
 
+	var mySlice = myArray[:5]
 	myArray[0] = 10
-	fmt.Println("Elements of mySlice:")
+	fmt.Println("mySlice elements:")
 	for _, v := range mySlice {
 		fmt.Printf("%d ", v)
 	}
 	fmt.Println()
+}
 
-	fmt.Println("\nslice examples:")
-	fmt.Println("#4. init slice:")
+func modifyArray(array [5]int) {
+	array[0] = 10
+	fmt.Println("in modifyArray(), array values:", array)
+}
+
+func sliceVarTest() {
+	fmt.Println("\n#1. init slice:")
 	// init 5 elements with default value 0, capbility is 10
 	mySlice2 := make([]int, 5, 10)
 	fmt.Println("slice length:", len(mySlice2))
 	fmt.Println("slice capbility:", cap(mySlice2))
 
-	fmt.Println("#5. slice pass as value:")
+	fmt.Println("\n#2. slice pass as value:")
 	mySlice2 = append(mySlice2, 1, 2, 3)
 	tmpSlice := []int{11, 12}
 	mySlice2 = append(mySlice2, tmpSlice...)
@@ -134,16 +137,11 @@ func arrayExamples() {
 	myUpdateSlice(mySlice2)
 	fmt.Println("in main(), slice:", mySlice2)
 
-	fmt.Println("#6. copy slice:")
-	mySlice3 := []int{11, 12, 13}
+	fmt.Println("\n#3. copy slice:")
+	mySlice3 := []int{21, 22, 23}
 	copy(mySlice2, mySlice3)
 	fmt.Printf("slices2 after copied: %v\n", mySlice2)
 	fmt.Printf("slices3 after copied: %v\n", mySlice3)
-}
-
-func modifyArray(array [5]int) {
-	array[0] = 10
-	fmt.Println("In modifyArray(), array values:", array)
 }
 
 func myUpdateSlice(s []int) {
@@ -151,15 +149,8 @@ func myUpdateSlice(s []int) {
 	fmt.Println("in updateSlice(), slice:", s)
 }
 
-type personInfo struct {
-	ID      string
-	Name    string
-	Address string
-}
-
-func mapExamples() {
-	fmt.Println("map examples:")
-	fmt.Println("#1. map init and iterator:")
+func mapVarTest01() {
+	fmt.Println("\n#1. map init and iterator:")
 	tmpMap1 := map[string]int{
 		"one": 1,
 		"two": 2,
@@ -168,11 +159,12 @@ func mapExamples() {
 	fmt.Printf("map1 type: %T\n", tmpMap1)
 	fmt.Printf("map1 length: %d\n", len(tmpMap1))
 
-	fmt.Println("#2. iterator on map:")
+	fmt.Println("\n#2. iterator on map1:")
 	for k, v := range tmpMap1 {
 		fmt.Printf("%d=%s\n", v, k)
 	}
 
+	fmt.Println("\n#3. map2 keys:")
 	tmpMap2 := make(map[string]int)
 	tmpMap2["four"] = 4
 	tmpMap2["five"] = 5
@@ -180,16 +172,24 @@ func mapExamples() {
 	for k := range tmpMap2 {
 		fmt.Printf("key: %s\n", k)
 	}
+}
 
-	fmt.Println("#3. map pass as reference:")
+type personInfo struct {
+	ID      string
+	Name    string
+	Address string
+}
+
+func mapVarTest02() {
+	fmt.Println("\n#1. map pass as reference:")
 	var persons map[string]personInfo
 	persons = make(map[string]personInfo)
-	persons["test1"] = personInfo{"test1", "Tom", "Room 203,..."}
-	persons["test2"] = personInfo{"test2", "Jack", "Room 101,..."}
+	persons["01"] = personInfo{"id01", "Tom", "Room 203,..."}
+	persons["02"] = personInfo{"id02", "Jack", "Room 101,..."}
 	myUpdateMap(persons)
 	fmt.Printf("in main(), person map: %v\n", persons)
 
-	fmt.Println("#4. print map as sorted:")
+	fmt.Println("\n#2. print map as sorted:")
 	// var ids []string
 	ids := make([]string, 0, len(persons))
 	for id := range persons {
@@ -200,18 +200,18 @@ func mapExamples() {
 		fmt.Printf("%s\t%s\n", id, persons[id].Name)
 	}
 
-	fmt.Println("#5. delete map entry by key:")
-	delete(persons, "test1")
-	if person, ok := persons["test1"]; ok {
-		fmt.Println("Person found:", person.Name)
+	fmt.Println("\n#3. delete map entry by key:")
+	delete(persons, "01")
+	if person, ok := persons["01"]; ok {
+		fmt.Println("person found:", person.Name)
 	} else {
-		fmt.Println("Entry not find.")
+		fmt.Println("person not found.")
 	}
 }
 
 func myUpdateMap(persons map[string]personInfo) {
 	// persons["test2"].Address = "Room 101,...(update)"
-	persons["test3"] = personInfo{ID: "test3", Name: "henry", Address: "Room 606..."}
+	persons["03"] = personInfo{ID: "id03", Name: "henry", Address: "Room 606..."}
 }
 
 func switchTest() {
@@ -224,7 +224,7 @@ func switchTest() {
 	case 7 <= number && number <= 9:
 		fmt.Printf("7-9")
 	default:
-		fmt.Printf("invalid number")
+		fmt.Printf("invalid number!")
 	}
 }
 
@@ -242,28 +242,29 @@ JLoop:
 
 func argsTest() {
 	printNumbers := func(args ...int) {
+		fmt.Printf("input args type: %T\n", args)
 		fmt.Println("input args:")
 		for _, arg := range args {
 			fmt.Println(arg)
 		}
 	}
+
 	printNumbers(1, 2, 3)
 }
 
-func innerFnTest() {
-	fn := func(x, y int) int {
+func innerFuncTest() {
+	fnSum := func(x, y int) int {
 		return x + y
 	}
-	fmt.Printf("fn type: %T\n", fn)
-	results := fn(1, 2)
-	fmt.Println(results)
+	fmt.Printf("\nfn type: %T\n", fnSum)
+	fmt.Println("fnSum(1, 2):", fnSum(1, 2))
 
-	func() {
-		fmt.Println("fnTest done.")
-	}()
+	func(name string) {
+		fmt.Printf("hello %s, inner funcTest done\n", name)
+	}("Henry")
 }
 
-func fnVarsTest() {
+func funcVarsTest() {
 	add := func(x, y int) int {
 		return x + y
 	}
@@ -271,28 +272,38 @@ func fnVarsTest() {
 		return x - y
 	}
 	myClaculation := func(x, y int, fn func(int, int) int) int {
-		fmt.Printf("function => %T\n", fn)
+		fmt.Printf("\nfunction type: %T\n", fn)
 		return fn(x, y)
 	}
 
 	x := 10
-	y := 5
+	y := 7
 	fmt.Printf("x + y = %d\n", myClaculation(x, y, add))
 	fmt.Printf("x - y = %d\n", myClaculation(x, y, subtract))
 }
 
-func fnClosureTest() {
-	j := 5
-	fn := func() func() { // return function
-		i := 10
+func funcClosureTest() {
+	j := 10
+	myFunc := func() func() { // return function
+		i := 0
 		return func() {
+			i++
+			j++
 			fmt.Printf("i, j: %d, %d\n", i, j)
 		}
 	}()
 
-	fn()
+	myFunc()
 	j *= 2
-	fn()
+	myFunc()
+}
+
+func varTypeCheckTest() {
+	var v1 = 1
+	var v2 int64 = 1234
+	var v3 = "test"
+	var v4 float32 = 1.234
+	myPrintf(v1, v2, v3, nil, v4)
 }
 
 func myPrintf(args ...interface{}) {
@@ -312,50 +323,42 @@ func myPrintf(args ...interface{}) {
 	}
 }
 
-func typeVerifyTest() {
-	var v1 = 1
-	var v2 int64 = 1234
-	var v3 = "test"
-	var v4 float32 = 1.234
-	myPrintf(v1, v2, v3, nil, v4)
-}
-
+// object point
 type point struct {
 	x, y int
 }
 
-// receiver as reference
+// object, receiver as reference
 func (p *point) scaleBy(factor int) {
 	p.x *= factor
 	p.y *= factor
 }
 
-// receiver as value
+// object, receiver as value
 func (p point) String() string {
 	return fmt.Sprintf("x=%d, y=%d", p.x, p.y)
 }
 
-func objMethodTest() {
-	fmt.Println("invoke methods of struct:")
-	fmt.Println("#1")
+func objectTest() {
+	fmt.Println("\n#1")
 	p := &point{1, 2}
 	p.scaleBy(2)
-	fmt.Printf("invoke1: %s\n", (*p).String())
-	fmt.Printf("invoke2: %s\n", p.String())
+	fmt.Printf("(*p).String(): %s\n", (*p).String())
+	fmt.Printf("p.String(): %s\n", p.String())
 
-	fmt.Println("#2")
+	fmt.Println("\n#2")
 	p1 := point{1, 3}
-	fnScale1 := p1.scaleBy
-	fnScale1(2)
-	fmt.Printf("fnScale1 type: %T\n", fnScale1)
+	funcScale1 := p1.scaleBy
+	funcScale1(2)
+	fmt.Printf("funcScale1 type: %T\n", funcScale1)
 	fmt.Println("after scale:", p1.String())
 
-	fmt.Println("#3")
+	fmt.Println("\n#3")
 	p2 := point{2, 4}
-	fnScale2 := (*point).scaleBy
-	fnScale2(&p2, 2)
-	fmt.Printf("fnScale2 type: %T\n", fnScale2)
-	fmt.Println(p2.String())
+	funcScale2 := (*point).scaleBy
+	funcScale2(&p2, 2)
+	fmt.Printf("funcScale2 type: %T\n", funcScale2)
+	fmt.Println("after scale:", p2.String())
 }
 
 // PrintGoEnvValues : print go root and path env values
@@ -364,28 +367,31 @@ func PrintGoEnvValues() {
 	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
 }
 
-// MainHello : main function for general examples.
+// MainHello : main function for general golang examples
 func MainHello() {
 	// hello("zheng", "jin")
 
-	// varFormatTest()
+	// intFormatTest()
 	// returnTest()
 
-	// varsExamples()
-	// arrayExamples()
-	// mapExamples()
+	// intVarTest()
+	// stringVarTest()
+	// arrayVarTest()
+	// sliceVarTest()
+	// mapVarTest01()
+	// mapVarTest02()
 
 	// switchTest()
 	// controlTest()
 	// argsTest()
 
-	// innerFnTest()
-	// fnVarsTest()
-	// fnClosureTest()
+	// innerFuncTest()
+	// funcVarsTest()
+	// funcClosureTest()
 
-	// typeVerifyTest()
+	// varTypeCheckTest()
 
-	// objMethodTest()
+	// objectTest()
 
 	fmt.Println("hello demo.")
 }

@@ -9,23 +9,9 @@ import (
 	"demo.hello/examples"
 )
 
-// Go learn doc => https://github.com/gopl-zh/gopl-zh.github.com.git
-// Go fmt => https://github.com/golang/go/wiki/CodeReviewComments
-// Effective Go => https://golang.org/doc/effective_go.html
-
 func init() {
 	fmt.Println("run init")
 	fmt.Println("go version:", runtime.Version())
-}
-
-// testAccessControl : use struct from demos/demo01
-func testAccessControl() {
-	// obj := demos.MyObject{"pub", "pri"} // error
-	obj := demos.GetMyObject()
-	(&obj).Init("pub_test", "pri_test")
-
-	fmt.Printf("public value: %s\n", obj.VarPublic)
-	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
 }
 
 // flag test
@@ -36,8 +22,7 @@ var (
 )
 
 func testFlagParser() {
-	fmt.Println("flag test")
-	flag.IntVar(&retCode, "c", 200, "return status code")
+	flag.IntVar(&retCode, "c", 200, "status code")
 	flag.IntVar(&port, "p", 8080, "port number")
 	flag.BoolVar(&help, "h", false, "help")
 
@@ -46,10 +31,20 @@ func testFlagParser() {
 		flag.Usage()
 		return
 	}
-	fmt.Printf("url=>local:%d, status code=>%d\n", port, retCode)
+	fmt.Printf("url=>localhost:%d, status code=>%d\n", port, retCode)
 }
 
-func main() {
+func testAccessControl() {
+	// test struct from demos/demo01
+	// obj := demos.MyObject{"pub", "pri"} // error
+	obj := demos.GetMyObject()
+	(&obj).Init("pub_test", "pri_test")
+
+	fmt.Printf("public value: %s\n", obj.VarPublic)
+	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
+}
+
+func mainExample() {
 	examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
@@ -57,18 +52,26 @@ func main() {
 	// examples.MainCrawl()
 	// examples.MainReflect()
 	// examples.MainHTTP()
+}
 
-	// testAccessControl()
-	// testFlagParser()
-
-	demos.MainDemo01()
+func mainDemo() {
+	// demos.MainDemo01()
 	// demos.MainDemo02()
 	// demos.MainDemo03()
 	// demos.MainDemo04()
 
 	// demos.MainCache()
-	demos.MainUtils()
+	// demos.MainUtils()
 
 	fmt.Println("message:", demos.HelloMessage)
-	fmt.Println("main done.")
+}
+
+func main() {
+	// testFlagParser()
+	// testAccessControl()
+
+	mainExample()
+	// mainDemo()
+
+	fmt.Println("GO main done.")
 }

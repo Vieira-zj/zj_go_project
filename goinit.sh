@@ -15,6 +15,7 @@ function add_sub_git_repos() {
         git rm --cached -f ${repo}
         git submodule add "https://${repo:4}" ${repo}
     done
+    cat .gitmodules
 }
 
 # install external tools for vscode golang
