@@ -1,15 +1,18 @@
 pkg/
 bin/
 
+# vscode plugins
+#src/github.com
+#src/golang.org
+
 # vendors
 #src/data.db/vendor
 #src/demo.hello/vendor
 #src/demo.tests/vendor
-src/mock.server/vendor
-
-# vscode plugins
-src/github.com
-src/golang.org
+src/mock.server/vendor/mockacc
+src/mock.server/vendor/qbox.us
+src/mock.server/vendor/qiniu.com
+src/mock.server/vendor/qiniupkg.com
 
 # bins
 mockserver

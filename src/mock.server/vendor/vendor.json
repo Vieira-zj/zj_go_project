@@ -1,0 +1,2377 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "ku9Xy64cWdkoR+pbWGQNJ2JTTEI=",
+			"path": "bitbucket.org/taruti/mimemagic",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "s2pJN9xQJcoDWOzxiMxnMSLMr9M=",
+			"path": "code.google.com/p/go-uuid/uuid",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Mya4n3egPUZ0l8cq0KVDUOHgiCc=",
+			"path": "code.google.com/p/go.crypto/cast5",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "h8/oOggZDTCxbF4iArlgMyQ1pjw=",
+			"path": "code.google.com/p/go.crypto/openpgp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FKJuDhT6f83adh/yTzgvEVOLUzY=",
+			"path": "code.google.com/p/go.crypto/openpgp/armor",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4fXK+ZIPUizl1LWSY6v9z8SF9MA=",
+			"path": "code.google.com/p/go.crypto/openpgp/elgamal",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Y7lDw7fXznV0ZTKrprkHhtXZZew=",
+			"path": "code.google.com/p/go.crypto/openpgp/errors",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nuHjsfzZqCFCdIR/rwGV/YSg5rs=",
+			"path": "code.google.com/p/go.crypto/openpgp/packet",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "py6Bsx5mK6+dapqZplnVXfmIfa0=",
+			"path": "code.google.com/p/go.crypto/openpgp/s2k",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "m8IgWNUkbeMlUH6kQRY/vJwrUvk=",
+			"path": "code.google.com/p/go.image/bmp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/cNe2o2YwqJPRunb6bROvu0U1co=",
+			"path": "code.google.com/p/go.image/tiff",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "biAj4vOmYNsFlMtc1CJZI0/0M1E=",
+			"path": "code.google.com/p/go.net/context",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZcVzC8v52ZAe4nQzqAW7cu3lNDA=",
+			"path": "code.google.com/p/vp8-go/vp8",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+O2flQCSiaLpdZumPzKf2t8CBkI=",
+			"path": "code.google.com/p/vp8-go/webp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zsucNANmtLfKhdJ4EGs1xq6XkVs=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk/oss",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OZRCDjs1ZeGZYK1SY+p0vIdkPeM=",
+			"path": "github.com/aws",
+			"revision": "",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "1NYtOExXse3yP9v54nW4VvXYzZ4=",
+			"path": "github.com/beevik/ntp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "rlMLw/9fZsoHKEm1gOrz3J5fcS8=",
+			"path": "github.com/beorn7/perks/quantile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BSAMEAW2RZ3ycbZjwWobHHz+9Ck=",
+			"path": "github.com/bitly/go-simplejson",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Eg6g3YAyGcfHUZz1j4vXyfUWuGk=",
+			"path": "github.com/bradfitz/gomemcache/memcache",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PfrDOgFb1B0VkS+ipBbyaM80yfE=",
+			"path": "github.com/crowdmob/goamz/aws",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "yrCKByKW9mNc4gXB7wp0+8RwWv4=",
+			"path": "github.com/crowdmob/goamz/s3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gn41FUcaxHDwF1HEQ+KkYVvfSn0=",
+			"path": "github.com/crowdmob/goamz/s3/s3test",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "n38QK6hnYIVJIYRZtAwyLXUUMeA=",
+			"path": "github.com/crowdmob/goamz/testutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0y5phFHOrFHf/2w+q/E4FZHQXVI=",
+			"path": "github.com/davecgh/go-spew/spew",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "tih88XkJ8c/nGHdMsRoi10N64fQ=",
+			"path": "github.com/facebookgo/clock",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "E/B8s6HP2JdiaEsRnMDUJvRe8TA=",
+			"path": "github.com/facebookgo/httpdown",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+nZ02xE/XWvDkJgavNCrfsKtnyE=",
+			"path": "github.com/facebookgo/stats",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "eCGDal0q8SZ7ladPDWy6gqGGShI=",
+			"path": "github.com/go-sql-driver/mysql-1.2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "JkyzARljOAPAPe7woyjNoKgl1oU=",
+			"path": "github.com/go-sql-driver/mysql.20160224",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Brgk+uGBoxsLx/xR2WRobfHfrUA=",
+			"path": "github.com/golang/groupcache/singleflight",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "J7giEYhOwqUbbtYgQbgapKnNQsc=",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/r044HcS9hElG0zUJxkOF3wfdNI=",
+			"path": "github.com/golang/protobuf/proto/proto3_proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "IhK3rKOSR3UfWHe5JmYv7Fnmkrk=",
+			"path": "github.com/golang/snappy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QP8e671IsHhYM6bJRzRPF/ehQfA=",
+			"path": "github.com/jehiah/go-strftime",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Ze4HOXjinOVYbXeEf+PxkITzWZk=",
+			"path": "github.com/kavu/go_reuseport",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "e2pMUZZQF83h4957pNluT5ayCLI=",
+			"path": "github.com/koofr",
+			"revision": "",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "A0zS09FfwTgVp7v0xGDYVwTRzSk=",
+			"path": "github.com/matttproud/golang_protobuf_extensions/pbutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4eVxjCKoythMyUbVDP0SpjLpWN8=",
+			"path": "github.com/mitchellh/go-homedir",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0/0XuEFMNoWDXuiAHCz78gCnj1E=",
+			"path": "github.com/nightlyone/lockfile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QWwcfRRys6Tz9FfQPcbRgWZQiTA=",
+			"path": "github.com/nsqio/go-nsq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Cp83m+upae7oH/Bg2tM22B93pw0=",
+			"path": "github.com/onsi/ginkgo",
+			"revision": "",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "TlaSIGz+rl202nzOK0WR3BqWHVo=",
+			"path": "github.com/onsi/gomega",
+			"revision": "",
+			"tree": true
+		},
+		{
+			"checksumSHA1": "zKKp5SZ3d3ycKe4EKMNT0BqAWBw=",
+			"path": "github.com/pmezard/go-difflib/difflib",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "dyboewFr1gpLmFenW4O07E1Qrmw=",
+			"path": "github.com/prometheus/client_golang/prometheus",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "DvwvOlPNAgRntBzt3b3OSRMS2N4=",
+			"path": "github.com/prometheus/client_model/go",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Xr3DODpbUfnekcC34rkryMTQHn0=",
+			"path": "github.com/prometheus/common/bitbucket.org/ww/goautoneg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GrBpNk3P1FbTqiPjomFXsgy6Gfs=",
+			"path": "github.com/prometheus/common/expfmt",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "imAlid0Z8ua5LN61bi7u3CURSBs=",
+			"path": "github.com/prometheus/common/model",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "9wfYoJusv1OUXuu57GAReCcheQ0=",
+			"path": "github.com/prometheus/procfs",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gb5CCxdSBboMrlWJWVQ7a2tQ0y0=",
+			"path": "github.com/qiniu/api/auth/digest",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "AuHIeYljYNa/qShsbNG86o1wZG0=",
+			"path": "github.com/qiniu/api/conf",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "k6biKgAj2Ww1vYgd/E1htR+JPBI=",
+			"path": "github.com/qiniu/api/io",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gKul8+Bz+JG0FHzCA4XO0LCcWVM=",
+			"path": "github.com/qiniu/api/resumable/io",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "o3s1d4VZ5COJv+0qTcyzi91HBIY=",
+			"path": "github.com/qiniu/api/rs",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "98OE9R6L6dJ3KQBxswsfYSW2ezY=",
+			"path": "github.com/qiniu/api/url",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "eQ8wPlLPSI5lqVTGq442p0znHmM=",
+			"path": "github.com/qiniu/bufio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "K+E/BWj6xGyos9/5RbeJCxbp+fU=",
+			"path": "github.com/qiniu/bytes",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "jEyYvPAH+0Zcq8fKSusT7A/s1R0=",
+			"path": "github.com/qiniu/bytes/seekable",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "bHBFJdcUVewi9ob1IMJopN8kNPc=",
+			"path": "github.com/qiniu/ctype",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QG5CUWkYwwD6sYV3bK+sq28m2kQ=",
+			"path": "github.com/qiniu/db/mgoutil.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VrBBv30yij+frp9aPQhet/fefqw=",
+			"path": "github.com/qiniu/dyn/dyn.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xPTOvmEFSLBwnsR3qbMYaoj13c0=",
+			"path": "github.com/qiniu/dyn/text.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "m6m4Xw4h6bLRTdjPSN5z7i6BGrY=",
+			"path": "github.com/qiniu/encoding/binary",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "lr2U2K6Y/PWCVBIRBULvAqsFAQc=",
+			"path": "github.com/qiniu/encoding/tab",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "w7w0EoUBBOwq2n/WvpCo5270mYE=",
+			"path": "github.com/qiniu/encoding1.2/base64",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "SGUY3izzKy98F8k9znUGoOPkZcs=",
+			"path": "github.com/qiniu/encoding1.2/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "moeghipTnXRIkC7TBnvpelG/Bek=",
+			"path": "github.com/qiniu/errors",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "e0jfDvwz25DxkgkTNMCWdS/8FEA=",
+			"path": "github.com/qiniu/http/audit/jsonlog",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "cr7vQU/HtbUeb+8nX/o1TLvufvw=",
+			"path": "github.com/qiniu/http/audit/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0stgwA9AY/0aW2sLJTiiUq5wPVY=",
+			"path": "github.com/qiniu/http/bsonrpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PZQ4Bp59MJgl6+1iI2pqeLex1m0=",
+			"path": "github.com/qiniu/http/flag.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6N717laJ+N4rOP5w3IFSxNZAOr8=",
+			"path": "github.com/qiniu/http/formutil.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LITf/n6yYNmV61qRjdbbIer9ftY=",
+			"path": "github.com/qiniu/http/hfac.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4xT5xIl7ZdoWMIKKRKAEmLN6Z58=",
+			"path": "github.com/qiniu/http/httputil.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Atx67i9QRTmEkl0rk/JCZbaxyKM=",
+			"path": "github.com/qiniu/http/jsonrpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "k5azxfu7wF5V4tlKapPZTB74lIU=",
+			"path": "github.com/qiniu/http/misc/pool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zDRxK+9vxC3jlWKXIDMR94elfX0=",
+			"path": "github.com/qiniu/http/misc/strconv",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UvI1iKgG5hXkxLPSI86dxTtmo60=",
+			"path": "github.com/qiniu/http/misc/types",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "oKpUkTaBsxuQP8ZQ/rEXZ1qtJD8=",
+			"path": "github.com/qiniu/http/restrpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "n+XU40nW6ATxT3BkQGx8wvkJfYg=",
+			"path": "github.com/qiniu/http/rewrite",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "cMuyoly1ciiICvJMpq24g+2AsHk=",
+			"path": "github.com/qiniu/http/rpcutil.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VVBPFTyU55ZeIZQS2P/pGJz0/QA=",
+			"path": "github.com/qiniu/http/rpcutil.v1/mgorpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "tr5ayoa8p4ufEMzquIdDfEBYILM=",
+			"path": "github.com/qiniu/http/servestk.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "mScCmRMcVspJ+kj7fdmU5uCGqoE=",
+			"path": "github.com/qiniu/http/supervisor",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "j3pImqw19ZSSg5u6+bDPadr8+hI=",
+			"path": "github.com/qiniu/http/webroute.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FyZYsKgsvUo9VWQTybZ3L9J/69s=",
+			"path": "github.com/qiniu/http/wsjsonrpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "MstTFZFXm32to4H0iD4gddJOJ9c=",
+			"path": "github.com/qiniu/http/wsrpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xojlUyLvxsMLJJXOX703UBPb9dM=",
+			"path": "github.com/qiniu/io",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GQ8sIeUIs4n4osyNjOfhYZ2Kyng=",
+			"path": "github.com/qiniu/io/crc32util",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Lryu3XAApeMox47Gpb3Ht6Sw8dQ=",
+			"path": "github.com/qiniu/io/ioutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FUVPLConPIOcdfXVJOxxAm4pczM=",
+			"path": "github.com/qiniu/largefile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KZW4iz9yW5u/0xFnNexVlKXwpKI=",
+			"path": "github.com/qiniu/largefile/log",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "rL9imjB/11RoDZAbLiyTNmrUdC8=",
+			"path": "github.com/qiniu/lbnsq.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Djsoc0zFML34yByRfi6eQgSNT64=",
+			"path": "github.com/qiniu/log.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Wp3cSKS2Pz7mEP17/+hxeYxGnhk=",
+			"path": "github.com/qiniu/mockhttp.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PK9g5kq+g/GO6js+Lx27G7UbS3c=",
+			"path": "github.com/qiniu/mockhttp.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RRBsC0c+iZY5sOW7B+ErPdEBSmo=",
+			"path": "github.com/qiniu/osl/signal",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nMHYRsD1/iDAneh0Ay5GH32MxoM=",
+			"path": "github.com/qiniu/osl/sync",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "H6cnWTRsjEjhC+0td5DCHlwkt8I=",
+			"path": "github.com/qiniu/reliable/errors",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "iRTGwYyx9aNAaz2J9eqt+Z9KniM=",
+			"path": "github.com/qiniu/reliable/log",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZIWk/FP1czO09lY9wOT9WXPjPKQ=",
+			"path": "github.com/qiniu/reliable/osl",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "mEdK6jG132ltzON+gkExybWBpQA=",
+			"path": "github.com/qiniu/reliable/ts",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "aixetx/nlbZfOgpzHH5yqXHWQVw=",
+			"path": "github.com/qiniu/rpc.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Z4ssTKLmGCuqIjq7VvbE+QN23ZU=",
+			"path": "github.com/qiniu/rpc.v1/brpc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pD1BtjfTfTrOC4ooavQz7dnUghA=",
+			"path": "github.com/qiniu/rpc.v1/brpc/lb.v2.1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+u3ne2kkV5wCx9zuSpp++y5rzfc=",
+			"path": "github.com/qiniu/rpc.v1/lb.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ya0j6uPkjESCBL4zkk4VFeGUYKE=",
+			"path": "github.com/qiniu/rpc.v1/lb.v2.1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Jq+FwahSBRSBuzCsSIzV39RkGdw=",
+			"path": "github.com/qiniu/rpc.v1/lb.v2.1/transport",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "mWWrT6Fx0YN6cxfOsoAEU3Mbc0w=",
+			"path": "github.com/qiniu/rpc.v1/lb.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "YqO9HfvFxUZGu7jUFJ4+D1fkMKE=",
+			"path": "github.com/qiniu/rpc.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Cp5LJuTRqwTzHXu05B4fgIRxYT4=",
+			"path": "github.com/qiniu/rpc.v2/failover",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "D6tuXzKFz7pT98Hd1hGyLzMIxuc=",
+			"path": "github.com/qiniu/rpc.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "q+pMFoNSxBdhPHswrpSaNHP198Q=",
+			"path": "github.com/qiniu/ts",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "SnaQLuZvZtumLxD0eS3Wk2pOWxY=",
+			"path": "github.com/qiniu/version",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "bGkRVr0Je9wScH/j3tU3Jr9XRB0=",
+			"path": "github.com/qiniu/xlog.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "iXqz1csXMlldrwiadlKrb1GJOx8=",
+			"path": "github.com/rcrowley/go-metrics",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZHCCyGtWcuUz0xtIhaReL01Qk0Y=",
+			"path": "github.com/sbunce/bson",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "fqo7Jjt8/3znDjeOdtIiZDhpz4M=",
+			"path": "github.com/stretchr/testify.v1/assert",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KBHk+bSye/JvgYCs91B+sZ7R0Ro=",
+			"path": "github.com/stretchr/testify.v1/require",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KI+u9sqGCbj5kxDmHvr//7GMd/Q=",
+			"path": "github.com/stretchr/testify.v2/assert",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RiPS/7blShGoKWLVGKEEgDiyB+k=",
+			"path": "github.com/stretchr/testify.v2/require",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5629XE+1lr1WQJgR2e12VuuchDA=",
+			"path": "github.com/stretchr/testify/assert",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zAA0gqCCNvvV8vUrOy5DIuAwnuE=",
+			"path": "github.com/teapots/inject",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "WyYDqcM1BL1l8O+Hexc0oS1Pn5Q=",
+			"path": "github.com/teapots/teapot",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RDk7B1UlQ4G3qCXdI3AyNAUMiqU=",
+			"path": "github.com/wangtuanjie/ip17mon",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "c/9FVd7+GBLSlhZ8ag75kjFhkFg=",
+			"path": "golang.org/x/image/bmp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4B2RFmwHOOY+2Ks4W42beNUJmTY=",
+			"path": "golang.org/x/net/context",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "IbN+zTo+byXHx8ffSmWSVTenmt4=",
+			"path": "golang.org/x/net/context/ctxhttp",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "kdhs71rMe6bT7gUG9CJcQ2xwlKs=",
+			"path": "golang.org/x/net/html",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BBN+OcVpSYnOYWdUq9A952+dCZA=",
+			"path": "golang.org/x/net/html/atom",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KfGbNTddygOy3Ai1rBG4it6A3JM=",
+			"path": "golang.org/x/net/proxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QGYY3X7Ja5b8QhFVuGkNpuPv8b4=",
+			"path": "golang.org/x/net/publicsuffix",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "V41QF31CxEUfkwlLAUMoqaXI6UU=",
+			"path": "golang.org/x/net/websocket",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "aH2peA04IxEey/7OxvVZhZ1Ewcs=",
+			"path": "golang.org/x/sys/unix",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "M+0vVKUrLGG9nONOHihBx5cHS4s=",
+			"path": "golang.org/x/text/cldr",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xLyQp08w+3XIrqICm0TsPACFJkk=",
+			"path": "golang.org/x/text/encoding",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VQez+7WW9OKUiFrT/FO+x+uG1KQ=",
+			"path": "golang.org/x/text/encoding/charmap",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "d4g160kDwJesjZxpevi5Q41OG7o=",
+			"path": "golang.org/x/text/encoding/internal",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wvwBoRLwt0iQqBP7tu0/M4vQCQo=",
+			"path": "golang.org/x/text/encoding/internal/identifier",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "og5i7u1wkxWa/SJ5dmyBgsDw2q8=",
+			"path": "golang.org/x/text/encoding/japanese",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "d7aGOgzfLec2jNBOGXe4dTtG13I=",
+			"path": "golang.org/x/text/encoding/korean",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "YY+9reJJZdiidVtCfOGV2iWsXSw=",
+			"path": "golang.org/x/text/encoding/simplifiedchinese",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "U0OjiYpJEReQqUtvBiVYtNPj4Ok=",
+			"path": "golang.org/x/text/encoding/traditionalchinese",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Y1WvPFKfRd6nJVUFU2h+hQ9XOx8=",
+			"path": "golang.org/x/text/encoding/unicode",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "u1wlb0Vd1QjccBucQPRCCwtn4ts=",
+			"path": "golang.org/x/text/internal/gen",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "38mJDWzbRwgS8oG/j7fzJUemfvM=",
+			"path": "golang.org/x/text/transform",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "9TwZGbrryBZ7iAWaMMnYRIrrbkw=",
+			"path": "golang.org/x/text/unicode/norm",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "sMmB+XEHjVdKklodQgJrNxxZyzk=",
+			"path": "gopkg.in/bsm/ratelimit.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BLiXOrjDEbpKjYAi43NQ7aozC8U=",
+			"path": "gopkg.in/check.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "sXqz5WDShB3A4FU6/OLvGvCMxDw=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "XoeIDnVVcRil7TQx8xmlru+h+/0=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "CkCDTsyN2Lbj1cL8+oaYKoPpI9w=",
+			"path": "gopkg.in/mgo.v2/internal/sasl",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "fOxeCpKRYNTTM2VCrsU2S/KEd1s=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xhg6evVKEnmgLS54X64JqYylVsI=",
+			"path": "gopkg.in/redis.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/JV4CbhKbcvLXVi/LNIdPx/t5/0=",
+			"path": "gopkg.in/redis.v3/internal/consistenthash",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "AH4jthdNTOvYVR8HGmTfyfmEdQc=",
+			"path": "gopkg.in/redis.v3/internal/hashtag",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "1bP6Pow7kYwxXzHJsHmcrbVWhlg=",
+			"path": "gopkg.in/redis.v5",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "MQyhe1N+NO0+uyJiEc6M2WGfb3s=",
+			"path": "gopkg.in/redis.v5/internal",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5e3h6b7WOIMa48mP9oBlmWQ0i5c=",
+			"path": "gopkg.in/redis.v5/internal/consistenthash",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "7DhyQFY3E5LHiKYXoIx8z4xtVZk=",
+			"path": "gopkg.in/redis.v5/internal/hashtag",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "puV6Cb+T0Dqdg20YkBOO6jAdxJI=",
+			"path": "gopkg.in/redis.v5/internal/pool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "bIFV8FKIZszC55Et2LA2QTMYkCg=",
+			"path": "gopkg.in/redis.v5/internal/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Tc3lYvuQUUHOlPNfUVVIqKpxFCw=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ckwMZuriaT+lXcJJ+5Vw47Z3WYY=",
+			"path": "labix.org/v2/mgo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "dOfo/BenysEuR4ZU1tyX0SUO7lY=",
+			"path": "labix.org/v2/mgo/bson",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "B1QgWNZEqQ0BNyR7mFgFTiy5X4A=",
+			"path": "launchpad.net/gocheck",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xppp5umL3o2Sht0HF81cqrUnk1A=",
+			"path": "launchpad.net/mgo/bson",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "7rKR0a3XhGeDjjn/fUQfyjaSHEk=",
+			"path": "qbox.us/admin_api/account.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "8LMiSFkaBZ5YdLOrK5+iRh3LUVk=",
+			"path": "qbox.us/admin_api/io",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xtRDYUBYwCWUUe760iPcySeFAq0=",
+			"path": "qbox.us/admin_api/job",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "202KXlKX0nEWm5J46nY8GnUQ5Mw=",
+			"path": "qbox.us/admin_api/mc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5HHTpwzcRkOCjoa0yCi9c8v7v6o=",
+			"path": "qbox.us/admin_api/one/ufop",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "msRnoLbDPe5359cKFl5aZs3m2XI=",
+			"path": "qbox.us/admin_api/rs",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "f+glLeegzr5nsjcqIIQiUfyT4aM=",
+			"path": "qbox.us/admin_api/suc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "AtaqZBtF0JdEuPmTVYFPaE4rKg0=",
+			"path": "qbox.us/admin_api/uc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "bJ9hZqnUw4n6gjn5U6Kmz89+boY=",
+			"path": "qbox.us/admin_api/uc.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Go8dxNlnerXH7fOiAi1AMvkH1X4=",
+			"path": "qbox.us/admin_api/uc.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wHMSCWDDbjVJf2tgJqj9XNnztKc=",
+			"path": "qbox.us/admin_api/v2/account",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "L6AN+Lub72cpVX1MCGoBigYBnks=",
+			"path": "qbox.us/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5xo1GXFib3tzmLE3V+ZWp6z9joc=",
+			"path": "qbox.us/api/account",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "fEjbDmxRslkGWvFqDke73YSbUB0=",
+			"path": "qbox.us/api/account.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZSMOnNYf291EUHz4B+HA0/We9S0=",
+			"path": "qbox.us/api/authproxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KQBfaf/Ak3fkukhfBrVicZerOLI=",
+			"path": "qbox.us/api/bd/bdc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "oRry9N9OjhSnZG3kZ5E/QGflL0U=",
+			"path": "qbox.us/api/bd/bdc/reload_bdc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "r6qVQXECm1fsljGD+Jqet3iwE+c=",
+			"path": "qbox.us/api/bd/errors",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GhO1WpDFlMzVwo6lw9wp9gdQ2ng=",
+			"path": "qbox.us/api/bd/s3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+4KRPgBEpAITx1UEL82OUULmB8k=",
+			"path": "qbox.us/api/bdlocker.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6DUNcGJKWMeCbdBKw6wA18ybO34=",
+			"path": "qbox.us/api/bucket",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "HQMuWeZ9oFizHb6KN4OQSBb4sOw=",
+			"path": "qbox.us/api/conf",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "mdJtE9+PTL9KmY4nqhq8dyQWJRg=",
+			"path": "qbox.us/api/counter",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "AQ3Ob6kCA+pEI6rtloUOsE7Z2II=",
+			"path": "qbox.us/api/counter/common",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "hXI25kB+FYbyJbDdrSTpJwewILs=",
+			"path": "qbox.us/api/counter/common/util",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FvtLRrjhvq1eeAKb+i59QYr7cFU=",
+			"path": "qbox.us/api/dc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "o0ttu6dDpnJ/Jz5VUW/Gja4kIsk=",
+			"path": "qbox.us/api/dn",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "qvIB+PGKLOGlpfBioo9OQBqtoCA=",
+			"path": "qbox.us/api/fusion/netpkg/rpc.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "3ICWIfWqJq4qDVgqS4jtyahRrmo=",
+			"path": "qbox.us/api/ios",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2/mUqzdSbpDNzc2ygxFnxYrYc0w=",
+			"path": "qbox.us/api/kmqcli",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "k32E1GuyWNQ6s5Z/hJX8IrCGgHM=",
+			"path": "qbox.us/api/mc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2pF3hWBtmxU1wnXZLUOpz5wi58o=",
+			"path": "qbox.us/api/one/access",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nBAjct4XFLiCRODvP4agb/G/YME=",
+			"path": "qbox.us/api/one/domain",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "YPTkPCeZmO7zs++kmRO6/+xq3Go=",
+			"path": "qbox.us/api/one/domain.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wuzjb23rngwtoM2qeg+Gpdm9aBE=",
+			"path": "qbox.us/api/one/ratelimiter",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Yt8pR0WxyaWyVg8XOHG/ifhr4JM=",
+			"path": "qbox.us/api/one/route",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5Go9Jqz6UQ0kDS9wveJPs77omks=",
+			"path": "qbox.us/api/one/ufop",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OFp4THcPccGrRXBT0MEqNKgIx8s=",
+			"path": "qbox.us/api/one/userinfo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nettXfkbvl6bd4Idm0nKxr7hg2w=",
+			"path": "qbox.us/api/pay/pay",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "NuNF7Z9K0CBuaIcYIvRkVDUlbQY=",
+			"path": "qbox.us/api/pay/product.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "108QtX6RFTAAivLjxii+9DqTgp4=",
+			"path": "qbox.us/api/pfop",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2z4hZ76JAryNsFYz9oqjQmaFmUs=",
+			"path": "qbox.us/api/pfopmq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "G2y9ZVOb0mGkr9Y7Lp3QOX3vtvg=",
+			"path": "qbox.us/api/qconf/acc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wrcyn07natcvcWTBr4pscijBX9E=",
+			"path": "qbox.us/api/qconf/akg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "YusxePActgTvRI5OaLCeb8Ci83A=",
+			"path": "qbox.us/api/qconf/appg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "uvUN9NKl0fa6INlo1JbCct0S1G4=",
+			"path": "qbox.us/api/qconf/bucketinfo.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PWv/dAjWsjzihXiz14xmCwBm43M=",
+			"path": "qbox.us/api/qconf/domaing",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "aQMqKIX7mQu9P5ISHUgmRUigNHs=",
+			"path": "qbox.us/api/qconf/iam",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xWqZo2rnJiHNM30cr2jU2qiBeOQ=",
+			"path": "qbox.us/api/qconf/pfopmq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "b9pF/IcjHHImHD07duO7dg1wemY=",
+			"path": "qbox.us/api/qconf/tblg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zKsFMT3Mv8Qrdhw5f02sTxiHzaQ=",
+			"path": "qbox.us/api/qconf/uc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "jYyk4vKdcLefk635vobPDcc982w=",
+			"path": "qbox.us/api/qconf/ufopg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "w93iSkmGvv0czwox+sqcgWAO7Vs=",
+			"path": "qbox.us/api/qconf/uidg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "EOaGGB/XSsUlnz8CXFHPcbQCqs8=",
+			"path": "qbox.us/api/qconf/userinfo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6oP3DLTC02mT0lSWArCFThcx/og=",
+			"path": "qbox.us/api/rs.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "8eNjhFSG6jGmrJadCV4/+d7zbwg=",
+			"path": "qbox.us/api/status/helper",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2xyRjqM5gXVw8/mP0z1uY/V3G9I=",
+			"path": "qbox.us/api/tblmgr",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "tKz6WF0gYkNwQ9ZCl+qVfw/rW7Q=",
+			"path": "qbox.us/api/tblmgr.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "NrcJnWt8sG+hPn6YfO41jXPWHnk=",
+			"path": "qbox.us/api/uc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2v7sJIkYydU+dtBXLocNSzNZKk4=",
+			"path": "qbox.us/api/uc.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "TXl+9k2+d9eJwTvKR0aDNn9vOoY=",
+			"path": "qbox.us/api/uc.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "EplMgn19rkfwYJE6fbW0QJW84p0=",
+			"path": "qbox.us/api/up",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6moS0+8Ya+MZ283XS0Y3bs289uE=",
+			"path": "qbox.us/api/v2/rs",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "W09iSU3MPx4mnK0jZ+wkYjw1pI0=",
+			"path": "qbox.us/api/v2/rsf",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "KOjFJ1ckkp3ik7KhXKEUCPLpq80=",
+			"path": "qbox.us/audit/file",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pqu4otX7VFb42mThv1yivRIYD54=",
+			"path": "qbox.us/audit/largefile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "1aRGhPNWiW/tfjjzLGfBWyLSr3w=",
+			"path": "qbox.us/audit/logh",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nsxsR0/ce+9G1Si7fovpk4L5aJQ=",
+			"path": "qbox.us/auditlog2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "B7y9ODZXNuLnsAHNwdfPI8VfJi8=",
+			"path": "qbox.us/autoua",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "DuTsuKs7z58kNDyKfXWqLgBK9sM=",
+			"path": "qbox.us/bdgetter",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LO5jqf6ORCuKShJDGsVAHRNLJgg=",
+			"path": "qbox.us/bdgetter/cached",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pokOx9uQaUinQ549Se89RxnTH54=",
+			"path": "qbox.us/bdgetter/internal/bufpool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/de5v4DsGN1VqghvLC2ei9hQsFM=",
+			"path": "qbox.us/bdgetter/retrys",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gIwjUQk3HDbgz5M++FvvvgqW/WU=",
+			"path": "qbox.us/biz/api/gaeaadmin",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BlmoTdF4BY9JBmZ6qjql9pNk9SM=",
+			"path": "qbox.us/biz/api/gaeaadmin/enums",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "D2gRwnLnuK10egWTDYXwUwzdjpM=",
+			"path": "qbox.us/biz/services.v2/account",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "q/g5qYrFWXH1gxy3Ms5NEQoEgpE=",
+			"path": "qbox.us/biz/utils.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Q/0AJoKf8MIu+fA8C7zQ7W3A/JM=",
+			"path": "qbox.us/biz/utils.v2/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OT0t2suS+jQabiTkCUNSVYGOVHA=",
+			"path": "qbox.us/biz/utils.v2/log",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+OQzlqj9irMPjpo2rVdR5AO0Mng=",
+			"path": "qbox.us/biz/utils.v2/types",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GKyOp0HSh9bnfzmnDthkxRVRTww=",
+			"path": "qbox.us/biz/utils.v2/validator",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "NqtdmjMKouLrytUrw5q0mgy5o6Q=",
+			"path": "qbox.us/bufio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xXsvrg5A8Nd4CLIU6oaGcC4mlY4=",
+			"path": "qbox.us/cc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "WKH2AJqu7EslXMpe4f1hdaB6i7w=",
+			"path": "qbox.us/cc/config",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZK233uRYrIbG5RbGXCctC/vCOcU=",
+			"path": "qbox.us/cc/ioutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "suOA7F783kPyoWxn9Qc/JS0aubw=",
+			"path": "qbox.us/cc/mime",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PJYpi4XLx4Xxf5oeJUKjpdCP/GY=",
+			"path": "qbox.us/cc/sha1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "25ACp27bpXtNA1FTHnIHXkBj17Q=",
+			"path": "qbox.us/cc/strings",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "sK/YHmzs+CMhrzfuvkygmUlugkU=",
+			"path": "qbox.us/cc/time",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "N8dXRawlWfLs5SSSnCG6oRZW92Y=",
+			"path": "qbox.us/cc/utf8",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "sGGuKbLijqMFXhYjDEnbQ9LRKHw=",
+			"path": "qbox.us/configuration",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "jixkNhQJrPZBq6AWXlHv+b2hxdQ=",
+			"path": "qbox.us/configuration/image_preview",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "AEYBNXIxm7hEtwFiirETZUHbkVY=",
+			"path": "qbox.us/dcutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FI4nJKTQyo8kbH6T6aTeamCwleM=",
+			"path": "qbox.us/dht",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Kf/5GfZPPuL9unOUVkofz4ckyi8=",
+			"path": "qbox.us/digest_auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FzeNK7PFi/UJwVhhW/NhL1RiefA=",
+			"path": "qbox.us/dyn",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "f7AqqyTRNG2GWC32gG6OyNhFZug=",
+			"path": "qbox.us/ebd/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "MN0zc3SgJ1WdTq45sXXmZQ8/n+s=",
+			"path": "qbox.us/ebd/api/types",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QT5hlf11wrhylPx4VWwDzu2Iiz0=",
+			"path": "qbox.us/ebdcfg/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "vbJ7SXQVnZjXklfQX9Tq+wEvGlw=",
+			"path": "qbox.us/ebdcfg/api/qconf/stgapi",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "dkMoTrGuiyy2e9DWCg1o1zBKz3I=",
+			"path": "qbox.us/ebddn/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "V1YArVauMVIwwYDc04i6iCJYIqc=",
+			"path": "qbox.us/ebdmaster/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Gb2JO8kbFAPjuitaVVdGJrTFsR4=",
+			"path": "qbox.us/ebdmaster/multi",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "h4d81D68fAV99uW9rrfGUjX686I=",
+			"path": "qbox.us/ebdpfd/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "lj0wJlPELVzAkHxJRuJkJxFr508=",
+			"path": "qbox.us/ebdstg/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "52vm1bnXaO2ouWNMJ4wrXUG/kHo=",
+			"path": "qbox.us/ecb/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "yrC1O4xxewtPBeCT4oiPW09vguM=",
+			"path": "qbox.us/encoding/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "f4JWGfYJFmPWOTTd1oFU1aRTPHc=",
+			"path": "qbox.us/encoding1.2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "kpC1WhaF2OfQn6HwGaVX5Pv2Y6I=",
+			"path": "qbox.us/encoding1.2/base64",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "v2sOLrenQqifmUUMqW8uRv33/H0=",
+			"path": "qbox.us/encoding1.2/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pc8WhgpmmSvPodH1Sgo1RfzCJsw=",
+			"path": "qbox.us/errors",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xm/ygHWsmzugJaYnU63ZUX149I4=",
+			"path": "qbox.us/etag",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PEzqRg4pArBwc7n7X5ejk7d4xbk=",
+			"path": "qbox.us/etag/hash",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "o0AmhPvEYv0haCh5KmBCLrB7vUA=",
+			"path": "qbox.us/etag/qetag",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RoOVHTd4cHFl6IxNSz7hXw8JPJE=",
+			"path": "qbox.us/fh",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+Uvu9tD+QklxA+6/ibKMJB8QdJA=",
+			"path": "qbox.us/fh/fhver",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "tZD04yvsJITlLX+zuj2ohVIf6y8=",
+			"path": "qbox.us/fh/ossbd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "JmC4r2PIg9Uf1iHyUAw6RuvVyO8=",
+			"path": "qbox.us/fh/pfd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OxD2SWe7iyAt00rM1j/9unXwnpE=",
+			"path": "qbox.us/fh/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ltJN9vfeHh8Z9yQXvzLfEIAdBpE=",
+			"path": "qbox.us/fh/sha1bd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "y2p5BOHALdcBNcXWZPg/CdeKHng=",
+			"path": "qbox.us/fh/sha1bdebd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "WRxInea2upWWszaws4tC+FTYzPM=",
+			"path": "qbox.us/fh/stream",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "98SgNgL5XAoP4GFQx3n0agbSPEQ=",
+			"path": "qbox.us/fh/urlbd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pZ+od0nMMqiF/eWO3GS/F6sYO2Q=",
+			"path": "qbox.us/fileop",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "O6Ea4DnD4Q98Hdz/xiWqMgEpB3s=",
+			"path": "qbox.us/fop",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "eZgue2dcXefj0CJWMT2XF9UPoag=",
+			"path": "qbox.us/fop/clients/fopg.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gCotU2Yxqi343e2IMvazHOcwhx0=",
+			"path": "qbox.us/http/account.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "qA7zDNXNQoDZNzrQBLYSmDYmS4U=",
+			"path": "qbox.us/http/account.v1/admin/digest_auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "HRxczMtnQCyXTi7A03Mxb9KtCdU=",
+			"path": "qbox.us/http/account.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "7yX9V5j2vg+ew9uBNS8FJdoz30I=",
+			"path": "qbox.us/http/account.v2.1/digest_auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nnvxeUtzXHN6RToakwHXYAweCcs=",
+			"path": "qbox.us/http/account.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0i9+8jETsmrXy1wWbpZ0sF9iwuw=",
+			"path": "qbox.us/http/audit/jsonlog.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RByGKtBmEZMdwAjCOrL88AtDN88=",
+			"path": "qbox.us/http/audit/jsonlog.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "H5V8/YrzYTkVBB3SAQafgCC2Cbs=",
+			"path": "qbox.us/http/audit/jsonlog.v3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Fn0LKNL7VtChZd3KLOVEmWaCsfk=",
+			"path": "qbox.us/http/audit/jsonlog.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "EkYOBmLehIdIbBKkSi+44FwogQU=",
+			"path": "qbox.us/http/servemux",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "IicJboud0vhdlE7RTzIAqvxFYWQ=",
+			"path": "qbox.us/http/watchdog",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "x6m+pohJ7kns+JEa05XUWMSy694=",
+			"path": "qbox.us/iam/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "o7xOVUPrqQ4DQiuorIkveyx+L4Y=",
+			"path": "qbox.us/iam/entity",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "NVm86AdxX0Uv6TThl3dliGh9cBQ=",
+			"path": "qbox.us/iam/enums",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6SH5YGLEJ0Cmq9TrV12i7KyUep4=",
+			"path": "qbox.us/idomain",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "p/7OMNB6r7bVwGJ/e7btOF3VOrk=",
+			"path": "qbox.us/imgave",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4XPGaJebSvGfrohjGgNnA7Z3Cyo=",
+			"path": "qbox.us/imginfo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "i1gIcdN7DKoxEsxZIJkDYnL75aQ=",
+			"path": "qbox.us/iomc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "bcXPnO1UGoYyyIHGZdMkLGBt96I=",
+			"path": "qbox.us/iputil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FqmnU4eDUjP32hQC6zSoupVm7Y4=",
+			"path": "qbox.us/jpeg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "rZlEIevZyFfj3uIJ/6QxrWXKCKg=",
+			"path": "qbox.us/largefile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "D35futCw1ndrC0GqsyN/pfJ8pK4=",
+			"path": "qbox.us/largefile/filelog",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RrYc7RHnR9EfXtQiv6Mc/luWBx8=",
+			"path": "qbox.us/lbsocketproxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+OMtyMr3+K0IDXs2mE3L9xErntk=",
+			"path": "qbox.us/limit",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "WizHLc56fn4Lbh0hgsNCeWUKNRE=",
+			"path": "qbox.us/limit/count",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "HuKDpmAkwlhwOsIvAEt4aqSRz5g=",
+			"path": "qbox.us/limit/keycount",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LxkXDqiP82CdcR6peJD0jP5CZJw=",
+			"path": "qbox.us/limit/keysize",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "TZiH6pGk0Fwh2FseO7Fv6OJCmUc=",
+			"path": "qbox.us/limit/null",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "jeACUD1lcT/GNS72D0/bfpI4xSg=",
+			"path": "qbox.us/localaddrpool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "qTG+djqLzn1yvjXgbvEOJeP2kn4=",
+			"path": "qbox.us/memcache.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+uTH9vpqx0Sg/07Ixb+0S6uLbBw=",
+			"path": "qbox.us/memcache/dht",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6bjj6q07+60VGn5hyNgeXCTLPo4=",
+			"path": "qbox.us/memcache/mcg",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "vJJY2WRXNgftkj+y8YuX8jiJllo=",
+			"path": "qbox.us/mgo2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "CxTZ9UU7o/NF9wpe1ztLS7P2io0=",
+			"path": "qbox.us/mgo2pool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "TKyREnnwZivZSmbQONRGt2IcDj8=",
+			"path": "qbox.us/mgo3",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "fJc1b+ftTNtwI4ygX5rGod4/xlA=",
+			"path": "qbox.us/mgo3pool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+LOdRKZ/9iP81YjKQEO4pynSKTg=",
+			"path": "qbox.us/mockacc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "dLwJPExP0cfkBGKg0Sf36ESX7Ys=",
+			"path": "qbox.us/mockacc/digest_auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "u+B7C2vbPJBru8HnhgHx/Xzdo7E=",
+			"path": "qbox.us/mockbd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "CK5YGF17wAH1QHpkSGuivB/QUa0=",
+			"path": "qbox.us/mockdc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0/M+VhRjfH21AvfHOKSG5ZY4FfA=",
+			"path": "qbox.us/multiebd",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "MNeiuaV5hQAtij6/T3V8cD67R9k=",
+			"path": "qbox.us/multipart",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "wzCB5g+GKKJj5rwV0sbLv1PUx6o=",
+			"path": "qbox.us/net/conn",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "F8RAiBHx6ZeEcmDFpGbKK+SPR3I=",
+			"path": "qbox.us/net/httputil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GPFI/ztoOMB5D8OuFXdN1RUv2E0=",
+			"path": "qbox.us/net/httputil/bytes",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "he0NwTixtqsw0hTPjGqLx5knkOc=",
+			"path": "qbox.us/net/httputil/flag",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/Et4z10YvWVk6JEyA78vNWzZweo=",
+			"path": "qbox.us/net/httputil/pipe",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "o8gHwml+hcj0yRCFL81lSu283LU=",
+			"path": "qbox.us/net/netutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "uyL4zYOEYv9DIJPVwujwG1foejo=",
+			"path": "qbox.us/net/serverstat",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "3A/etHqiaL5U2UJnf2hY8ec8fKs=",
+			"path": "qbox.us/net/seshcookie",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LPszDPyMxPJ7lqPbxwB9W3za16E=",
+			"path": "qbox.us/net/uri",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Ud3gqk1ljWcNjKnXXuEIpoaU0wk=",
+			"path": "qbox.us/net/urlutil",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VHuMf6i9SwtGRFlbxW0vwSVck5E=",
+			"path": "qbox.us/net/webroute",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "vhsM16SJrNi9OjmH6LBJwMpbdZs=",
+			"path": "qbox.us/oauth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LiSOUxBxwLRLpzEsl5iPr3GkOPU=",
+			"path": "qbox.us/objid",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "N7lmUlAMRL612v80pPKUDsWyiOk=",
+			"path": "qbox.us/ossbd/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "uVcxbtMFRVAHTDqrop8i61VdJjU=",
+			"path": "qbox.us/path",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UF4gX3Ul+ACaqCbR8AhnHJSFC/Y=",
+			"path": "qbox.us/pfd/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "S9YC9yOcmJzbj6WRPS59tT6dc7c=",
+			"path": "qbox.us/pfd/api/types",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4rmvlqzluaCH01O0SZV1PmDDKwM=",
+			"path": "qbox.us/pfd/misc/direct",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2jAtHIHU5yX04xmIBhCKriL9uo0=",
+			"path": "qbox.us/pfdcfg/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LBxb7MvgyEU5CX9acHGsLIDnYFc=",
+			"path": "qbox.us/pfdcfg/api/qconf/dgapi",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "fOomt7ZZny44KaIMAJVxROWkcY0=",
+			"path": "qbox.us/pfdstg/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "RIt150tG85FjLc0eaDjLizwkgKw=",
+			"path": "qbox.us/pfdtracker/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zQa7DXEws0eRrl0P0K/xaDllhDg=",
+			"path": "qbox.us/pfdtracker/stater",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "D+4m6c9be3j4yh5J4bhfOU6t88I=",
+			"path": "qbox.us/profile",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/IOMiVDZJ/ofZzPa4RpWm8QKB2k=",
+			"path": "qbox.us/profile/expvar",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "FgUR+c1PbnfTTnesnA9KMem4CN0=",
+			"path": "qbox.us/profile/pprof",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VlUqDhyZjVK0uP28qkDc3qx0dmY=",
+			"path": "qbox.us/proxy/api.v2/nginxproxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gPhwxbZC0LaKSEVCMJ2mOmw9RiU=",
+			"path": "qbox.us/proxy/api.v2/noproxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "pu/TLS7QeKgdcHtFSFVlxpbgx+M=",
+			"path": "qbox.us/proxy/api.v2/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "nINpAHvPWU5sSDEK/WxC92CouoU=",
+			"path": "qbox.us/proxy/api.v2/qiniuproxy",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Wx+P9cKZ+ZjFQZhOi+ydgXQqw34=",
+			"path": "qbox.us/ptfd/api.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "v75JOs8i49l8yp7jW6IwS86Alow=",
+			"path": "qbox.us/ptfd/cfgapi.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "uM/4D+hIsiHeusqooawT3Ir6ois=",
+			"path": "qbox.us/ptfd/cfgapi.v1/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "yGRrOHaaR8/k9uN4Rh5qizBuc9w=",
+			"path": "qbox.us/ptfd/getter.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "oChYwtxsBIC1qpZsFX9lifUJJlo=",
+			"path": "qbox.us/ptfd/masterapi.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Naf6yy+OlAxAKArfe3RA5bhaCyU=",
+			"path": "qbox.us/ptfd/stgapi.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6cYmnPQkz22RkVu9pmDsfJywMRQ=",
+			"path": "qbox.us/ptfd/stgapi.v1/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zO3Mcj+QnuMJ6kGxOOuadJN7Tr8=",
+			"path": "qbox.us/qauth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/DpiuSnlOgJfeIAvI8FgegWFJ7U=",
+			"path": "qbox.us/qconf/master/qrefresher",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2e8w/d1SyGQwhQDAjai3M714D3M=",
+			"path": "qbox.us/qconf/master/qrefresher/proto",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "JTMKdFlZ+dCs0uk2CfSzEZHwrow=",
+			"path": "qbox.us/qconf/qconfapi",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Kn5mUMYTBI24DM3hOyP5n6vhrqQ=",
+			"path": "qbox.us/qconf/slave",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xmkxqwHQjVw2zIfv4ecCuCtNwY8=",
+			"path": "qbox.us/qdiscover/discover",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "8BVHgIsiQlVVELKpMIQrT0W4aiw=",
+			"path": "qbox.us/qmq/qmqapi/mq2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "419Dlf4oaB/4CpCmDUguQv1rcd4=",
+			"path": "qbox.us/qmq/qmqapi/v1/admin_api/mq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "mIbWMDYqit7lwyL4HT/0z9+weJY=",
+			"path": "qbox.us/qmq/qmqapi/v1/mq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "CoV7DrEFjk+f3ef7Z/CWMnMbzuc=",
+			"path": "qbox.us/qmq/v1/mq",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "peBWxffljUxbSUj/3EyGKJBPAqU=",
+			"path": "qbox.us/qmset/qmsetapi",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GSONtJi/ywBh4eigG8DhqQntU90=",
+			"path": "qbox.us/rateio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "h5V4/kJI4UIztjB9xz6OTIGA3TY=",
+			"path": "qbox.us/ratelimit",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "0SBRogE+ABjT5ZE3pCO17nlX9Cg=",
+			"path": "qbox.us/recordio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "dxxo89oCki1EfoThoDJCVOgHWFc=",
+			"path": "qbox.us/redis/ratelimit",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "t384VqFI9LNhCckiPLr0qkr2DPA=",
+			"path": "qbox.us/redisutilv5",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "froe9gCLK94mjL2PWlF5EOFSQVA=",
+			"path": "qbox.us/rpc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4E/HmNPvHduz/jU/VvAdTYXrfn8=",
+			"path": "qbox.us/runner",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UAYGaATwLk7nJiuDOp4VTgw0STU=",
+			"path": "qbox.us/runner/goroutine",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "E0TqRDDXUlBafdXT70wj4yW8M3k=",
+			"path": "qbox.us/runner/safe",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "I/lSd0RKdps28IKavFHqvlvjJqU=",
+			"path": "qbox.us/runner/safe/goroutine",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "yfqg+NFPKZSlCsgP7529x4nhhUg=",
+			"path": "qbox.us/runner/taskpool",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "s1by1/NH2FtKaYjZXdZijsvN3G4=",
+			"path": "qbox.us/runner/taskpool2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "sycsQLA2f1QMfiNy2wYKK9DCDl0=",
+			"path": "qbox.us/servend/account",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "9vIYb2kR5VbqFcc5mcX2EyFHUbw=",
+			"path": "qbox.us/servend/account/logh",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "oNkzNzsv5jnAJFmiT4O0lLRP95k=",
+			"path": "qbox.us/servend/digest_auth/admin",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BDq6xYHgs/xlBtMqlyGZy1OGklY=",
+			"path": "qbox.us/servend/digest_auth/v2.1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "BmeXvn4aM+HA0jkyOegZoaxZ5ec=",
+			"path": "qbox.us/servend/oauth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "kD9FCGOmDSjMl4LTGYKx7Rn5230=",
+			"path": "qbox.us/servend/proxy_auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UOiOIPgJ74cPpr5NhFzfIqRBGPk=",
+			"path": "qbox.us/serverlimit/http",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "cXmtohczHJ4Ehl1sQoJVsGko2Yw=",
+			"path": "qbox.us/serverlimit/httpdown",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Ezz+iFpvBSUuSmXEHNmT99Trn1s=",
+			"path": "qbox.us/servestk",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "JEgY69dVdANm0pdsXSXcVGNF+Ww=",
+			"path": "qbox.us/servestk/gracedown",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "aE1cPe0SgbO03eC4+AgA/IPwmhw=",
+			"path": "qbox.us/servestk/logh",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5eF0vBGLhOWsWxmC/KeNOf52T7o=",
+			"path": "qbox.us/servestk/metrics",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "saOzV0/zQEInXDEfwcFOU4cafjQ=",
+			"path": "qbox.us/servestk/redirect",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "P4JF7o3H8aYg7MQU6WtIsgJqzYw=",
+			"path": "qbox.us/sstore",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+VPjtUn77V35xjDQy9svuBZhR6k=",
+			"path": "qbox.us/sstore/keyfinder",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "H66O1WBzDkdgSc9WTq99rbtR/k4=",
+			"path": "qbox.us/store",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OeLpAjYJPKeD7kDXoDZFBAmJR/I=",
+			"path": "qbox.us/store/cc",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4/VnjIwNPXXJQSYkc+vUt6Redi4=",
+			"path": "qbox.us/timeio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "WTqJasYZBPG/0/pKytb+rcTQdzw=",
+			"path": "qbox.us/ufopmgr",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Su4FXkXIpoY4zeKg11D6KgKH9Nk=",
+			"path": "qbox.us/urlquery",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "02LnzRV8Mosij8mDZ0vmKqV724U=",
+			"path": "qbox.us/urlrewrite",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "1YBCK7R20bjHsb4gemdGhCOotv0=",
+			"path": "qbox.us/urlrewrite.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "VUosHvIyh2I9CqLfVQN9vpTxMTo=",
+			"path": "qbox.us/zone",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "GQ/xohrOsKkTxJM+ogjwoaSi+NI=",
+			"path": "qiniu.com/auth",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QWX5F2UxNCt/6BgpJQ8n/lPKjCI=",
+			"path": "qiniu.com/auth/account.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UD9FPYDOeF+LeDHOsAUFIP/Skqo=",
+			"path": "qiniu.com/auth/account.v1/static.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Q61ggpShBPescDMMevta1NoCjuA=",
+			"path": "qiniu.com/auth/authstub.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6bBz8cYeUu9lNXlcP2bITdhlo+I=",
+			"path": "qiniu.com/auth/authutil.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "IPg/AWK5Iqc0lTRftshkjgJj5nM=",
+			"path": "qiniu.com/auth/proto.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "X5pOX6Un2vVxVi/3xJG7+7dg5uY=",
+			"path": "qiniu.com/auth/qboxmac.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "4toBOXOIng1/EueKy8NS4XkgJ+0=",
+			"path": "qiniu.com/auth/qiniumac.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "JokBZdKWvc3WeQP3j6w3tJp9noI=",
+			"path": "qiniu.com/auth/signer.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "R56m7T+uf1utnHhH1Aa5V6nDR0s=",
+			"path": "qiniu.com/probe/collector",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "A/8z0Hd3C/26WC/FrB84CtG074M=",
+			"path": "qiniu.com/probe/common/bufio",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "YMwzC9rRjacWCmhn7VMwkc7Ipu8=",
+			"path": "qiniu.com/probe/common/protocol/line",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "aqjlcZAa2rFeNzevKRzW4mRONCE=",
+			"path": "qiniupkg.com/api.v7/api",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zHJ+/Ij2sFr0i9GCoq7DI4SVTqI=",
+			"path": "qiniupkg.com/api.v7/auth/qbox",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QBx3XSir4sCi7YoiAt/Ym9+YNmw=",
+			"path": "qiniupkg.com/api.v7/conf",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "h3dhYSE4u/0dR6VO8qMfi1WNFIA=",
+			"path": "qiniupkg.com/api.v7/kodo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ND7F48xfn1MTZObLDXkYLKXl4jg=",
+			"path": "qiniupkg.com/api.v7/kodocli",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "3BMia6mOA4b/x4yuH4y9nHfVZfg=",
+			"path": "qiniupkg.com/api.v8/kodo",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "32XNHn8eF/AfN3RJFqofHq1rCWk=",
+			"path": "qiniupkg.com/api.v8/kodocli",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "3eDPXkE315yC04kf9iesLcph3xg=",
+			"path": "qiniupkg.com/cacheflight",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "I7mGgLrf9rCcoZps3tJQVRqhXXM=",
+			"path": "qiniupkg.com/dyn/cmdarg.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5B9raYIZ4Xfw5FNGcN6enZlUgOg=",
+			"path": "qiniupkg.com/dyn/dyn.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "41eKHe6EW35ldA/OStPz3q8F5fs=",
+			"path": "qiniupkg.com/dyn/flag.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Rwb4xBR3leHvd9eAMoHVx7giUdk=",
+			"path": "qiniupkg.com/dyn/jsonext.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "B5XuSOHOIS7E5+s/GnbNmsTwOPI=",
+			"path": "qiniupkg.com/dyn/proto.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2/B+HgGsQZmAEWQO8/H6EP28f3g=",
+			"path": "qiniupkg.com/dyn/text.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "QeANmpsKgHfqAiKIy8t8g+L9/gI=",
+			"path": "qiniupkg.com/dyn/text.v1/internal/encoding/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "5a1g7/v9tBjxibgUk2RBJ0DvEk4=",
+			"path": "qiniupkg.com/dyn/vars.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OgAh0Lz7luMPgmkU81Tax0uUAWA=",
+			"path": "qiniupkg.com/http/httputil.v2",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "W8+kHUvYxCPQ1MF5tNwSApe68f4=",
+			"path": "qiniupkg.com/httptest.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "+T4LX8K5ICjyUTNww7llhqqVo0E=",
+			"path": "qiniupkg.com/httptest.v1/exec",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "iRyaKKSLaXTHQzZ3B5phyFUUpNE=",
+			"path": "qiniupkg.com/mockable.v1/net",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "IDjvqbCOcaKQYFWWF7goA2niml4=",
+			"path": "qiniupkg.com/qiniutest/httptest.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ysKy0iYahyyLXt2SYm9NCnxJA1Y=",
+			"path": "qiniupkg.com/qiniutest/httptest.v1/exec/plugin",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "zVj/T+HKCDj8pYpNXqLqn58+Imk=",
+			"path": "qiniupkg.com/trace.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "B/sjW4IkQ/EivtlDT5me1M0YhqA=",
+			"path": "qiniupkg.com/x/bytes.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "vsrVZOwspKV+tiF/geJdN9Kc+oE=",
+			"path": "qiniupkg.com/x/bytes.v7/seekable",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "I7lIlHYkKoF9SkYDDw3j4klnCTE=",
+			"path": "qiniupkg.com/x/cmdline.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "/WiH7e2yQgRxeBX+/8LOG6/NyaA=",
+			"path": "qiniupkg.com/x/config.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "gDAR2HevNaQPY5AgPfsSTa83hMk=",
+			"path": "qiniupkg.com/x/ctype.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "TTEfhqhNOxg0/Qx9SKeaxLYFOZM=",
+			"path": "qiniupkg.com/x/errors.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "6WHVJH+TaNl5uWvTIi9S8zyek3A=",
+			"path": "qiniupkg.com/x/errors.v8",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "8hyY9fVY7s8MVE6AN3TQA6NiNXo=",
+			"path": "qiniupkg.com/x/jsonutil.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "T6ClIv7J45jxZ98P70nFGB3URVk=",
+			"path": "qiniupkg.com/x/log.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "t8P0AJQ5VH0I7hXW2SC3Oi2tbYA=",
+			"path": "qiniupkg.com/x/mockhttp.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "H8+RHqplH5pNwKVURcANz3Z7+8Y=",
+			"path": "qiniupkg.com/x/reqid.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "UqEdeFzATxmjaDWdUWg/gWvijv8=",
+			"path": "qiniupkg.com/x/rollog.v1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "2s7jlaClCVTbr7ShFZGHyl/SBFg=",
+			"path": "qiniupkg.com/x/rpc.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "c8NWYPW3ZuzMIFCqTDqD5FzOj94=",
+			"path": "qiniupkg.com/x/ts.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "V5PhF6cvjkH+CfL/05HVjM3xnjk=",
+			"path": "qiniupkg.com/x/url.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ZLuJfhm4gcrTdWjJSBjZqH0YUqY=",
+			"path": "qiniupkg.com/x/xlog.v7",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "ezRkrYYy9mMxREVDryjD5NlHa7M=",
+			"path": "github.com/julienschmidt/httprouter",
+			"revision": "8c199fb6259ffc1af525cc3ad52ee60ba8359669",
+			"revisionTime": "2015-04-21T17:00:07Z",
+			"version": "v1.1",
+			"versionExact": "v1.1"
+		},
+		{
+			"checksumSHA1": "ezRkrYYy9mMxREVDryjD5NlHa7M=",
+			"path": "github.com/jmcvetta/randutil",
+			"revision": "8c199fb6259ffc1af525cc3ad52ee60ba8359669",
+			"revisionTime": "2015-04-21T17:00:07Z",
+			"version": "v1.1",
+			"versionExact": "v1.1"
+		}
+	],
+	"rootPath": "qiniu.com/qtest"
+}
