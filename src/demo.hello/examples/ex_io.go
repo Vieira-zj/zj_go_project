@@ -350,5 +350,5 @@ func MainIO() {
 	// testReadFlag01()
 	// testReadFlag02()
 
-	fmt.Println("golang io demo DONE.")
+	fmt.Println("golang IO example DONE.")
 }

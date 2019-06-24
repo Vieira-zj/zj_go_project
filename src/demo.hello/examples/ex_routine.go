@@ -253,5 +253,5 @@ func MainGoRoutine() {
 	// getDirTotalSize01()
 	// getDirTotalSize02()
 
-	fmt.Println("golang routine demo DONE.")
+	fmt.Println("golang routine example DONE.")
 }

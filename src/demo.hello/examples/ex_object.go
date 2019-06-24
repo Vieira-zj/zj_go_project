@@ -341,5 +341,5 @@ func MainOO() {
 	// testSliceSort01()
 	// testSliceSort02()
 
-	fmt.Println("golang oo demo DONE.")
+	fmt.Println("golang OO example DONE.")
 }

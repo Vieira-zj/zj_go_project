@@ -3,7 +3,6 @@ package examples
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 
@@ -12,29 +11,50 @@ import (
 
 // example 01
 // Fetch prints the content found at a URL.
-func fetch(url string) (respContent []byte) {
+func testFetchURL() {
+	const url string = "http://gopl.io"
+	fmt.Printf("\nbytes of url (%s): %d\n", url, len(myFetchURL(url)))
+}
+
+func myFetchURL(url string) (respContent []byte) {
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+		fmt.Fprintf(os.Stderr, "fetch url (%s): %v\n", url, err)
 		os.Exit(1)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
-	resp.Body.Close()
+	defer resp.Body.Close()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "fetch: reading %s: %v\n", url, err)
+		fmt.Fprintf(os.Stderr, "io copy: %v\n", err)
 		os.Exit(1)
 	}
-
 	return b
 }
 
-func testFetch() {
+// example 02
+func testFetchLinks01() {
 	const url string = "http://gopl.io"
-	fmt.Printf("%s\n", fetch(url))
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "fetch url (%s): %v\n", url, err)
+		os.Exit(1)
+	}
+
+	doc, err := html.Parse(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "html parse: %v\n", err)
+		os.Exit(1)
+	}
+
+	links := visit(nil, doc)
+	fmt.Printf("\nall links for url (%s):\n", url)
+	for _, link := range links {
+		fmt.Println(link)
+	}
 }
 
-// example 02
 // visit appends to links each link found in html node and returns the result.
 func visit(links []string, n *html.Node) []string {
 	if n.Type == html.ElementNode && n.Data == "a" {
@@ -50,28 +70,21 @@ func visit(links []string, n *html.Node) []string {
 	return links
 }
 
-func testFindLinks() {
-	const url string = "http://gopl.io"
-	resp, err := http.Get(url)
+// example 03, ch5-06
+func testFetchlLinks02() {
+	const url = "http://gopl.io"
+	links, err := extract(url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "fetch: %v\n", err)
+		fmt.Fprintf(os.Stderr, "extract: %v\n", err)
 		os.Exit(1)
 	}
 
-	doc, err := html.Parse(resp.Body)
-	resp.Body.Close()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "findlinks: %v\n", err)
-		os.Exit(1)
-	}
-
-	links := visit(nil, doc)
+	fmt.Printf("\nall links for url (%s):\n", url)
 	for _, link := range links {
-		fmt.Println(link)
+		fmt.Printf("%v\n", link)
 	}
 }
 
-// example 03, ch5-06
 // extract makes an HTTP GET request to the specified URL,
 // parses the response as HTML, and returns the links in the HTML document.
 func extract(url string) ([]string, error) {
@@ -79,15 +92,14 @@ func extract(url string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		resp.Body.Close()
-		return nil, fmt.Errorf("getting %s: %s", url, resp.Status)
+		return nil, fmt.Errorf("getting url(%s): %s", url, resp.Status)
 	}
 
 	doc, err := html.Parse(resp.Body)
-	defer resp.Body.Close()
 	if err != nil {
-		return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+		return nil, fmt.Errorf("html parsing for url(%s): %v", url, err)
 	}
 
 	var links []string
@@ -111,8 +123,8 @@ func extract(url string) ([]string, error) {
 }
 
 // forEachNode针对每个结点x, 都会调用pre(x)和post(x). pre和post都是可选的
-// 遍历孩子结点之前,pre被调用
-// 遍历孩子结点之后，post被调用
+// 遍历孩子结点之前, pre被调用
+// 遍历孩子结点之后, post被调用
 func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 	if pre != nil {
 		pre(n)
@@ -125,131 +137,155 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 	}
 }
 
-func testExtract() {
-	const url = "http://gopl.io"
-	links, err := extract(url)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "extract: %v\n", err)
-		os.Exit(1)
-	}
-	for _, link := range links {
-		fmt.Printf("%v\n", link)
-	}
-}
-
 // example 04, ch8-06
-func crawl(url string) []string {
-	fmt.Printf("crawl: %s\n", url)
-	list, err := extract(url)
-	if err != nil {
-		log.Printf("extract error: %v\n", err)
-	}
-	return list
-}
-
 // 一个worklist是一个记录了需要处理的元素的队列，每一个元素都是一个需要抓取的URL列表，
 // 不过这一次我们用channel代替slice来做这个队列。
 // 每一个对crawl的调用都会在他们自己的goroutine中进行并且会把他们抓到的链接发送回worklist.
-func testCrawl() {
+func testCrawl01() {
 	urls := []string{"http://gopl.io"}
-	worklist := make(chan []string)
+	chWorklist := make(chan []string)
+	go func() { chWorklist <- urls }()
 
-	go func() { worklist <- urls }()
-
-	// Crawl the web concurrently.
+	// crawl web page concurrently (as many as routines)
 	seen := make(map[string]bool)
-	for list := range worklist {
-		for _, link := range list {
+	for links := range chWorklist {
+		if isExitCrawlProcess(seen, 100) {
+			break
+		}
+		for _, link := range links {
 			if !seen[link] {
 				seen[link] = true
 				go func(link string) {
-					worklist <- crawl(link)
+					chWorklist <- crawl(link)
 				}(link)
 			}
 		}
 	}
+
+	fmt.Println("\nall crawl links for urls:", urls)
+	for url := range seen {
+		fmt.Println(url)
+	}
+}
+
+func crawl(url string) []string {
+	fmt.Printf("crawl links for url: %s\n", url)
+	links, err := extract(url)
+	if err != nil {
+		fmt.Printf("extract error: %v\n", err)
+	}
+	return links
 }
 
 // example 05
-// tokens is a counting semaphore
-// used to enforce a limit of 20 concurrent requests.
-var tokens = make(chan struct{}, 20)
-
-func crawl2(url string) []string {
-	fmt.Printf("crawl: %s\n", url)
-	tokens <- struct{}{} // acquire a token
-	list, err := extract(url)
-	<-tokens // release token
-	if err != nil {
-		log.Printf("extract error: %v\n", err)
-	}
-	return list
-}
-
-func testCrawl2() {
+func testCrawl02() {
 	urls := []string{"http://gopl.io"}
-	worklist := make(chan []string)
-	var n int // number of pending sends to worklist
+	chWorklist := make(chan []string)
+	// tokens is a counting semaphore, used to enforce a limit of x concurrent requests
+	var chTokens = make(chan struct{}, 3)
+	var n int
 
 	n++
-	go func() { worklist <- urls }()
+	go func() { chWorklist <- urls }()
 
-	// Crawl the web concurrently.
+	// crawl web page concurrently
+	// (as many as routines, and only 5 routines are running)
 	seen := make(map[string]bool)
 	for ; n > 0; n-- {
-		list := <-worklist
-		for _, link := range list {
+		if isExitCrawlProcess(seen, 100) {
+			break
+		}
+		links := <-chWorklist
+		for _, link := range links {
 			if !seen[link] {
 				seen[link] = true
 				n++
 				go func(link string) {
-					worklist <- crawl2(link)
+					chWorklist <- crawl2(link, chTokens)
 				}(link)
 			}
 		}
 	}
+
+	fmt.Println("\nall crawl links for urls:", urls)
+	for url := range seen {
+		fmt.Println(url)
+	}
+}
+
+func crawl2(url string, chTokens chan struct{}) []string {
+	chTokens <- struct{}{} // acquire a token
+	fmt.Printf("crawl: %s\n", url)
+	links, err := extract(url)
+	if err != nil {
+		fmt.Printf("extract error: %v\n", err)
+	}
+	<-chTokens // release token
+	return links
 }
 
 // example 06
-func testCrawl3() {
-	urls := []string{"http://gopl.io"}
-	worklist := make(chan []string) // lists of URLs, may have duplicates
-	unseenLink := make(chan string) // de-duplicated URLs
+func testCrawl03() {
+	urls := []string{"http://www.baidu.com"}
+	// lists of URLs, may have duplicates
+	chWorklist := make(chan []string)
+	go func() { chWorklist <- urls }()
 
-	go func() { worklist <- urls }()
-
-	// Create 20 crawler goroutines to fetch each unseen link.
-	for i := 0; i < 20; i++ {
+	// create 5 crawler routines to fetch each unseen link
+	chUnseenLink := make(chan string) // de-duplicated URLs
+	for i := 0; i < 5; i++ {
 		go func() {
-			for link := range unseenLink {
-				foundLinks := crawl(link)
-				go func() { worklist <- foundLinks }()
+			for page := range chUnseenLink {
+				// #1: process will be blocked
+				// chWorklist <- crawl(page)
+				// #2: crawl() is in current routine, and is slow
+				links := crawl(page)
+				go func() { chWorklist <- links }()
+				// #3: put crawl() is in sub routine
+				// go func(page string) { chWorklist <- crawl(page) }(page)
 			}
 		}()
 	}
 
-	// The main goroutine de-duplicates worklist items
+	// the main goroutine de-duplicates worklist items
 	// and sends the unseen ones to the crawlers.
 	seen := make(map[string]bool)
-	for list := range worklist {
-		for _, link := range list {
+loop:
+	for links := range chWorklist {
+		if isExitCrawlProcess(seen, 50) {
+			break loop
+		}
+		for _, link := range links {
 			if !seen[link] {
 				seen[link] = true
-				unseenLink <- link
+				chUnseenLink <- link
 			}
 		}
 	}
+
+	fmt.Println("\nall crawl links for urls:", urls)
+	for url := range seen {
+		fmt.Println(url)
+	}
 }
 
-// MainCrawl : the main for crawl links examples
+func isExitCrawlProcess(urls map[string]bool, limit int) bool {
+	if len(urls) > limit {
+		fmt.Printf("\nget max urls size: %d\n", limit)
+		return true
+	}
+	return false
+}
+
+// MainCrawl : the main for crawl web links examples.
 func MainCrawl() {
-	// testFetch()
-	// testFindLinks()
-	// testExtract()
+	// testFetchURL()
+	// testFetchlLinks01()
+	// testFetchlLinks02()
 
-	// testCrawl()
-	// testCrawl2()
-	// testCrawl3()
+	// testCrawl01()
+	// testCrawl02()
+	// testCrawl03()
 
-	fmt.Println("crawl example done.")
+	fmt.Println("golang crawl example DONE.")
 }

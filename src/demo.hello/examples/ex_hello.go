@@ -398,5 +398,5 @@ func MainHello() {
 
 	// objectTest()
 
-	fmt.Println("golang hello demo DONE.")
+	fmt.Println("golang hello example DONE.")
 }

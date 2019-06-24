@@ -48,10 +48,10 @@ func mainExample() {
 	// examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
-	examples.MainGoRoutine()
+	// examples.MainGoRoutine()
+	examples.MainHTTP()
 	// examples.MainCrawl()
 	// examples.MainReflect()
-	// examples.MainHTTP()
 }
 
 func mainDemo() {
