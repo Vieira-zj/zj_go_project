@@ -11,6 +11,13 @@ import (
 )
 
 // example 01-01
+func testRoutine01() {
+	go spinner1(time.Duration(100) * time.Millisecond)
+	// routine is killed when "main" is done
+	fmt.Println("main sleep for 5 seconds ...")
+	time.Sleep(time.Duration(5) * time.Second)
+}
+
 func spinner1(delay time.Duration) {
 	for {
 		for _, r := range `-\|/` {
@@ -20,12 +27,18 @@ func spinner1(delay time.Duration) {
 	}
 }
 
-func routineTest1() {
-	go spinner1(time.Duration(100) * time.Millisecond)
-	time.Sleep(time.Duration(5) * time.Second)
+// example 01-02
+func testRoutine02() {
+	ch := make(chan string)
+	go spinner2(ch)
+
+	fmt.Println("main running:")
+	// get string from channel until close
+	for str := range ch {
+		fmt.Printf("%s", str)
+	}
 }
 
-// example 01-02
 func spinner2(ch chan<- string) {
 	for i := 0; i < 10; i++ {
 		for _, r := range `-\|/` {
@@ -36,68 +49,50 @@ func spinner2(ch chan<- string) {
 	close(ch) // close channel
 }
 
-func routineTest2() {
-	ch := make(chan string)
-	go spinner2(ch)
-
-	fmt.Println("running:")
-	// get values for channel until close(ch)
-	for str := range ch {
-		fmt.Printf("%s", str)
-	}
-}
-
 // example 01-03, chan type as struct
-type typeStrAndInt struct {
+type structStrAndInt struct {
 	numInt    int
 	numString string
 }
 
-func myFormatRoutine(num int, ch chan<- typeStrAndInt) {
-	var ret typeStrAndInt
-	switch num {
-	case 1:
-		ret = typeStrAndInt{numString: "one", numInt: 1}
-	case 2:
-		ret = typeStrAndInt{numString: "two", numInt: 2}
-	case 3:
-		ret = typeStrAndInt{numString: "three", numInt: 3}
-	default:
-		ret = typeStrAndInt{numString: "nine", numInt: 9}
-	}
-	time.Sleep(time.Duration(3) * time.Second)
-	ch <- ret
-}
-
-func routineTest3() {
+func testRoutine03() {
 	const count = 5
-	ch := make(chan typeStrAndInt)
+	ch := make(chan structStrAndInt)
 	for i := 0; i < count; i++ {
 		go myFormatRoutine(i, ch)
 	}
 
 	for i := 0; i < count; i++ {
 		ret := <-ch
-		fmt.Printf("results: %d => %s\n", ret.numInt, ret.numString)
+		fmt.Printf("channel output: %d => %s\n", ret.numInt, ret.numString)
 	}
 }
 
-// example 02
-func myUpdateRoutine(num int, ch chan<- string) {
-	fmt.Println("start: update goroutine:", num)
-	time.Sleep(time.Duration(200) * time.Millisecond)
-	ch <- fmt.Sprintf("test: %d", num) // send
-	fmt.Println("end: update goroutine", num)
+func myFormatRoutine(num int, ch chan<- structStrAndInt) {
+	var ret structStrAndInt
+	switch num {
+	case 1:
+		ret = structStrAndInt{numString: "one", numInt: 1}
+	case 2:
+		ret = structStrAndInt{numString: "two", numInt: 2}
+	case 3:
+		ret = structStrAndInt{numString: "three", numInt: 3}
+	default:
+		ret = structStrAndInt{numString: "nine", numInt: 9}
+	}
+	time.Sleep(time.Duration(3) * time.Second)
+	ch <- ret
 }
 
-func bufferredChannelTest() {
+// example 02
+func testBufferredChannel() {
 	// bufferred channel, for goroutine send, output:
-	// print 5 goroutine start
-	// if no buffered ch, print 3 goroutine end
-	// if buffered(2) ch, print 5 goroutine end
+	// print 5 goroutine "start"
+	// if no buffered ch, print 3 goroutine "end"
+	// if bufferred(2) ch, print 5 goroutine "end"
 	const count = 5
-	ch := make(chan string, 2)
-
+	// ch := make(chan string) // cap=0
+	ch := make(chan string, 2) // cap=2
 	for i := 0; i < count; i++ {
 		go myUpdateRoutine(i, ch) // start goroutine
 	}
@@ -109,27 +104,49 @@ func bufferredChannelTest() {
 	for i := 0; i < count-2; i++ {
 		fmt.Println(<-ch) // receive
 	}
+	fmt.Println("main sleep for 3 seconds ...")
 	time.Sleep(time.Duration(3) * time.Second)
 }
 
-// example 04
-func channelSelectTest() {
-	ch := make(chan int, 1) // buffer 1
+func myUpdateRoutine(num int, ch chan<- string) {
+	fmt.Println("[myUpdateRoutine] start:", num)
+	time.Sleep(time.Duration(200) * time.Millisecond)
+	ch <- fmt.Sprintf("number: %d", num) // send
+	fmt.Println("[myUpdateRoutine] end:", num)
+}
+
+// example 03
+func testChannelSelect() {
+	ch := make(chan int, 1) // cap=1
 	for i := 0; i < 10; i++ {
+		fmt.Println("\niterate at: ", i)
 		select {
 		case x := <-ch:
-			fmt.Println("receive at", i)
-			fmt.Println(x)
+			fmt.Println("receive idx:", x)
 		case ch <- i:
-			fmt.Println("send at", i)
+			fmt.Println("send idx:", i)
 		}
+		time.Sleep(time.Duration(100) * time.Millisecond)
 	}
 }
 
-// example 05
-func myFetch(url string, ch chan<- string) {
-	start := time.Now()
+// example 04
+func myFetchAllTest() {
+	urls := []string{"http://baidu.com", "http://gopl.io", "https://godoc.org"}
 
+	start := time.Now()
+	ch := make(chan string)
+	for _, url := range urls {
+		go fetchURL(url, ch) // start goroutine
+	}
+	for range urls {
+		fmt.Println(<-ch) // receive from channel ch
+	}
+	fmt.Printf("[main] %.2fs elapsed\n", time.Since(start).Seconds())
+}
+
+func fetchURL(url string, ch chan<- string) {
+	start := time.Now()
 	resp, err := http.Get(url)
 	if err != nil {
 		ch <- fmt.Sprint(err) // send to channel ch
@@ -144,26 +161,11 @@ func myFetch(url string, ch chan<- string) {
 	}
 
 	secs := time.Since(start).Seconds()
-	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
-}
-
-func myFetchAllTest() {
-	urls := []string{"https://golang.org", "http://gopl.io", "https://godoc.org"}
-	start := time.Now()
-
-	ch := make(chan string)
-	for _, url := range urls {
-		go myFetch(url, ch) // start goroutine
-	}
-	for range urls {
-		fmt.Println(<-ch) // receive from channel ch
-	}
-
-	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
+	ch <- fmt.Sprintf("[myFetch]: %.2fs\t%7d\t%s", secs, nbytes, url)
 }
 
 // example 05
-func dirents(dir string) []os.FileInfo {
+func listEntries(dir string) []os.FileInfo {
 	entries, err := ioutil.ReadDir(dir)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "du1: %v\n", err)
@@ -173,79 +175,83 @@ func dirents(dir string) []os.FileInfo {
 }
 
 // walkDir recursively walks the file tree rooted at dir
-// and sends the size of each found file on fileSizes.
-func walkDir(dir string, fileSizes chan<- int64) {
-	for _, entry := range dirents(dir) {
+// and sends the size of each found file on chFileSize.
+func walkDir(dir string, chFileSize chan<- int64) {
+	for _, entry := range listEntries(dir) {
 		if entry.IsDir() {
 			subdir := filepath.Join(dir, entry.Name())
-			walkDir(subdir, fileSizes)
+			walkDir(subdir, chFileSize)
 		} else {
-			fileSizes <- entry.Size()
+			chFileSize <- entry.Size()
 		}
 	}
 }
 
-func printDiskUsage(nfiles, nbytes int64) {
+func printSpaceUsage(nfiles, nbytes int64) {
 	fmt.Printf("%d files  %.1f GB\n", nfiles, float64(nbytes)/1e9)
 }
 
-func getDirTotalSize1(dir string) {
-	fileSizes := make(chan int64)
+func getDirTotalSize01() {
+	dir := os.Getenv("HOME")
+	chFileSize := make(chan int64)
 	go func() {
-		walkDir(dir, fileSizes)
-		close(fileSizes)
+		walkDir(dir, chFileSize)
+		close(chFileSize)
 	}()
 
 	var nfiles, nbytes int64
-	for size := range fileSizes {
+	for size := range chFileSize {
 		nfiles++
 		nbytes += size
 	}
-	printDiskUsage(nfiles, nbytes)
+	fmt.Printf("\nspace usage for (%s):\n", dir)
+	printSpaceUsage(nfiles, nbytes)
 }
 
-func getDirTotalSize2(dir string) {
-	fileSizes := make(chan int64)
+func getDirTotalSize02() {
+	dir := os.Getenv("HOME")
+	chFileSize := make(chan int64)
 	go func() {
-		walkDir(dir, fileSizes)
-		close(fileSizes)
+		walkDir(dir, chFileSize)
+		close(chFileSize)
 	}()
 
-	// print the results periodically
+	// print results periodically
 	var tick <-chan time.Time
 	tick = time.Tick(time.Duration(100) * time.Millisecond)
 
+	fmt.Printf("\nspace usage for (%s):\n", dir)
 	var nfiles, nbytes int64
 loop:
 	for {
 		select {
-		case size, ok := <-fileSizes: // use ok instead of range
+		case size, ok := <-chFileSize:
 			if !ok {
-				break loop // fileSizes was closed
+				// chFileSize was closed
+				break loop
 			}
 			nfiles++
 			nbytes += size
 		case <-tick:
-			printDiskUsage(nfiles, nbytes) // final totals
+			printSpaceUsage(nfiles, nbytes)
 		}
 	}
-	printDiskUsage(nfiles, nbytes)
+	printSpaceUsage(nfiles, nbytes)
 }
 
 // MainGoRoutine : main function for goroutine, channel examples.
 func MainGoRoutine() {
-	// routineTest1()
-	// routineTest2()
-	// routineTest3()
+	// testRoutine01()
+	// testRoutine02()
+	// testRoutine03()
 
-	// bufferredChannelTest()
-	// channelSelectTest()
+	// testBufferredChannel()
+	// testChannelSelect()
 
 	// myFetchAllTest()
 
-	// const dir = "/Users/zhengjin"
-	// getDirTotalSize1(dir)
-	// getDirTotalSize2(dir)
+	// getDirTotalSize01()
+	// getDirTotalSize02()
 
-	fmt.Println("\nparallel demo.")
+	fmt.Println("golang routine demo DONE.")
 }
