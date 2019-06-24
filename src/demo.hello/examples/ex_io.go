@@ -330,7 +330,7 @@ func init() {
 	PrintGoEnvValues()
 }
 
-// MainIO : main function for golang IO examples
+// MainIO : main function for golang IO examples.
 func MainIO() {
 	// testFileExist()
 

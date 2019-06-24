@@ -46,8 +46,8 @@ func testAccessControl() {
 
 func mainExample() {
 	// examples.MainHello()
-	examples.MainIO()
-	// examples.MainOO()
+	// examples.MainIO()
+	examples.MainOO()
 	// examples.MainGoRoutine()
 	// examples.MainCrawl()
 	// examples.MainReflect()

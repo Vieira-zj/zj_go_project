@@ -366,13 +366,13 @@ func objectTest() {
 	fmt.Println("after scale:", p2.String())
 }
 
-// PrintGoEnvValues : print go root and path env values
+// PrintGoEnvValues : print go root and path env values.
 func PrintGoEnvValues() {
 	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
 	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
 }
 
-// MainHello : main function for general golang examples
+// MainHello : main function for general golang examples.
 func MainHello() {
 	// hello("zheng", "jin")
 
