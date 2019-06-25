@@ -12,6 +12,10 @@ import (
 )
 
 // demo 01, inner function
+func testPrintFormatName() {
+	printFormatName("zheng", "jin")
+}
+
 func printFormatName(firstName, lastName string) {
 	fnGetShortName := func(firstName, lastName string) string {
 		tmp := fmt.Sprintf("%c%c", firstName[0], lastName[0])
@@ -21,11 +25,21 @@ func printFormatName(firstName, lastName string) {
 		firstName, lastName, fnGetShortName(firstName, lastName))
 }
 
-func testPrintFormatName() {
-	printFormatName("zheng", "jin")
+// demo 02, defer and recover()
+func testRecover() {
+	if ret, err := myDivision(4, 0); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("4/0 results:", ret)
+	}
+
+	if ret, err := myDivision(4, 2); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("4/2 results:", ret)
+	}
 }
 
-// demo 02, recover
 func myDivision(x, y int) (ret int, err error) {
 	defer func() {
 		if p := recover(); p != nil {
@@ -40,20 +54,6 @@ func myDivision(x, y int) (ret int, err error) {
 	return
 }
 
-func testRecover() {
-	if ret, err := myDivision(4, 0); err != nil {
-		fmt.Printf("error, %v\n", err)
-	} else {
-		fmt.Printf("results 4/0: %v\n", ret)
-	}
-
-	if ret, err := myDivision(4, 2); err != nil {
-		fmt.Printf("error, %v\n", err)
-	} else {
-		fmt.Printf("results 4/2: %v\n", ret)
-	}
-}
-
 // demo 03, struct init
 type fullName struct {
 	fName    string
@@ -62,14 +62,14 @@ type fullName struct {
 }
 
 func testPrintStructValue() {
-	zjFullName := fullName{
+	fullName := fullName{
 		fName: "fname",
 		lName: "lname",
 	}
-	fmt.Printf("full name: %v\n", zjFullName)
+	fmt.Printf("\nfull name: %v\n", fullName)
 
-	zjFullName.nickName = "nick"
-	fmt.Printf("full name with nick name: %v\n", zjFullName)
+	fullName.nickName = "nick"
+	fmt.Println("full name with nick name:", fullName)
 }
 
 // demo 04-01, struct and method
@@ -87,37 +87,38 @@ func (p *point) scaleBy(factor float64) {
 }
 
 func testStructMethod() {
-	fmt.Println("method:")
+	fmt.Println("\nstruct method:")
 	p := point{1, 2}
 	q := point{4, 6}
 	fmt.Printf("distance: %.1f\n", p.distance(q))
 
 	fmt.Println("\nmethod by reference:")
 	p.scaleBy(3)
-	fmt.Printf("p: %v\n", p)
+	fmt.Printf("scaled p: %v\n", p)
 	(&q).scaleBy(2)
-	fmt.Printf("q: %v\n", q)
+	fmt.Printf("scaled q: %v\n", q)
 
-	fmt.Println("\nmethod value:")
+	fmt.Println("\nmethod as variable:")
 	distanceFromP := p.distance
 	fmt.Printf("distanceFromP: %T\n", distanceFromP)
 	fmt.Printf("distance: %.1f\n", distanceFromP(q))
+
 	scaleP := p.scaleBy
 	fmt.Printf("scaleP: %T\n", scaleP)
 	scaleP(2)
 	fmt.Printf("p: %v\n", p)
 
-	fmt.Println("\nmethod value:")
+	fmt.Println("\nmethod as variable:")
 	p = point{1, 2}
 	q = point{4, 6}
 	distance := point.distance
-	fmt.Printf("distance(): %T\n", distance)
+	fmt.Printf("distance() type: %T\n", distance)
 	fmt.Printf("distance: %.1f\n", distance(p, q))
 
 	scale := (*point).scaleBy
 	scale(&p, 2)
-	fmt.Printf("scale(): %T\n", scale)
-	fmt.Printf("p: %v\n", p)
+	fmt.Printf("scale() type: %T\n", scale)
+	fmt.Printf("scaled p: %v\n", p)
 }
 
 // demo 04-02, innner struct
@@ -127,14 +128,14 @@ type coloredPoint struct {
 }
 
 func testInnerStruct() {
-	fmt.Println("field:")
+	fmt.Println("\nstruct fields:")
 	var cp coloredPoint
 	cp.x = 1
 	fmt.Printf("point x: %v\n", cp.point.x)
 	cp.point.y = 2
 	fmt.Printf("point y: %v\n", cp.y)
 
-	fmt.Println("\nmethod:")
+	fmt.Println("\nstruct method:")
 	red := color.RGBA{255, 0, 0, 255}
 	blue := color.RGBA{0, 0, 255, 255}
 	var p = coloredPoint{point{1, 1}, red}
@@ -142,7 +143,7 @@ func testInnerStruct() {
 	fmt.Printf("distance: %.1f\n", p.distance(q.point))
 	p.scaleBy(2)
 	q.scaleBy(2)
-	fmt.Printf("distance by scale: %.1f\n", p.distance(q.point))
+	fmt.Printf("scaled distance: %.1f\n", p.distance(q.point))
 }
 
 // demo 04-03, method var
@@ -163,7 +164,7 @@ func (pa path) translateBy(offset point, add bool) {
 	} else {
 		op = point.sub
 	}
-	fmt.Printf("operation: %T\n", op)
+	fmt.Printf("operation type: %T\n", op)
 
 	for i := range pa {
 		pa[i] = op(pa[i], offset)
@@ -175,7 +176,7 @@ func testTranslateBy() {
 	pa.translateBy(point{1, 1}, true)
 
 	for _, p := range pa {
-		fmt.Printf("%v\n", p)
+		fmt.Printf("point: %v\n", p)
 	}
 }
 
@@ -192,11 +193,11 @@ func (o *MyObject) Init(pub, pri string) {
 }
 
 // MethodPublicGet : return public value
-func (o *MyObject) MethodPublicGet() string {
+func (o MyObject) MethodPublicGet() string {
 	return o.varPrivate
 }
 
-func (o *MyObject) methodPrivateGet() string {
+func (o MyObject) methodPrivateGet() string {
 	return o.VarPublic
 }
 
@@ -205,40 +206,43 @@ func GetMyObject() MyObject {
 	return MyObject{}
 }
 
-func testAccessControl() {
-	obj := MyObject{"public", "private"}
+func testAccControl() {
+	fmt.Println("\naccess private fields/methods internal:")
+	obj := MyObject{"public_in", "private_in"}
 	fmt.Printf("public var: %s\n", obj.VarPublic)
 	fmt.Printf("private var: %s\n", obj.varPrivate)
-	fmt.Printf("public method get: %s\n", obj.MethodPublicGet())
+	fmt.Printf("\npublic method get: %s\n", obj.MethodPublicGet())
 	fmt.Printf("private method get: %s\n", obj.methodPrivateGet())
 }
 
 // demo 06, context
-func inc(a int) int {
-	res := a + 1
-	time.Sleep(time.Duration(1) * time.Second)
-	return res
-}
-
 func myAdd(ctx context.Context, a, b int) int {
 	res := 0
 	for i := 0; i < a; i++ {
-		res = inc(res)
+		res = incr(res)
 		select {
 		case <-ctx.Done():
+			fmt.Println("a: cancel incr()")
 			return -1
 		default:
 		}
 	}
 	for i := 0; i < b; i++ {
-		res = inc(res)
+		res = incr(res)
 		select {
 		case <-ctx.Done():
+			fmt.Println("b: cancel incr()")
 			return -1
 		default:
 		}
 	}
 	return res
+}
+
+func incr(a int) int {
+	ret := a + 1
+	time.Sleep(time.Duration(1) * time.Second)
+	return ret
 }
 
 func testContext01() {
@@ -248,9 +252,10 @@ func testContext01() {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	res := myAdd(ctx, 1, 2)
 	go func() {
-		cancel = nil
+		time.Sleep(time.Duration(5) * time.Second)
+		cancel()
 	}()
-	fmt.Printf("Compute: %d+%d, result: %d\n", a, b, res)
+	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
 }
 
 func testContext02() {
@@ -262,53 +267,54 @@ func testContext02() {
 		cancel()
 	}()
 	res := myAdd(ctx, 1, 2)
-	fmt.Printf("Compute: %d+%d, result: %d\n", a, b, res)
+	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
 }
 
 // demo 07, update bytes
-func myUpdateBytesByValue(b []byte) {
-	b = bytes.ToUpper(b)
-	b = append(b, '!', '!', '!')
-	fmt.Printf("in update by value: %s\n", string(b))
-}
-
-func myUpdateBytesByPointer(b *[]byte) {
-	*b = bytes.ToUpper(*b)
-	*b = append(*b, []byte{'!', '!', '!'}...)
-	fmt.Printf("in update by pointer: %s\n", string(*b))
-}
-
 func testUpdateBytes() {
 	s := "it's a test"
 	b := []byte(s)
 
-	fmt.Println("1) by value:")
+	fmt.Println("\n#1: by value:")
 	fmt.Printf("before update: %s\n", string(b))
 	myUpdateBytesByValue(b)
 	fmt.Printf("after update: %s\n", string(b))
 
-	fmt.Println("2) by pointer:")
+	fmt.Println("\n#2: by pointer:")
 	fmt.Printf("before update: %s\n", string(b))
 	myUpdateBytesByPointer(&b)
 	fmt.Printf("after update: %s\n", string(b))
 }
 
+func myUpdateBytesByValue(b []byte) {
+	b = bytes.ToUpper(b)
+	b = append(b, '!', '!', '!')
+	fmt.Printf("[UpdateBytes] by value: %s\n", string(b))
+}
+
+func myUpdateBytesByPointer(b *[]byte) {
+	*b = bytes.ToUpper(*b)
+	*b = append(*b, []byte{'!', '!', '!'}...)
+	fmt.Printf("[UpdateBytes] by pointer: %s\n", string(*b))
+}
+
 // demo 08, time format
 func testTimeFormat() {
 	t := time.Now()
-	fmt.Printf("week day => %d, time => %d:%d\n", t.Weekday(), t.Hour(), t.Minute())
+	fmt.Printf("\nweek day: %d, time: %d:%d\n", t.Weekday(), t.Hour(), t.Minute())
 
 	s := strconv.FormatInt(t.Unix(), 10)
 	fmt.Println("unix time (seconds from 1970):", s)
 
 	t = time.Unix(t.Unix()+60, 0)
-	fmt.Println("cur date:", t.Format("2006-01-02 15:04:05"))
+	baseDate := "2006-01-02 15:04:05"
+	fmt.Println("cur date (+60s):", t.Format(baseDate))
 }
 
 // demo 09, code block
 func testCodeBlock() {
 	testSuper := "super"
-	fmt.Println("testSupser=" + testSuper)
+	fmt.Println("\ntestSupser=" + testSuper)
 	{
 		testSub1 := "sub1"
 		{
@@ -316,7 +322,7 @@ func testCodeBlock() {
 			fmt.Printf("testSupser=%s, testSub1=%s, testSub2=%s\n", testSuper, testSub1, testSub2)
 		}
 		fmt.Printf("testSupser=%s, testSub1=%s\n", testSuper, testSub1)
-		testSuper += ", in sub"
+		testSuper += ", change in sub"
 	}
 	fmt.Println("testSupser=" + testSuper)
 }
@@ -329,17 +335,17 @@ func MainDemo01() {
 
 	// testStructMethod()
 	// testInnerStruct()
-	// testTranslateBy()
+	// testAccControl()
 
-	// testAccessControl()
+	// testTranslateBy()
 
 	// testContext01()
 	// testContext02()
 
 	// testUpdateBytes()
+
 	// testTimeFormat()
+	// testCodeBlock()
 
-	testCodeBlock()
-
-	fmt.Println("demo 01 done.")
+	fmt.Println("golang demo01 DONE.")
 }

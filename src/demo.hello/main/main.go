@@ -34,13 +34,13 @@ func testFlagParser() {
 	fmt.Printf("url=>localhost:%d, status code=>%d\n", port, retCode)
 }
 
-func testAccessControl() {
-	// test struct from demos/demo01
+func testAccControl() {
+	// struct in demos/demo01
+	fmt.Println("\nfrom main, and only public fileds/methods can access:")
 	// obj := demos.MyObject{"pub", "pri"} // error
 	obj := demos.GetMyObject()
-	(&obj).Init("pub_test", "pri_test")
-
-	fmt.Printf("public value: %s\n", obj.VarPublic)
+	obj.Init("pub_test", "pri_test")
+	fmt.Printf("\npublic value: %s\n", obj.VarPublic)
 	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
 }
 
@@ -68,7 +68,7 @@ func mainDemo() {
 
 func main() {
 	// testFlagParser()
-	// testAccessControl()
+	// testAccControl()
 
 	// mainExample()
 	mainDemo()
