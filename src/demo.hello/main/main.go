@@ -49,9 +49,9 @@ func mainExample() {
 	// examples.MainIO()
 	// examples.MainOO()
 	// examples.MainGoRoutine()
-	examples.MainHTTP()
+	// examples.MainHTTP()
 	// examples.MainCrawl()
-	// examples.MainReflect()
+	examples.MainReflect()
 }
 
 func mainDemo() {

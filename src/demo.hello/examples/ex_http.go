@@ -15,11 +15,11 @@ import (
 )
 
 // demo 01, http get request
-func testClientGet() {
-	u, _ := url.Parse("http://localhost:17890/mock01")
+func testHTTPGet() {
+	u, _ := url.Parse("http://127.0.0.1:17891/test/1")
 	q := u.Query()
-	q.Set("userid", "tester01")
-	q.Set("username", "tester_a")
+	q.Set("userid", "idxxx")
+	q.Set("username", "namexxx")
 	u.RawQuery = q.Encode()
 
 	resp, err := http.Get(u.String())
@@ -33,7 +33,7 @@ func testClientGet() {
 		log.Fatal(err)
 		return
 	}
-	fmt.Printf("response body: %s\n", string(result))
+	fmt.Println("\nhttp get resp body:\n", string(result))
 }
 
 // demo 02, http post request
@@ -47,9 +47,9 @@ type serverList struct {
 	ServersID string   `json:"servers_group_id"`
 }
 
-func testClientPost() {
+func testHTTPPost() {
 	var s serverList
-	s.ServersID = "group01"
+	s.ServersID = "level01"
 	s.Servers = append(s.Servers, server{ServerName: "GuangZhou", ServerIP: "127.0.0.10"})
 	s.Servers = append(s.Servers, server{ServerName: "ShangHai", ServerIP: "127.0.0.11"})
 	s.Servers = append(s.Servers, server{ServerName: "BeiJing", ServerIP: "127.0.0.13"})
@@ -60,43 +60,45 @@ func testClientPost() {
 	}
 	body := bytes.NewBuffer(b)
 
-	const url = "http://localhost:17890/mock02"
+	const url = "http://127.0.0.1:17891/test/2"
 	resp, err := http.Post(url, "application/json;sharset=uft-8", body)
 	if err != nil {
 		panic(err.Error())
 	}
+
 	result, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("response body: %s\n", string(result))
+	fmt.Println("\nhttp post resp body:\n", string(result))
 }
 
 // demo 03, post with http client
 func testClientHTTP() {
-	const url = "http://localhost:17890/mock03"
-	req, err := http.NewRequest("POST", url, strings.NewReader("key=test"))
+	const url = "http://127.0.0.1:17891/test/3"
+	req, err := http.NewRequest("POST", url, strings.NewReader("key=val"))
 	if err != nil {
 		panic(err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Cookie", "test_k=test_c")
+	req.Header.Set("Cookie", "test_c=test_val")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
+
 	body, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
 	if err != nil {
 		panic(err)
 	}
-	defer resp.Body.Close()
-	fmt.Printf("response body:\n%s\n", string(body))
+	fmt.Println("\nhttp post resp body:\n", string(body))
 }
 
-// demo 04, read stream data
+// demo 04, read http stream data
 type consumeMsgArgs struct {
 	User      string
 	QueueName string
@@ -108,6 +110,30 @@ type consumeMsgArgs struct {
 type streamMsg struct {
 	Position string `json:"position"`
 	Message  string `json:"message"`
+}
+
+func testHTTPStreamRead() {
+	const threads = 10
+	var wg sync.WaitGroup
+	args := consumeMsgArgs{
+		User:      "user",
+		QueueName: "queueName",
+		Stream:    true,
+		Limit:     "100",
+		// Position:  "",
+	}
+
+	for i := 0; i < threads; i++ {
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, idx int) {
+			defer wg.Done()
+			streamRead(args, "zj_test_verified_msg")
+			fmt.Printf("***** stream consume thread-%d done\n", idx)
+		}(&wg, i)
+	}
+
+	wg.Wait()
+	fmt.Println("read http stream data done.")
 }
 
 func streamRead(args consumeMsgArgs, verifiedMsg string) {
@@ -134,6 +160,7 @@ func streamRead(args consumeMsgArgs, verifiedMsg string) {
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println("***** Status:", resp.StatusCode)
 	fmt.Printf("***** Response header %v\n", resp.Header)
 	if resp.StatusCode != 200 {
@@ -151,7 +178,7 @@ func streamRead(args consumeMsgArgs, verifiedMsg string) {
 	}
 
 	// stream read
-	// one client produce stream data, and another client read data sync
+	// one client produce stream data, and another client consume data sync
 	ch := make(chan bool)
 	go func() {
 		fmt.Println("***** Stream data:")
@@ -166,17 +193,18 @@ func streamRead(args consumeMsgArgs, verifiedMsg string) {
 				ch <- false
 				return
 			}
-			if total%1000 == 0 {
-				fmt.Printf("***** iterator at %d\n", total)
-				fmt.Printf("{position: %s, msg: %s}\n", msg.Position, msg.Message)
-			}
 			if msg.Message == verifiedMsg {
 				ch <- true
 				return
 			}
+			if total%1000 == 0 {
+				fmt.Printf("***** iterator at %d\n", total)
+				fmt.Printf("{position: %s, msg: %s}\n", msg.Position, msg.Message)
+			}
 			// time.Sleep(800 * time.Millisecond)
 		}
 	}()
+
 	// stream read connection will not be closed by server,
 	// and here set a timeout(60s) to close connection.
 	select {
@@ -184,39 +212,20 @@ func streamRead(args consumeMsgArgs, verifiedMsg string) {
 		fmt.Println("***** stream read timeout.")
 	case ret := <-ch:
 		if ret {
-			fmt.Println("***** message found")
+			fmt.Println("***** message found.")
 		} else {
-			fmt.Println("***** message not found")
+			fmt.Println("***** message not found.")
 		}
 	}
 }
 
-func testStreamRead() {
-	const threads = 10
-	var wg sync.WaitGroup
-	args := consumeMsgArgs{
-		User:      "user",
-		QueueName: "queueName",
-		Stream:    true,
-		Limit:     "100",
-		// Position:  "",
-	}
-	for i := 0; i < threads; i++ {
-		wg.Add(1)
-		go func(wg *sync.WaitGroup, idx int) {
-			defer wg.Done()
-			streamRead(args, "zj_test_verified_msg")
-			fmt.Printf("***** stream consume thread-%d done\n", idx)
-		}(&wg, i)
-	}
-	wg.Wait()
-}
-
 // MainHTTP : main function, http client testing for mock server.
 func MainHTTP() {
-	// testClientGet()
-	// testClientPost()
-	testClientHTTP()
+	// testHTTPGet()
+	// testHTTPPost()
+	// testClientHTTP()
+
+	// testHTTPStreamRead()
 
 	fmt.Println("golang http client example DONE.")
 }
