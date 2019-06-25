@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"math/rand"
 	"strconv"
 	"sync"
 	"time"
@@ -29,26 +30,31 @@ func (f *myFloat) string() string {
 	return fmt.Sprintf("%.2f", f.abs())
 }
 
-func testMyFloatInterface() {
+func testInterface01() {
 	var a abser
 	f := myFloat(-math.Sqrt2)
-	a = &f // pointer here
-	fmt.Println(a.abs())
-	fmt.Println(a.string())
+	fmt.Println("\nby value:")
+	fmt.Println("abs value:", f.abs())
+	fmt.Println("float string:", f.string())
+
+	fmt.Println("\nby reference:")
+	a = &f
+	fmt.Println("abs value:", a.abs())
+	fmt.Println("float string:", a.string())
 }
 
 // demo 01-02, interface
-type myGetter interface {
+type iMyGetter interface {
 	myGet() string
 }
 
-type mySetter interface {
+type iMySetter interface {
 	mySet(string)
 }
 
-type myGetterAndSetter interface {
-	myGetter
-	mySetter
+type iMyGetterAndSetter interface {
+	iMyGetter
+	iMySetter
 }
 
 type zjGetterAndSetter struct {
@@ -57,53 +63,52 @@ type zjGetterAndSetter struct {
 	desc string
 }
 
-func (zj *zjGetterAndSetter) mySet(val string) {
-	zj.desc = val
+func (instance *zjGetterAndSetter) mySet(val string) {
+	instance.desc = val
 }
 
-func (zj *zjGetterAndSetter) myGet() string {
-	if len(zj.desc) == 0 {
-		zj.desc = "empty"
+func (instance zjGetterAndSetter) myGet() string {
+	if len(instance.desc) == 0 {
+		instance.desc = "empty"
 	}
-	return fmt.Sprintf("name: %s, age: %d, desc: %s", zj.name, zj.age, zj.desc)
+	return fmt.Sprintf("name: %s, age: %d, desc: %s", instance.name, instance.age, instance.desc)
 }
 
-func zjInitAndPrintInfoByStruct(input zjGetterAndSetter) {
-	input.mySet("this is a struct.")
-	fmt.Println(input.myGet())
-}
-
-func zjInitAndPrintInfoByPointer(input *zjGetterAndSetter) {
-	input.mySet("this is a pointer.")
-	fmt.Println(input.myGet())
-}
-
-func zjInitAndPrintInfoByInterface(input myGetterAndSetter) {
-	input.mySet("this is an interface.")
-	fmt.Println(input.myGet())
-}
-
-func testInterface() {
-	zjData := zjGetterAndSetter{
-		name: "zhengjin",
+func testInterface02() {
+	testStruct := zjGetterAndSetter{
+		name: "vieira",
 		age:  30,
 	}
 
-	var getAndSet myGetterAndSetter
-	getAndSet = &zjData
-	fmt.Println(getAndSet.myGet())
+	var testRef iMyGetterAndSetter = &testStruct
+	fmt.Println(testRef.myGet())
 
-	zjInitAndPrintInfoByStruct(zjData)     // object
-	zjInitAndPrintInfoByPointer(&zjData)   // pointer
-	zjInitAndPrintInfoByInterface(&zjData) // pointer
+	initAndPrintInfoByStruct(testStruct)
+	initAndPrintInfoByPointer(&testStruct)
+	initAndPrintInfoByInterface(&testStruct)
 }
 
-// demo 01-03, inherit
+func initAndPrintInfoByStruct(arg zjGetterAndSetter) {
+	arg.mySet("this is a struct.")
+	fmt.Println(arg.myGet())
+}
+
+func initAndPrintInfoByPointer(arg *zjGetterAndSetter) {
+	arg.mySet("this is a pointer.")
+	fmt.Println(arg.myGet())
+}
+
+func initAndPrintInfoByInterface(arg iMyGetterAndSetter) {
+	arg.mySet("this is an interface.")
+	fmt.Println(arg.myGet())
+}
+
+// demo 01-03, OO inherit
 type super struct {
 	Name string
 }
 
-func (s *super) Print() {
+func (s super) Print() {
 	fmt.Println("name:", s.Name)
 }
 
@@ -112,44 +117,45 @@ type sub struct {
 	Desc string
 }
 
-func (s *sub) PrintDesc() {
-	fmt.Println("description:", s.Desc)
+func (s sub) PrintDesc() {
+	fmt.Println("desc:", s.Desc)
 }
 
-func testInherit() {
-	su := super{Name: "super1"}
-	s1 := sub{super: su, Desc: "test inherit, s1 from super"}
-	s1.Print()
-	s1.PrintDesc()
+func testOOInherit() {
+	s := super{Name: "parent_1"}
+	sub1 := sub{super: s, Desc: "child_1 from parent_1."}
+	sub1.Print()
+	sub1.PrintDesc()
 
-	s2 := new(sub)
-	s2.Name = "sub1"
-	s2.Desc = "test inherit, sub from super"
-	s2.Print()
-	s2.PrintDesc()
+	sub2 := new(sub)
+	sub2.Name = "sub_2"
+	sub2.Desc = "this is child_2."
+	sub2.Print()
+	sub2.PrintDesc()
 }
 
-// demo 02, panic and recover
-func myWork(isOccur bool) {
-	myLog("myWork start")
-	if isOccur {
-		panic("mock error")
-	}
-	myLog("myWork done")
-}
-
-func myLog(args ...interface{}) {
-	fmt.Println(args...)
-}
-
-func testPanicAndRecover() {
+// demo 02, panic and recover()
+func testPanicRecover() {
 	defer func() {
-		fmt.Println("recover.")
+		fmt.Println("\nrecover:")
 		if r := recover(); r != nil {
 			myLog(r)
 		}
 	}()
 	myWork(true)
+}
+
+func myWork(isOccur bool) {
+	myLog("start", "myWork")
+	if isOccur {
+		panic("mock error")
+	}
+	myLog("end", "myWork")
+}
+
+func myLog(args ...interface{}) {
+	fmt.Printf("args type: %T\n", args)
+	fmt.Println(args...)
 }
 
 // demo 03, Error
@@ -165,14 +171,14 @@ func (merr *myError) Error() string {
 	return errInfo
 }
 
-func testErrorType() {
+func testCreateError() {
 	// #1
-	var err = errors.New("mock original error")
-	fmt.Println(err.Error())
+	var err = errors.New("new mock error")
+	fmt.Println("\nerror:", err.Error())
 
 	// #2
 	err = fmt.Errorf("%s", "error from fmt.Errorf()")
-	fmt.Println(err.Error())
+	fmt.Println("error:", err)
 
 	// #3
 	myErr := &myError{
@@ -180,25 +186,10 @@ func testErrorType() {
 		infob: "error info b",
 		err:   errors.New("test custom error"),
 	}
-	fmt.Println(myErr.Error())
+	fmt.Println("custom error:", myErr)
 }
 
 // demo 04, base64 encode and decode
-func base64EncodeAndDecode(enc *base64.Encoding, input string) {
-	encStr := enc.EncodeToString([]byte(input))
-	fmt.Printf("base64 encode string: %s\n", encStr)
-
-	decStr, err := enc.DecodeString(encStr)
-	if err != nil {
-		panic("base64 decode error")
-	}
-	fmt.Printf("base64 decode string: %s\n", decStr)
-
-	if input != string(decStr) {
-		panic(errors.New("not equal"))
-	}
-}
-
 func testBase64Code() {
 	const str = "Go 言语编程 "
 	base64EncodeAndDecode(base64.StdEncoding, str)
@@ -207,10 +198,25 @@ func testBase64Code() {
 	base64EncodeAndDecode(base64.RawURLEncoding, str)
 }
 
+func base64EncodeAndDecode(enc *base64.Encoding, input string) {
+	encStr := enc.EncodeToString([]byte(input))
+	fmt.Printf("\nbase64 encoded string: %s\n", encStr)
+
+	decStr, err := enc.DecodeString(encStr)
+	if err != nil {
+		panic("base64 decode error!")
+	}
+	fmt.Printf("base64 decoded string: %s\n", decStr)
+
+	if input != string(decStr) {
+		panic(errors.New("not equal"))
+	}
+}
+
 // demo 05, rw mutex
 func testRwMutex() {
 	mutex := new(sync.RWMutex)
-	fmt.Println("ready in main")
+	fmt.Println("\nready in main")
 	mutex.Lock()
 	fmt.Println("mutex locked in main")
 
@@ -221,14 +227,14 @@ func testRwMutex() {
 			fmt.Println("ready in routine:", i)
 			mutex.RLock()
 			fmt.Println("mutex read locked in routine:", i)
-			time.Sleep(2 * time.Second)
+			time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
 			fmt.Println("mutex read unlocked in routine:", i)
 			mutex.RUnlock()
 			ch <- i
 		}(i, chs[i])
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(time.Second)
 	fmt.Println("mutex unlocked in main")
 	mutex.Unlock()
 
@@ -238,43 +244,42 @@ func testRwMutex() {
 }
 
 // demo 06, []string in array
-func testStringArrayInArray() {
+func testStringsInArray() {
 	fmt.Println("\n#1. by map:")
 	m := make(map[int][]string, 3)
-	m[0] = []string{"a1", "a2", "a3"}
-	m[1] = []string{"b1", "b2", "b3"}
-	m[2] = []string{"c1", "c2", "c3"}
+	m[1] = []string{"a1", "a2", "a3"}
+	m[2] = []string{"b1", "b2", "b3"}
 	fmt.Printf("map length: %d\n", len(m))
 	for k, v := range m {
 		fmt.Printf("%d=%v\n", k, v)
 	}
 
-	fmt.Println("\n#2. by array:")
-	tmpArr := [...][3]string{
+	fmt.Println("\n#2. by slice:")
+	arr := [...][3]string{
 		{"a1", "a2", "a3"},
 		{"b1", "b2", "b3"},
 		{"c1", "c2", "c3"},
 	}
-	for idx, item := range tmpArr {
+	for idx, item := range arr {
 		fmt.Printf("%d=%v\n", idx, item)
 	}
 
 	fmt.Println("\n#3. by slice:")
 	var s [][]string
 	for i := 0; i < 3; i++ {
-		var tmpArr []string
+		var tmpSlice []string
 		for j := 0; j < 3; j++ {
-			tmpArr = append(tmpArr, strconv.Itoa(j))
+			tmpSlice = append(tmpSlice, strconv.Itoa(i+j))
 		}
-		s = append(s, tmpArr)
+		s = append(s, tmpSlice)
 	}
 	for idx, item := range s {
 		fmt.Printf("%d=%v\n", idx, item)
 	}
 }
 
-// demo 07-01, sequence in slice
-func testSliceSequence() {
+// demo 07-01, slice is sequence
+func testSliceOrder() {
 	s := make([]string, 0, 10)
 	s = append(s, "one")
 	s = append(s, "two")
@@ -284,13 +289,14 @@ func testSliceSequence() {
 	s = append(s, "4")
 	s = append(s, "1")
 
-	for i := 0; i < len(s); i++ {
-		fmt.Printf("ele at %d => %s\n", i, s[i])
+	fmt.Println("\nslice values:")
+	for i, v := range s {
+		fmt.Printf("%d=%s\n", i, v)
 	}
 }
 
-// demo 07-02, no sequence in map
-func testMapSequence() {
+// demo 07-02, map is not sequence
+func testMapOrder() {
 	m := make(map[int]string)
 	m[1] = "one"
 	m[5] = "five"
@@ -298,6 +304,7 @@ func testMapSequence() {
 	m[4] = "four"
 	m[3] = "three"
 
+	fmt.Println("\nmap values:")
 	for k, v := range m {
 		fmt.Printf("%d=%s\n", k, v)
 	}
@@ -308,30 +315,30 @@ func testGetMapValue() {
 	m := make(map[string]string)
 	m["1"] = "one"
 
-	val, ok := m["2"]
-	if ok {
-		fmt.Println("map value:", val)
+	key := "1"
+	if val, ok := m[key]; ok {
+		fmt.Printf("key[%s], value: %s\n", key, val)
 	} else {
-		fmt.Println("map value not found!")
+		fmt.Printf("key[%s], value not found!\n", key)
 	}
 }
 
 // MainDemo02 : main
 func MainDemo02() {
-	// testMyFloatInterface()
-	// testInterface()
-	// testInherit()
+	// testInterface01()
+	// testInterface02()
+	// testOOInherit()
 
-	// testPanicAndRecover()
-	// testErrorType()
+	// testPanicRecover()
+	// testCreateError()
+
 	// testBase64Code()
-
 	// testRwMutex()
 
-	// testStringArrayInArray()
-	// testSliceSequence()
-	// testMapSequence()
+	// testStringsInArray()
+	// testSliceOrder()
+	// testMapOrder()
 	// testGetMapValue()
 
-	fmt.Println("demo 02 done.")
+	fmt.Println("golang demo02 DONE.")
 }
