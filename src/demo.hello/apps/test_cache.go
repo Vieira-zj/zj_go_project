@@ -1,20 +1,18 @@
-package demos
+package apps
 
 import (
 	"fmt"
 	"time"
-
-	"demo.hello/cache"
 )
 
 // MainCache : main test for cache.go
 func MainCache() {
 	// Create a cache with a default expiration time of 5 minutes,
 	// and which purges expired items every 3 seconds
-	c := cache.New(5*time.Minute, 3*time.Second)
+	c := New(5*time.Minute, 3*time.Second)
 
 	// Set the value of the key "foo" to "bar", with the default expiration time
-	c.Set("foo", "bar", cache.DefaultExpiration)
+	c.Set("foo", "bar", DefaultExpiration)
 
 	// Get the string associated with the key "foo" from the cache
 	if val, found := c.Get("foo"); found {
@@ -22,7 +20,7 @@ func MainCache() {
 	}
 
 	// Set value of the key "num" to 10, with the default expiration time. And add 1 to it
-	c.Set("num", 10, cache.DefaultExpiration)
+	c.Set("num", 10, DefaultExpiration)
 	if err := c.Increment("num", 1); err != nil {
 		fmt.Println(err)
 	}
@@ -31,7 +29,7 @@ func MainCache() {
 	}
 
 	// Replace the value of item "foo"
-	if err := c.Replace("foo", "change", cache.DefaultExpiration); err != nil {
+	if err := c.Replace("foo", "change", DefaultExpiration); err != nil {
 		fmt.Println(err)
 	}
 	if val, found := c.Get("foo"); found {

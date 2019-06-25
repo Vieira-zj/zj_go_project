@@ -10,56 +10,76 @@ import (
 )
 
 func testReflect() {
-	fmt.Println("example Type:")
+	fmt.Println("\n#1: example TypeOf:")
 	t := reflect.TypeOf(3)
-	fmt.Println("type:", t)
-	fmt.Printf("type: %T\n", 3)
-	fmt.Println("kind:", t.Kind())
+	fmt.Println("int typeof:", t)
+	fmt.Printf("int type: %T\n", 3)
+	fmt.Println("int typeof kind:", t.Kind())
 
 	var w io.Writer = os.Stdout
-	fmt.Println("type:", reflect.TypeOf(w))
-	fmt.Println("kind:", reflect.TypeOf(w).Kind()) // ptr
+	fmt.Println("\nio.writer typeof:", reflect.TypeOf(w))
+	fmt.Println("io.writer typeof kind:", reflect.TypeOf(w).Kind()) // ptr
 
-	fmt.Println("example Value:")
+	fmt.Println("\n#2: example ValueOf:")
 	v := reflect.ValueOf(3)
-	fmt.Println(v)
-	fmt.Printf("%v\n", v)
-	fmt.Println(v.String())
+	fmt.Println("int valueof:", v)
+	fmt.Printf("int valueof: %v\n", v)
+	fmt.Println("int valueof string:", v.String())
 
 	t = v.Type()
-	fmt.Println("type:", t.String())
-	fmt.Println("kind:", v.Kind())
+	fmt.Println("int type:", t.String())
+	fmt.Println("int type kind:", v.Kind())
 
+	fmt.Println("\n#3: type transfer:")
 	x := v.Interface()
 	i := x.(int)
-	fmt.Printf("value: %d\n", i)
+	fmt.Printf("int value: %d\n", i)
 }
 
-// example: print
-func mySprint(x interface{}) string {
-	type stringer interface {
-		String() string
-	}
+// example: print by type
+type iStringer2 interface {
+	String() string
+}
 
+type myStringer2 struct {
+	name string
+}
+
+func (s myStringer2) String() string {
+	return fmt.Sprintf("hello %s!", s.name)
+}
+
+func testMySprint() {
+	fmt.Printf("\nmy print: %s\n", mySprint(9))
+	fmt.Printf("my print: %s\n", mySprint("test"))
+	fmt.Printf("my print: %s\n", mySprint(true))
+
+	myStr := myStringer2{
+		name: "Henry",
+	}
+	fmt.Printf("\nmy print: %s\n", mySprint(myStr))
+}
+
+func mySprint(x interface{}) string {
 	switch x := x.(type) {
-	case stringer:
+	case iStringer:
 		return x.String()
-	case string:
-		return x
 	case int:
 		return strconv.Itoa(x)
+	case string:
+		return x
 	case bool:
 		if x {
 			return "true"
 		}
 		return "false"
 	default:
-		return "???"
+		return "unknown"
 	}
 }
 
 // example: any
-func anyTest() {
+func typeFormatTest() {
 	var x int64 = 1
 	var d = 1 * time.Nanosecond
 	fmt.Println(any(x))
@@ -94,7 +114,7 @@ func formatAtom(v reflect.Value) string {
 }
 
 // example: display
-func displayTest() {
+func typeDisplayTest() {
 	fmt.Println("\ndisplay array:")
 	testArr := [5]int{1, 2, 3, 4, 5}
 	display("testArr", reflect.ValueOf(testArr))
@@ -127,11 +147,11 @@ func displayTest() {
 	var testPtr = &strangelove
 	display("testPtr", reflect.ValueOf(testPtr))
 
-	// TODO:
 	fmt.Println("\ndisplay demo:")
 	var i interface{} = 3
 	display("i", reflect.ValueOf(i))
 	display("&i", reflect.ValueOf(&i))
+	// TODO:
 }
 
 func display(name string, v reflect.Value) {
@@ -172,10 +192,10 @@ func display(name string, v reflect.Value) {
 // MainReflect : main function for reflect examples.
 func MainReflect() {
 	// testReflect()
+	// testMySprint()
 
-	// fmt.Println(mySprint(true))
-	// anyTest()
-	displayTest()
+	// typeFormatTest()
+	// typeDisplayTest()
 
-	fmt.Println("reflect demo.")
+	fmt.Println("golang reflect examples DONE.")
 }

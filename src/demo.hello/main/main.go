@@ -45,17 +45,17 @@ func testAccessControl() {
 }
 
 func mainExample() {
-	// examples.MainHello()
+	examples.MainHello()
 	// examples.MainIO()
 	// examples.MainOO()
 	// examples.MainGoRoutine()
 	// examples.MainHTTP()
 	// examples.MainCrawl()
-	examples.MainReflect()
+	// examples.MainReflect()
 }
 
 func mainDemo() {
-	// demos.MainDemo01()
+	demos.MainDemo01()
 	// demos.MainDemo02()
 	// demos.MainDemo03()
 	// demos.MainDemo04()
@@ -70,8 +70,8 @@ func main() {
 	// testFlagParser()
 	// testAccessControl()
 
-	mainExample()
-	// mainDemo()
+	// mainExample()
+	mainDemo()
 
 	fmt.Println("GO main done.")
 }

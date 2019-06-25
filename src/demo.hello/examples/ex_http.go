@@ -127,7 +127,7 @@ func testHTTPStreamRead() {
 		wg.Add(1)
 		go func(wg *sync.WaitGroup, idx int) {
 			defer wg.Done()
-			streamRead(args, "zj_test_verified_msg")
+			httpStreamRead(args, "zj_test_verified_msg")
 			fmt.Printf("***** stream consume thread-%d done\n", idx)
 		}(&wg, i)
 	}
@@ -136,7 +136,7 @@ func testHTTPStreamRead() {
 	fmt.Println("read http stream data done.")
 }
 
-func streamRead(args consumeMsgArgs, verifiedMsg string) {
+func httpStreamRead(args consumeMsgArgs, verifiedMsg string) {
 	u := "http://10.200.20.36:14532" + "/queues/" + args.QueueName + "/consume"
 	v := url.Values{}
 	v.Add("stream", strconv.FormatBool(args.Stream))

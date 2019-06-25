@@ -172,7 +172,7 @@ type iStringer interface {
 type myStringer struct {
 }
 
-func (*myStringer) String() string {
+func (myStringer) String() string {
 	return "this is a method implement from [iStringer]"
 }
 
