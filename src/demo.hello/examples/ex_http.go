@@ -212,11 +212,11 @@ func testStreamRead() {
 	wg.Wait()
 }
 
-// MainHTTP : main for the http client test demos for mock server.
+// MainHTTP : main function, http client testing for mock server.
 func MainHTTP() {
 	// testClientGet()
 	// testClientPost()
 	testClientHTTP()
 
-	fmt.Println("http client demo.")
+	fmt.Println("golang http client example DONE.")
 }

@@ -277,7 +277,7 @@ func isExitCrawlProcess(urls map[string]bool, limit int) bool {
 	return false
 }
 
-// MainCrawl : the main for crawl web links examples.
+// MainCrawl : main function for crawl web links examples.
 func MainCrawl() {
 	// testFetchURL()
 	// testFetchlLinks01()

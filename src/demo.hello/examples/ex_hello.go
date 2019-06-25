@@ -382,7 +382,7 @@ func MainHello() {
 	// intVarTest()
 	// stringVarTest()
 	// arrayVarTest()
-	sliceVarTest()
+	// sliceVarTest()
 	// mapVarTest01()
 	// mapVarTest02()
 

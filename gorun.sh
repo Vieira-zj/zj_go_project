@@ -11,6 +11,7 @@ ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
 # if current golang project are not in system path
 # GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
+
 # GO MAIN
 # Go learn doc: https://github.com/gopl-zh/gopl-zh.github.com.git
 # Go fmt: https://github.com/golang/go/wiki/CodeReviewComments
@@ -36,12 +37,16 @@ if [ "$1" == "db" ]; then
 fi
 
 
-# MOCK BIN
-function build_bin() {
+# BUILD MOCK BIN
+function go_build_bin() {
     target_dir="${HOME}/Downloads/tmp_files"
     target_bin=$1
     cd ${ZJ_GOPRJ}/src/mock.server/main
-    GOOS=linux GOARCH=arm go build -o ${target_bin} main.go
+    if [ $2 ]; then
+        GOOS=linux GOARCH=$2 go build -o ${target_bin} main.go
+    else
+        go build -o ${target_bin} main.go
+    fi
     mv ${target_bin} ${target_dir}
     cp mock_conf.json ${target_dir}
 }
@@ -55,29 +60,35 @@ function scp_remote() {
     fi
 }
 
-mock_bin="mockserver"
-if [ "$1" == "mock" ]; then
-    if [ -z $2 ]; then
-        build_bin "${mock_bin}_mac"
-    fi
-    if [ $2 == "arm" ]; then
-        build_bin "${mock_bin}_$2"
-    fi
-    if [ $2 == "linux" ]; then
-        set +e
-        target_bin="${mock_bin}_$2"
-        build_bin target_bin
+function build_mock_bin {
+    if [[ $1 == "linux" ]]; then
+        go_build_bin "${mock_bin}_$1" "amd64"
         # scp_remote
-        set -e
+        return
     fi
+    if [[ $1 == "arm" ]]; then
+        go_build_bin "${mock_bin}_$1" "arm"
+        return
+    fi
+    go_build_bin "${mock_bin}_mac"
+}
+
+mock_bin="mockserver"
+if [[ $1 == "mock" ]]; then
+    build_mock_bin $2
 fi
 
-# build ddtest bin for linux
-if [ "$1" == "lxddtest" ]; then
+
+# BUILD DDTEST BIN
+function build_ddtest_bin() {
     target_bin="ddtest"
-    target_main = "src/tools.test/apps/ddtest/main.go"
+    target_main="src/tools.test/apps/ddtest/main.go"
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} target_main
     # scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
+}
+
+if [[ $1 == "ddtest" ]]; then
+    build_ddtest_bin
 fi
 
 set +ex # set configs off
