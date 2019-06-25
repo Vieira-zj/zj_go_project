@@ -360,5 +360,5 @@ func MainDemo04() {
 
 	// testGetTotalGoroutines()
 
-	fmt.Println("demo 04 done.")
+	fmt.Println("golang demo04 DONE.")
 }

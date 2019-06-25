@@ -4,23 +4,24 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"math"
 	"math/rand"
 	"strings"
 	"time"
 )
 
 // demo 01, map
-func testMapGetEmpty() {
+func testCheckMapEntry() {
 	m := map[int]string{
 		1: "one",
 		2: "two",
 	}
-	fmt.Println("item at 2 =>", m[2])
-	fmt.Printf("first char: %c\n", m[2][0])
-	fmt.Printf("item length: %d\n", len(m[2]))
+	fmt.Println("\nentry[2] value:", m[2])
+	fmt.Printf("entry[2] 1st char: %c\n", m[2][0])
+	fmt.Printf("entry[2] length: %d\n", len(m[2]))
 
-	if len(m) > 0 && len(m[3]) > 0 {
-		fmt.Println("item at 3 =>", m[3])
+	if entry, ok := m[3]; ok {
+		fmt.Println("entry[3] value:", entry)
 	}
 }
 
@@ -30,17 +31,7 @@ type alphaReader1 struct {
 	cur int
 }
 
-func newAlphaReader1(src string) *alphaReader1 {
-	return &alphaReader1{src: src}
-}
-
-func alpha(r byte) byte {
-	if (r >= 'A' && r <= 'Z') || (r >= 'a' && r <= 'z') {
-		return r
-	}
-	return 0
-}
-
+// Read : read bytes from current position, and copy to p.
 func (a *alphaReader1) Read(p []byte) (int, error) {
 	if a.cur >= len(a.src) {
 		return 0, io.EOF
@@ -65,28 +56,39 @@ func (a *alphaReader1) Read(p []byte) (int, error) {
 	return bound, nil
 }
 
+func alpha(r byte) byte {
+	if (r >= 'A' && r <= 'Z') || (r >= 'a' && r <= 'z') {
+		return r
+	}
+	return 0
+}
+
+func newAlphaReader1(src string) *alphaReader1 {
+	return &alphaReader1{src: src}
+}
+
 func testAlphaReader1() {
 	reader := newAlphaReader1("Hello! It's 9am, where is the sun?")
 	p := make([]byte, 4)
+	var b []byte
 
 	for {
 		n, err := reader.Read(p)
-		if err == io.EOF {
-			break
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			panic(err)
 		}
-		// fmt.Printf("%d\n", n)
-		fmt.Print(string(p[:n]))
+		// fmt.Print(string(p[:n]))
+		b = append(b, p[:n]...)
 	}
-	fmt.Println()
+	fmt.Println("\noutput:", string(b))
 }
 
 // demo 02-02, custom reader
 type alphaReader2 struct {
 	reader io.Reader
-}
-
-func newAlphaReader2(reader io.Reader) *alphaReader2 {
-	return &alphaReader2{reader: reader}
 }
 
 func (a *alphaReader2) Read(p []byte) (int, error) {
@@ -103,6 +105,10 @@ func (a *alphaReader2) Read(p []byte) (int, error) {
 	}
 	copy(p, buf)
 	return n, nil
+}
+
+func newAlphaReader2(reader io.Reader) *alphaReader2 {
+	return &alphaReader2{reader: reader}
 }
 
 func testAlphaReader2() {
@@ -128,10 +134,6 @@ type chanWriter struct {
 	ch chan byte
 }
 
-func newChanWriter() *chanWriter {
-	return &chanWriter{make(chan byte, 1024)}
-}
-
 func (w *chanWriter) Chan() <-chan byte {
 	return w.ch
 }
@@ -150,13 +152,27 @@ func (w *chanWriter) Close() error {
 	return nil
 }
 
+func newChanWriter() *chanWriter {
+	// return &chanWriter{ch: make(chan byte, 256)}
+	return &chanWriter{make(chan byte, 256)}
+}
+
 func testChanWriter() {
 	writer := newChanWriter()
+
+	for i := 0; i < 10; i++ {
+		go func(idx int) {
+			writer.Write([]byte(fmt.Sprintf("Stream%d:", idx)))
+			writer.Write([]byte("data\n"))
+		}(i)
+	}
+
 	go func() {
-		defer writer.Close()
-		writer.Write([]byte("Stream "))
-		writer.Write([]byte("me"))
+		time.Sleep(time.Duration(2) * time.Second)
+		fmt.Println("close chan writer")
+		writer.Close()
 	}()
+
 	for c := range writer.Chan() {
 		fmt.Printf("%c", c)
 	}
@@ -164,26 +180,38 @@ func testChanWriter() {
 }
 
 // demo 03-01, time ticker in select block
-func testSelectForTimeTicker() {
-	ticker := time.NewTicker(3 * time.Second)
+func testSelectTimeTicker01() {
+	ticker := time.NewTicker(time.Duration(3) * time.Second)
 	for i := 0; i < 10; i++ {
 		select {
 		case time := <-ticker.C:
-			fmt.Printf("%v\n", time)
+			fmt.Printf("ticker time: %v\n", time)
 		default: // not block
-			fmt.Println("wait...")
+			fmt.Println("wait 1 sec...")
 			time.Sleep(time.Second)
 		}
 	}
 	ticker.Stop()
 }
 
-// demo 03-02, time after in select block
-func testSelectForTimeAfter() {
-	ch := make(chan string)
+func testSelectTimeTicker02() {
+	tick := time.Tick(time.Duration(3) * time.Second)
+	for i := 0; i < 10; i++ {
+		select {
+		case time := <-tick:
+			fmt.Printf("tick time: %d:%d\n", time.Hour(), time.Minute())
+		default: // not block
+			fmt.Println("wait 1 sec...")
+			time.Sleep(time.Second)
+		}
+	}
+}
 
+// demo 03-02, time after in select block
+func testSelectTimeAfter() {
+	ch := make(chan string)
 	go func() {
-		wait := 20
+		wait := 10
 		fmt.Printf("wait %d second in go routine...\n", wait)
 		time.Sleep(time.Duration(wait) * time.Second)
 		ch <- "done"
@@ -191,53 +219,68 @@ func testSelectForTimeAfter() {
 
 	select {
 	case ret := <-ch:
-		fmt.Println("return from go routine:", ret)
-	case <-time.After(5 * time.Second):
-		fmt.Println("timeout for return from go routine")
+		fmt.Println("return from routine:", ret)
+	case <-time.After(3 * time.Second):
+		fmt.Printf("3 seconds timeout!\n")
 	}
 }
 
 // demo 04, channel queue
 func testChanQueue() {
-	const total = 5
-	queue := make(chan int, total)
-	for i := 0; i < total; i++ {
+	const cap = 5
+	queue := make(chan int, cap)
+	for i := 0; i < cap; i++ {
 		queue <- rand.Intn(10)
-		time.Sleep(300 * time.Millisecond)
+		time.Sleep(time.Duration(300) * time.Millisecond)
 	}
 
 	go func() {
 		for i := 0; i < 10; i++ {
 			queue <- rand.Intn(20)
-			time.Sleep(300 * time.Millisecond)
+			time.Sleep(time.Duration(300) * time.Millisecond)
 		}
 		close(queue)
 	}()
 
+	fmt.Println("queue value:")
 	for v := range queue {
-		fmt.Printf("queue value: %d\n", v)
+		fmt.Println(v)
 	}
 }
 
-// demo 05, buffered channel
-func producers(queue chan int) {
-	item := rand.Intn(10)
-OUTER:
-	for i := 0; i < 10; i++ {
+// demo 05, bufferred channel
+func testBufferedChan() {
+	queue := make(chan int, 10)
+	go func() {
+		producers(queue)
+	}()
+	go func() {
+		consumer(queue)
+	}()
+
+	for i := 0; i < 15; i++ {
+		fmt.Println("queue size:", len(queue))
 		time.Sleep(time.Second)
+	}
+	fmt.Println("close queue")
+	close(queue)
+}
+
+func producers(queue chan<- int) {
+	for {
 		select {
-		case queue <- item:
+		case queue <- rand.Intn(10):
 			fmt.Println("true => enqueued without blocking")
-			break OUTER
 		default:
-			fmt.Println("false => not enqueued, would have blocked because of queue full")
+			fmt.Println("false => not enqueued, would have blocked because of queue is full")
 		}
+		time.Sleep(time.Duration(500) * time.Millisecond)
 	}
 }
 
-func consumer(queue chan int) {
-OUTER:
-	for i := 0; i < 3; i++ {
+func consumer(queue <-chan int) {
+	// OUTER:
+	for {
 		select {
 		case item, valid := <-queue:
 			if valid {
@@ -246,34 +289,12 @@ OUTER:
 			} else {
 				fmt.Println("ok && !valid => channel closed, quit polling")
 			}
-			break OUTER
+			// break OUTER
 		default:
 			fmt.Println("!ok => channel open, but empty, try later")
 		}
 		time.Sleep(time.Second)
 	}
-}
-
-func testBufferedChan() {
-	queue := make(chan int, 3)
-	count := 6
-
-	go func() {
-		for i := 0; i < count; i++ {
-			producers(queue)
-			time.Sleep(500 * time.Millisecond)
-		}
-	}()
-
-	go func() {
-		for i := 0; i < count; i++ {
-			time.Sleep(2 * time.Second)
-			consumer(queue)
-		}
-	}()
-
-	time.Sleep(15 * time.Second)
-	close(queue)
 }
 
 // demo 06, iterator for chars
@@ -285,34 +306,30 @@ func testIteratorChars() {
 	fmt.Println()
 
 	b := []byte("world")
+	fmt.Printf("b type: %T\n", b) // type: []uint8
 	for _, c := range b {
 		fmt.Printf("%c", c)
 	}
 	fmt.Println()
 }
 
-// demo 07, function as argument
-func fnMyAdd(num1 int, num2 int) int {
+// demo 07, function as variable
+func testFuncVariable() {
+	fmt.Printf("\nadd results: %d\n", myCalculation(2, 2, funcMyAdd))
+	fmt.Printf("min results: %d\n", myCalculation(2, 8, funcMyMin))
+}
+
+func funcMyAdd(num1, num2 int) int {
 	return num1 + num2
 }
 
-func fnMyMin(num1 int, num2 int) int {
-	if num1 > num2 {
-		return num1 - num2
-	}
-	return num2 - num1
+func funcMyMin(num1, num2 int) int {
+	ret := num1 - num2
+	return int(math.Abs(float64(ret)))
 }
 
-func myCalculation(testNum1 int, testNum2 int, fnCal func(num1 int, num2 int) int) int {
-	return fnCal(testNum1, testNum2)
-}
-
-func testFuncPointer() {
-	ret := myCalculation(2, 2, fnMyAdd)
-	fmt.Printf("results for add: %d\n", ret)
-
-	ret = myCalculation(8, 2, fnMyMin)
-	fmt.Printf("results for min: %d\n", ret)
+func myCalculation(num1, num2 int, fnCal func(n1, n2 int) int) int {
+	return fnCal(num1, num2)
 }
 
 // demo 08, function decoration
@@ -328,11 +345,11 @@ type apiArgsUser struct {
 }
 
 func mockAPIPass(args interface{}) *apiResponse {
-	localArgs := args.(apiArgsUser)
-	retContent := fmt.Sprintf("user desc => Uid=%d, user name=%s\n", localArgs.UID, localArgs.UserName)
+	info := args.(apiArgsUser)
+	content := fmt.Sprintf("user info: Uid=%d, name=%s", info.UID, info.UserName)
 	return &apiResponse{
 		RetCode: 200,
-		Body:    retContent,
+		Body:    content,
 		Err:     nil,
 	}
 }
@@ -343,72 +360,69 @@ type apiArgsGroup struct {
 }
 
 func mockAPIFailed(args interface{}) *apiResponse {
-	localArgs := args.(apiArgsGroup)
-	retContent := fmt.Sprintf("group not found => Gid=%d, group name=%s\n", localArgs.GID, localArgs.GroupName)
+	info := args.(apiArgsGroup)
+	content := fmt.Sprintf("group not found: Gid=%d, name=%s", info.GID, info.GroupName)
 	return &apiResponse{
-		RetCode: 404,
-		Body:    retContent,
+		RetCode: 204,
+		Body:    content,
 		Err:     errors.New("EOF"),
 	}
 }
 
-// decoration
-func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiResponse {
-	resp := fn(args)
-	if resp.Err != nil {
-		fmt.Println("failed with error:", resp.Err.Error())
-	}
-	if resp.RetCode != 200 {
-		fmt.Println("failed with status:", resp.RetCode)
-	}
-	return resp
-}
-
 func testDecorateAPIs() {
-	fmt.Println("decoration ex: pass")
+	fmt.Println("\n#1. decoration sample: pass")
 	{
 		args := apiArgsUser{
 			UID:      101,
 			UserName: "Henry",
 		}
-		resp := mockAPIPass(args)
-		fmt.Printf("response: %+v\n", resp)
-		// invoke with decorate
-		resp = assertAPIs(args, mockAPIPass)
-		fmt.Println("pass with response:", resp.Body)
+		resp := assertAPIs(args, mockAPIPass)
+		fmt.Println("pass with resp body:", resp.Body)
 	}
 
-	fmt.Println("decoration ex: failed")
+	fmt.Println("\n#2. decoration sample: failed")
 	{
 		args := apiArgsGroup{
 			GID:       8,
 			GroupName: "QA",
 		}
-		resp := mockAPIFailed(args)
-		fmt.Printf("response: %+v\n", resp)
-		// invoke with decorate
-		resp = assertAPIs(args, mockAPIFailed)
-		fmt.Println("failed with response:", resp.Body)
+		resp := assertAPIs(args, mockAPIFailed)
+		fmt.Println("failed with resp body:", resp.Body)
 	}
+}
+
+// decoration 装饰器
+func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiResponse {
+	resp := fn(args)
+	fmt.Printf("response: %+v\n", *resp)
+	if resp.RetCode != 200 {
+		fmt.Println("failed with ret code:", resp.RetCode)
+	}
+	if resp.Err != nil {
+		fmt.Println("failed with error:", resp.Err.Error())
+	}
+
+	return resp
 }
 
 // MainDemo03 : main
 func MainDemo03() {
-	// testMapGetEmpty()
+	// testCheckMapEntry()
 
 	// testAlphaReader1()
 	// testAlphaReader2()
 	// testChanWriter()
 
-	// testSelectForTimeTicker()
-	// testSelectForTimeAfter()
+	// testSelectTimeTicker01()
+	// testSelectTimeTicker02()
+	// testSelectTimeAfter()
 
 	// testChanQueue()
 	// testBufferedChan()
 
 	// testIteratorChars()
-	// testFuncPointer()
-	testDecorateAPIs()
+	// testFuncVariable()
+	// testDecorateAPIs()
 
-	fmt.Println("demo 03 done.")
+	fmt.Println("golang demo03 DONE.")
 }

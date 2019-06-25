@@ -270,32 +270,60 @@ func testContext02() {
 	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
 }
 
-// demo 07, update bytes
+// demo 07-01, update bytes
 func testUpdateBytes() {
 	s := "it's a test"
 	b := []byte(s)
 
 	fmt.Println("\n#1: by value:")
 	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByValue(b)
+	myUpdateBytesByVal(b)
 	fmt.Printf("after update: %s\n", string(b))
 
 	fmt.Println("\n#2: by pointer:")
 	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByPointer(&b)
+	myUpdateBytesByRef(&b)
 	fmt.Printf("after update: %s\n", string(b))
 }
 
-func myUpdateBytesByValue(b []byte) {
+func myUpdateBytesByVal(b []byte) {
 	b = bytes.ToUpper(b)
 	b = append(b, '!', '!', '!')
 	fmt.Printf("[UpdateBytes] by value: %s\n", string(b))
 }
 
-func myUpdateBytesByPointer(b *[]byte) {
+func myUpdateBytesByRef(b *[]byte) {
 	*b = bytes.ToUpper(*b)
 	*b = append(*b, []byte{'!', '!', '!'}...)
-	fmt.Printf("[UpdateBytes] by pointer: %s\n", string(*b))
+	fmt.Printf("[UpdateBytes] by reference: %s\n", string(*b))
+}
+
+// demo 07-02, copy bytes
+func testCopyBytes() {
+	copyBytesByVal := func(b []byte) {
+		copy(b, []byte("hello"))
+		b = append(b, []byte(" world")...)
+	}
+
+	copyBytesByRef := func(b *[]byte) {
+		copy(*b, []byte("hello"))
+		*b = append(*b, []byte(" world")...)
+	}
+
+	b1 := make([]byte, 10)
+	fmt.Printf("\nb1 type: %T, cap: %d\n", b1, cap(b1))
+	copyBytesByVal(b1)
+	// TODO: output "hello"
+	fmt.Println("#1: make bytes and copied by val:", string(b1))
+	copyBytesByRef(&b1)
+	fmt.Println("#2: make bytes and copied by ref:", string(b1))
+
+	var b2 []byte
+	fmt.Printf("\nb2 type: %T, cap: %d\n", b2, cap(b2))
+	copyBytesByVal(b2)
+	fmt.Println("#3: init bytes and copied by val:", string(b2))
+	copyBytesByRef(&b2)
+	fmt.Println("#4: init bytes and copied by ref:", string(b2))
 }
 
 // demo 08, time format
@@ -343,6 +371,7 @@ func MainDemo01() {
 	// testContext02()
 
 	// testUpdateBytes()
+	// testCopyBytes()
 
 	// testTimeFormat()
 	// testCodeBlock()
