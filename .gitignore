@@ -6,7 +6,7 @@ bin/
 #src/golang.org
 
 # vendors
-#src/data.db/vendor
+#src/sys.app/vendor
 #src/demo.hello/vendor
 #src/demo.tests/vendor
 src/mock.server/vendor/mockacc
@@ -16,4 +16,4 @@ src/mock.server/vendor/qiniupkg.com
 
 # bins
 mockserver
-src/data.db/main/main
+src/sys.app/main/main

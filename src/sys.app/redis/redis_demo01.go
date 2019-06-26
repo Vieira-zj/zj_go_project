@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	redis "gopkg.in/redis.v3"
+	redis "gopkg.in/redis.v5"
 )
 
 // ConnectToRedisAndTest : connect to redis, and test

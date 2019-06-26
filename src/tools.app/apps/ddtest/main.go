@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"tools.test/services"
+	"tools.app/services"
 )
 
 func init() {

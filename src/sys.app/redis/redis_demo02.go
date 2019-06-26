@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	redis "gopkg.in/redis.v3"
+	redis "gopkg.in/redis.v5"
 )
 
 func createClient() *redis.Client {

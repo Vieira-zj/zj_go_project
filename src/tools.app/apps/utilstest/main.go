@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	zjutils "tools.test/utils"
+	zjutils "tools.app/utils"
 )
 
 func init() {

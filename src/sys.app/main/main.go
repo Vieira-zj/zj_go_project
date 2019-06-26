@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"data.db/memcached"
-	"data.db/mongodb"
-	"data.db/redis"
+	"sys.app/memcached"
+	"sys.app/mongodb"
+	"sys.app/redis"
 )
 
 // build cmd: $ GOOS=linux GOARCH=amd64 go build

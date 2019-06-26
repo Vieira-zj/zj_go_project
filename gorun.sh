@@ -28,12 +28,12 @@ if [ "$1" == "main" ]; then
 fi
 
 if [ "$1" == "util" ]; then
-    cd ${ZJ_GOPRJ}/src/tools.test/apps/utilstest;go run main.go
+    cd ${ZJ_GOPRJ}/src/tools.app/apps/utilstest;go run main.go
 fi
 
-# db test
-if [ "$1" == "db" ]; then
-    go run src/data.db/main/main.go
+# app test
+if [ "$1" == "app" ]; then
+    go run src/sys.app/main/main.go
 fi
 
 
@@ -82,7 +82,7 @@ fi
 # BUILD DDTEST BIN
 function build_ddtest_bin() {
     target_bin="ddtest"
-    target_main="src/tools.test/apps/ddtest/main.go"
+    target_main="src/tools.app/apps/ddtest/main.go"
     GOOS=linux GOARCH=amd64 go build -o ${target_bin} target_main
     # scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
 }
