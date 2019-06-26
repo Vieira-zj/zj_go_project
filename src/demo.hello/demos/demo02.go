@@ -312,14 +312,20 @@ func testMapOrder() {
 
 // demo 07-03, get map value
 func testGetMapValue() {
-	m := make(map[string]string)
-	m["1"] = "one"
+	s := make([]int, 5, 10)
+	fmt.Printf("\ninit slice: %v, length: %d, cap: %d\n", s, len(s), cap(s))
 
-	key := "1"
+	m := make(map[string]string, 5)
+	m["1"] = "one"
+	m["2"] = "two"
+	m["3"] = "three"
+	fmt.Printf("init map: %v, length: %d\n", m, len(m))
+
+	key := "2"
 	if val, ok := m[key]; ok {
-		fmt.Printf("key[%s], value: %s\n", key, val)
+		fmt.Printf("key[%s]: value[%s]\n", key, val)
 	} else {
-		fmt.Printf("key[%s], value not found!\n", key)
+		fmt.Printf("key[%s]: value not found!\n", key)
 	}
 }
 

@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math/rand"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -14,86 +14,186 @@ import (
 
 	"github.com/jmcvetta/randutil"
 	"gopkg.in/mgo.v2/bson"
-	zjutils "tools.test/utils"
+	myutils "tools.test/utils"
 )
 
-// demo 01, init value
+// demo, var "HelloMessage" init before init() function
 func init() {
-	fmt.Println("start run demo04") // #2
+	fmt.Println("[demo04.go] init") // #2
 }
+
+// HelloMsg : public var, invoked from main.go
+var HelloMsg = sayHello()
 
 func sayHello() string {
 	fmt.Println("start run sayHello()") // #1
 	return "hello world!"
 }
 
-// HelloMessage : test init value
-var HelloMessage = sayHello()
+// demo, get file base and full name
+func testGetFileName() {
+	srcPath := os.Getenv("HOME") + "/Downloads/tmp_files"
+	f, err := os.Open(srcPath)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("\nfile full name:", f.Name())
 
-// demo 02, struct reference
-type mySubStruct struct {
+	info, err := f.Stat()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("file base name:", info.Name())
+}
+
+// demo, verify go version
+func testGoVersion() {
+	curVersion := runtime.Version()
+	fmt.Printf("\n%s >= go1.15: %v\n", curVersion, isGoVersionOK("1.15"))
+	fmt.Printf("%s >= go1.10: %v\n", curVersion, isGoVersionOK("1.10"))
+	fmt.Printf("%s >= go1.9.3: %v\n", curVersion, isGoVersionOK("1.9.3"))
+}
+
+func isGoVersionOK(baseVersion string) bool {
+	curVersion := runtime.Version()[2:]
+	curArr := strings.Split(curVersion, ".")
+	baseArr := strings.Split(baseVersion, ".")
+
+	for i := 0; i < 2; i++ { // check first 2 digits
+		cur, _ := strconv.ParseInt(curArr[i], 10, 32)
+		base, _ := strconv.ParseInt(baseArr[i], 10, 32)
+		if cur == base {
+			continue
+		}
+		return cur > base
+	}
+	return true // cur == base
+}
+
+// demo, time calculation
+func testTimeOpSub() {
+	start := time.Now()
+	time.Sleep(time.Duration(2) * time.Second)
+	duration := time.Now().Sub(start)
+	fmt.Printf("time duration: %.2f\n", duration.Seconds())
+
+	for int(time.Now().Sub(start).Seconds()) < 5 {
+		fmt.Println("wait 1 second ...")
+		time.Sleep(time.Second)
+	}
+}
+
+// demo, test get random strings
+func testRandomValues() {
+	if num, err := randutil.IntRange(1, 10); err == nil {
+		fmt.Println("get a random number 1-10:", num)
+	}
+
+	if str1, err := randutil.String(10, randutil.Numerals); err == nil {
+		fmt.Println("get string of 10 chars (random number):", str1)
+	}
+	if str2, err := randutil.String(10, randutil.Alphabet); err == nil {
+		fmt.Println("get string of 10 chars (random alphabet):", str2)
+	}
+	if str3, err := randutil.String(10, randutil.Alphanumeric); err == nil {
+		fmt.Println("get string of 10 chars (random number and alphabet):", str3)
+	}
+}
+
+// demo, init random bytes
+func testInitBytes() {
+	buf := initBytesBySize(32)
+	fmt.Printf("init bytes print as numbers: %d\n", buf)
+	fmt.Printf("init bytes print as chars: %c\n", buf)
+
+	str := base64.StdEncoding.EncodeToString(buf)
+	fmt.Printf("init bytes print as base64 string: %s\n", str)
+}
+
+func initBytesBySize(size int) []byte {
+	// init []byte "buf" with size of zero
+	buf := make([]byte, size)
+	for i := 0; i < len(buf); i++ {
+		buf[i] = uint8(i % 16)
+	}
+	return buf
+}
+
+// demo, struct reference
+type mySuperStruct struct {
 	id  uint
 	val string
 }
 
-type mySuperStruct struct {
-	sub mySubStruct // by value
-	ex  string
+type mySubStruct struct {
+	super mySuperStruct // by value
+	desc  string
 }
 
-type mySuperStructRef struct {
-	sub *mySubStruct // by refrence
-	ex  string
+type mySubStructRef struct {
+	super *mySuperStruct // by refrence
+	desc  string
 }
 
 func testStructRefValue() {
-	sub := mySubStruct{
+	s := mySuperStruct{
 		id:  10,
-		val: "ten",
+		val: "test10",
 	}
 
-	super := mySuperStruct{
-		sub: sub,
-		ex:  "number 10",
+	subVal := mySubStruct{
+		super: s,
+		desc:  "inherit from super by value",
 	}
-	fmt.Printf("before => sub struct: %+v\n", super)
+	fmt.Printf("before => sub struct: %+v\n", subVal)
 
-	superRef := mySuperStructRef{
-		sub: &sub,
-		ex:  "number 10",
+	subRef := mySubStructRef{
+		super: &s,
+		desc:  "inherit from super by reference",
 	}
-	fmt.Printf("before => sub struct ref: %+v\n", superRef.sub)
+	fmt.Printf("before => sub struct ref: %+v\n", subRef.super)
 
-	sub.val = "TEN"
-	fmt.Printf("after => sub struct: %+v\n", super)
-	fmt.Printf("after => sub struct Ref: %+v\n", superRef.sub)
+	s.val = strings.ToUpper(s.val)
+	fmt.Printf("after => sub struct: %+v\n", subVal)
+	fmt.Printf("after => sub struct Ref: %+v\n", subRef.super)
 }
 
-// demo 03, verify go version
-func isGoVersionOK(baseVersion string) bool {
-	currVersion := runtime.Version()[2:]
-	currArr := strings.Split(currVersion, ".")
-	baseArr := strings.Split(baseVersion, ".")
+// demo, if and map
+var fnPrintMsgID = func(id string) {
+	fmt.Println("message id:", id)
+}
 
-	for i := 0; i < 2; i++ { // check first 2 digits
-		curr, _ := strconv.ParseInt(currArr[i], 10, 32)
-		base, _ := strconv.ParseInt(baseArr[i], 10, 32)
-		if curr == base {
-			continue
-		}
-		return curr > base
+var fnPrintMsgName = func(name string) {
+	fmt.Println("message name:", name)
+}
+
+func printMsgByIf(tag, input string) {
+	fmt.Println("\nprint message by if condition.")
+	if tag == "id" {
+		fnPrintMsgID(input)
+	} else if tag == "name" {
+		fnPrintMsgName(input)
+	} else {
+		fmt.Println("invalid argument!")
 	}
-	return true // curr == base
 }
 
-func testGoVersion() {
-	currVersion := runtime.Version()
-	fmt.Printf("%s >= go1.15 is ok: %v\n", currVersion, isGoVersionOK("1.15"))
-	fmt.Printf("%s >= go1.10 is ok: %v\n", currVersion, isGoVersionOK("1.10"))
-	fmt.Printf("%s >= go1.9.3 is ok: %v\n", currVersion, isGoVersionOK("1.9.3"))
+func printMsgByMap(tag, input string) {
+	fmt.Println("\nprint message by map.")
+	fns := make(map[string]func(string))
+	fns["id"] = fnPrintMsgID
+	fns["name"] = fnPrintMsgName
+	fns[tag](input)
 }
 
-// demo 04, json keyword "omitempty"
+func testPrintMsgByCond() {
+	tag := "id"
+	name := "message01"
+	printMsgByIf(tag, name)
+	printMsgByMap(tag, name)
+}
+
+// demo, json keyword "omitempty"
 func testJSONOmitEmpty() {
 	type project struct {
 		Name string `json:"name"`
@@ -109,7 +209,7 @@ func testJSONOmitEmpty() {
 		Docs: "https://github.com/headwindfly/clevergo/tree/master/docs",
 	}
 	if data, err := json.MarshalIndent(p1, "", "  "); err == nil {
-		fmt.Println("json string:", string(data))
+		fmt.Println("\nmarshal json string:", string(data))
 	}
 
 	p2 := project{
@@ -117,12 +217,12 @@ func testJSONOmitEmpty() {
 		URL:  "https://github.com/headwindfly/clevergo",
 	}
 	if data, err := json.MarshalIndent(p2, "", "  "); err == nil {
-		fmt.Println("json string:", string(data))
+		fmt.Println("marshal json string with omitempty:", string(data))
 	}
 }
 
-// demo 05, bson
-func testBSONCases() {
+// demo, bson parser
+func testBSONParser() {
 	type testStruct struct {
 		FH  []byte `bson:"fh"`
 		NFH []byte `bson:"nfh"`
@@ -144,91 +244,15 @@ func testBSONCases() {
 		NFH: nfh,
 	}
 	if data, err := bson.Marshal(&s); err == nil {
-		// parse bson bin file => $ bsondump fh.test1.bson
-		ioutil.WriteFile("/Users/zhengjin/Downloads/tmp_files/fh.test.bson", data, 0666)
+		savePath := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/fh.test.bson")
+		if err := ioutil.WriteFile(savePath, data, 0666); err != nil {
+			panic(err)
+		}
+		fmt.Printf("save bson bin file: %s\nparse bson: 'bsondump fh.test.bson'\n", savePath)
 	}
 }
 
-// demo 06, if or map
-var fnGetMsgByID = func(id string) {
-	fmt.Println("message id:", id)
-}
-
-var fnGetMsgByName = func(name string) {
-	fmt.Println("message name:", name)
-}
-
-func getMsgByIf(tag, input string) {
-	if tag == "id" {
-		fnGetMsgByID(input)
-	} else if tag == "name" {
-		fnGetMsgByName(input)
-	} else {
-		fmt.Println("invalid argument!")
-	}
-}
-
-func getMsgByMap(tag, input string) {
-	fns := make(map[string]func(string))
-	fns["id"] = fnGetMsgByID
-	fns["name"] = fnGetMsgByName
-	fns[tag](input)
-}
-
-func testGetMsgByIfAndMap() {
-	tag := "name"
-	name := "test"
-	getMsgByIf(tag, name)
-	getMsgByMap(tag, name)
-}
-
-// demo 07, time calculation
-func testTimeSub() {
-	start := time.Now()
-	time.Sleep(2 * time.Second)
-	duration := time.Now().Sub(start)
-	fmt.Printf("time duration: %.2f\n", duration.Seconds())
-
-	for int(time.Now().Sub(start).Seconds()) < 5 {
-		fmt.Println("wait 1 second ...")
-		time.Sleep(time.Second)
-	}
-}
-
-// demo 08, test get random strings
-func testRandomValues() {
-	if num, err := randutil.IntRange(1, 10); err == nil {
-		fmt.Println("get a random number:", num)
-	}
-
-	if str, err := randutil.String(10, randutil.Numerals); err == nil {
-		fmt.Println("get string of random numbers:", str)
-	}
-	if str, err := randutil.String(10, randutil.Alphabet); err == nil {
-		fmt.Println("get string of random string:", str)
-	}
-	if str, err := randutil.String(10, randutil.Alphanumeric); err == nil {
-		fmt.Println("get string of random string:", str)
-	}
-}
-
-// demo 09, init random bytes
-func initBytesBySize(size int) []byte {
-	buf := make([]byte, size)
-	for i := 0; i < len(buf); i++ {
-		buf[i] = uint8(i % 10)
-	}
-	return buf
-}
-
-func testInitBytes() {
-	b := initBytesBySize(16)
-	fmt.Printf("init bytes by number: %d\n", b)
-	fmt.Printf("init bytes by char: %c\n", b)
-	fmt.Printf("init bytes by base64 str: %s\n", base64.StdEncoding.EncodeToString(b))
-}
-
-// demo 10, gzip encode and decode
+// demo, gzip encode and decode
 func testGzipCode() {
 	// srcb := []byte("gzip encode and decode, test.")
 	srcb, err := ioutil.ReadFile(testFilePath)
@@ -237,13 +261,13 @@ func testGzipCode() {
 	}
 	fmt.Println("src length:", len(srcb))
 
-	destb, err := zjutils.GzipEncode(srcb)
+	destb, err := myutils.GzipEncode(srcb)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("gzip encode length:", len(destb))
 
-	b, err := zjutils.GzipDecode(destb)
+	b, err := myutils.GzipDecode(destb)
 	if err != nil {
 		panic(err)
 	}
@@ -253,17 +277,7 @@ func testGzipCode() {
 	}
 }
 
-// demo 11, compress and decompress
-func testGetFileName() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir_backup"
-	if f, err := os.Open(src); err == nil {
-		fmt.Println("file full name:", f.Name())
-		if info, err := f.Stat(); err == nil {
-			fmt.Println("file base name:", info.Name())
-		}
-	}
-}
-
+// demo, compress and decompress
 func testTarCompressFile() {
 	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
 	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
@@ -272,7 +286,7 @@ func testTarCompressFile() {
 	if err != nil {
 		fmt.Println("read src file error:", err.Error())
 	}
-	err = zjutils.Compress([]*os.File{f}, dest)
+	err = myutils.Compress([]*os.File{f}, dest)
 	if err != nil {
 		fmt.Println("comporess error:", err.Error())
 	}
@@ -284,10 +298,12 @@ func testTarCompressDir() {
 
 	if f, err := os.Open(src); err == nil {
 		fmt.Printf("compress file (%s) with tar.gz\n", src)
-		err := zjutils.Compress([]*os.File{f}, dest)
+		err := myutils.Compress([]*os.File{f}, dest)
 		if err != nil {
-			fmt.Println(err.Error())
+			panic(err)
 		}
+	} else {
+		panic(err)
 	}
 }
 
@@ -295,70 +311,72 @@ func testTarDecompress() {
 	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
 	dest := os.Getenv("HOME") + "/Downloads/tmp_files"
 
-	err := zjutils.DeCompress(src, dest)
+	err := myutils.DeCompress(src, dest)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		panic(err)
 	}
 	fmt.Println("decompress to:", dest)
 }
 
-func testGetTotalGoroutines() {
-	printTotalGoroutines := func() {
-		fmt.Println("*** total goroutines:", runtime.NumGoroutine())
+// demo, get routines count
+func testGetGoroutinesCount() {
+	printRoutineCount := func() {
+		fmt.Println("***** goroutines count:", runtime.NumGoroutine())
 	}
 
+	printRoutineCount() // 1
 	const waitTime = 5
 	ch := make(chan int, 10)
-
-	printTotalGoroutines()
 	for i := 0; i < 10; i++ {
 		go func(ch chan<- int, num int) {
-			time.Sleep(time.Duration(rand.Intn(waitTime)) * time.Second)
+			sleep, err := randutil.IntRange(2, waitTime)
+			if err != nil {
+				fmt.Println(err)
+				sleep = waitTime
+			}
+			time.Sleep(time.Duration(sleep) * time.Second)
 			ch <- num
 		}(ch, i)
 	}
 
 	go func(ch chan int) {
-		time.Sleep(time.Duration(waitTime+1) * time.Second)
+		time.Sleep(time.Duration(waitTime+2) * time.Second)
+		printRoutineCount() // 2
 		fmt.Println("close channel")
 		close(ch)
-		printTotalGoroutines()
 	}(ch)
 
-	printTotalGoroutines()
-	time.Sleep(2 * time.Second)
-	printTotalGoroutines()
+	time.Sleep(time.Second)
+	printRoutineCount() // 12 (10 + 1 + 1)
 
 	for num := range ch {
 		fmt.Println("iterator at:", num)
 	}
-
-	time.Sleep(2 * time.Second)
-	fmt.Println("testGetTotalGoroutines done.")
+	time.Sleep(time.Second)
+	printRoutineCount() // 1
+	fmt.Println("testGetGoroutinesCount DONE.")
 }
 
 // MainDemo04 : main
 func MainDemo04() {
-	// testStructRefValue()
+	// testGetFileName()
 	// testGoVersion()
-
-	// testJSONOmitEmpty()
-	// testBSONCases()
-
-	// testGetMsgByIfAndMap()
-	// testTimeSub()
-
+	// testTimeOpSub()
 	// testRandomValues()
 	// testInitBytes()
 
+	// testStructRefValue()
+	// testPrintMsgByCond()
+
+	// testJSONOmitEmpty()
+	// testBSONParser()
+
 	// testGzipCode()
-	// testGetFileName()
 	// testTarCompressFile()
 	// testTarCompressDir()
 	// testTarDecompress()
 
-	// testGetTotalGoroutines()
+	// testGetGoroutinesCount()
 
 	fmt.Println("golang demo04 DONE.")
 }

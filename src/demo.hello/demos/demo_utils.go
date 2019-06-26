@@ -588,5 +588,5 @@ func MainUtils() {
 	// testReadConfigs()
 	// testBuildTemplate()
 
-	fmt.Println("utils done.")
+	fmt.Println("golang utils demo DONE.")
 }

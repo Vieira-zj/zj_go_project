@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"demo.hello/apps"
 	"demo.hello/demos"
 	"demo.hello/examples"
 )
@@ -44,6 +45,10 @@ func testAccControl() {
 	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
 }
 
+func testInvokeOrder() {
+	fmt.Println("\nmessage:", demos.HelloMsg)
+}
+
 func mainExample() {
 	examples.MainHello()
 	// examples.MainIO()
@@ -58,20 +63,23 @@ func mainDemo() {
 	// demos.MainDemo01()
 	// demos.MainDemo02()
 	// demos.MainDemo03()
-	demos.MainDemo04()
+	// demos.MainDemo04()
 
-	// demos.MainCache()
-	// demos.MainUtils()
+	demos.MainUtils()
+}
 
-	fmt.Println("message:", demos.HelloMessage)
+func mainAppDemo() {
+	apps.MainCache()
 }
 
 func main() {
 	// testFlagParser()
 	// testAccControl()
+	// testInvokeOrder()
 
 	// mainExample()
 	mainDemo()
+	// mainAppDemo()
 
 	fmt.Println("GO main done.")
 }
