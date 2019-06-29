@@ -11,22 +11,22 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("TestDemo02", func() {
-	Describe("Asserter tests", func() {
-		Context("Context, part1", func() {
-			It("[demo02.asserter.part1] Not", func() {
-				const tag = "Should:"
-				Expect(1).ShouldNot(Equal(2), "%s assert equal", tag)
+var _ = Describe("[test.demo02] demo", func() {
+	Describe("[test.asserter.suite11] Desc", func() {
+		Context("[Context01], ctx", func() {
+			It("[suite11.case01] ShouldNot", func() {
+				const tag = "To:"
+				Expect(1).NotTo(Equal(2), "%s: assert equal", tag)
 			})
 
-			It("[demo02.asserter.part1] BeXXX", func() {
-				const tag = "To:"
-				Expect(1 == 1).To(BeTrue(), "%s assert true", tag)
-				Expect(0 == 1).To(BeFalse(), "%s assert false", tag)
-				Expect(0).To(BeZero(), "%s assert zero", tag)
+			It("[suite11.case02] BeXXX", func() {
+				const tag = "Should:"
+				Expect(1 == 1).Should(BeTrue(), "%s: assert true", tag)
+				Expect(0).Should(BeZero(), "%s: assert zero", tag)
+				Expect(2).Should(BeNumerically("<", 10), "%s: assert #number < 10", tag)
 				Expect(func() error {
 					return nil
-				}()).To(BeNil(), "assert nil")
+				}()).To(BeNil(), "%s: assert func ret nil", tag)
 			})
 
 			It("[demo02.asserter.part1] string", func() {

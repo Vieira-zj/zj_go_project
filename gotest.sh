@@ -45,13 +45,15 @@ function go_benchmark_test() {
 
 
 # BDD TEST
+# ginkgo: http://onsi.github.io/ginkgo/
+# gomega: http://onsi.github.io/gomega/
 function go_bdd_test {
     # bddtest="${ZJ_GOPRJ}/bin/ginkgo"
     # ginkgo -v -focus="test.asserter.suite02" src/demo.tests/bddtests/
     # ginkgo -v -focus="suite03.case04" src/demo.tests/bddtests/
     # ginkgo -v --focus="suite04.case02" src/demo.tests/bddtests/ -- -myFlag="ginkgo test"
     
-    ginkgo -v -focus="demo02.share" src/demo.tests/bddtests/
+    ginkgo -v -focus="suite11.case01" src/demo.tests/bddtests/
 }
 
 
