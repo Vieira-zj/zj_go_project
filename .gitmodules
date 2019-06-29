@@ -31,3 +31,12 @@
 [submodule "src/sys.app/vendor/gopkg.in/mgo.v2"]
 	path = src/sys.app/vendor/gopkg.in/mgo.v2
 	url = https://github.com/go-mgo/mgo.git
+[submodule "src/github.com/onsi/ginkgo"]
+	path = src/demo.tests/vendor/github.com/onsi/ginkgo
+	url = https://github.com/onsi/ginkgo.git
+[submodule "src/github.com/onsi/gomega"]
+	path = src/demo.tests/vendor/github.com/onsi/gomega
+	url = https://github.com/onsi/gomega.git
+[submodule "src/github.com/hpcloud/tail"]
+	path = src/github.com/hpcloud/tail
+	url = https://github.com/hpcloud/tail.git

@@ -253,13 +253,13 @@ function shell_test_09() {
 
 
 # MAIN
-go_test_main
+# go_test_main
 
 # go_test_help
 # go_func_test
 # go_benchmark_test
 
-# go_bdd_test
+go_bdd_test
 
 # shell_test
 # shell_test_0203
