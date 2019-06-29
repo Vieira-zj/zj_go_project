@@ -15,6 +15,15 @@ import (
 	"time"
 )
 
+func testFileExist() {
+	path := filepath.Join(getExamplesPath(), "data/io_input.txt")
+	if isFileExist02(path) {
+		fmt.Printf("file exist: %s\n", filepath.Base(path))
+	} else {
+		fmt.Printf("file not found: %s\n", filepath.Base(path))
+	}
+}
+
 func isFileExists01(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -31,15 +40,6 @@ func isFileExist02(path string) bool {
 		return false
 	}
 	return true
-}
-
-func testFileExist() {
-	path := filepath.Join(getExamplesPath(), "io_input.txt")
-	if isFileExist02(path) {
-		fmt.Printf("file exist: %s\n", filepath.Base(path))
-	} else {
-		fmt.Printf("file not found: %s\n", filepath.Base(path))
-	}
 }
 
 func getExamplesPath() string {
@@ -114,7 +114,7 @@ func testIOWriterReader() {
 // encode file content
 func testIOEncodeText() {
 	// create input stream
-	in, err := os.Open(filepath.Join(getExamplesPath(), "io_input.txt"))
+	in, err := os.Open(filepath.Join(getExamplesPath(), "data/io_input.txt"))
 	if err != nil {
 		log.Fatalln(err)
 		return
@@ -122,7 +122,7 @@ func testIOEncodeText() {
 	defer in.Close()
 
 	// create output stream
-	out, err := os.Create(filepath.Join(getExamplesPath(), "io_enc_output.txt"))
+	out, err := os.Create(filepath.Join(getExamplesPath(), "data/io_enc_output.txt"))
 	if err != nil {
 		log.Fatalln(err)
 		return
@@ -141,7 +141,7 @@ func testIOEncodeText() {
 
 // read and write line from file
 func testIOReadLine() {
-	path := filepath.Join(getExamplesPath(), "io_input.txt")
+	path := filepath.Join(getExamplesPath(), "data/io_input.txt")
 	values, err := readIntValues(path)
 	if err != nil {
 		log.Fatalln("read file error:", err)
@@ -187,7 +187,7 @@ func readIntValues(filePath string) (values []int, err error) {
 }
 
 func testIOWriteLine() {
-	path := filepath.Join(getExamplesPath(), "io_output.txt")
+	path := filepath.Join(getExamplesPath(), "data/io_output.txt")
 	err := writeIntValues([]int{1, 12, 123, 1234}, path)
 	if err != nil {
 		panic(err.Error())
@@ -212,8 +212,8 @@ func writeIntValues(values []int, outPath string) error {
 
 // get total number of words in files
 func testIOWordCount() {
-	input1 := filepath.Join(getExamplesPath(), "io_input.txt")
-	input2 := filepath.Join(getExamplesPath(), "io_output.txt")
+	input1 := filepath.Join(getExamplesPath(), "data/io_input.txt")
+	input2 := filepath.Join(getExamplesPath(), "data/io_output.txt")
 	paths := [2]string{input1, input2}
 	counts := make(map[string]int)
 
