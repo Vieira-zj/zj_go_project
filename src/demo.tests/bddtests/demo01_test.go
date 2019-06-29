@@ -15,7 +15,7 @@ import (
 var myFlag string
 
 func init() {
-	fmt.Println("init from demo01_test.go")
+	fmt.Println("init in demo01_test.go")
 	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
 	fmt.Printf("$GOPATH: %v\n", os.Getenv("GOPATH"))
 
@@ -23,163 +23,158 @@ func init() {
 }
 
 // cmd: ginkgo -v --focus="demo01" src/demo.tests/bddtests/
-var _ = Describe("TestDemo01", func() {
+var _ = Describe("[test.demo01]", func() {
 	var myText string
 
 	BeforeSuite(func() {
-		fmt.Println("TEST: exec BeforeSuite")
+		fmt.Println("HOOK: BeforeSuite run")
 	})
 
 	AfterSuite(func() {
-		log.Println("\nTEST: exec AfterSuite")
+		log.Println("\nHOOK: AfterSuite run")
 	})
 
 	BeforeEach(func() {
-		GinkgoWriter.Write([]byte("TEST: exec BeforeEach\n"))
+		GinkgoWriter.Write([]byte("HOOK: BeforeEach run\n"))
 		myText = "test"
 	})
 
 	AfterEach(func() {
-		GinkgoWriter.Write([]byte("TEST: exec AfterEach\n"))
+		GinkgoWriter.Write([]byte("HOOK: AfterEach run\n"))
 	})
 
 	JustBeforeEach(func() {
-		GinkgoWriter.Write([]byte("TEST: exec JustBeforeEach\n"))
+		GinkgoWriter.Write([]byte("HOOK: JustBeforeEach run\n"))
 	})
 
-	Describe("[test.hooks]", func() {
+	Describe("[test.hooks.suite01] Desc", func() {
 		// panic: You may only call BeforeSuite once!
 		// BeforeSuite(func() {
-		// 	fmt.Println("TEST: exec BeforeSuite in sub")
+		// 	fmt.Println("TEST: try exec BeforeSuite in sub")
 		// })
 
 		BeforeEach(func() {
-			fmt.Println("TEST: exec BeforeEach in sub")
+			fmt.Println("HOOK: BeforeEach run in sub")
 		})
 
 		JustBeforeEach(func() {
-			fmt.Println("TEST: exec JustBeforeEach in sub")
+			fmt.Println("HOOK: JustBeforeEach run in sub")
 		})
 
-		It("[demo01] test {return} in It", func() {
-			fmt.Println("test statement {return} in It")
-			return
-			// Expect(true).Should(Equal(true))
-			// fmt.Println("after returned")
-		})
-
-	})
-
-	Describe("Desc", func() {
-		It("[demo01.asserter] text is not null", func() {
-			GinkgoWriter.Write([]byte("TEST: run test01\n"))
-			By("sub step description")
-			Expect(myText != "").Should(BeTrue(), "Failed: not null")
-		})
-
-		It("[demo01.asserter] text length should be 4", func() {
-			GinkgoWriter.Write([]byte("TEST: run test02\n"))
-			Expect(len(myText)).To(Equal(4), "Failed: text length = 4")
+		It("[suite01.case01] test return in It()", func() {
+			fmt.Println("case01 test start")
+			isRet := true
+			if isRet {
+				fmt.Println("case01 return")
+				return
+			} else {
+				fmt.Println("case01 asserter")
+				Expect(true).Should(BeTrue())
+			}
 		})
 	})
 
-	Describe("Desc", func() {
-		Context("Test context", func() {
-			It("[demo01.routine.done] run parallel", func(done Done) {
+	Describe("[test.asserter.suite02] Desc", func() {
+		It("[suite02.case01] text is not null", func() {
+			GinkgoWriter.Write([]byte("TEST: asserter test01\n"))
+			By("case01 step description")
+			Expect(myText).ShouldNot(BeEmpty(), "Failed: text is empty")
+		})
+
+		It("[suite02.case02] text length should be 4", func() {
+			GinkgoWriter.Write([]byte("TEST: asserter test02\n"))
+			Expect(len(myText)).To(Equal(4), "Failed: text length != 4")
+		})
+	})
+
+	Describe("[test.routine.suite03] Desc", func() {
+		Context("[suite03.context01] Ctx", func() {
+			It("[suite03.case01] run routine, and wait done", func(done Done) {
 				go func() {
 					time.Sleep(time.Duration(2) * time.Second)
 					Expect(true).To(BeTrue())
-					fmt.Println("routine done")
+					fmt.Println("sub routine done")
 					close(done)
 				}()
-				fmt.Println("parallel test: done")
+				fmt.Println("routine test: done")
 			}, 3) // timeout = 3s
 
-			It("[demo01.routine.lock] run parallel", func() {
+			It("[suite03.case02] run routines with lock", func() {
 				const count = 3
 				for i := 0; i < count; i++ {
 					go routineMyPrint()
 				}
 				time.Sleep(time.Duration(2) * time.Second)
-				fmt.Println("parallel test: done")
+				fmt.Println("routine test: done")
 			})
 		})
 
-		Context("Test context", func() {
+		Context("[suite03.context02] Ctx", func() {
 			BeforeEach(func() {
-				fmt.Println("exec BeforeEach in defer test")
+				fmt.Println("HOOK: BeforeEach in context02")
 			})
 
 			AfterEach(func() {
-				fmt.Println("exec AfterEach in defer test")
+				fmt.Println("HOOK: AfterEach in context02")
 			})
 
-			It("[demo01.snyc] run parallel", func() {
-				By("parallel test: start")
+			It("[suite03.case03] run failed routines, and recover", func() {
+				fmt.Println("suite03.case03 test start")
 				var wg sync.WaitGroup
 				for i := 0; i < 3; i++ {
 					wg.Add(1)
 					go func() {
 						defer wg.Done()
 						defer GinkgoRecover()
-						fmt.Println("myPrintRoutine start")
-						time.Sleep(time.Duration(1) * time.Second)
-						Fail("make failed test")
-						fmt.Println("myPrintRoutine end")
+						fmt.Println("sub routine start")
+						time.Sleep(time.Second)
+						Fail("marked failed in routine")
+						fmt.Println("sub routine end")
 					}()
 				}
 				wg.Wait()
-				fmt.Println("parallel test: done")
+				fmt.Println("suite03.case03 test end")
 			})
 
-			It("[demo01.sync.recover] run parallel", func() {
-				By("parallel test: start")
+			It("[suite03.case04] run failed routines, and recover", func() {
+				fmt.Println("suite03.case04 test start")
 				var wg sync.WaitGroup
 				for i := 0; i < 3; i++ {
 					wg.Add(1)
-					go fnMyPrint(&wg)
+					go funcMyPrint(&wg)
 				}
 				wg.Wait()
-				Expect("recover").ToNot(BeEmpty(), "skip")
-				fmt.Println("parallel test: done")
+				Expect("test").Should(BeEmpty(), "skip")
+				fmt.Println("suite03.case04 test end")
 			})
 		})
 	})
 
-	Describe("Desc", func() {
+	Describe("[test.flag.suite04] Desc", func() {
 		BeforeEach(func() {
-			fmt.Println("exec BeforeEach in flag test")
+			fmt.Println("HOOK: BeforeEach in flagtest")
 		})
 
 		AfterEach(func() {
-			fmt.Println("exec AfterEach in flag test")
+			fmt.Println("HOOK: AfterEach in flagtest")
 		})
 
-		It("[demo01.defer] Marking Specs as Failed", func() {
-			fmt.Println("TEST: run test03")
+		It("[suite04.case01] Marking Specs as Failed", func() {
+			fmt.Println("run fake test start")
 			defer func() {
 				fmt.Println("defer test")
 			}()
 			Fail("mark failed in test")
-			fmt.Println("message after make failed") // skipped
+			fmt.Println("run fake test end") // skipped
 		})
 
-		// cmd: ginkgo -v --focus="flag" src/demo.tests/bddtests/ -- -myFlag="flagtext"
-		It("[demo01.flag] get string flag text", func() {
-			By("my flag value: " + myFlag)
-			Expect(myFlag).To(MatchRegexp("flagtext|default"))
+		// cmd: ginkgo -v --focus="suite04.case02" src/demo.tests/bddtests/ -- -myFlag="test"
+		It("[suite04.case02] get text from input flag", func() {
+			fmt.Println("flag text:", myFlag)
+			Expect(myFlag).To(MatchRegexp("test|default"))
 		})
 	})
 })
-
-func fnMyPrint(wg *sync.WaitGroup) {
-	defer wg.Done()
-	defer GinkgoRecover()
-	fmt.Println("fnMyPrint start")
-	time.Sleep(time.Duration(1) * time.Second)
-	Fail("make failed in routine")
-	fmt.Println("fnMyPrint end")
-}
 
 var i int
 var m *sync.Mutex
@@ -190,9 +185,17 @@ func routineMyPrint() {
 	m = new(sync.Mutex)
 	m.Lock()
 	i++
-	fmt.Printf("run test routine at: %d\n", i)
+	fmt.Printf("routine run at: %d\n", i)
 	m.Unlock()
-
 	time.Sleep(time.Duration(500) * time.Millisecond)
-	fmt.Println("routineMyPrint end")
+	fmt.Println("[routineMyPrint] end")
+}
+
+func funcMyPrint(wg *sync.WaitGroup) {
+	defer wg.Done()
+	defer GinkgoRecover()
+	fmt.Println("funcMyPrint routine start")
+	time.Sleep(time.Second)
+	Fail("mark failed in funcMyPrint routine")
+	fmt.Println("funcMyPrint routine end")
 }

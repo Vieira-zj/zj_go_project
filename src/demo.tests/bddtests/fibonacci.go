@@ -1,6 +1,6 @@
 package bddtests
 
-// Fibonacci : for test benchmark in ginkgo
+// Fibonacci : for benchmark test in ginkgo
 func Fibonacci(n int) int {
 	if n < 1 {
 		return 1

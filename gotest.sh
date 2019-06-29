@@ -46,11 +46,12 @@ function go_benchmark_test() {
 
 # BDD TEST
 function go_bdd_test {
-    bddtest="${ZJ_GOPRJ}/bin/ginkgo"
-    ${bddtest} -v -focus="test.hooks" src/demo.tests/bddtests/
+    # bddtest="${ZJ_GOPRJ}/bin/ginkgo"
+    # ginkgo -v -focus="test.asserter.suite02" src/demo.tests/bddtests/
+    # ginkgo -v -focus="suite03.case04" src/demo.tests/bddtests/
+    # ginkgo -v --focus="suite04.case02" src/demo.tests/bddtests/ -- -myFlag="ginkgo test"
     
-    # ginkgo -v -focus="demo01.routine.done" src/demo.tests/bddtests/
-    # ginkgo -v -focus="demo02.share" src/demo.tests/bddtests/
+    ginkgo -v -focus="demo02.share" src/demo.tests/bddtests/
 }
 
 
@@ -61,7 +62,7 @@ function go_bdd_test {
 # EX01-00, number comparison
 function shell_test() {
     echo "current dir: $(pwd)"
-
+    
     # remove leading spaces => sed ‘s/^[ \t]*//g'
     count=`ls | wc -l | sed "s/^[ \t]*//g"`
     if [ ${count} -gt 0 ]; then
