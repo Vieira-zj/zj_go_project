@@ -8,7 +8,7 @@ echo "gorun.sh"
 # source $QBOXROOT/kodo/env.sh
 # source $QBOXROOT/base/env.sh
 ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
-# if current golang project are not in system path
+# if current golang project is not in system path
 # GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
 
@@ -91,4 +91,5 @@ if [[ $1 == "ddtest" ]]; then
     build_ddtest_bin
 fi
 
+echo "go build and run DONE."
 set +ex # set configs off

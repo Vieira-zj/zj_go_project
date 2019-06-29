@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// Out : defined as global, and modified during testing
+// Out : global var, and write test results to Out
 var Out io.Writer = os.Stdout
 
 // Echo : join and display input arguments

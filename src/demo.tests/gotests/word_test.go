@@ -1,21 +1,12 @@
 package gotests_test
 
 import (
-	"fmt"
 	"testing"
 
 	"demo.tests/gotests"
 )
 
 // cmd: go test -v src/demo.tests/gotests/word_test.go
-func ExampleIsPalindrome() {
-	fmt.Println(gotests.IsPalindrome("A man, a plan, a canal: Panama"))
-	fmt.Println(gotests.IsPalindrome("palindrome"))
-	// Output:
-	// true
-	// false
-}
-
 func TestIsPalindrome(t *testing.T) {
 	// data driver
 	var tests = []struct {
@@ -38,7 +29,7 @@ func TestIsPalindrome(t *testing.T) {
 
 	for _, test := range tests {
 		if got := gotests.IsPalindrome(test.input); got != test.want {
-			t.Errorf("IsPalindrome(%q) = %v", test.input, got)
+			t.Errorf("IsPalindrome(%q) = %v, want: %v", test.input, got, test.want)
 		}
 	}
 }

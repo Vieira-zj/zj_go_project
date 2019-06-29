@@ -40,7 +40,7 @@ func IsPalindrome2(s string) bool {
 	return true
 }
 
-// IsPalindrome3 : pre-init array "letters" for benchmark.
+// IsPalindrome3 : pre-init slice "letters" for benchmark.
 func IsPalindrome3(s string) bool {
 	letters := make([]rune, 0, len(s))
 	for _, r := range s {

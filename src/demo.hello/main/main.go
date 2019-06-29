@@ -80,5 +80,5 @@ func main() {
 	// mainDemo()
 	mainAppDemo()
 
-	fmt.Println("GO main done.")
+	fmt.Println("GO demo main done.")
 }

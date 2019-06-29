@@ -3,38 +3,49 @@ set -ex
 echo "gotest.sh"
 
 ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
-GOPATH=${ZJ_GOPRJ}:${GOPATH}
+# if current golang project is not in system path
+# GOPATH=${ZJ_GOPRJ}:${GOPATH}
 
-# GO TEST
-# go tests, root_dir = $GOPATH
-function go_test_01() {
-    go help test
-    # go test -v demo.tests/gotests/
-    # go test -v -run="TestEcho" demo.tests/gotests/
-    # go test -v src/demo.tests/gotests/word_test.go
+function go_test_main() {
+    # go run src/demo.tests/main/main.go -h
+    # go run src/demo.tests/main/main.go -n arg1 arg2 arg3
+    go run src/demo.tests/main/main.go -n -s "," arg1 arg2 arg3
 }
 
-# Compile the test binary to pkg.test but do not run it.
-# The file name can be changed with the -o flag.
-function go_test_02() {
+# GO TEST
+function go_test_help() {
+    go help test
+}
+
+# compile the test binary to pkg.test but do not run it.
+# the file name can be changed with the -o flag.
+function go_compile_test() {
     go test -c
 }
 
-# go tests, coverage
-function go_test_03() {
-    # go test -v -run="IsPalindrome" -cover -coverprofile=c.out demo.tests/gotests/
-    # go test -v -cover -coverprofile=c.out demo.tests/gotests/
+# go tests, root_dir = $GOPATH
+function go_func_test() {
+    go test -v demo.tests/gotests/
+    # go test -v src/demo.tests/gotests/word_test.go
+    # go test -v -run="TestEcho" src/demo.tests/gotests/
+}
+
+# go tests, code coverage
+function go_coverage_test() {
+    # go test -v -run="IsPalindrome" -cover -coverprofile=c.out src/demo.tests/gotests/
+    # go test -v -cover -coverprofile=c.out src/demo.tests/gotests/
     go tool cover -html=c.out
 }
 
 # go tests, benchmark
-function go_test_04() {
-    go test -v -bench=. src/demo.tests/gotests/word_ben_test.go
-    # go test -v -bench=. -benchmem src/demo.tests/gotests/word_ben_test.go
+function go_benchmark_test() {
+    # go test -v -bench=. src/demo.tests/gotests/word_perf_test.go
+    go test -v -bench=. -benchmem src/demo.tests/gotests/word_perf_test.go
 }
 
+
 # BDD TEST
-function go_bdd_test_01 {
+function go_bdd_test {
     bddtest="${ZJ_GOPRJ}/bin/ginkgo"
     ${bddtest} -v -focus="test.hooks" src/demo.tests/bddtests/
     
@@ -43,12 +54,12 @@ function go_bdd_test_01 {
 }
 
 
-# SHELL EXAMPLES
+# SHELL TEST
 # EX01, field check
 # https://blog.csdn.net/longyinyushi/article/details/50728049
 
 # EX01-00, number comparison
-function shell_test_0() {
+function shell_test() {
     echo "current dir: $(pwd)"
 
     # remove leading spaces => sed ‘s/^[ \t]*//g'
@@ -229,10 +240,12 @@ setZone() { export TEST_ZONE=$1; echo "TEST_ZONE=$TEST_ZONE";}
 findStr() { grep "$1" ./*;}
 findStrAll() { grep -r "$1" ./;}
 
-# echoEnv
-# findStrAll "search_text"
+function shell_test_08() {
+    echoEnv
+    # findStrAll "search_text"
+}
 
-# EX09, tips
+# EX09, shell exit with ret code
 function shell_test_09() {
     echo "test exit with error code 1."
     exit 1
@@ -240,8 +253,16 @@ function shell_test_09() {
 
 
 # MAIN
-# go_test_01
-# shell_test_0
-shell_test_0203
+go_test_main
 
+# go_test_help
+# go_func_test
+# go_benchmark_test
+
+# go_bdd_test
+
+# shell_test
+# shell_test_0203
+
+echo "go test DONE."
 set +ex
