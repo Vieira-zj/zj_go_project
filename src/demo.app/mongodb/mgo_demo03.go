@@ -48,8 +48,8 @@ func (rs *RSOperation) Close() {
 	rs.dbSession.Close()
 }
 
-// TestInsertRsRecords do insert, query and delete operations for rs.
-func (rs RSOperation) TestInsertRsRecords() {
+// InsertRsRecords do insert, query and delete operations for rs.
+func (rs RSOperation) InsertRsRecords() {
 	c := rs.dbSession.DB("beta_rs1").C("rs")
 
 	// insert

@@ -5,10 +5,16 @@ import (
 	"sync"
 	"time"
 
-	redis "gopkg.in/redis.v5"
+	redis "github.com/go-redis/redis"
 )
 
-func createClient() *redis.Client {
+// TestRedisOp redis general operations test cases.
+type TestRedisOp struct {
+	client *redis.Client
+}
+
+// NewTestRedisOp create a TestRedisOp instance.
+func NewTestRedisOp() *TestRedisOp {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1:6379",
 		Password: "",
@@ -19,147 +25,185 @@ func createClient() *redis.Client {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(pong)
+	fmt.Println("ping:", pong)
 
-	return client
+	return &TestRedisOp{client: client}
 }
 
-func stringOperation(client *redis.Client) {
+// Close : close redis client.
+func (t *TestRedisOp) Close() {
+	t.client.Close()
+}
+
+// StringOperation redis general operations for type string.
+func (t TestRedisOp) StringOperation() {
+	// #1
 	const key1 = "name"
-	err := client.Set(key1, "xys", 0).Err()
+	err := t.client.Set(key1, "xys", 0).Err()
+	defer t.DeleteKeyOp(key1)
 	if err != nil {
 		panic(err)
 	}
 
-	val, err := client.Get(key1).Result()
+	val, err := t.client.Get(key1).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("name:", val)
+	fmt.Printf("\nget %s:%s\n", key1, val)
 
+	// #2
 	const key2 = "age"
-	err = client.Set(key2, 20, time.Second).Err()
+	err = t.client.Set(key2, 20, time.Second).Err()
+	defer t.DeleteKeyOp(key2)
 	if err != nil {
 		panic(err)
 	}
 
-	client.Incr(key2)
-	client.Incr(key2)
-	client.Decr(key2)
-	val, err = client.Get(key2).Result()
+	t.client.Incr(key2)
+	t.client.Incr(key2)
+	t.client.Decr(key2)
+	val, err = t.client.Get(key2).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("age:", val)
+	fmt.Printf("\nget %s=%s\n", key2, val)
 
 	time.Sleep(time.Second)
-	val, err = client.Get("age").Result()
+	val, err = t.client.Get(key2).Result()
 	if err != nil {
-		fmt.Println("error:", err.Error())
+		fmt.Println("get failed:", err)
 	} else {
-		fmt.Println("age:", val)
+		fmt.Printf("get %s=%s", key2, val)
 	}
 }
 
-func listOperation(client *redis.Client) {
+// ListOperation redis general operations for type list.
+func (t TestRedisOp) ListOperation() {
+	// #1
 	const key = "fruit"
-	client.RPush(key, "apple")
-	client.LPush(key, "banana")
-	length, err := client.LLen(key).Result()
+	t.client.RPush(key, "apple")
+	t.client.LPush(key, "banana")
+	defer t.DeleteKeyOp(key)
+	len, err := t.client.LLen(key).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("length: %d\n", length)
+	fmt.Printf("\n%s size: %d\n", key, len)
 
-	items, err := client.LRange(key, 0, length).Result()
+	items, err := t.client.LRange(key, 0, len).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("all fruit: %v\n", items)
 
-	value, err := client.LPop(key).Result()
+	// #2
+	value, err := t.client.LPop(key).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("fruit:", value)
+	fmt.Println("\nleft top fruit:", value)
 
-	value, err = client.RPop(key).Result()
+	value, err = t.client.RPop(key).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("fruit:", value)
+	fmt.Println("right top fruit:", value)
 }
 
-func setOperation(client *redis.Client) {
-	const key1 = "blacklist"
-	client.SAdd(key1, "Obama")
-	client.SAdd(key1, "Hillary")
-	client.SAdd(key1, "the Elder")
+// SetOperation redis general set operations.
+func (t TestRedisOp) SetOperation() {
+	const (
+		key1     = "blacklist"
+		key2     = "whitelist"
+		sameName = "the Elder"
+	)
 
-	isMember, err := client.SIsMember(key1, "Bush").Result()
+	// #1
+	t.client.SAdd(key1, "Obama")
+	t.client.SAdd(key1, "Hillary")
+	t.client.SAdd(key1, sameName)
+	defer t.DeleteKeyOp(key1)
+
+	isMember, err := t.client.SIsMember(key1, "Bush").Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Is Bush in blacklist:", isMember)
+	fmt.Println("\nIs Bush in blacklist:", isMember)
 
-	all, err := client.SMembers(key1).Result()
+	all, err := t.client.SMembers(key1).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("All member:", all)
+	fmt.Println("All member of blacklist:", all)
 
-	const key2 = "whitelist"
-	client.SAdd(key2, "the Elder")
-	names, err := client.SInter(key1, key2).Result()
+	// #2
+	t.client.SAdd(key2, sameName)
+	defer t.DeleteKeyOp(key2)
+	names, err := t.client.SInter(key1, key2).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Inter result:", names)
+	fmt.Println("Inter results of blacklist and whitelist:", names)
 }
 
-func hashOperation(client *redis.Client) {
-	client.HSet("user_xys", "name", "xys")
-	client.HSet("user_xys", "age", "18")
+// HashOperation redis hash general operations.
+func (t TestRedisOp) HashOperation() {
+	const key = "user_xys"
+	t.client.HSet(key, "name", "xys")
+	t.client.HSet(key, "age", "18")
+	defer t.DeleteKeyOp(key)
 
-	length, err := client.HLen("user_xys").Result()
+	len, err := t.client.HLen(key).Result()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("field count in user_xys:", length)
+	fmt.Println("\nuser_xys fields count:", len)
 
-	value, err := client.HGet("user_xys", "name").Result()
+	value, err := t.client.HGet(key, "name").Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("user name:", value)
 }
 
-func connectPool(client *redis.Client) {
+// ParallelConnsOp parallel connections to redis.
+func (t TestRedisOp) ParallelConnsOp() {
 	const count = 10
+	keys := make([]string, count)
 	wg := sync.WaitGroup{}
-
 	wg.Add(count)
+
 	for i := 0; i < count; i++ {
 		go func() {
 			defer wg.Done()
 			for j := 0; j < 100; j++ {
-				client.Set(fmt.Sprintf("name%d", j), fmt.Sprintf("xys%d", j), 0).Err()
-				client.Get(fmt.Sprintf("name%d", j)).Result()
+				key := fmt.Sprintf("name%d", j)
+				if err := t.client.Set(key, fmt.Sprintf("xys%d", j), 0).Err(); err != nil {
+					fmt.Println("set failed:", err)
+					continue
+				}
+				if _, err := t.client.Get(key).Result(); err == nil {
+					fmt.Printf("set key %s success\n", key)
+				}
+				keys = append(keys, key)
 			}
-			// fmt.Printf("PoolStats, TotalConns: %d, FreeConns: %d\n", client.PoolStats().TotalConns, client.PoolStats().FreeConns)
+			fmt.Printf("PoolStats, TotalConns: %d, FreeConns: %d\n",
+				t.client.PoolStats().TotalConns, t.client.PoolStats().IdleConns)
 		}()
 	}
 	wg.Wait()
+
+	defer func() {
+		for _, key := range keys {
+			t.DeleteKeyOp(key)
+		}
+	}()
 }
 
-// MainRedis : main for redis test
-func MainRedis() {
-	client := createClient()
-	defer client.Close()
-
-	// stringOperation(client)
-	// listOperation(client)
-	// setOperation(client)
-	// hashOperation(client)
-	// connectPool(client)
+// DeleteKeyOp delete a kv in redis.
+func (t TestRedisOp) DeleteKeyOp(key string) {
+	if err := t.client.Del(key).Err(); err != nil {
+		panic(err)
+	}
+	fmt.Printf("success delete key=%s\n", key)
 }

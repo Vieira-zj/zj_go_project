@@ -27,13 +27,13 @@ if [ "$1" == "main" ]; then
     # go run src/demo.hello/main/main.go -p 7890 -c 404
 fi
 
-if [ "$1" == "util" ]; then
-    cd ${ZJ_GOPRJ}/src/tools.app/apps/utilstest;go run main.go
-fi
-
 # app test
 if [ "$1" == "app" ]; then
-    go run src/sys.app/main/main.go
+    go run src/demo.app/main/main.go
+fi
+
+if [ "$1" == "util" ]; then
+    cd ${ZJ_GOPRJ}/src/tools.app/apps/utilstest;go run main.go
 fi
 
 
