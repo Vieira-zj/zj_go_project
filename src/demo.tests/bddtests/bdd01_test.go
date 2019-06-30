@@ -23,7 +23,7 @@ func init() {
 }
 
 // cmd: ginkgo -v --focus="demo01" src/demo.tests/bddtests/
-var _ = Describe("[test.demo01] demo", func() {
+var _ = Describe("[test.demo01] Demo", func() {
 	var myText string
 
 	BeforeSuite(func() {

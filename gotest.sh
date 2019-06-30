@@ -47,15 +47,22 @@ function go_benchmark_test() {
 # BDD TEST
 # ginkgo: http://onsi.github.io/ginkgo/
 # gomega: http://onsi.github.io/gomega/
-function go_bdd_test {
+function go_bdd_test_01() {
     # bddtest="${ZJ_GOPRJ}/bin/ginkgo"
     # ginkgo -v -focus="test.asserter.suite02" src/demo.tests/bddtests/
     # ginkgo -v -focus="suite03.case04" src/demo.tests/bddtests/
-    # ginkgo -v --focus="suite04.case02" src/demo.tests/bddtests/ -- -myFlag="ginkgo test"
-    
-    ginkgo -v -focus="suite11.case01" src/demo.tests/bddtests/
+    ginkgo -v --focus="suite04.case02" src/demo.tests/bddtests/ -- -myFlag="ginkgo test"
 }
 
+function go_bdd_test_02() {
+    # ginkgo -v -focus="test.share.suite12" src/demo.tests/bddtests/
+    # ginkgo -v -focus="suite13.context01" src/demo.tests/bddtests/
+    ginkgo -v -focus="suite11.case11" src/demo.tests/bddtests/
+}
+
+function go_bdd_benchmark_test() {
+    ginkgo -v --focus="suite14.measure01" src/demo.tests/bddtests/
+}
 
 # SHELL TEST
 # EX01, field check
@@ -262,10 +269,12 @@ function shell_test_09() {
 # go_func_test
 # go_benchmark_test
 
-go_bdd_test
+# go_bdd_test_01
+# go_bdd_test_02
+# go_bdd_benchmark_test
 
 # shell_test
-# shell_test_0203
+shell_test_0203
 
-echo "go test DONE."
+echo "golang test DONE."
 set +ex
