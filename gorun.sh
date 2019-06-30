@@ -42,22 +42,37 @@ fi
 
 # BUILD DDTEST BIN
 function build_ddtest_bin() {
+    bin_dir="${ZJ_GOPRJ}/src/tools.app/apps/ddtest"
     target_bin="ddtest"
-    cd ${ZJ_GOPRJ}/src/tools.app/apps/ddtest
-    GOOS=linux GOARCH=amd64 go build -o ${target_bin} main.go
+    if [[ $1 == "test" ]]; then
+        go build -o ${bin_dir}/${target_bin} ${bin_dir}/main.go
+    else
+        GOOS=linux GOARCH=amd64 go build -o ${bin_dir}/${target_bin} ${bin_dir}/main.go
+    fi
 
     target_dir="${HOME}/Downloads/tmp_files"
-    mv ${target_bin} ${target_dir}
-    # scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
+    mv ${bin_dir}/${target_bin} ${target_dir}
+    # scp ${bin_dir}/${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${bin_dir}/${target_bin}
 }
 
 if [[ $1 == "ddtest" ]]; then
-    build_ddtest_bin
+    # build_ddtest_bin
+    build_ddtest_bin "test"
     exit 0
 fi
 
 
 # BUILD MOCK BIN
+function scp_remote() {
+    target_bin="$1"
+    remote_ip="10.200.20.21"
+    ping $remote_ip -c 1
+    if [ $? == 0 ]; then
+        cd ${ZJ_GOPRJ}/src/mock.server/main
+        scp ${target_bin} qboxserver@${remote_ip}:~/zhengjin/ && rm ${target_bin}
+    fi
+}
+
 function go_build_bin() {
     target_bin="$1"
     cd ${ZJ_GOPRJ}/src/mock.server/main
@@ -68,23 +83,13 @@ function go_build_bin() {
     fi
 
     target_dir="${HOME}/Downloads/tmp_files"
-    mv ${target_bin} ${target_dir}
-    cp mock_conf.json ${target_dir}
-}
-
-function scp_remote() {
-    remote_ip="10.200.20.21"
-    ping $remote_ip -c 1
-    if [ $? == 0 ]; then
-        cd ${ZJ_GOPRJ}/src/mock.server/main
-        scp ${target_bin} qboxserver@${remote_ip}:~/zhengjin/ && rm ${target_bin}
-    fi
+    # scp_remote ${target_bin}; scp_remote mock_conf.json
+    mv ${target_bin} ${target_dir} && cp mock_conf.json ${target_dir}
 }
 
 function build_mock_bin {
     if [[ $1 == "linux" ]]; then
         go_build_bin "${mock_bin}_$1" "amd64"
-        # scp_remote
         return
     fi
     if [[ $1 == "arm" ]]; then

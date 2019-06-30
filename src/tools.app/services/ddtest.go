@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-// DdArgs : dd test arguments
-type DdArgs struct {
+// DDArgs : dd test arguments
+type DDArgs struct {
 	Mode       int
 	FileName   string
 	BlockSize  int
@@ -18,44 +18,58 @@ type DdArgs struct {
 	TimeoutMin int
 }
 
-// TestDdCheck : run dd and check files
-func TestDdCheck(args DdArgs) bool {
+// DDTest test by shell dd command.
+type DDTest struct{}
+
+// NewDDTest create a DDTest instance.
+func NewDDTest() *DDTest {
+	return &DDTest{}
+}
+
+// DDCheck : run dd and check files
+func (t DDTest) DDCheck(args DDArgs) bool {
 	base := "dd if=%s of=%s bs=%d count=%d oflag=direct" // w
-	cmd := fmt.Sprintf(base, "/dev/zero", args.FileName, args.BlockSize, args.Count)
+	var cmd string
+
 	if args.Mode == 1 { // rw
-		cmd = fmt.Sprintf(base+" iflag=direct", args.FileName, args.FileName+".out", args.BlockSize, args.Count)
+		base = fmt.Sprintf("%s iflag=direct", base)
+		cmd = fmt.Sprintf(base, args.FileName, args.FileName+".out", args.BlockSize, args.Count)
+	} else {
+		cmd = fmt.Sprintf(base, "/dev/zero", args.FileName, args.BlockSize, args.Count)
 	}
 
-	chDd := make(chan bool)
+	// routine run dd command
+	chDD := make(chan bool)
 	go func(ch chan<- bool) {
-		output, err := RunShellCmd(cmd)
+		output, err := t.runShellCmd(cmd)
 		if err != nil {
 			panic(err)
 		}
 		fmt.Println(output)
 		ch <- true
-	}(chDd)
+	}(chDD)
 	time.Sleep(time.Second)
 
+	// routine montior dd command
 	chCheck := make(chan int64)
 	go func(ch chan<- int64) {
 		var lastSize int64
 		for {
-			curSize := GetFileSize(args.FileName)
+			curSize := t.getFileSize(args.FileName)
 			log.Println("cur file size:", curSize)
 			if curSize == lastSize {
 				ch <- curSize
 				return
 			}
 			lastSize = curSize
-			time.Sleep(5 * time.Second)
+			time.Sleep(time.Duration(5) * time.Second)
 		}
 	}(chCheck)
 
 	select {
-	case <-chDd:
-		log.Println("dd cmd done")
-		if int64(args.BlockSize*args.Count) == GetFileSize(args.FileName) {
+	case <-chDD:
+		log.Println("dd command done")
+		if int64(args.BlockSize*args.Count) == t.getFileSize(args.FileName) {
 			return true
 		}
 	case actualSize := <-chCheck:
@@ -63,24 +77,22 @@ func TestDdCheck(args DdArgs) bool {
 			return true
 		}
 	case <-time.After(time.Duration(args.TimeoutMin) * time.Minute):
-		log.Println("dd test timeout")
+		log.Println("dd test timeout!")
 	}
 	return false
 }
 
-// RunShellCmd : run shell commands
-func RunShellCmd(shellCmd string) (string, error) {
+func (t DDTest) runShellCmd(shellCmd string) (string, error) {
 	log.Println("run shell command:", shellCmd)
-	cmd := exec.Command("/bin/sh", "-c", shellCmd)
+	sh := exec.Command("/bin/sh", "-c", shellCmd)
 	var out bytes.Buffer
-	cmd.Stdout = &out
+	sh.Stdout = &out
+	err := sh.Run()
 
-	err := cmd.Run()
 	return out.String(), err
 }
 
-// GetFileSize : get file size
-func GetFileSize(filepath string) int64 {
+func (t DDTest) getFileSize(filepath string) int64 {
 	fileInfo, err := os.Stat(filepath)
 	if err != nil {
 		panic(err)
