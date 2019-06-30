@@ -44,7 +44,7 @@ func mongodbMain(runN uint8) {
 }
 
 func redisMain(runN int) {
-	// redis env: docker run --name redis -p 6379:6379 -d redis:4.0
+	// redis env: docker run --name redis -p 6379:6379 --rm -d redis:4.0
 	// ref: https://github.com/go-redis/redis/blob/master/example_test.go
 
 	demo01 := func() {
@@ -101,7 +101,7 @@ func redisMain(runN int) {
 func main() {
 	// memcachedMain()
 	// mongodbMain(1)
-	redisMain(3)
+	redisMain(1)
 
 	fmt.Println("memory db demo DONE.")
 }

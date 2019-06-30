@@ -18,35 +18,56 @@ ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
 # Effective Go: https://golang.org/doc/effective_go.html
 if [ -z $1 ]; then
     go run src/demo.hello/main/main.go
+    exit 0
 fi
 
-if [ "$1" == "main" ]; then
+if [[ $1 == "main" ]]; then
     go run src/demo.hello/main/main.go -args hello world
     # go run src/demo.hello/main/main.go -period 3s
     # go run src/demo.hello/main/main.go -h
     # go run src/demo.hello/main/main.go -p 7890 -c 404
+    exit 0
 fi
 
-# app test
-if [ "$1" == "app" ]; then
+if [[ $1 == "app" ]]; then
     go run src/demo.app/main/main.go
+    exit 0
 fi
 
-if [ "$1" == "util" ]; then
-    cd ${ZJ_GOPRJ}/src/tools.app/apps/utilstest;go run main.go
+if [[ $1 == "utest" ]]; then
+    go run src/tools.app/apps/utilstest/main.go
+    exit 0
+fi
+
+
+# BUILD DDTEST BIN
+function build_ddtest_bin() {
+    target_bin="ddtest"
+    cd ${ZJ_GOPRJ}/src/tools.app/apps/ddtest
+    GOOS=linux GOARCH=amd64 go build -o ${target_bin} main.go
+
+    target_dir="${HOME}/Downloads/tmp_files"
+    mv ${target_bin} ${target_dir}
+    # scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
+}
+
+if [[ $1 == "ddtest" ]]; then
+    build_ddtest_bin
+    exit 0
 fi
 
 
 # BUILD MOCK BIN
 function go_build_bin() {
-    target_dir="${HOME}/Downloads/tmp_files"
-    target_bin=$1
+    target_bin="$1"
     cd ${ZJ_GOPRJ}/src/mock.server/main
     if [ $2 ]; then
         GOOS=linux GOARCH=$2 go build -o ${target_bin} main.go
     else
         go build -o ${target_bin} main.go
     fi
+
+    target_dir="${HOME}/Downloads/tmp_files"
     mv ${target_bin} ${target_dir}
     cp mock_conf.json ${target_dir}
 }
@@ -79,17 +100,4 @@ if [[ $1 == "mock" ]]; then
 fi
 
 
-# BUILD DDTEST BIN
-function build_ddtest_bin() {
-    target_bin="ddtest"
-    target_main="src/tools.app/apps/ddtest/main.go"
-    GOOS=linux GOARCH=amd64 go build -o ${target_bin} target_main
-    # scp ${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${target_bin}
-}
-
-if [[ $1 == "ddtest" ]]; then
-    build_ddtest_bin
-fi
-
-echo "go build and run DONE."
 set +ex # set configs off

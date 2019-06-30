@@ -166,32 +166,33 @@ func (t TestRedisOp) HashOperation() {
 	fmt.Println("user name:", value)
 }
 
-// ParallelConnsOp parallel connections to redis.
+// ParallelConnsOp parallel do connections to redis.
 func (t TestRedisOp) ParallelConnsOp() {
-	const count = 10
-	keys := make([]string, count)
+	const (
+		routines = 10
+		count    = 10
+	)
+	keys := make([]string, 0, routines*count)
 	wg := sync.WaitGroup{}
-	wg.Add(count)
+	wg.Add(routines)
 
-	for i := 0; i < count; i++ {
-		go func() {
+	for i := 0; i < routines; i++ {
+		go func(i int) {
 			defer wg.Done()
-			for j := 0; j < 100; j++ {
-				key := fmt.Sprintf("name%d", j)
-				if err := t.client.Set(key, fmt.Sprintf("xys%d", j), 0).Err(); err != nil {
+			for j := 0; j < count; j++ {
+				key := fmt.Sprintf("name_%d", j)
+				if err := t.client.Set(key, fmt.Sprintf("xys-%d-%d", i, j), 0).Err(); err != nil {
 					fmt.Println("set failed:", err)
 					continue
 				}
-				if _, err := t.client.Get(key).Result(); err == nil {
-					fmt.Printf("set key %s success\n", key)
-				}
 				keys = append(keys, key)
 			}
-			fmt.Printf("PoolStats, TotalConns: %d, FreeConns: %d\n",
+			fmt.Printf("Redis PoolStats: TotalConns=%d,IdleConns=%d\n",
 				t.client.PoolStats().TotalConns, t.client.PoolStats().IdleConns)
-		}()
+		}(i)
 	}
 	wg.Wait()
+	time.Sleep(time.Second)
 
 	defer func() {
 		for _, key := range keys {
@@ -202,6 +203,11 @@ func (t TestRedisOp) ParallelConnsOp() {
 
 // DeleteKeyOp delete a kv in redis.
 func (t TestRedisOp) DeleteKeyOp(key string) {
+	if len(key) == 0 {
+		fmt.Println("delete key is empty!")
+		return
+	}
+
 	if err := t.client.Del(key).Err(); err != nil {
 		panic(err)
 	}

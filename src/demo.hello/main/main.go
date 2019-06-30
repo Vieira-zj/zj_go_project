@@ -78,7 +78,7 @@ func main() {
 
 	// mainExample()
 	// mainDemo()
-	mainAppDemo()
+	// mainAppDemo()
 
 	fmt.Println("GO demo main done.")
 }
