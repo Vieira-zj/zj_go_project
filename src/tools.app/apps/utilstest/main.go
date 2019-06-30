@@ -1,48 +1,32 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"io/ioutil"
+	"os"
+	"path/filepath"
 
-	zjutils "tools.app/utils"
+	myutils "tools.app/utils"
 )
 
-func init() {
-	fmt.Println("kodo tool run.")
-}
+func testCreateGzipFile() {
+	dirPath := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/logs")
+	dest := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/logs.tar.gz")
 
-var (
-	filePath string
-	help     bool
-)
-
-func flagParser() {
-	flag.StringVar(&filePath, "f", "test.file", "file path for etag test.")
-	flag.BoolVar(&help, "h", false, "help")
-
-	flag.Parse()
-	if help {
-		flag.Usage()
-		return
-	}
-}
-
-func printFileEtag() {
-	content, err := ioutil.ReadFile(filePath)
+	f, err := os.Open(dirPath)
 	if err != nil {
 		panic(err)
 	}
-	strEtag, err := zjutils.GetEtagForText(string(content))
-	if err != nil {
+	if err := myutils.CreateGzipFile([]*os.File{f}, dest); err != nil {
 		panic(err)
 	}
-	fmt.Printf("get etag for file (%s): %s\n", filePath, strEtag)
 }
 
-// build cmd: /main$ GOOS=linux GOARCH=amd64 go build
-// $ ./main -e -f test.file
+func testUngzipFile() {
+	// TODO:
+}
+
 func main() {
-	flagParser()
-	printFileEtag()
+	testCreateGzipFile()
+
+	fmt.Println("utils test DONE.")
 }
