@@ -25,11 +25,11 @@
 [submodule "src/github.com/uudashr/gopkgs"]
 	path = src/github.com/uudashr/gopkgs
 	url = https://github.com/uudashr/gopkgs
-[submodule "src/sys.app/vendor/gopkg.in/redis.v5"]
-	path = src/sys.app/vendor/gopkg.in/redis.v5
+[submodule "src/demo.app/vendor/gopkg.in/redis.v5"]
+	path = src/demo.app/vendor/gopkg.in/redis.v5
 	url = https://github.com/go-redis/redis.git
-[submodule "src/sys.app/vendor/gopkg.in/mgo.v2"]
-	path = src/sys.app/vendor/gopkg.in/mgo.v2
+[submodule "src/demo.app/vendor/gopkg.in/mgo.v2"]
+	path = src/demo.app/vendor/gopkg.in/mgo.v2
 	url = https://github.com/go-mgo/mgo.git
 [submodule "src/github.com/onsi/ginkgo"]
 	path = src/demo.tests/vendor/github.com/onsi/ginkgo

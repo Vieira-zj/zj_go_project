@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 
-	"sys.app/memcached"
-	"sys.app/mongodb"
-	"sys.app/redis"
+	"demo.app/memcached"
+	"demo.app/mongodb"
+	"demo.app/redis"
 )
 
-// build cmd: $ GOOS=linux GOARCH=amd64 go build
-// $ scp main qboxserver@10.200.20.21:~/zhengjin/main
+func memcachedMain() {
+	memcached.ConnectMemcacheAndTest()
+}
+
 func main() {
 	isMongodbTest := false
 	if isMongodbTest {
@@ -28,11 +30,6 @@ func main() {
 	if isRedisTest {
 		redis.ConnectToRedisAndTest()
 		// redis.MainRedis()
-	}
-
-	isMemTest := false
-	if isMemTest {
-		memcached.ConnectMemcacheAndTest()
 	}
 
 	fmt.Println("data main done.")
