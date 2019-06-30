@@ -1,6 +1,7 @@
 package bddtests_test
 
 import (
+	"fmt"
 	"testing"
 
 	"demo.tests/bddtests"
@@ -17,9 +18,11 @@ func TestTests(t *testing.T) {
 
 	isJunitReport := false
 	if isJunitReport {
+		fmt.Println("Run tests with junit report")
 		RunSpecsWithDefaultAndCustomReporters(t, "Tests Suite", []Reporter{reporters.NewJUnitReporter("xml-report-path")})
 	} else {
-		report := &bddtests.CustomReport{Tag: "*CUSTOM_REPORT =>"}
+		fmt.Println("Run tests with custom testing report")
+		report := bddtests.NewCustomReport("***CUSTOM_REPORT***")
 		RunSpecsWithDefaultAndCustomReporters(t, "Tests Suite", []Reporter{report})
 	}
 }

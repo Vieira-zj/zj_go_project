@@ -55,9 +55,9 @@ function go_bdd_test_01() {
 }
 
 function go_bdd_test_02() {
-    # ginkgo -v -focus="test.share.suite12" src/demo.tests/bddtests/
+    ginkgo -v -focus="test.share.suite12" src/demo.tests/bddtests/
     # ginkgo -v -focus="suite13.context01" src/demo.tests/bddtests/
-    ginkgo -v -focus="suite11.case11" src/demo.tests/bddtests/
+    # ginkgo -v -focus="suite11.case11" src/demo.tests/bddtests/
 }
 
 function go_bdd_benchmark_test() {
