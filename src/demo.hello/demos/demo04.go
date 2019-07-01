@@ -14,7 +14,6 @@ import (
 
 	"github.com/jmcvetta/randutil"
 	"gopkg.in/mgo.v2/bson"
-	myutils "tools.app/utils"
 )
 
 // demo, var "HelloMessage" init before init() function
@@ -252,72 +251,6 @@ func testBSONParser() {
 	}
 }
 
-// demo, gzip encode and decode
-func testGzipCode() {
-	// srcb := []byte("gzip encode and decode, test.")
-	srcb, err := ioutil.ReadFile(testFilePath)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("src length:", len(srcb))
-
-	destb, err := myutils.GzipEncode(srcb)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("gzip encode length:", len(destb))
-
-	b, err := myutils.GzipDecode(destb)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("gzip decode length:", len(b))
-	if len(b) <= 128 {
-		fmt.Println("encode and decode bytes:", string(b))
-	}
-}
-
-// demo, compress and decompress
-func testTarCompressFile() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
-
-	f, err := os.Open(src)
-	if err != nil {
-		fmt.Println("read src file error:", err.Error())
-	}
-	err = myutils.Compress([]*os.File{f}, dest)
-	if err != nil {
-		fmt.Println("comporess error:", err.Error())
-	}
-}
-
-func testTarCompressDir() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
-
-	if f, err := os.Open(src); err == nil {
-		fmt.Printf("compress file (%s) with tar.gz\n", src)
-		err := myutils.Compress([]*os.File{f}, dest)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		panic(err)
-	}
-}
-
-func testTarDecompress() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files"
-
-	err := myutils.DeCompress(src, dest)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("decompress to:", dest)
-}
-
 // demo, get routines count
 func testGetGoroutinesCount() {
 	printRoutineCount := func() {
@@ -370,11 +303,6 @@ func MainDemo04() {
 
 	// testJSONOmitEmpty()
 	// testBSONParser()
-
-	// testGzipCode()
-	// testTarCompressFile()
-	// testTarCompressDir()
-	// testTarDecompress()
 
 	// testGetGoroutinesCount()
 

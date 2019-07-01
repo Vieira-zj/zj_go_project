@@ -68,7 +68,7 @@ func mainDemo() {
 }
 
 func mainAppDemo() {
-	apps.MainCache()
+	apps.TestCache()
 }
 
 func main() {
