@@ -19,7 +19,7 @@ var (
 
 func flagInit() {
 	flag.IntVar(&mode, "m", 0, "test mode: 0-w, 1-rw.")
-	flag.StringVar(&fileName, "f", "test.file", "dd write file name.")
+	flag.StringVar(&fileName, "f", "ddtest.out", "dd output file name.")
 	flag.IntVar(&blockSize, "bs", 1, "block size (M).")
 	flag.IntVar(&count, "c", 1, "block count.")
 	flag.IntVar(&timeout, "t", 1, "timeout (minutes) for dd read and write file.")

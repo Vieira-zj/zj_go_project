@@ -9,10 +9,14 @@ import (
 	myutils "tools.app/utils"
 )
 
+var (
+	tmpDir = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
+)
+
 // test, gzip compress and decompress
 func testGzipCompressFile() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.jpg"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files/pics/upload.tar.gz"
+	src := filepath.Join(tmpDir, "pics/upload.jpg")
+	dest := filepath.Join(tmpDir, "pics/upload.tar.gz")
 
 	f, err := os.Open(src)
 	if err != nil {
@@ -25,8 +29,8 @@ func testGzipCompressFile() {
 }
 
 func testGzipCompressDir() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
+	src := filepath.Join(tmpDir, "tmp_dir")
+	dest := filepath.Join(tmpDir, "tmp_dir.tar.gz")
 
 	if f, err := os.Open(src); err == nil {
 		fmt.Printf("compress file (%s) with tar.gz\n", src)
@@ -40,8 +44,8 @@ func testGzipCompressDir() {
 }
 
 func testGzipDecompress() {
-	src := os.Getenv("HOME") + "/Downloads/tmp_files/tmp_dir.tar.gz"
-	dest := os.Getenv("HOME") + "/Downloads/tmp_files"
+	src := filepath.Join(tmpDir, "tmp_dir.tar.gz")
+	dest := tmpDir
 
 	err := myutils.UngzipFile(src, dest)
 	if err != nil {
@@ -52,7 +56,7 @@ func testGzipDecompress() {
 
 // test, gzip encode and decode
 func testGzipCoder() {
-	fPath := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/test.out")
+	fPath := filepath.Join(tmpDir, "test.out")
 
 	// srcb := []byte("gzip encode and decode, test.")
 	srcb, err := ioutil.ReadFile(fPath)
