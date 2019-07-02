@@ -355,6 +355,46 @@ func testCodeBlock() {
 	fmt.Println("testSupser=" + testSuper)
 }
 
+// demo 10, array and slice
+func testArrayAndSlice() {
+	var array = [...]int32{1, 2, 3, 4, 5}
+	var slice = []int32{1, 2, 3, 4, 5}
+
+	fmt.Printf("\narray type: %T\n", array)
+	fmt.Printf("slice type: %T\n", slice)
+
+	s1 := array[2:4]
+	fmt.Printf("\nbefore: array=%v, slice=%v\n", array, s1)
+	s1[0] = 100
+	fmt.Printf("after: array=%v, slice=%v\n", array, s1)
+
+	s2 := array[2:4]
+	s2 = append(s2, 6, 7)
+	fmt.Println("\nre-allocate slice")
+	fmt.Printf("before: array=%v, slice=%v\n", array, s2)
+	s2[0] = 200
+	fmt.Printf("after: array=%v, slice=%v\n", array, s2)
+}
+
+// demo 11, args package and unpackage
+func testArgsPkgAndUnpkg() {
+	// package
+	fnSum := func(args ...int32) {
+		fmt.Printf("\nargs type: %T\n", args)
+		var sum int32
+		for _, arg := range args {
+			sum = sum + arg
+		}
+		fmt.Println("Sum:", sum)
+	}
+	fnSum(1, 2, 3, 4, 5)
+
+	// unpackage
+	s := []int{1, 2}
+	s = append(s, []int{3, 4, 5}...)
+	fmt.Println("\nslice:", s)
+}
+
 // MainDemo01 : main
 func MainDemo01() {
 	// testPrintFormatName()
@@ -375,6 +415,9 @@ func MainDemo01() {
 
 	// testTimeFormat()
 	// testCodeBlock()
+
+	// testArrayAndSlice()
+	// testArgsPkgAndUnpkg()
 
 	fmt.Println("golang demo01 DONE.")
 }

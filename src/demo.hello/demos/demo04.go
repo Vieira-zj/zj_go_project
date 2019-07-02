@@ -25,7 +25,7 @@ func init() {
 var HelloMsg = sayHello()
 
 func sayHello() string {
-	fmt.Println("start run sayHello()") // #1
+	fmt.Println("[demo04.go] start run sayHello()") // #1
 	return "hello world!"
 }
 

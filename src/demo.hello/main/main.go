@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"runtime"
+	"strconv"
 
 	"demo.hello/apps"
 	"demo.hello/demos"
@@ -13,6 +14,8 @@ import (
 func init() {
 	fmt.Println("\n[main.go] init")
 	fmt.Println("go version:", runtime.Version())
+	fmt.Println("system arch:", runtime.GOARCH)
+	fmt.Println("default int size:", strconv.IntSize)
 }
 
 // flag test
@@ -77,7 +80,7 @@ func main() {
 	// testInvokeOrder()
 
 	// mainExample()
-	// mainDemo()
+	mainDemo()
 	// mainAppDemo()
 
 	fmt.Println("GO demo main done.")
