@@ -40,39 +40,42 @@ if [[ $1 == "utest" ]]; then
 fi
 
 
-# BUILD DDTEST BIN
-function build_ddtest_bin() {
-    bin_dir="${ZJ_GOPRJ}/src/tools.app/apps/ddtest"
-    target_bin="ddtest"
-    if [[ $1 == "test" ]]; then
-        go build -o ${bin_dir}/${target_bin} ${bin_dir}/main.go
-    else
-        GOOS=linux GOARCH=amd64 go build -o ${bin_dir}/${target_bin} ${bin_dir}/main.go
+# BUILD TOOLS BIN
+function scp_remote() {
+    bin_path="$1"
+    remote_ip="10.200.20.21"
+    ping ${remote_ip} -c 1
+    if [ $? == 0 ]; then
+        cd ${ZJ_GOPRJ}/src/mock.server/main
+        scp ${bin_path} qboxserver@${remote_ip}:~/zhengjin/ && rm ${bin_path}
     fi
+}
 
-    target_dir="${HOME}/Downloads/tmp_files"
-    mv ${bin_dir}/${target_bin} ${target_dir}
-    # scp ${bin_dir}/${target_bin} qboxserver@cs1:~/zhengjin/ && rm ${bin_dir}/${target_bin}
+function build_tools_bin() {
+    target=$1
+    main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
+    bin_path="${HOME}/Downloads/tmp_files/${target}"
+    if [[ $2 == "linux" ]]; then
+        GOOS=linux GOARCH=amd64 go build -o ${bin_path} ${main_dir}/main.go
+    else
+        go build -o ${bin_path} ${main_dir}/main.go
+    fi
+    # scp_remote ${bin_path}
 }
 
 if [[ $1 == "ddtest" ]]; then
-    # build_ddtest_bin
-    build_ddtest_bin "test"
+    build_tools_bin $1
+    # build_tools_bin $1 "linux"
+    exit 0
+fi
+
+if [[ $1 = "httprouter" ]]; then
+    build_tools_bin $1
     exit 0
 fi
 
 
 # BUILD MOCK BIN
-function scp_remote() {
-    target_bin="$1"
-    remote_ip="10.200.20.21"
-    ping $remote_ip -c 1
-    if [ $? == 0 ]; then
-        cd ${ZJ_GOPRJ}/src/mock.server/main
-        scp ${target_bin} qboxserver@${remote_ip}:~/zhengjin/ && rm ${target_bin}
-    fi
-}
-
 function go_build_bin() {
     target_bin="$1"
     cd ${ZJ_GOPRJ}/src/mock.server/main
