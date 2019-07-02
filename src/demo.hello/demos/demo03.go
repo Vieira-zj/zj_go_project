@@ -31,7 +31,7 @@ type alphaReader1 struct {
 	cur int
 }
 
-// Read : read bytes from current position, and copy to p.
+// Read reads bytes from current position, and copy to p.
 func (a *alphaReader1) Read(p []byte) (int, error) {
 	if a.cur >= len(a.src) {
 		return 0, io.EOF
@@ -405,7 +405,7 @@ func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiRe
 	return resp
 }
 
-// MainDemo03 : main
+// MainDemo03 main for golang demo03.
 func MainDemo03() {
 	// testCheckMapEntry()
 

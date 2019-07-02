@@ -329,7 +329,7 @@ func testGetMapValue() {
 	}
 }
 
-// MainDemo02 : main
+// MainDemo02 main for golang demo02.
 func MainDemo02() {
 	// testInterface01()
 	// testInterface02()

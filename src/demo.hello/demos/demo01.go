@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// demo 01, inner function
+// demo, inner function
 func testPrintFormatName() {
 	printFormatName("zheng", "jin")
 }
@@ -25,7 +25,7 @@ func printFormatName(firstName, lastName string) {
 		firstName, lastName, fnGetShortName(firstName, lastName))
 }
 
-// demo 02, defer and recover()
+// demo, defer and recover()
 func testRecover() {
 	if ret, err := myDivision(4, 0); err != nil {
 		fmt.Println(err)
@@ -54,7 +54,7 @@ func myDivision(x, y int) (ret int, err error) {
 	return
 }
 
-// demo 03, struct init
+// demo, struct init
 type fullName struct {
 	fName    string
 	lName    string
@@ -72,7 +72,7 @@ func testPrintStructValue() {
 	fmt.Println("full name with nick name:", fullName)
 }
 
-// demo 04-01, struct and method
+// demo, struct and method
 type point struct {
 	x, y float64
 }
@@ -121,7 +121,7 @@ func testStructMethod() {
 	fmt.Printf("scaled p: %v\n", p)
 }
 
-// demo 04-02, innner struct
+// demo, innner struct
 type coloredPoint struct {
 	point
 	Color color.RGBA
@@ -146,7 +146,7 @@ func testInnerStruct() {
 	fmt.Printf("scaled distance: %.1f\n", p.distance(q.point))
 }
 
-// demo 04-03, method var
+// demo, method var
 func (p point) add(q point) point {
 	return point{p.x + q.x, p.y + q.y}
 }
@@ -180,19 +180,19 @@ func testTranslateBy() {
 	}
 }
 
-// MyObject : demo05, test access control
+// MyObject test access control demo.
 type MyObject struct {
 	VarPublic  string
 	varPrivate string
 }
 
-// Init : init MyObject struct
+// Init for init MyObject struct.
 func (o *MyObject) Init(pub, pri string) {
 	o.VarPublic = pub
 	o.varPrivate = pri
 }
 
-// MethodPublicGet : return public value
+// MethodPublicGet returns public value.
 func (o MyObject) MethodPublicGet() string {
 	return o.varPrivate
 }
@@ -201,7 +201,7 @@ func (o MyObject) methodPrivateGet() string {
 	return o.VarPublic
 }
 
-// GetMyObject : return an empty object
+// GetMyObject returns an empty object.
 func GetMyObject() MyObject {
 	return MyObject{}
 }
@@ -215,7 +215,7 @@ func testAccControl() {
 	fmt.Printf("private method get: %s\n", obj.methodPrivateGet())
 }
 
-// demo 06, context
+// demo, context
 func myAdd(ctx context.Context, a, b int) int {
 	res := 0
 	for i := 0; i < a; i++ {
@@ -270,63 +270,26 @@ func testContext02() {
 	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
 }
 
-// demo 07-01, update bytes
-func testUpdateBytes() {
-	s := "it's a test"
-	b := []byte(s)
-
-	fmt.Println("\n#1: by value:")
-	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByVal(b)
-	fmt.Printf("after update: %s\n", string(b))
-
-	fmt.Println("\n#2: by pointer:")
-	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByRef(&b)
-	fmt.Printf("after update: %s\n", string(b))
-}
-
-func myUpdateBytesByVal(b []byte) {
-	b = bytes.ToUpper(b)
-	b = append(b, '!', '!', '!')
-	fmt.Printf("[UpdateBytes] by value: %s\n", string(b))
-}
-
-func myUpdateBytesByRef(b *[]byte) {
-	*b = bytes.ToUpper(*b)
-	*b = append(*b, []byte{'!', '!', '!'}...)
-	fmt.Printf("[UpdateBytes] by reference: %s\n", string(*b))
-}
-
-// demo 07-02, copy bytes
-func testCopyBytes() {
-	copyBytesByVal := func(b []byte) {
-		copy(b, []byte("hello"))
-		b = append(b, []byte(" world")...)
+// demo, args package and unpackage
+func testArgsPkgAndUnpkg() {
+	// package
+	fnSum := func(args ...int32) {
+		fmt.Printf("\nargs type: %T\n", args)
+		var sum int32
+		for _, arg := range args {
+			sum = sum + arg
+		}
+		fmt.Println("Sum:", sum)
 	}
+	fnSum(1, 2, 3, 4, 5)
 
-	copyBytesByRef := func(b *[]byte) {
-		copy(*b, []byte("hello"))
-		*b = append(*b, []byte(" world")...)
-	}
-
-	b1 := make([]byte, 10)
-	fmt.Printf("\nb1 type: %T, cap: %d\n", b1, cap(b1))
-	copyBytesByVal(b1)
-	// TODO: output "hello"
-	fmt.Println("#1: make bytes and copied by val:", string(b1))
-	copyBytesByRef(&b1)
-	fmt.Println("#2: make bytes and copied by ref:", string(b1))
-
-	var b2 []byte
-	fmt.Printf("\nb2 type: %T, cap: %d\n", b2, cap(b2))
-	copyBytesByVal(b2)
-	fmt.Println("#3: init bytes and copied by val:", string(b2))
-	copyBytesByRef(&b2)
-	fmt.Println("#4: init bytes and copied by ref:", string(b2))
+	// unpackage
+	s := []int{1, 2}
+	s = append(s, []int{3, 4, 5}...)
+	fmt.Println("\nslice:", s)
 }
 
-// demo 08, time format
+// demo, time format
 func testTimeFormat() {
 	t := time.Now()
 	fmt.Printf("\nweek day: %d, time: %d:%d\n", t.Weekday(), t.Hour(), t.Minute())
@@ -339,7 +302,7 @@ func testTimeFormat() {
 	fmt.Println("cur date (+60s):", t.Format(baseDate))
 }
 
-// demo 09, code block
+// demo, code block
 func testCodeBlock() {
 	testSuper := "super"
 	fmt.Println("\ntestSupser=" + testSuper)
@@ -355,8 +318,38 @@ func testCodeBlock() {
 	fmt.Println("testSupser=" + testSuper)
 }
 
-// demo 10, array and slice
-func testArrayAndSlice() {
+// demo, array and slice
+func testArrayAndSlice01() {
+	// 数组中元素是值传递, 切片中元素是引用传递
+	fnUpdateArray := func(arr [5]int32) {
+		fmt.Printf("[fnUpdateArray] array address: %p\n", &arr)
+		arr[1] = 123
+	}
+
+	fnUpdateSlice := func(s []int32) {
+		fmt.Printf("[fnUpdateSlice] slice address: %p\n", &s)
+		s[1] = 456
+	}
+
+	var array1 = [...]int32{1, 2, 3, 4, 5}
+	fmt.Printf("\narray1 address: %p\n", &array1)
+	array2 := array1
+	fmt.Printf("array2 address: %p\n", &array2)
+	array2[0] = 100
+	fnUpdateArray(array1)
+	fmt.Printf("array: %v, copied array: %v\n", array1, array2)
+
+	var slice1 = []int32{1, 2, 3, 4, 5}
+	fmt.Printf("\nslice1 address: %p\n", &slice1)
+	slice2 := slice1
+	fmt.Printf("slice2 address: %p\n", &slice2)
+	slice2[0] = 200
+	fnUpdateSlice(slice1)
+	fmt.Printf("slice: %v, copied slice: %v\n", slice1, slice2)
+}
+
+// demo, array and slice
+func testArrayAndSlice02() {
 	var array = [...]int32{1, 2, 3, 4, 5}
 	var slice = []int32{1, 2, 3, 4, 5}
 
@@ -376,26 +369,78 @@ func testArrayAndSlice() {
 	fmt.Printf("after: array=%v, slice=%v\n", array, s2)
 }
 
-// demo 11, args package and unpackage
-func testArgsPkgAndUnpkg() {
-	// package
-	fnSum := func(args ...int32) {
-		fmt.Printf("\nargs type: %T\n", args)
-		var sum int32
-		for _, arg := range args {
-			sum = sum + arg
-		}
-		fmt.Println("Sum:", sum)
-	}
-	fnSum(1, 2, 3, 4, 5)
+// demo, update bytes
+func testUpdateBytes() {
+	s := "hello world"
+	b := []byte(s)
+	fmt.Printf("\n[main] b address: %p\n", &b)
 
-	// unpackage
-	s := []int{1, 2}
-	s = append(s, []int{3, 4, 5}...)
-	fmt.Println("\nslice:", s)
+	fmt.Println("\n#1: by value:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByVal(b)
+	fmt.Printf("after update: %s\n", string(b))
+
+	fmt.Println("\n#2: by pointer:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByRef(&b)
+	fmt.Printf("after update: %s\n", string(b))
 }
 
-// MainDemo01 : main
+func myUpdateBytesByVal(b []byte) {
+	fmt.Printf("[myUpdateBytesByVal] b address: %p\n", &b)
+	b[0] = 'H'
+	b = bytes.ToUpper(b)
+	b = append(b, '!', '!', '!')
+	fmt.Printf("[UpdateBytes] by value: %s\n", string(b))
+}
+
+func myUpdateBytesByRef(b *[]byte) {
+	fmt.Printf("[myUpdateBytesByRef] b address: %p\n", b)
+	*b = bytes.ToUpper(*b)
+	*b = append(*b, []byte{'!', '!', '!'}...)
+	fmt.Printf("[UpdateBytes] by reference: %s\n", string(*b))
+}
+
+// demo, copy bytes
+func testCopyBytes() {
+	copyBytesByVal := func(b []byte) {
+		fmt.Printf("[testCopyBytes] b address: %p\n", &b)
+		copy(b, []byte("hello"))
+		b = append(b, []byte(" world")...)
+	}
+
+	copyBytesByRef := func(b *[]byte) {
+		fmt.Printf("[copyBytesByRef] b address: %p\n", b)
+		copy(*b, []byte("hello"))
+		*b = append(*b, []byte(" world")...)
+	}
+
+	b1 := make([]byte, 10)
+	fmt.Printf("\nb1 address: %p\n", &b1)
+	fmt.Printf("b1 type: %T, cap: %d\n", b1, cap(b1))
+	copyBytesByVal(b1)
+	fmt.Println("#1: make bytes and copied by val:", string(b1))
+	copyBytesByRef(&b1)
+	fmt.Println("#2: make bytes and copied by ref:", string(b1))
+
+	var b2 []byte
+	fmt.Printf("\nb2 address: %p\n", &b2)
+	fmt.Printf("b2 type: %T, cap: %d\n", b2, cap(b2))
+	copyBytesByVal(b2)
+	fmt.Println("#3: init bytes and copied by val:", string(b2))
+	copyBytesByRef(&b2)
+	fmt.Println("#4: init bytes and copied by ref:", string(b2))
+}
+
+func testMapReference() {
+	// TODO:
+}
+
+func testStructReference() {
+	// TODO:
+}
+
+// MainDemo01 main for golang demo01.
 func MainDemo01() {
 	// testPrintFormatName()
 	// testPrintStructValue()
@@ -410,14 +455,14 @@ func MainDemo01() {
 	// testContext01()
 	// testContext02()
 
-	// testUpdateBytes()
-	// testCopyBytes()
-
+	// testArgsPkgAndUnpkg()
 	// testTimeFormat()
 	// testCodeBlock()
 
-	// testArrayAndSlice()
-	// testArgsPkgAndUnpkg()
+	// testArrayAndSlice01()
+	// testArrayAndSlice02()
+	// testUpdateBytes()
+	// testCopyBytes()
 
 	fmt.Println("golang demo01 DONE.")
 }

@@ -21,7 +21,7 @@ func init() {
 	fmt.Println("[demo04.go] init") // #2
 }
 
-// HelloMsg : public var, invoked from main.go
+// HelloMsg public var, invoked from main.go.
 var HelloMsg = sayHello()
 
 func sayHello() string {
@@ -290,7 +290,7 @@ func testGetGoroutinesCount() {
 	fmt.Println("testGetGoroutinesCount DONE.")
 }
 
-// MainDemo04 : main
+// MainDemo04 main for golang demo04.
 func MainDemo04() {
 	// testGetFileName()
 	// testGoVersion()
