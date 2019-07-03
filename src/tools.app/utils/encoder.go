@@ -6,18 +6,28 @@ import (
 	"encoding/hex"
 )
 
-// GetMd5ForText get hex md5 for text.
-func GetMd5ForText(text string) string {
+// GetBase64Text returns base64 text.
+func GetBase64Text(text []byte) string {
+	return base64.StdEncoding.EncodeToString(text)
+}
+
+// GetURLBase64Text returns base64 text.
+func GetURLBase64Text(text []byte) string {
+	return base64.URLEncoding.EncodeToString(text)
+}
+
+// GetMd5HexText returns md5 hex text.
+func GetMd5HexText(text string) string {
 	return getMd5EncodedText(text, "hex")
 }
 
-// GetBase64Md5ForText get base64ed md5 for text.
-func GetBase64Md5ForText(text string) string {
+// GetBase64MD5Text returns base64 md5 text.
+func GetBase64MD5Text(text string) string {
 	return getMd5EncodedText(text, "std64")
 }
 
-// GetURLBase64Md5ForText get url base64ed md5 for text.
-func GetURLBase64Md5ForText(text string) string {
+// GetURLBase64MD5Text returns url base64 md5 text.
+func GetURLBase64MD5Text(text string) string {
 	return getMd5EncodedText(text, "url")
 }
 

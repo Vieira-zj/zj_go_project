@@ -282,8 +282,10 @@ function shell_test_09() {
 # go_test_help
 # go_func_test
 # go_benchmark_test
+
 # tool_httprouter_test
 # tool_utils_test
+# tool_utils_test encoder_test.go
 
 # go_bdd_test_01
 # go_bdd_test_02
