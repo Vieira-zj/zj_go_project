@@ -25,8 +25,8 @@ function go_compile_test() {
 
 # go tests, root_dir = $GOPATH
 function go_func_test() {
-    go test -v demo.tests/gotests/
-    # go test -v demo.tests/gotests/word_test.go
+    go test -v src/demo.tests/gotests/
+    # go test -v src/demo.tests/gotests/word_test.go
     # go test -v -run="TestEcho" demo.tests/gotests/
 }
 
@@ -39,13 +39,22 @@ function go_coverage_test() {
 
 # go tests, benchmark
 function go_benchmark_test() {
-    # go test -v -bench=. demo.tests/gotests/word_perf_test.go
-    go test -v -bench=. -benchmem demo.tests/gotests/word_perf_test.go
+    # go test -v -bench=. src/demo.tests/gotests/word_perf_test.go
+    go test -v -bench=. -benchmem src/demo.tests/gotests/word_perf_test.go
 }
 
-# go tool test
-function app_httprouter_test() {
+# go tool httprouter test
+function tool_httprouter_test() {
     go test -v tools.app/services/httprouter/
+}
+
+# go tool util test
+function tool_utils_test() {
+    if [ -z $1 ]; then
+        go test -v tools.app/utils
+        return
+    fi
+    go test -v src/tools.app/utils/$1
 }
 
 
@@ -273,14 +282,15 @@ function shell_test_09() {
 # go_test_help
 # go_func_test
 # go_benchmark_test
-# app_httprouter_test
+# tool_httprouter_test
+# tool_utils_test
 
 # go_bdd_test_01
 # go_bdd_test_02
 # go_bdd_benchmark_test
 
 # shell_test
-shell_test_0203
+# shell_test_0203
 
 echo "golang test DONE."
 set +ex
