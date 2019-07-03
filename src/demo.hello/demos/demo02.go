@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"runtime"
 	"strconv"
 	"sync"
 	"time"
 )
 
-// demo 01-01, interface
+// demo, interface
 type abser interface {
 	abs() float64
 	string() string
@@ -43,7 +44,7 @@ func testInterface01() {
 	fmt.Println("float string:", a.string())
 }
 
-// demo 01-02, interface
+// demo, interface
 type iMyGetter interface {
 	myGet() string
 }
@@ -103,7 +104,7 @@ func initAndPrintInfoByInterface(arg iMyGetterAndSetter) {
 	fmt.Println(arg.myGet())
 }
 
-// demo 01-03, OO inherit
+// demo, OO inherit
 type super struct {
 	Name string
 }
@@ -134,7 +135,7 @@ func testOOInherit() {
 	sub2.PrintDesc()
 }
 
-// demo 02, panic and recover()
+// demo, panic and recover()
 func testPanicRecover() {
 	defer func() {
 		fmt.Println("\nrecover:")
@@ -158,7 +159,7 @@ func myLog(args ...interface{}) {
 	fmt.Println(args...)
 }
 
-// demo 03, Error
+// demo, Error
 type myError struct {
 	infoa string
 	infob string
@@ -189,7 +190,7 @@ func testCreateError() {
 	fmt.Println("custom error:", myErr)
 }
 
-// demo 04, base64 encode and decode
+// demo, base64 encode and decode
 func testBase64Code() {
 	const str = "Go 言语编程 "
 	base64EncodeAndDecode(base64.StdEncoding, str)
@@ -213,7 +214,7 @@ func base64EncodeAndDecode(enc *base64.Encoding, input string) {
 	}
 }
 
-// demo 05, rw mutex
+// demo, rw mutex
 func testRwMutex() {
 	mutex := new(sync.RWMutex)
 	fmt.Println("\nready in main")
@@ -243,7 +244,7 @@ func testRwMutex() {
 	}
 }
 
-// demo 06, []string in array
+// demo, []string in array
 func testStringsInArray() {
 	fmt.Println("\n#1. by map:")
 	m := make(map[int][]string, 3)
@@ -278,7 +279,7 @@ func testStringsInArray() {
 	}
 }
 
-// demo 07-01, slice is sequence
+// demo, slice is sequence
 func testSliceOrder() {
 	s := make([]string, 0, 10)
 	s = append(s, "one")
@@ -295,7 +296,7 @@ func testSliceOrder() {
 	}
 }
 
-// demo 07-02, map is not sequence
+// demo, map is not sequence
 func testMapOrder() {
 	m := make(map[int]string)
 	m[1] = "one"
@@ -310,7 +311,7 @@ func testMapOrder() {
 	}
 }
 
-// demo 07-03, get map value
+// demo, get map value
 func testGetMapValue() {
 	s := make([]int, 5, 10)
 	fmt.Printf("\ninit slice: %v, length: %d, cap: %d\n", s, len(s), cap(s))
@@ -326,6 +327,64 @@ func testGetMapValue() {
 		fmt.Printf("key[%s]: value[%s]\n", key, val)
 	} else {
 		fmt.Printf("key[%s]: value not found!\n", key)
+	}
+}
+
+// demo, init reference variable
+func testInitRefVar() {
+	var i *int   // 声明变量
+	i = new(int) // 分配内存空间
+	fmt.Printf("\ndefault int value: %d\n", *i)
+	*i = 10
+	fmt.Printf("int value: %d\n", *i)
+}
+
+// demo, init slice and map by make()
+func testInitVarByMake() {
+	s1 := make([]int, 10, 10)
+	fmt.Printf("\nmake slice: %v, len: %d, cap: %d\n", s1, len(s1), cap(s1))
+	s2 := []int{}
+	fmt.Printf("init slice: %v, len: %d, cap: %d\n", s2, len(s2), cap(s2))
+
+	m1 := make(map[int]string, 5)
+	fmt.Printf("make map: %+v, len: %d\n", m1, len(m1))
+	m2 := map[int]string{}
+	fmt.Printf("init map: %+v, len: %d\n", m2, len(m2))
+}
+
+// demo, SetFinalizer for object
+type testPeople struct {
+	id  string
+	age int
+	job string
+}
+
+func (p testPeople) String() string {
+	return fmt.Sprintf("id=%s,age=%d,job=%s", p.id, p.age, p.job)
+}
+
+func createPeople() {
+	fmt.Println("\ninit and SetFinalizer for people")
+	p := &testPeople{
+		id:  "001",
+		age: 20,
+		job: "tester",
+	}
+	runtime.SetFinalizer(p, clearUp)
+	fmt.Println("new people:", *p)
+}
+
+func clearUp(p *testPeople) {
+	fmt.Printf("clearup people: %+v\n", p)
+}
+
+func testFinalizerInObject() {
+	createPeople()
+	// 局部变量p已经不可达, 被GC
+	for i := 0; i < 3; i++ {
+		fmt.Println("runtime GC...")
+		runtime.GC()
+		time.Sleep(time.Second)
 	}
 }
 
@@ -345,6 +404,11 @@ func MainDemo02() {
 	// testSliceOrder()
 	// testMapOrder()
 	// testGetMapValue()
+
+	// testInitRefVar()
+	// testInitVarByMake()
+
+	// testFinalizerInObject()
 
 	fmt.Println("golang demo02 DONE.")
 }

@@ -16,6 +16,10 @@ func init() {
 	fmt.Println("go version:", runtime.Version())
 	fmt.Println("system arch:", runtime.GOARCH)
 	fmt.Println("default int size:", strconv.IntSize)
+
+	var mem runtime.MemStats
+	runtime.ReadMemStats(&mem)
+	fmt.Printf("runtime allocated memory: %d Kb\n", mem.Alloc/1024)
 }
 
 // flag test
@@ -63,8 +67,8 @@ func mainExample() {
 }
 
 func mainDemo() {
-	demos.MainDemo01()
-	// demos.MainDemo02()
+	// demos.MainDemo01()
+	demos.MainDemo02()
 	// demos.MainDemo03()
 	// demos.MainDemo04()
 	// demos.MainUtils()

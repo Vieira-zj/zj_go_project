@@ -272,7 +272,6 @@ func testContext02() {
 
 // demo, args package and unpackage
 func testArgsPkgAndUnpkg() {
-	// package
 	fnSum := func(args ...int32) {
 		fmt.Printf("\nargs type: %T\n", args)
 		var sum int32
@@ -282,8 +281,8 @@ func testArgsPkgAndUnpkg() {
 		fmt.Println("Sum:", sum)
 	}
 	fnSum(1, 2, 3, 4, 5)
+	fnSum([]int32{5, 6, 7, 8}...)
 
-	// unpackage
 	s := []int{1, 2}
 	s = append(s, []int{3, 4, 5}...)
 	fmt.Println("\nslice:", s)
@@ -322,27 +321,28 @@ func testCodeBlock() {
 func testArrayAndSlice01() {
 	// 数组中元素是值传递, 切片中元素是引用传递
 	fnUpdateArray := func(arr [5]int32) {
-		fmt.Printf("[fnUpdateArray] array address: %p\n", &arr)
+		fmt.Printf("[fnUpdateArray] array addr: %p\n", &arr)
 		arr[1] = 123
 	}
 
 	fnUpdateSlice := func(s []int32) {
-		fmt.Printf("[fnUpdateSlice] slice address: %p\n", &s)
+		fmt.Printf("[fnUpdateSlice] slice addr: %p\n", &s)
 		s[1] = 456
 	}
 
 	var array1 = [...]int32{1, 2, 3, 4, 5}
-	fmt.Printf("\narray1 address: %p\n", &array1)
+	idx := 0
+	fmt.Printf("\narray1 addr: %p, array1[%d] addr: %p\n", &array1, idx, &array1[idx])
 	array2 := array1
-	fmt.Printf("array2 address: %p\n", &array2)
+	fmt.Printf("array2 addr: %p, array2[%d] addr: %p\n", &array2, idx, &array2[idx])
 	array2[0] = 100
 	fnUpdateArray(array1)
 	fmt.Printf("array: %v, copied array: %v\n", array1, array2)
 
 	var slice1 = []int32{1, 2, 3, 4, 5}
-	fmt.Printf("\nslice1 address: %p\n", &slice1)
+	fmt.Printf("\nslice1 addr: %p, slice1[%d] addr: %p\n", &slice1, idx, &slice1[idx])
 	slice2 := slice1
-	fmt.Printf("slice2 address: %p\n", &slice2)
+	fmt.Printf("slice2 addr: %p, slice2[%d] addr: %p\n", &slice2, idx, &slice2[idx])
 	slice2[0] = 200
 	fnUpdateSlice(slice1)
 	fmt.Printf("slice: %v, copied slice: %v\n", slice1, slice2)
@@ -433,11 +433,62 @@ func testCopyBytes() {
 }
 
 func testMapReference() {
-	// TODO:
+	// map中val元素是引用传递, 但map[key]则返回一个新的元素
+	fnUpdateMap := func(m map[int]string) {
+		fmt.Printf("\n[fnUpdateMap] map addr: %p\n", &m)
+		m[1] = "One"
+	}
+
+	m := make(map[int]string)
+	m[1] = "one"
+	m[2] = "two"
+	m[3] = "three"
+
+	copiedM := m
+	copiedM[3] = "THREE"
+	copiedM[4] = "four"
+	fnUpdateMap(m)
+	m[5] = "five"
+
+	key := 3
+	fmt.Println("[main]")
+	if item, ok := m[key]; ok {
+		fmt.Printf("map addr: %p, map[%d]: %p\n", &m, key, &item)
+	}
+	if item, ok := copiedM[key]; ok {
+		fmt.Printf("copied map addr: %p, map[%d] addr: %p\n", &copiedM, key, &item)
+	}
+	fmt.Printf("map: %v, copied map: %v\n", m, copiedM)
 }
 
 func testStructReference() {
-	// TODO:
+	// struct中元素是值传递
+	type people struct {
+		id  string
+		age int
+		job string
+	}
+
+	fnUpdateStruct := func(p people) {
+		fmt.Printf("\n[fnUpdateStruct] p addr: %p, p job addr: %p\n", &p, &p.job)
+		p.id = "002"
+		p.age = 35
+		fmt.Printf("[fnUpdateStruct] p: %+v\n", p)
+	}
+
+	p1 := people{
+		id:  "001",
+		age: 30,
+		job: "tester",
+	}
+
+	p2 := p1
+	p2.job = "developer"
+	fnUpdateStruct(p1)
+	fmt.Println("[main]")
+	fmt.Printf("p1 addr: %p, p1 job addr: %p\n", &p1, &p1.job)
+	fmt.Printf("p2 addr: %p, p2 job addr: %p\n", &p2, &p2.job)
+	fmt.Printf("p1: %v, p2: %+v\n", p1, p2)
 }
 
 // MainDemo01 main for golang demo01.
@@ -463,6 +514,9 @@ func MainDemo01() {
 	// testArrayAndSlice02()
 	// testUpdateBytes()
 	// testCopyBytes()
+
+	// testMapReference()
+	// testStructReference()
 
 	fmt.Println("golang demo01 DONE.")
 }
