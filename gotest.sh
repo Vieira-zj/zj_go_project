@@ -285,14 +285,14 @@ function shell_test_09() {
 
 # tool_httprouter_test
 # tool_utils_test
-# tool_utils_test encoder_test.go
+# tool_utils_test gziputil_test.go
 
 # go_bdd_test_01
 # go_bdd_test_02
 # go_bdd_benchmark_test
 
 # shell_test
-# shell_test_0203
+shell_test_0203
 
 echo "golang test DONE."
 set +ex

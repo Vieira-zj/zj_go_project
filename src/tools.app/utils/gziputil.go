@@ -4,32 +4,39 @@ import (
 	"archive/tar"
 	"bytes"
 	"compress/gzip"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-// GzipEncode get gzip encode bytes.
+// GzipEncode returns gzip encode bytes.
 func GzipEncode(in []byte) ([]byte, error) {
-	var outBuf bytes.Buffer
-	w := gzip.NewWriter(&outBuf)
+	var buf bytes.Buffer
+	w := gzip.NewWriter(&buf)
 	defer w.Close()
+	w.Comment = "gzip encode for compress text."
 
-	_, err := w.Write(in)
-	if err != nil {
+	if _, err := w.Write(in); err != nil {
 		return nil, err
 	}
-	w.Flush()
-	return outBuf.Bytes(), nil
+	if err := w.Flush(); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
 
-// GzipDecode get gzip decode bytes.
+// GzipDecode returns gzip decode bytes.
 func GzipDecode(in []byte) ([]byte, error) {
 	r, err := gzip.NewReader(bytes.NewBuffer(in))
 	defer r.Close()
 	if err != nil {
 		return nil, err
+	}
+	if len(r.Comment) > 0 {
+		fmt.Println("Comment:", r.Comment)
 	}
 
 	b, err := ioutil.ReadAll(r)
@@ -41,23 +48,21 @@ func GzipDecode(in []byte) ([]byte, error) {
 	return b, nil
 }
 
-// CreateGzipFile gzip compress, and create tar.gz file.
-func CreateGzipFile(files []*os.File, dest string) error {
-	fOut, err := os.Create(dest)
+// CompressGzipFile gzip compress, and create tar.gz file.
+func CompressGzipFile(files []*os.File, dest string) error {
+	newFile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
-	defer fOut.Close()
+	defer newFile.Close()
 
-	gw := gzip.NewWriter(fOut)
+	gw := gzip.NewWriter(newFile)
+	defer gw.Close()
 	tw := tar.NewWriter(gw)
-	defer func() {
-		gw.Close()
-		tw.Close()
-	}()
+	defer tw.Close()
 
 	for _, file := range files {
-		err := gzipCompress(file, "", tw)
+		err = compress(file, "", tw)
 		if err != nil {
 			return err
 		}
@@ -65,46 +70,46 @@ func CreateGzipFile(files []*os.File, dest string) error {
 	return nil
 }
 
-func gzipCompress(rootFile *os.File, prefix string, tw *tar.Writer) error {
-	fInfo, err := rootFile.Stat()
+func compress(file *os.File, prefix string, tw *tar.Writer) error {
+	fnGetPrefix := func(prefix, text string) string {
+		if len(prefix) > 0 {
+			return prefix + "/" + text
+		}
+		return text
+	}
+
+	fInfo, err := file.Stat()
 	if err != nil {
 		return err
 	}
-	defer rootFile.Close()
 
 	if fInfo.IsDir() {
-		if len(prefix) == 0 {
-			prefix = fInfo.Name()
-		} else {
-			prefix = prefix + "/" + fInfo.Name()
-		}
-		subFiles, err := rootFile.Readdir(-1)
+		prefix = fnGetPrefix(prefix, fInfo.Name())
+		fileInfos, err := file.Readdir(-1)
 		if err != nil {
 			return err
 		}
-		for _, sub := range subFiles {
-			f, err := os.Open(rootFile.Name() + "/" + sub.Name())
+		for _, fi := range fileInfos {
+			f, err := os.Open(file.Name() + "/" + fi.Name())
 			if err != nil {
 				return err
 			}
-			err = gzipCompress(f, prefix, tw)
+			err = compress(f, prefix, tw)
 			if err != nil {
 				return err
 			}
 		}
 	} else {
 		header, err := tar.FileInfoHeader(fInfo, "")
-		if len(prefix) > 0 {
-			header.Name = prefix + "/" + header.Name
-		}
 		if err != nil {
 			return err
 		}
+		header.Name = fnGetPrefix(prefix, header.Name)
 		err = tw.WriteHeader(header)
 		if err != nil {
 			return err
 		}
-		_, err = io.Copy(tw, rootFile)
+		_, err = io.Copy(tw, file)
 		if err != nil {
 			return err
 		}
@@ -112,8 +117,8 @@ func gzipCompress(rootFile *os.File, prefix string, tw *tar.Writer) error {
 	return nil
 }
 
-// UngzipFile uncompress tar.gz file.
-func UngzipFile(tarFilePath, dest string) error {
+// DeCompressGzipFile de-compress tar.gz file.
+func DeCompressGzipFile(tarFilePath, dest string) error {
 	tarFile, err := os.Open(tarFilePath)
 	if err != nil {
 		return err
@@ -136,7 +141,7 @@ func UngzipFile(tarFilePath, dest string) error {
 				return err
 			}
 		}
-		filepath := dest + "/" + hdr.Name
+		filepath := filepath.Join(dest, hdr.Name)
 		f, err := createFile(filepath)
 		if err != nil {
 			return err
@@ -147,7 +152,8 @@ func UngzipFile(tarFilePath, dest string) error {
 }
 
 func createFile(filePath string) (*os.File, error) {
-	err := os.MkdirAll(string([]rune(filePath)[0:strings.LastIndex(filePath, "/")]), 0755)
+	parentAbsPath := string([]rune(filePath)[0:strings.LastIndex(filePath, "/")])
+	err := os.MkdirAll(parentAbsPath, 0755)
 	if err != nil {
 		return nil, err
 	}
