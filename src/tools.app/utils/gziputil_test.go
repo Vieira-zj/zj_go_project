@@ -9,11 +9,7 @@ import (
 	myutils "tools.app/utils"
 )
 
-var (
-	tmpDir = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
-)
-
-// test, gzip encode and decode
+// TestGzipCoder, gzip encode and decode test.
 func TestGzipCoder(t *testing.T) {
 	b := []byte("gzip encode and decode test.")
 	t.Logf("source bytes size: %d\n", len(b))
@@ -41,8 +37,10 @@ func TestGzipCoder(t *testing.T) {
 	t.Logf("decode text: %s\n", string(decodeB))
 }
 
+// TestCompressGzipFile gzip compress and decompress test for single file.
 func TestCompressGzipFile(t *testing.T) {
 	t.Log("Case01: test gzip compress a single file.")
+	tmpDir := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 	comSrc := filepath.Join(tmpDir, "gaokeyong.jmx")
 	comDest := filepath.Join(tmpDir, "gaokeyong.tar.gz")
 
@@ -101,8 +99,10 @@ func TestCompressGzipFile(t *testing.T) {
 	t.Logf("decompress file size: %d\n", info.Size())
 }
 
+// TestGzipCompressDir gzip compress and decompress test for directory (inculde files).
 func TestGzipCompressDir(t *testing.T) {
 	t.Log("Case01: test gzip compress multiple files in a dir.")
+	tmpDir := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 	comSrc := filepath.Join(tmpDir, "logs")
 	comDest := filepath.Join(tmpDir, "logs.tar.gz")
 

@@ -39,22 +39,26 @@ function go_coverage_test() {
 
 # go tests, benchmark
 function go_benchmark_test() {
-    # go test -v -bench=. src/demo.tests/gotests/word_perf_test.go
-    go test -v -bench=. -benchmem src/demo.tests/gotests/word_perf_test.go
+    # go test -v -bench=. src/demo.tests/gotests/word_bmark_test.go
+    go test -v -bench=. -benchmem src/demo.tests/gotests/word_bmark_test.go
 }
 
-# go tool httprouter test
-function tool_httprouter_test() {
+
+# TOOLS TEST
+function tool_app_httprouter_test() {
     go test -v tools.app/services/httprouter/
 }
 
-# go tool util test
 function tool_utils_test() {
     if [ -z $1 ]; then
         go test -v tools.app/utils
         return
     fi
     go test -v src/tools.app/utils/$1
+}
+
+function tool_utils_benchmark_test() {
+    go test -v -bench=. -benchmem src/tools.app/utils/$1
 }
 
 
@@ -77,6 +81,7 @@ function go_bdd_test_02() {
 function go_bdd_benchmark_test() {
     ginkgo -v --focus="suite14.measure01" src/demo.tests/bddtests/
 }
+
 
 # SHELL TEST
 # EX01, field check
@@ -283,9 +288,10 @@ function shell_test_09() {
 # go_func_test
 # go_benchmark_test
 
-# tool_httprouter_test
+# tool_app_httprouter_test
 # tool_utils_test
-# tool_utils_test gziputil_test.go
+# tool_utils_test ioutil_test.go
+# tool_utils_benchmark_test ioutil_bmark_test.go
 
 # go_bdd_test_01
 # go_bdd_test_02

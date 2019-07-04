@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"regexp"
 	"runtime"
 	"strconv"
 	"sync"
@@ -352,6 +353,68 @@ func testInitVarByMake() {
 	fmt.Printf("init map: %+v, len: %d\n", m2, len(m2))
 }
 
+// demo, printf format
+func testPrintfFormat() {
+	type point struct {
+		x, y int
+	}
+	p := point{1, 2}
+
+	fmt.Println("\nprintf format:")
+	fmt.Printf("string: %s\n", "\"string\"")
+	fmt.Printf("raw string (go): %q\n", "\"string\"")
+
+	fmt.Printf("p addr: %p\n", &p)
+	fmt.Printf("p type: %T\n", p)
+	fmt.Printf("p struct: %v\n", p)
+	fmt.Printf("p struct with fields: %+v\n", p)
+	// print struct in golang code format
+	fmt.Printf("p struct (go): %#v\n", p)
+
+	fmt.Printf("binary: %b\n", 14)
+	fmt.Printf("char: %c\n", 33)
+	fmt.Printf("hex: %x\n", 456)
+	fmt.Printf("float: %.1f\n", 78.91)
+
+	fmt.Printf("e+: %e\n", 123400000.0)
+	fmt.Printf("E+: %E\n", 123400000.0)
+}
+
+// demo, regexp
+func testRegExpMore() {
+	fmt.Println("\n#1: First match")
+	re := regexp.MustCompile(`foo.?`)
+	fmt.Printf("%q\n", re.FindString("seafood fool"))
+	fmt.Printf("%q\n", re.FindString("meat"))
+
+	fmt.Println("\n#2: Location")
+	re = regexp.MustCompile(`ab?`)
+	fmt.Println(re.FindStringIndex("tablett"))
+	fmt.Println(re.FindStringIndex("foo") == nil)
+
+	fmt.Println("\n#3: All matches")
+	// if n >= 0, the function returns at most n matches
+	re = regexp.MustCompile(`a.`)
+	fmt.Printf("%v\n", re.FindAllString("paranormal", -1))
+	fmt.Printf("%v\n", re.FindAllString("paranormal", 2))
+	fmt.Printf("%v\n", re.FindAllString("graal", -1))
+	fmt.Printf("%v\n", re.FindAllString("none", -1))
+
+	fmt.Println("\n#4: Replace")
+	re = regexp.MustCompile(`ab*`)
+	fmt.Printf("%q\n", re.ReplaceAllString("-a-abb-", "T"))
+
+	fmt.Println("\n#5: Split")
+	a := regexp.MustCompile(`a`)
+	fmt.Printf("%q\n", a.Split("banana", -1))
+	fmt.Printf("%q\n", a.Split("banana", 0))
+	fmt.Printf("%q\n", a.Split("banana", 1))
+	fmt.Printf("%q\n", a.Split("banana", 2))
+
+	zp := regexp.MustCompile(`z+`)
+	fmt.Printf("%q\n", zp.Split("pizza", -1))
+}
+
 // demo, SetFinalizer for object
 type testPeople struct {
 	id  string
@@ -407,6 +470,9 @@ func MainDemo02() {
 
 	// testInitRefVar()
 	// testInitVarByMake()
+
+	// testPrintfFormat()
+	// testRegExpMore()
 
 	// testFinalizerInObject()
 
