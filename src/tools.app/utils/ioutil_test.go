@@ -51,3 +51,69 @@ func TestReadFileLines(t *testing.T) {
 	}
 	t.Logf("file (%s) lines count %d, content:\n%v\n", fPath, len(lines), lines)
 }
+
+func TestWriteToNewFile(t *testing.T) {
+	var (
+		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
+		fPath      = filepath.Join(tmpDirPath, "write_test.out")
+	)
+
+	t.Log("Case01: write content to a new file.")
+	content := "1|one\n2|two\n3|three\n4|four\n5|five"
+	err := myutils.WriteContentToNewFile(fPath, content)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log("Case02: write content to an exist file.")
+	err = myutils.WriteContentToNewFile(fPath, content)
+	if err == nil {
+		t.Error("Failed: write to an exist file!")
+	}
+	t.Logf("Error: %v\n", err)
+
+	t.Log("Clearup files")
+	err = myutils.DeleteFile(fPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestAppendToFile(t *testing.T) {
+	var (
+		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
+		fPath      = filepath.Join(tmpDirPath, "append_test.out")
+	)
+
+	t.Log("Case01: append content to a new file.")
+	content1 := "1|one\n2|two\n3|three\n4|four\n5|five"
+	n, err := myutils.AppendContentToFile(fPath, content1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("write bytes count: %d\n", n)
+
+	t.Log("Case02: append content to an exist file.")
+	content2 := "\n6|six\n7|seven\n8|eight"
+	n, err = myutils.AppendContentToFile(fPath, content2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("append bytes count: %d\n", n)
+
+	t.Log("Step: check file content.")
+	rText, err := myutils.ReadFileContent(fPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rText != (content1 + content2) {
+		t.Log("Failed: write and append content to file.")
+	}
+	t.Logf("output file content:\n%s\n", rText)
+
+	t.Log("Clearup files")
+	err = myutils.DeleteFile(fPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+}

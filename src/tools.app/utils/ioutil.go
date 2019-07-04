@@ -20,6 +20,20 @@ func IsFileExist(path string) (bool, error) {
 	return false, err
 }
 
+// DeleteFile delete a file or an empty directory.
+func DeleteFile(path string) error {
+	exist, err := IsFileExist(path)
+	if !exist {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	return os.Remove(path)
+}
+
+// ********* File Read
+
 // ReadFileContent reads file and returns file content string.
 func ReadFileContent(path string) (string, error) {
 	exist, err := IsFileExist(path)
@@ -100,4 +114,33 @@ func ReadFileLines(path string) ([]string, error) {
 		lines = append(lines, string(line))
 	}
 	return lines, nil
+}
+
+// ********* File Write
+
+// WriteContentToNewFile write content to a new file.
+func WriteContentToNewFile(path, content string) error {
+	exist, err := IsFileExist(path)
+	if exist {
+		return fmt.Errorf("file (%s) is exist", path)
+	}
+	if err != nil {
+		return err
+	}
+
+	if err := ioutil.WriteFile(path, []byte(content), 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AppendContentToFile if file exist, append content at the end, or write content to a new file.
+func AppendContentToFile(path, content string) (int, error) {
+	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return 0, err
+	}
+	defer f.Close()
+
+	return f.WriteString(content)
 }
