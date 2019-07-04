@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	tmplates "tools.app/services/httptemplate"
 )
 
 // RouterEntry an router entry.
@@ -29,6 +30,9 @@ func NewBooksSvr() *BooksServer {
 		RouterEntry{"BookIndex", "GET", "/books", handler.BookIndex},
 		RouterEntry{"Bookshow", "GET", "/books/:isdn", handler.BookShow},
 		RouterEntry{"Bookshow", "POST", "/books", handler.BookCreate},
+		// html template test
+		RouterEntry{"TemplateTest", "GET", "/templates/1", tmplates.TemplateHandler01},
+		RouterEntry{"TemplateTest", "GET", "/templates/2", tmplates.TemplateHandler02},
 	}
 	return &BooksServer{routers: routers}
 }

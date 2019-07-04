@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
+	myutils "tools.app/utils"
 )
 
 // NewBooksHandler returns a books http router handler.
@@ -63,11 +64,11 @@ func (handler BooksHandler) Index(w http.ResponseWriter, r *http.Request, _ http
 func (handler *BooksHandler) BookCreate(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	book := &Book{}
 	if err := handler.populateModelFromHandler(r, book); err != nil {
-		WriteErrResponse(w, http.StatusUnprocessableEntity, "Unprocessible Entity")
+		myutils.WriteErrJSONResp(w, http.StatusUnprocessableEntity, "Unprocessible Entity")
 		return
 	}
 	handler.BooksStore[book.ISDN] = book
-	WriteOKResponse(w, book)
+	myutils.WriteOKJSONResp(w, book)
 }
 
 // BookIndex handler for the books index action.
@@ -77,7 +78,7 @@ func (handler BooksHandler) BookIndex(w http.ResponseWriter, r *http.Request, _ 
 	for _, book := range handler.BooksStore {
 		books = append(books, book)
 	}
-	WriteOKResponse(w, books)
+	myutils.WriteOKJSONResp(w, books)
 }
 
 // BookShow handler for the books Show action.
@@ -86,10 +87,10 @@ func (handler BooksHandler) BookShow(w http.ResponseWriter, r *http.Request, par
 	isdn := params.ByName("isdn")
 	book, ok := handler.BooksStore[isdn]
 	if !ok {
-		WriteErrResponse(w, http.StatusNotFound, "Book Record Not Found!")
+		myutils.WriteErrJSONResp(w, http.StatusNotFound, "Book Record Not Found!")
 		return
 	}
-	WriteOKResponse(w, book)
+	myutils.WriteOKJSONResp(w, book)
 }
 
 // populateModelFromHandler populates a model from the params in the Handler.
@@ -104,42 +105,4 @@ func (handler BooksHandler) populateModelFromHandler(r *http.Request, model inte
 		return err
 	}
 	return nil
-}
-
-// ********* HTTP Response
-
-// JSONResponse json http response
-type JSONResponse struct {
-	// Reserved field to add some meta information to the API response
-	Meta interface{} `json:"meta"`
-	Data interface{} `json:"data"`
-}
-
-// JSONErrResponse json http error response
-type JSONErrResponse struct {
-	Error *APIError `json:"error"`
-}
-
-// APIError json http error response
-type APIError struct {
-	Status int    `json:"status"`
-	Title  string `json:"title"`
-}
-
-// WriteOKResponse writes the response as a standard JSON response with StatusOK.
-func WriteOKResponse(w http.ResponseWriter, m interface{}) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(&JSONResponse{Data: m}); err != nil {
-		WriteErrResponse(w, http.StatusInternalServerError, "Internal Server Error")
-	}
-}
-
-// WriteErrResponse writes the error response as a Standard API JSON response with a response code.
-func WriteErrResponse(w http.ResponseWriter, errCode int, errMsg string) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(errCode)
-	json.NewEncoder(w).Encode(&JSONErrResponse{
-		Error: &APIError{Status: errCode, Title: errMsg},
-	})
 }

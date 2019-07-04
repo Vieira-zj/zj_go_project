@@ -71,6 +71,7 @@ fi
 
 if [[ $1 = "httprouter" ]]; then
     build_tools_bin $1
+    cp -r ${ZJ_GOPRJ}/src/tools.app/services/httptemplate/templates ${HOME}/Downloads/tmp_files
     exit 0
 fi
 
