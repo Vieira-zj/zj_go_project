@@ -61,7 +61,7 @@ func (handler BooksHandler) Index(w http.ResponseWriter, r *http.Request, _ http
 
 // BookCreate handler for the books Create action.
 // POST /books
-func (handler *BooksHandler) BookCreate(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func (handler *BooksHandler) BookCreate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	book := &Book{}
 	if err := handler.populateModelFromHandler(r, book); err != nil {
 		myutils.WriteErrJSONResp(w, http.StatusUnprocessableEntity, "Unprocessible Entity")

@@ -27,7 +27,7 @@ type APIError struct {
 
 // WriteOKJSONResp writes the response as a standard JSON response with StatusOK.
 func WriteOKJSONResp(w http.ResponseWriter, m interface{}) {
-	w.Header().Set("Content-Type", "application/json;charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(&JSONResponse{Data: m}); err != nil {
 		WriteErrJSONResp(w, http.StatusInternalServerError, "Internal Server Error")
@@ -36,7 +36,7 @@ func WriteOKJSONResp(w http.ResponseWriter, m interface{}) {
 
 // WriteOKHTMLResp returns html with StatusOK.
 func WriteOKHTMLResp(w http.ResponseWriter, data []byte) {
-	w.Header().Set("Content-Type", "text/html;charset=UTF-8")
+	w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(data); err != nil {
 		WriteErrJSONResp(w, http.StatusInternalServerError, "Internal Server Error")
