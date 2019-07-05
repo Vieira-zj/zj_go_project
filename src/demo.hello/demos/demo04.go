@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -166,6 +167,13 @@ var fnPrintMsgName = func(name string) {
 	fmt.Println("message name:", name)
 }
 
+func testPrintMsgByCond() {
+	tag := "id"
+	name := "message01"
+	printMsgByIf(tag, name)
+	printMsgByMap(tag, name)
+}
+
 func printMsgByIf(tag, input string) {
 	fmt.Println("\nprint message by if condition.")
 	if tag == "id" {
@@ -183,13 +191,6 @@ func printMsgByMap(tag, input string) {
 	fns["id"] = fnPrintMsgID
 	fns["name"] = fnPrintMsgName
 	fns[tag](input)
-}
-
-func testPrintMsgByCond() {
-	tag := "id"
-	name := "message01"
-	printMsgByIf(tag, name)
-	printMsgByMap(tag, name)
 }
 
 // demo, json keyword "omitempty"
@@ -251,6 +252,76 @@ func testBSONParser() {
 	}
 }
 
+// demo, stop routine by chan
+func testStopRoutineByChan() {
+	stop := make(chan bool)
+	go func() {
+		for {
+			select {
+			case <-stop:
+				fmt.Println("monitor routine is stop")
+				return
+			case <-time.Tick(time.Second):
+				fmt.Println("monitor routine is running ...")
+			}
+		}
+	}()
+
+	time.Sleep(time.Duration(5) * time.Second)
+	fmt.Println("stop monitor routine")
+	stop <- true
+	time.Sleep(time.Duration(3) * time.Second)
+	fmt.Println("main routine exit")
+}
+
+// demo, stop routine by context
+func testStopRoutineByCtx() {
+	ctx, cancel := context.WithCancel(context.Background())
+	go func(cxt context.Context) {
+		for {
+			select {
+			case <-ctx.Done():
+				fmt.Println("monitor routine is cancelled")
+				return
+			case <-time.Tick(time.Second):
+				fmt.Println("monitor routine is running ...")
+			}
+		}
+	}(ctx)
+
+	time.Sleep(time.Duration(5) * time.Second)
+	fmt.Println("cancel monitor routine")
+	cancel()
+	time.Sleep(time.Duration(3) * time.Second)
+	fmt.Println("main routine exit")
+}
+
+// demo, stop multiple routines by context
+func testStopRoutinesByCtx() {
+	watcher := func(ctx context.Context, name string) {
+		for {
+			select {
+			case <-ctx.Done():
+				fmt.Printf("[%s] monitor routine is cancelled\n", name)
+				return
+			case <-time.Tick(time.Second):
+				fmt.Printf("[%s] monitor routine is running ...\n", name)
+			}
+		}
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	for i := 0; i < 3; i++ {
+		go watcher(ctx, fmt.Sprintf("monitor_%d", i))
+	}
+
+	time.Sleep(time.Duration(5) * time.Second)
+	fmt.Println("cancel all monitor routines")
+	cancel()
+	time.Sleep(time.Duration(3) * time.Second)
+	fmt.Println("main routine exit")
+}
+
 // demo, get routines count
 func testGetGoroutinesCount() {
 	printRoutineCount := func() {
@@ -303,6 +374,10 @@ func MainDemo04() {
 
 	// testJSONOmitEmpty()
 	// testBSONParser()
+
+	// testStopRoutineByChan()
+	// testStopRoutineByCtx()
+	// testStopRoutinesByCtx()
 
 	// testGetGoroutinesCount()
 

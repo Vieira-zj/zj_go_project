@@ -1,11 +1,15 @@
 package demos
 
 import (
+	"bytes"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"math"
 	"math/rand"
+	"os"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -427,6 +431,58 @@ func testRuneType() {
 	fmt.Println("top 2 cn words:", string(r[:2]))
 }
 
+// demo, io writer
+func testIOWriter() {
+	// #1
+	// bytes.Buffer实现了io.Writer和io.Reader接口
+	var b1 bytes.Buffer
+	n, err := b1.Write([]byte("hello world\n"))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("\nwrite bytes size:", n)
+	// (b *Buffer)实现了io.Writer接口, 传入&b
+	fmt.Fprint(&b1, "this is a test.\n")
+	b1.WriteTo(os.Stdout)
+
+	// #2
+	b2 := bytes.NewBuffer([]byte("hello world\n"))
+	fmt.Fprint(b2, "this is a test2.\n")
+	fmt.Println("\nwrite bytes:")
+	b2.WriteTo(os.Stdout)
+}
+
+// demo, io reader
+func testIOReader() {
+	// #1
+	var b1 bytes.Buffer
+	var data1 []byte
+	b1.Write([]byte("hello world\n"))
+	fmt.Fprint(&b1, "this is a test.\n")
+	for {
+		var p [8]byte
+		n, err := b1.Read(p[:])
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			panic(err)
+		}
+		fmt.Printf("read size=%d, bytes: %v\n", n, string(p[:]))
+		data1 = append(data1, p[:]...)
+	}
+	fmt.Printf("read bytes data:\n%s", string(data1))
+
+	// #2
+	b2 := bytes.NewBuffer([]byte("hello world\n"))
+	fmt.Fprint(b2, "this is a test2.\n")
+	data2, err := ioutil.ReadAll(b2)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("\nread bytes data:\n%s", string(data2))
+}
+
 // demo, SetFinalizer for object
 type testPeople struct {
 	id  string
@@ -486,6 +542,9 @@ func MainDemo02() {
 	// testPrintfFormat()
 	// testRegExpMore()
 	// testRuneType()
+
+	// testIOWriter()
+	// testIOReader()
 
 	// testFinalizerInObject()
 

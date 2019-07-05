@@ -180,7 +180,8 @@ func testTranslateBy() {
 	}
 }
 
-// MyObject test access control demo.
+// MyObject container public and private fields.
+// demo, test access control demo.
 type MyObject struct {
 	VarPublic  string
 	varPrivate string
@@ -201,11 +202,6 @@ func (o MyObject) methodPrivateGet() string {
 	return o.VarPublic
 }
 
-// GetMyObject returns an empty object.
-func GetMyObject() MyObject {
-	return MyObject{}
-}
-
 func testAccControl() {
 	fmt.Println("\naccess private fields/methods internal:")
 	obj := MyObject{"public_in", "private_in"}
@@ -215,59 +211,9 @@ func testAccControl() {
 	fmt.Printf("private method get: %s\n", obj.methodPrivateGet())
 }
 
-// demo, context
-func myAdd(ctx context.Context, a, b int) int {
-	res := 0
-	for i := 0; i < a; i++ {
-		res = incr(res)
-		select {
-		case <-ctx.Done():
-			fmt.Println("a: cancel incr()")
-			return -1
-		default:
-		}
-	}
-	for i := 0; i < b; i++ {
-		res = incr(res)
-		select {
-		case <-ctx.Done():
-			fmt.Println("b: cancel incr()")
-			return -1
-		default:
-		}
-	}
-	return res
-}
-
-func incr(a int) int {
-	ret := a + 1
-	time.Sleep(time.Duration(1) * time.Second)
-	return ret
-}
-
-func testContext01() {
-	a := 1
-	b := 2
-	timeout := time.Duration(2) * time.Second
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	res := myAdd(ctx, 1, 2)
-	go func() {
-		time.Sleep(time.Duration(5) * time.Second)
-		cancel()
-	}()
-	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
-}
-
-func testContext02() {
-	a := 1
-	b := 2
-	ctx, cancel := context.WithCancel(context.Background())
-	go func() {
-		time.Sleep(time.Duration(2) * time.Second)
-		cancel()
-	}()
-	res := myAdd(ctx, 1, 2)
-	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
+// GetMyObject invoked from external and returns an empty object.
+func GetMyObject() MyObject {
+	return MyObject{}
 }
 
 // demo, args package and unpackage
@@ -432,6 +378,7 @@ func testCopyBytes() {
 	fmt.Println("#4: init bytes and copied by ref:", string(b2))
 }
 
+// demo, map var reference
 func testMapReference() {
 	// map中val元素是引用传递, 但map[key]则返回一个新的元素
 	fnUpdateMap := func(m map[int]string) {
@@ -461,6 +408,7 @@ func testMapReference() {
 	fmt.Printf("map: %v, copied map: %v\n", m, copiedM)
 }
 
+// demo, struct var reference
 func testStructReference() {
 	// struct中元素是值传递
 	type people struct {
@@ -491,6 +439,60 @@ func testStructReference() {
 	fmt.Printf("p1: %v, p2: %+v\n", p1, p2)
 }
 
+// demo, context
+func testContext01() {
+	a := 1
+	b := 2
+	timeout := time.Duration(2) * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	res := myAdd(ctx, 1, 2)
+	go func() {
+		time.Sleep(time.Duration(5) * time.Second)
+		cancel()
+	}()
+	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
+}
+
+func testContext02() {
+	a := 1
+	b := 2
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(time.Duration(2) * time.Second)
+		cancel()
+	}()
+	res := myAdd(ctx, 1, 2)
+	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
+}
+
+func myAdd(ctx context.Context, a, b int) int {
+	res := 0
+	for i := 0; i < a; i++ {
+		res = incr(res)
+		select {
+		case <-ctx.Done():
+			fmt.Println("a: cancel incr()")
+			return -1
+		default:
+		}
+	}
+	for i := 0; i < b; i++ {
+		res = incr(res)
+		select {
+		case <-ctx.Done():
+			fmt.Println("b: cancel incr()")
+			return -1
+		default:
+		}
+	}
+	return res
+}
+
+func incr(a int) int {
+	time.Sleep(time.Second)
+	return a + 1
+}
+
 // MainDemo01 main for golang demo01.
 func MainDemo01() {
 	// testPrintFormatName()
@@ -502,10 +504,6 @@ func MainDemo01() {
 	// testAccControl()
 
 	// testTranslateBy()
-
-	// testContext01()
-	// testContext02()
-
 	// testArgsPkgAndUnpkg()
 	// testTimeFormat()
 	// testCodeBlock()
@@ -517,6 +515,9 @@ func MainDemo01() {
 
 	// testMapReference()
 	// testStructReference()
+
+	// testContext01()
+	// testContext02()
 
 	fmt.Println("golang demo01 DONE.")
 }
