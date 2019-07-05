@@ -290,7 +290,7 @@ function shell_test_09() {
 
 # tool_app_httprouter_test
 # tool_utils_test
-# tool_utils_test ioutil_test.go
+# tool_utils_test httputil_test.go
 # tool_utils_benchmark_test ioutil_bmark_test.go
 
 # go_bdd_test_01
@@ -298,7 +298,7 @@ function shell_test_09() {
 # go_bdd_benchmark_test
 
 # shell_test
-shell_test_0203
+# shell_test_0203
 
 echo "golang test DONE."
 set +ex

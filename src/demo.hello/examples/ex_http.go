@@ -27,8 +27,9 @@ func testHTTPGet() {
 		log.Fatal(err)
 		return
 	}
-	result, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
+
+	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 		return

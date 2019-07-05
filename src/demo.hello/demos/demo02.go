@@ -415,6 +415,18 @@ func testRegExpMore() {
 	fmt.Printf("%q\n", zp.Split("pizza", -1))
 }
 
+// demo, rune type
+func testRuneType() {
+	s := "测试 hello world"
+	fmt.Println("\nstring length:", len(s))
+	b := []byte(s)
+	fmt.Println("bytes length:", len(b))
+	r := []rune(s)
+	fmt.Println("runes count:", len(r))
+
+	fmt.Println("top 2 cn words:", string(r[:2]))
+}
+
 // demo, SetFinalizer for object
 type testPeople struct {
 	id  string
@@ -473,6 +485,7 @@ func MainDemo02() {
 
 	// testPrintfFormat()
 	// testRegExpMore()
+	// testRuneType()
 
 	// testFinalizerInObject()
 
