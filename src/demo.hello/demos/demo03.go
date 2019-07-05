@@ -7,10 +7,11 @@ import (
 	"math"
 	"math/rand"
 	"strings"
+	"sync"
 	"time"
 )
 
-// demo 01, map
+// demo, map
 func testCheckMapEntry() {
 	m := map[int]string{
 		1: "one",
@@ -25,7 +26,7 @@ func testCheckMapEntry() {
 	}
 }
 
-// demo 02-01, custom reader
+// demo, custom reader
 type alphaReader1 struct {
 	src string
 	cur int
@@ -86,7 +87,7 @@ func testAlphaReader1() {
 	fmt.Println("\noutput:", string(b))
 }
 
-// demo 02-02, custom reader
+// demo, custom reader
 type alphaReader2 struct {
 	reader io.Reader
 }
@@ -129,7 +130,7 @@ func testAlphaReader2() {
 	fmt.Println()
 }
 
-// demo 02-03, custom writer
+// demo, custom writer
 type chanWriter struct {
 	ch chan byte
 }
@@ -179,7 +180,7 @@ func testChanWriter() {
 	fmt.Println()
 }
 
-// demo 03-01, time ticker in select block
+// demo, time ticker in select block
 func testSelectTimeTicker01() {
 	ticker := time.NewTicker(time.Duration(3) * time.Second)
 	for i := 0; i < 10; i++ {
@@ -207,7 +208,7 @@ func testSelectTimeTicker02() {
 	}
 }
 
-// demo 03-02, time after in select block
+// demo, time after in select block
 func testSelectTimeAfter() {
 	ch := make(chan string)
 	go func() {
@@ -225,7 +226,38 @@ func testSelectTimeAfter() {
 	}
 }
 
-// demo 04, channel queue
+// demo, channel as pipeline
+func testChanPipeline() {
+	naturals := make(chan int)
+	squares := make(chan int)
+
+	go func() {
+		for i := 0; i < 20; i++ {
+			naturals <- i
+			time.Sleep(time.Duration(200) * time.Millisecond)
+		}
+		close(naturals)
+	}()
+
+	go func() {
+		for {
+			x, ok := <-naturals
+			if !ok {
+				break
+			}
+			squares <- x * x
+		}
+		close(squares)
+	}()
+
+	fmt.Println("\nsquares:")
+	for i := range squares {
+		fmt.Printf("%d,", i)
+	}
+	fmt.Println()
+}
+
+// demo, channel as queue
 func testChanQueue() {
 	const cap = 5
 	queue := make(chan int, cap)
@@ -248,7 +280,7 @@ func testChanQueue() {
 	}
 }
 
-// demo 05, bufferred channel
+// demo, bufferred channel
 func testBufferedChan() {
 	queue := make(chan int, 10)
 	go func() {
@@ -297,7 +329,48 @@ func consumer(queue <-chan int) {
 	}
 }
 
-// demo 06, iterator for chars
+// demo, sync lock and Rlock
+func testLockAndRlock() {
+	const count = 4
+	var mutex sync.RWMutex
+	// mutex := new(sync.RWMutex)
+	channel := make(chan int, count)
+
+	// lock
+	go func(c chan<- int) {
+		fmt.Println("\nNot write lock")
+		mutex.Lock()
+		defer mutex.Unlock()
+
+		fmt.Println("Write Locked")
+		time.Sleep(time.Second)
+		fmt.Println("Unlock the write lock")
+		c <- 10
+		fmt.Printf("channel cap=%d, size=%d\n", cap(channel), len(channel))
+	}(channel)
+
+	// Rlock
+	for i := 0; i < count; i++ {
+		go func(i int, c chan<- int) {
+			fmt.Println("Not read lock: ", i)
+			mutex.RLock()
+			defer mutex.RUnlock()
+
+			fmt.Println("Read Locked: ", i)
+			time.Sleep(time.Second)
+			fmt.Println("Unlock the read lock: ", i)
+			c <- i
+			fmt.Printf("channel cap=%d, size=%d\n", cap(channel), len(channel))
+		}(i, channel)
+	}
+
+	time.Sleep(time.Duration(3) * time.Second)
+	for i := 0; i < count+1; i++ {
+		fmt.Println("output:", <-channel)
+	}
+}
+
+// demo, iterator for chars
 func testIteratorChars() {
 	s := "hello"
 	for _, c := range s {
@@ -313,10 +386,13 @@ func testIteratorChars() {
 	fmt.Println()
 }
 
-// demo 07, function as variable
+// demo, function as variable
 func testFuncVariable() {
-	fmt.Printf("\nadd results: %d\n", myCalculation(2, 2, funcMyAdd))
-	fmt.Printf("min results: %d\n", myCalculation(2, 8, funcMyMin))
+	fmt.Printf("\nadd results: %d\n", myCalculation01(2, 2, funcMyAdd))
+	fmt.Printf("min results: %d\n", myCalculation01(2, 8, funcMyMin))
+
+	fmt.Printf("\nadd results: %d\n", myCalculation02(2, 2, funcMyAdd))
+	fmt.Printf("min results: %d\n", myCalculation02(2, 8, funcMyMin))
 }
 
 func funcMyAdd(num1, num2 int) int {
@@ -328,11 +404,17 @@ func funcMyMin(num1, num2 int) int {
 	return int(math.Abs(float64(ret)))
 }
 
-func myCalculation(num1, num2 int, fnCal func(n1, n2 int) int) int {
+func myCalculation01(num1, num2 int, fnCal func(n1, n2 int) int) int {
 	return fnCal(num1, num2)
 }
 
-// demo 08, function decoration
+type calculateFunc func(n1, n2 int) int
+
+func myCalculation02(num1, num2 int, fnCal calculateFunc) int {
+	return fnCal(num1, num2)
+}
+
+// demo, function decoration
 type apiResponse struct {
 	RetCode uint16
 	Body    string
@@ -417,8 +499,10 @@ func MainDemo03() {
 	// testSelectTimeTicker02()
 	// testSelectTimeAfter()
 
+	// testChanPipeline()
 	// testChanQueue()
 	// testBufferedChan()
+	// testLockAndRlock()
 
 	// testIteratorChars()
 	// testFuncVariable()
