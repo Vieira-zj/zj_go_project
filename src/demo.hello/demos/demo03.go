@@ -11,19 +11,37 @@ import (
 	"time"
 )
 
-// demo, map
+// demo, map entry
 func testCheckMapEntry() {
 	m := map[int]string{
 		1: "one",
 		2: "two",
 	}
-	fmt.Println("\nentry[2] value:", m[2])
-	fmt.Printf("entry[2] 1st char: %c\n", m[2][0])
-	fmt.Printf("entry[2] length: %d\n", len(m[2]))
+
+	idx := 2
+	fmt.Printf("\nentry[%d] value: %s\n", idx, m[idx])
+	fmt.Printf("entry[%d] length: %d\n", idx, len(m[idx]))
+	fmt.Printf("entry[%d] 1st char: %c\n", idx, m[idx][0])
 
 	if entry, ok := m[3]; ok {
 		fmt.Println("entry[3] value:", entry)
 	}
+}
+
+// demo, iterator for chars
+func testIteratorChars() {
+	s := "hello"
+	for _, c := range s {
+		fmt.Printf("%c", c)
+	}
+	fmt.Println()
+
+	b := []byte("world")
+	fmt.Printf("b type: %T\n", b) // type: []uint8
+	for _, c := range b {
+		fmt.Printf("%c", c)
+	}
+	fmt.Println()
 }
 
 // demo, custom reader
@@ -370,22 +388,6 @@ func testLockAndRlock() {
 	}
 }
 
-// demo, iterator for chars
-func testIteratorChars() {
-	s := "hello"
-	for _, c := range s {
-		fmt.Printf("%c", c)
-	}
-	fmt.Println()
-
-	b := []byte("world")
-	fmt.Printf("b type: %T\n", b) // type: []uint8
-	for _, c := range b {
-		fmt.Printf("%c", c)
-	}
-	fmt.Println()
-}
-
 // demo, function as variable
 func testFuncVariable() {
 	fmt.Printf("\nadd results: %d\n", myCalculation01(2, 2, funcMyAdd))
@@ -489,7 +491,8 @@ func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiRe
 
 // MainDemo03 main for golang demo03.
 func MainDemo03() {
-	// testCheckMapEntry()
+	testCheckMapEntry()
+	// testIteratorChars()
 
 	// testAlphaReader1()
 	// testAlphaReader2()
@@ -504,7 +507,6 @@ func MainDemo03() {
 	// testBufferedChan()
 	// testLockAndRlock()
 
-	// testIteratorChars()
 	// testFuncVariable()
 	// testDecorateAPIs()
 

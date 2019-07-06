@@ -120,6 +120,56 @@ func initBytesBySize(size int) []byte {
 	return buf
 }
 
+// demo, slice append and copy
+func testSliceAppend() {
+	// #1
+	s := []int{5}
+	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	s = append(s, 7)
+	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	s = append(s, 9)
+	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	x := append(s, 11)
+	fmt.Printf("slice x len=%d, cap=%d, addr=%p\n", len(x), cap(x), x)
+
+	fmt.Println("items in x:")
+	for i := 0; i < len(x); i++ {
+		fmt.Printf("item %d: addr=%p, val=%d\n", i, &x[i], x[i])
+	}
+
+	// #2
+	y := append(s, 12)
+	fmt.Printf("slice y len=%d, cap=%d, addr=%p\n", len(y), cap(y), y)
+
+	fmt.Println("\nnew items in x:")
+	for i := 0; i < len(x); i++ {
+		fmt.Printf("item %d: addr=%p, val=%d\n", i, &x[i], x[i])
+	}
+	fmt.Println("new items in y:")
+	for i := 0; i < len(y); i++ {
+		fmt.Printf("item %d: addr=%p, val=%d\n", i, &y[i], y[i])
+	}
+
+	// #3
+	z := make([]int, 4, 4)
+	copy(z, y)
+	fmt.Printf("\nslice z addr: %p\n", &z)
+	fmt.Println("items in copied z:")
+	for i := 0; i < len(y); i++ {
+		fmt.Printf("item %d: addr=%p, val=%d\n", i, &z[i], z[i])
+	}
+
+	// #4
+	printSliceInfo := func(s []int) {
+		fmt.Printf("\n[func] slice addr: %p\n", &s)
+		fmt.Println("[func] slice items:")
+		for i := 0; i < len(s); i++ {
+			fmt.Printf("item %d: addr=%p, val=%d\n", i, &s[i], s[i])
+		}
+	}
+	printSliceInfo(z)
+}
+
 // demo, struct reference
 type mySuperStruct struct {
 	id  uint
@@ -371,6 +421,60 @@ func testStopRoutinesByCtx() {
 	fmt.Println("main routine exit")
 }
 
+// demo, send/receive nil to/from channel
+func testSendNilToChan() {
+	ch := make(chan interface{})
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			ch <- nil
+			time.Sleep(time.Second)
+		}
+		close(ch)
+	}()
+
+	fmt.Println("\nreceive chan values:")
+	for v := range ch {
+		if v == nil {
+			fmt.Println("chan val: nil")
+		} else {
+			fmt.Println("chan val:", v)
+		}
+	}
+}
+
+// demo, use channel as semaphore
+func testChanAsSemaphore() {
+	fnRoom := func(chToken chan struct{}, name string) {
+		chToken <- struct{}{}
+		fmt.Println(name, "get token, and in room")
+		time.Sleep(time.Duration(2) * time.Second)
+		<-chToken
+		fmt.Println(name, "release token, and out room")
+	}
+
+	chToken := make(chan struct{}, 3)
+	for i := 0; i < 10; i++ {
+		go func(i int) {
+			name := fmt.Sprintf("[routine_%d]", i)
+			fmt.Println(name, "is start")
+			fnRoom(chToken, name)
+			fmt.Println(name, "is end")
+		}(i)
+	}
+
+	time.Sleep(time.Second)
+	for {
+		fmt.Println("token size:", len(chToken))
+		if len(chToken) == 0 {
+			fmt.Println("main done")
+			break
+		}
+		fmt.Println("main sleep ...")
+		time.Sleep(time.Second)
+	}
+}
+
 // demo, get routines count
 func testGetGoroutinesCount() {
 	printRoutineCount := func() {
@@ -418,6 +522,7 @@ func MainDemo04() {
 	// testRandomValues()
 	// testInitBytes()
 
+	// testSliceAppend()
 	// testStructRefValue()
 	// testPrintMsgByCond()
 
@@ -431,6 +536,8 @@ func MainDemo04() {
 	// testStopRoutineByCtx()
 	// testStopRoutinesByCtx()
 
+	// testSendNilToChan()
+	// testChanAsSemaphore()
 	// testGetGoroutinesCount()
 
 	fmt.Println("golang demo04 DONE.")

@@ -267,115 +267,85 @@ func testCodeBlock() {
 func testArrayAndSlice01() {
 	// 数组中元素是值传递, 切片中元素是引用传递
 	fnUpdateArray := func(arr [5]int32) {
-		fmt.Printf("[fnUpdateArray] array addr: %p\n", &arr)
+		fmt.Printf("\n[fnUpdateArray] array: addr=%p\n", &arr)
 		arr[1] = 123
+		for i := 1; i < len(arr); i++ {
+			fmt.Printf("[fnUpdateArray] array item: val=%d, addr=%p\n", arr[i], &arr[i])
+		}
 	}
 
 	fnUpdateSlice := func(s []int32) {
-		fmt.Printf("[fnUpdateSlice] slice addr: %p\n", &s)
+		fmt.Printf("\n[fnUpdateSlice] slice addr: %p\n", &s)
 		s[1] = 456
+		for i := 0; i < len(s); i++ {
+			fmt.Printf("[fnUpdateSlice] slice item: val=%d, addr=%p\n", s[i], &s[i])
+		}
 	}
 
+	// #1
 	var array1 = [...]int32{1, 2, 3, 4, 5}
-	idx := 0
-	fmt.Printf("\narray1 addr: %p, array1[%d] addr: %p\n", &array1, idx, &array1[idx])
-	array2 := array1
-	fmt.Printf("array2 addr: %p, array2[%d] addr: %p\n", &array2, idx, &array2[idx])
-	array2[0] = 100
-	fnUpdateArray(array1)
-	fmt.Printf("array: %v, copied array: %v\n", array1, array2)
+	fmt.Printf("\narray1 addr: %p\n", &array1)
+	for i := 0; i < len(array1); i++ {
+		fmt.Printf("array1 item: val=%d, addr=%p\n", array1[i], &array1[i])
+	}
 
+	array2 := array1
+	array2[0] = 100
+	fmt.Printf("\narray2 addr: %p\n", &array2)
+	for i := 0; i < len(array2); i++ {
+		fmt.Printf("array2 item: val=%d, addr=%p\n", array2[i], &array2[i])
+	}
+
+	fnUpdateArray(array1)
+	fmt.Printf("\narray1: %v\ncopied array2: %v\n", array1, array2)
+
+	// #2
 	var slice1 = []int32{1, 2, 3, 4, 5}
-	fmt.Printf("\nslice1 addr: %p, slice1[%d] addr: %p\n", &slice1, idx, &slice1[idx])
+	fmt.Printf("\nslice1 addr: %p\n", &slice1)
+	for i := 0; i < len(slice1); i++ {
+		fmt.Printf("slice1 item: val=%d, addr=%p\n", slice1[i], &slice1[i])
+	}
+
 	slice2 := slice1
-	fmt.Printf("slice2 addr: %p, slice2[%d] addr: %p\n", &slice2, idx, &slice2[idx])
 	slice2[0] = 200
+	fmt.Printf("\nslice2 addr: %p\n", &slice2)
+	for i := 0; i < len(slice2); i++ {
+		fmt.Printf("slice2 item: val=%d, addr=%p\n", slice2[i], &slice2[i])
+	}
+
 	fnUpdateSlice(slice1)
-	fmt.Printf("slice: %v, copied slice: %v\n", slice1, slice2)
+	fmt.Printf("\nslice: %v, copied slice2: %v\n", slice1, slice2)
 }
 
 // demo, array and slice
 func testArrayAndSlice02() {
-	var array = [...]int32{1, 2, 3, 4, 5}
-	var slice = []int32{1, 2, 3, 4, 5}
+	// #1
+	var array1 = [...]int32{1, 2, 3, 4, 5}
+	fmt.Printf("\narray type: %T\n", array1)
 
-	fmt.Printf("\narray type: %T\n", array)
-	fmt.Printf("slice type: %T\n", slice)
-
-	s1 := array[2:4]
-	fmt.Printf("\nbefore: array=%v, slice=%v\n", array, s1)
+	s1 := array1[2:4]
+	fmt.Printf("\nbefore: array=%v, slice=%v\n", array1, s1)
 	s1[0] = 100
-	fmt.Printf("after: array=%v, slice=%v\n", array, s1)
+	fmt.Printf("after: array=%v, slice=%v\n", array1, s1)
 
-	s2 := array[2:4]
+	// #2
+	array2 := [...]int32{1, 2, 3, 4, 5}
+	fmt.Println("\nexceed cap, and slice re-allocate")
+	s2 := array2[2:4]
+	fmt.Printf("s2 addr: %p, items:\n", &s2)
+	for i := 0; i < len(s2); i++ {
+		fmt.Printf("s2 item: addr=%p, val=%d\n", &s2[i], s2[i])
+	}
+
 	s2 = append(s2, 6, 7)
-	fmt.Println("\nre-allocate slice")
-	fmt.Printf("before: array=%v, slice=%v\n", array, s2)
+	fmt.Printf("\nnew s2 addr: %p, items:\n", &s2)
+	for i := 0; i < len(s2); i++ {
+		fmt.Printf("s2 item: addr=%p, val=%d\n", &s2[i], s2[i])
+	}
+
+	fmt.Printf("\nbefore: array=%v, slice=%v\n", array2, s2)
 	s2[0] = 200
-	fmt.Printf("after: array=%v, slice=%v\n", array, s2)
-}
-
-// demo, update bytes
-func testUpdateBytes() {
-	s := "hello world"
-	b := []byte(s)
-	fmt.Printf("\n[main] b address: %p\n", &b)
-
-	fmt.Println("\n#1: by value:")
-	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByVal(b)
-	fmt.Printf("after update: %s\n", string(b))
-
-	fmt.Println("\n#2: by pointer:")
-	fmt.Printf("before update: %s\n", string(b))
-	myUpdateBytesByRef(&b)
-	fmt.Printf("after update: %s\n", string(b))
-}
-
-func myUpdateBytesByVal(b []byte) {
-	fmt.Printf("[myUpdateBytesByVal] b address: %p\n", &b)
-	b[0] = 'H'
-	b = bytes.ToUpper(b)
-	b = append(b, '!', '!', '!')
-	fmt.Printf("[UpdateBytes] by value: %s\n", string(b))
-}
-
-func myUpdateBytesByRef(b *[]byte) {
-	fmt.Printf("[myUpdateBytesByRef] b address: %p\n", b)
-	*b = bytes.ToUpper(*b)
-	*b = append(*b, []byte{'!', '!', '!'}...)
-	fmt.Printf("[UpdateBytes] by reference: %s\n", string(*b))
-}
-
-// demo, copy bytes
-func testCopyBytes() {
-	copyBytesByVal := func(b []byte) {
-		fmt.Printf("[testCopyBytes] b address: %p\n", &b)
-		copy(b, []byte("hello"))
-		b = append(b, []byte(" world")...)
-	}
-
-	copyBytesByRef := func(b *[]byte) {
-		fmt.Printf("[copyBytesByRef] b address: %p\n", b)
-		copy(*b, []byte("hello"))
-		*b = append(*b, []byte(" world")...)
-	}
-
-	b1 := make([]byte, 10)
-	fmt.Printf("\nb1 address: %p\n", &b1)
-	fmt.Printf("b1 type: %T, cap: %d\n", b1, cap(b1))
-	copyBytesByVal(b1)
-	fmt.Println("#1: make bytes and copied by val:", string(b1))
-	copyBytesByRef(&b1)
-	fmt.Println("#2: make bytes and copied by ref:", string(b1))
-
-	var b2 []byte
-	fmt.Printf("\nb2 address: %p\n", &b2)
-	fmt.Printf("b2 type: %T, cap: %d\n", b2, cap(b2))
-	copyBytesByVal(b2)
-	fmt.Println("#3: init bytes and copied by val:", string(b2))
-	copyBytesByRef(&b2)
-	fmt.Println("#4: init bytes and copied by ref:", string(b2))
+	fmt.Printf("after: array=%v, slice=%v\n", array2, s2)
 }
 
 // demo, map var reference
@@ -436,14 +406,70 @@ func testStructReference() {
 	fmt.Println("[main]")
 	fmt.Printf("p1 addr: %p, p1 job addr: %p\n", &p1, &p1.job)
 	fmt.Printf("p2 addr: %p, p2 job addr: %p\n", &p2, &p2.job)
-	fmt.Printf("p1: %v, p2: %+v\n", p1, p2)
+	fmt.Printf("p1: %+v, p2: %+v\n", p1, p2)
+}
+
+// demo, update bytes
+func testUpdateBytes() {
+	s := "hello world"
+	b := []byte(s)
+	fmt.Printf("\n[main] b: addr=%p, len=%d, cap=%d\n", &b, len(b), cap(b))
+
+	fmt.Println("\n#1: by value:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByVal(b)
+	fmt.Printf("after update: %s\n", string(b))
+
+	fmt.Println("\n#2: by reference:")
+	fmt.Printf("before update: %s\n", string(b))
+	myUpdateBytesByRef(&b)
+	fmt.Printf("after update: %s\n", string(b))
+}
+
+func myUpdateBytesByVal(b []byte) {
+	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
+	b[0] = 'H'
+	b = bytes.ToUpper(b)
+	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
+	b = append(b, '!', '!')
+	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
+	fmt.Printf("[myUpdateBytesByVal] by value: %s\n", string(b))
+}
+
+func myUpdateBytesByRef(b *[]byte) {
+	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	*b = bytes.ToUpper(*b)
+	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	*b = append(*b, []byte{'!', '!', '!'}...)
+	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	fmt.Printf("[myUpdateBytesByRef] by reference: %s\n", string(*b))
+}
+
+// demo, copy bytes
+func testCopyBytes() {
+	updateBytesByCopy := func(b []byte) {
+		fmt.Printf("[updateBytesByCopy] b addr: %p\n", &b)
+		copy(b, []byte("hello"))
+	}
+
+	b := []byte("test_go")
+	fmt.Printf("\nb addr: %p\n", &b)
+	fmt.Printf("b: type=%T, len=%d, cap=%d\n", b, len(b), cap(b))
+	updateBytesByCopy(b)
+	fmt.Println("after copied, b val:", string(b))
+
+	b = make([]byte, 3)
+	fmt.Printf("\nmake b: len=%d, cap=%d, val=%v\n", len(b), cap(b), b)
 }
 
 // demo, context
 func testContext01() {
-	a := 1
-	b := 2
-	timeout := time.Duration(2) * time.Second
+	var (
+		a       = 1
+		b       = 2
+		timeout = time.Duration(2) * time.Second
+	)
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	res := myAdd(ctx, 1, 2)
 	go func() {
@@ -454,8 +480,11 @@ func testContext01() {
 }
 
 func testContext02() {
-	a := 1
-	b := 2
+	var (
+		a = 1
+		b = 2
+	)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	go func() {
 		time.Sleep(time.Duration(2) * time.Second)
@@ -510,11 +539,11 @@ func MainDemo01() {
 
 	// testArrayAndSlice01()
 	// testArrayAndSlice02()
-	// testUpdateBytes()
-	// testCopyBytes()
-
 	// testMapReference()
 	// testStructReference()
+
+	// testUpdateBytes()
+	// testCopyBytes()
 
 	// testContext01()
 	// testContext02()
