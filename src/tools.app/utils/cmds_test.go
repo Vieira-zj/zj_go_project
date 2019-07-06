@@ -11,9 +11,11 @@ func TestRunShellCmd(t *testing.T) {
 	t.Logf("Case01: test run shell command: %s\n", cmd)
 	output1, err := myutils.RunShellCmd(cmd)
 	if err != nil {
+		// Logf();FailNow()
 		t.Fatalf("Failed run command (%s): %v\n", cmd, err)
 	}
 	if len(output1) == 0 {
+		// Log();Fail()
 		t.Error("Failed: command is empty!")
 	}
 	t.Logf("command %s output: %s\n", cmd, output1)

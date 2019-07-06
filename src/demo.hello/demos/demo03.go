@@ -188,7 +188,7 @@ func testSelectTimeTicker01() {
 		case time := <-ticker.C:
 			fmt.Printf("ticker time: %v\n", time)
 		default: // not block
-			fmt.Println("wait 1 sec...")
+			fmt.Println("wait 1 sec ...")
 			time.Sleep(time.Second)
 		}
 	}
@@ -202,7 +202,7 @@ func testSelectTimeTicker02() {
 		case time := <-tick:
 			fmt.Printf("tick time: %d:%d\n", time.Hour(), time.Minute())
 		default: // not block
-			fmt.Println("wait 1 sec...")
+			fmt.Println("wait 1 sec ...")
 			time.Sleep(time.Second)
 		}
 	}
@@ -221,7 +221,7 @@ func testSelectTimeAfter() {
 	select {
 	case ret := <-ch:
 		fmt.Println("return from routine:", ret)
-	case <-time.After(3 * time.Second):
+	case <-time.After(time.Duration(3) * time.Second):
 		fmt.Printf("3 seconds timeout!\n")
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -193,6 +194,50 @@ func printMsgByMap(tag, input string) {
 	fns[tag](input)
 }
 
+// demo, print info by log
+func testLogInfoToStdout() {
+	logger := log.New(os.Stdout, "test_", log.Ldate|log.Ltime|log.Lshortfile)
+	// logger.SetPrefix("test_");
+	// logger.SetFlags(log.Ldate | log.Ltime | log.Lshortfile);
+	fmt.Println("\nlogger flags:", logger.Flags())
+	fmt.Println("logger prefix:", logger.Prefix())
+
+	log.Printf("at %d line, output: %s\n", 21, "this is a default log")
+	logger.Printf("at %d line, output: %s\n", 22, "this is a custom logger")
+
+	var (
+		isError = true
+		isPanic = false
+	)
+
+	if isError {
+		//print();os.Exit(1);
+		logger.Fatal("this is a error")
+	}
+	if isPanic {
+		//print();panic();
+		logger.Panic("this is a panic")
+	}
+}
+
+// demo, output info to file by log
+func testLogInfoToFile() {
+	tmpDir := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
+	logFile := filepath.Join(tmpDir, "test_log.txt")
+	f, err := os.OpenFile(logFile, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	logger := log.New(f, "[test] ", log.Ldate|log.Ltime|log.Lshortfile)
+	fmt.Println("\nlogger flags:", logger.Flags())
+	fmt.Println("logger prefix:", logger.Prefix())
+
+	for i := 0; i < 3; i++ {
+		logger.Printf("at %d line, output: %s\n", i, "this is a custom logger")
+	}
+}
+
 // demo, json keyword "omitempty"
 func testJSONOmitEmpty() {
 	type project struct {
@@ -276,18 +321,22 @@ func testStopRoutineByChan() {
 
 // demo, stop routine by context
 func testStopRoutineByCtx() {
+	type ctxKey string
+	var key ctxKey = "name"
+
 	ctx, cancel := context.WithCancel(context.Background())
-	go func(cxt context.Context) {
+	valueCtx := context.WithValue(ctx, key, "monitor_1")
+	go func(ctx context.Context) {
 		for {
 			select {
 			case <-ctx.Done():
-				fmt.Println("monitor routine is cancelled")
+				fmt.Printf("[%s] monitor routine is cancelled\n", ctx.Value(key))
 				return
 			case <-time.Tick(time.Second):
-				fmt.Println("monitor routine is running ...")
+				fmt.Printf("[%s] monitor routine is running ...\n", ctx.Value(key))
 			}
 		}
-	}(ctx)
+	}(valueCtx)
 
 	time.Sleep(time.Duration(5) * time.Second)
 	fmt.Println("cancel monitor routine")
@@ -371,6 +420,9 @@ func MainDemo04() {
 
 	// testStructRefValue()
 	// testPrintMsgByCond()
+
+	// testLogInfoToStdout()
+	// testLogInfoToFile()
 
 	// testJSONOmitEmpty()
 	// testBSONParser()
