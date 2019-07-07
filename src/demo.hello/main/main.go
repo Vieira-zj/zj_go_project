@@ -67,10 +67,11 @@ func mainExample() {
 }
 
 func mainDemo() {
-	demos.MainDemo01()
+	// demos.MainDemo01()
 	// demos.MainDemo02()
 	// demos.MainDemo03()
 	// demos.MainDemo04()
+	demos.MainDemo05()
 	// demos.MainUtils()
 }
 
