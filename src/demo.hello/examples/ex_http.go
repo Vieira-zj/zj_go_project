@@ -220,7 +220,7 @@ func httpStreamRead(args consumeMsgArgs, verifiedMsg string) {
 	}
 }
 
-// MainHTTP : main function, http client testing for mock server.
+// MainHTTP : main, http client testing for mock server.
 func MainHTTP() {
 	// testHTTPGet()
 	// testHTTPPost()
@@ -228,5 +228,5 @@ func MainHTTP() {
 
 	// testHTTPStreamRead()
 
-	fmt.Println("golang http client example DONE.")
+	fmt.Println("golang http client examples DONE.")
 }

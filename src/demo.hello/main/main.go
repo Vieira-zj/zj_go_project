@@ -67,9 +67,9 @@ func mainExample() {
 }
 
 func mainDemo() {
-	// demos.MainDemo01()
+	demos.MainDemo01()
 	// demos.MainDemo02()
-	demos.MainDemo03()
+	// demos.MainDemo03()
 	// demos.MainDemo04()
 	// demos.MainUtils()
 }
@@ -83,8 +83,8 @@ func main() {
 	// testAccControl()
 	// testInvokeOrder()
 
-	// mainExample()
 	mainDemo()
+	// mainExample()
 	// mainAppDemo()
 
 	fmt.Println("GO demo main done.")

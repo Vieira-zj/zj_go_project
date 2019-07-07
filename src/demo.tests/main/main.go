@@ -29,11 +29,11 @@ func main() {
 	}
 
 	gotests.Out = new(bytes.Buffer)
+	fmt.Println("\ncmd arguments:", flag.Args())
 	if err := gotests.Echo(*n, *s, flag.Args()); err != nil {
 		fmt.Fprintf(os.Stderr, "echo: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("\narguments:", flag.Args())
 	fmt.Printf("type: %T, results: %s\n", gotests.Out, gotests.Out.(*bytes.Buffer).String())
 
 	fmt.Println("golang test main DONE.")

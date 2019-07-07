@@ -26,7 +26,7 @@ func printFormatName(firstName, lastName string) {
 }
 
 // demo, defer and recover()
-func testRecover() {
+func testRecoverFromPanic() {
 	if ret, err := myDivision(4, 0); err != nil {
 		fmt.Println(err)
 	} else {
@@ -267,15 +267,15 @@ func testCodeBlock() {
 func testArrayAndSlice01() {
 	// 数组中元素是值传递, 切片中元素是引用传递
 	fnUpdateArray := func(arr [5]int32) {
-		fmt.Printf("\n[fnUpdateArray] array: addr=%p\n", &arr)
+		fmt.Printf("\n[fnUpdateArray] array: addr=%p, val_addr=%p\n", &arr, arr)
 		arr[1] = 123
-		for i := 1; i < len(arr); i++ {
+		for i := 0; i < len(arr); i++ {
 			fmt.Printf("[fnUpdateArray] array item: val=%d, addr=%p\n", arr[i], &arr[i])
 		}
 	}
 
 	fnUpdateSlice := func(s []int32) {
-		fmt.Printf("\n[fnUpdateSlice] slice addr: %p\n", &s)
+		fmt.Printf("\n[fnUpdateSlice] slice: addr=%p, val_addr=%p\n", &s, s)
 		s[1] = 456
 		for i := 0; i < len(s); i++ {
 			fmt.Printf("[fnUpdateSlice] slice item: val=%d, addr=%p\n", s[i], &s[i])
@@ -284,14 +284,14 @@ func testArrayAndSlice01() {
 
 	// #1
 	var array1 = [...]int32{1, 2, 3, 4, 5}
-	fmt.Printf("\narray1 addr: %p\n", &array1)
+	fmt.Printf("\narray1: addr=%p, val_addr=%p\n", &array1, array1)
 	for i := 0; i < len(array1); i++ {
 		fmt.Printf("array1 item: val=%d, addr=%p\n", array1[i], &array1[i])
 	}
 
 	array2 := array1
 	array2[0] = 100
-	fmt.Printf("\narray2 addr: %p\n", &array2)
+	fmt.Printf("\narray2, addr=%p, val_addr=%p\n", &array2, array2)
 	for i := 0; i < len(array2); i++ {
 		fmt.Printf("array2 item: val=%d, addr=%p\n", array2[i], &array2[i])
 	}
@@ -301,14 +301,14 @@ func testArrayAndSlice01() {
 
 	// #2
 	var slice1 = []int32{1, 2, 3, 4, 5}
-	fmt.Printf("\nslice1 addr: %p\n", &slice1)
+	fmt.Printf("\nslice1: addr=%p, val_addr=%p\n", &slice1, slice1)
 	for i := 0; i < len(slice1); i++ {
 		fmt.Printf("slice1 item: val=%d, addr=%p\n", slice1[i], &slice1[i])
 	}
 
 	slice2 := slice1
 	slice2[0] = 200
-	fmt.Printf("\nslice2 addr: %p\n", &slice2)
+	fmt.Printf("\nslice2, addr=%p, val_addr=%p\n", &slice2, slice2)
 	for i := 0; i < len(slice2); i++ {
 		fmt.Printf("slice2 item: val=%d, addr=%p\n", slice2[i], &slice2[i])
 	}
@@ -352,7 +352,7 @@ func testArrayAndSlice02() {
 func testMapReference() {
 	// map中val元素是引用传递, 但map[key]则返回一个新的元素
 	fnUpdateMap := func(m map[int]string) {
-		fmt.Printf("\n[fnUpdateMap] map addr: %p\n", &m)
+		fmt.Printf("[fnUpdateMap] map val_addr=%p\n", m)
 		m[1] = "One"
 	}
 
@@ -360,22 +360,27 @@ func testMapReference() {
 	m[1] = "one"
 	m[2] = "two"
 	m[3] = "three"
+	fmt.Printf("\nsrc map val_addr=%p\n", m)
 
-	copiedM := m
-	copiedM[3] = "THREE"
-	copiedM[4] = "four"
+	mCopied := m
+	mCopied[3] = "THREE"
+	mCopied[4] = "four"
 	fnUpdateMap(m)
 	m[5] = "five"
+	fmt.Printf("cpoied map val_addr=%p\n", mCopied)
 
-	key := 3
-	fmt.Println("[main]")
+	key := 1
+	fmt.Println("\n[main]")
 	if item, ok := m[key]; ok {
-		fmt.Printf("map addr: %p, map[%d]: %p\n", &m, key, &item)
+		fmt.Printf("src map[%d]=%s, addr=%p\n", key, item, &item)
 	}
-	if item, ok := copiedM[key]; ok {
-		fmt.Printf("copied map addr: %p, map[%d] addr: %p\n", &copiedM, key, &item)
+	if item, ok := m[key]; ok {
+		fmt.Printf("src map[%d]=%s, addr=%p\n", key, item, &item)
 	}
-	fmt.Printf("map: %v, copied map: %v\n", m, copiedM)
+
+	if item, ok := mCopied[key]; ok {
+		fmt.Printf("copied map[%d]=%s, addr=%p\n", key, item, &item)
+	}
 }
 
 // demo, struct var reference
@@ -388,7 +393,7 @@ func testStructReference() {
 	}
 
 	fnUpdateStruct := func(p people) {
-		fmt.Printf("\n[fnUpdateStruct] p addr: %p, p job addr: %p\n", &p, &p.job)
+		fmt.Printf("\n[fnUpdateStruct] p.job addr: %p\n", &p.job)
 		p.id = "002"
 		p.age = 35
 		fmt.Printf("[fnUpdateStruct] p: %+v\n", p)
@@ -399,21 +404,20 @@ func testStructReference() {
 		age: 30,
 		job: "tester",
 	}
-
 	p2 := p1
 	p2.job = "developer"
+
 	fnUpdateStruct(p1)
 	fmt.Println("[main]")
-	fmt.Printf("p1 addr: %p, p1 job addr: %p\n", &p1, &p1.job)
-	fmt.Printf("p2 addr: %p, p2 job addr: %p\n", &p2, &p2.job)
+	fmt.Printf("p1.job addr: %p\n", &p1.job)
+	fmt.Printf("p2.job addr: %p\n", &p2.job)
 	fmt.Printf("p1: %+v, p2: %+v\n", p1, p2)
 }
 
 // demo, update bytes
 func testUpdateBytes() {
-	s := "hello world"
-	b := []byte(s)
-	fmt.Printf("\n[main] b: addr=%p, len=%d, cap=%d\n", &b, len(b), cap(b))
+	b := []byte("hello world")
+	fmt.Printf("\n[main] b: addr=%p, val_addr=%p, len=%d, cap=%d\n", &b, b, len(b), cap(b))
 
 	fmt.Println("\n#1: by value:")
 	fmt.Printf("before update: %s\n", string(b))
@@ -427,36 +431,38 @@ func testUpdateBytes() {
 }
 
 func myUpdateBytesByVal(b []byte) {
-	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
+	fmt.Printf("[myUpdateBytesByVal] b: val_addr=%p, len=%d, cap=%d\n", b, len(b), cap(b))
 	b[0] = 'H'
-	b = bytes.ToUpper(b)
-	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
-	b = append(b, '!', '!')
-	fmt.Printf("[myUpdateBytesByVal] b: addr=%p, len=%d, cap=%d\n", &b[2], len(b), cap(b))
+	b = bytes.ToUpper(b) // re-allocate
+	fmt.Printf("[myUpdateBytesByVal] b: val_addr=%p, len=%d, cap=%d\n", b, len(b), cap(b))
+	b = append(b, '!', '!') // re-size
+	fmt.Printf("[myUpdateBytesByVal] b: val_addr=%p, len=%d, cap=%d\n", b, len(b), cap(b))
 	fmt.Printf("[myUpdateBytesByVal] by value: %s\n", string(b))
 }
 
 func myUpdateBytesByRef(b *[]byte) {
-	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	fmt.Printf("[myUpdateBytesByRef] b: val_addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
 	*b = bytes.ToUpper(*b)
-	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	fmt.Printf("[myUpdateBytesByRef] b: val_addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
 	*b = append(*b, []byte{'!', '!', '!'}...)
-	fmt.Printf("[myUpdateBytesByRef] b: addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	fmt.Printf("[myUpdateBytesByRef] b: val_addr=%p, len=%d, cap=%d\n", b, len(*b), cap(*b))
+	// for pointer, cannot get slice item by index
+	// fmt.Printf("[myUpdateBytesByRef] b[0]: addr=%v", *b[0])
 	fmt.Printf("[myUpdateBytesByRef] by reference: %s\n", string(*b))
 }
 
 // demo, copy bytes
 func testCopyBytes() {
 	updateBytesByCopy := func(b []byte) {
-		fmt.Printf("[updateBytesByCopy] b addr: %p\n", &b)
-		copy(b, []byte("hello"))
+		fmt.Printf("[updateBytesByCopy] b: addr=%p, val_addr=%p\n", &b, b)
+		copy(b, []byte("hello")) // 内存中, 覆盖原字符数组中的字符
+		fmt.Printf("[updateBytesByCopy] copied b: addr=%p, val_addr=%p\n", &b, b)
 	}
 
 	b := []byte("test_go")
-	fmt.Printf("\nb addr: %p\n", &b)
-	fmt.Printf("b: type=%T, len=%d, cap=%d\n", b, len(b), cap(b))
+	fmt.Printf("\nb: val_addr=%p, type=%T, len=%d, cap=%d\n", b, b, len(b), cap(b))
 	updateBytesByCopy(b)
-	fmt.Println("after copied, b val:", string(b))
+	fmt.Println("copied b val:", string(b))
 
 	b = make([]byte, 3)
 	fmt.Printf("\nmake b: len=%d, cap=%d, val=%v\n", len(b), cap(b), b)
@@ -526,7 +532,7 @@ func incr(a int) int {
 func MainDemo01() {
 	// testPrintFormatName()
 	// testPrintStructValue()
-	// testRecover()
+	// testRecoverFromPanic()
 
 	// testStructMethod()
 	// testInnerStruct()

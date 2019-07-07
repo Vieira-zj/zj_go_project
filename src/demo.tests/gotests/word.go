@@ -22,7 +22,7 @@ func IsPalindrome(s string) bool {
 	return true
 }
 
-// IsPalindrome2 : update iterator count "n" for benchmark.
+// IsPalindrome2 iterator (count / 2) for benchmark.
 func IsPalindrome2(s string) bool {
 	var letters []rune
 	for _, r := range s {
@@ -40,7 +40,7 @@ func IsPalindrome2(s string) bool {
 	return true
 }
 
-// IsPalindrome3 : pre-init slice "letters" for benchmark.
+// IsPalindrome3 pre-init slice "letters" for benchmark.
 func IsPalindrome3(s string) bool {
 	letters := make([]rune, 0, len(s))
 	for _, r := range s {

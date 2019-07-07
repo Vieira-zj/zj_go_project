@@ -48,7 +48,7 @@ func testGetFileName() {
 }
 
 // demo, verify go version
-func testGoVersion() {
+func testVerifyGoVersion() {
 	curVersion := runtime.Version()
 	fmt.Printf("\n%s >= go1.15: %v\n", curVersion, isGoVersionOK("1.15"))
 	fmt.Printf("%s >= go1.10: %v\n", curVersion, isGoVersionOK("1.10"))
@@ -124,14 +124,13 @@ func initBytesBySize(size int) []byte {
 func testSliceAppend() {
 	// #1
 	s := []int{5}
-	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	fmt.Printf("slice len=%d, cap=%d, val=%p\n", len(s), cap(s), s)
 	s = append(s, 7)
-	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	fmt.Printf("slice len=%d, cap=%d, val=%p\n", len(s), cap(s), s)
 	s = append(s, 9)
-	fmt.Printf("slice len=%d, cap=%d, addr=%p\n", len(s), cap(s), s)
+	fmt.Printf("slice len=%d, cap=%d, val=%p\n", len(s), cap(s), s)
 	x := append(s, 11)
-	fmt.Printf("slice x len=%d, cap=%d, addr=%p\n", len(x), cap(x), x)
-
+	fmt.Printf("slice x len=%d, cap=%d, val=%p\n", len(x), cap(x), x)
 	fmt.Println("items in x:")
 	for i := 0; i < len(x); i++ {
 		fmt.Printf("item %d: addr=%p, val=%d\n", i, &x[i], x[i])
@@ -139,9 +138,8 @@ func testSliceAppend() {
 
 	// #2
 	y := append(s, 12)
-	fmt.Printf("slice y len=%d, cap=%d, addr=%p\n", len(y), cap(y), y)
-
-	fmt.Println("\nnew items in x:")
+	fmt.Printf("\nslice y len=%d, cap=%d, val=%p\n", len(y), cap(y), y)
+	fmt.Println("new items in x:")
 	for i := 0; i < len(x); i++ {
 		fmt.Printf("item %d: addr=%p, val=%d\n", i, &x[i], x[i])
 	}
@@ -153,7 +151,7 @@ func testSliceAppend() {
 	// #3
 	z := make([]int, 4, 4)
 	copy(z, y)
-	fmt.Printf("\nslice z addr: %p\n", &z)
+	fmt.Printf("\nslice z len=%d, cap=%d, val=%p\n", len(z), cap(z), z)
 	fmt.Println("items in copied z:")
 	for i := 0; i < len(y); i++ {
 		fmt.Printf("item %d: addr=%p, val=%d\n", i, &z[i], z[i])
@@ -161,7 +159,7 @@ func testSliceAppend() {
 
 	// #4
 	printSliceInfo := func(s []int) {
-		fmt.Printf("\n[func] slice addr: %p\n", &s)
+		fmt.Printf("\n[func] slice: addr=%p, val=%p\n", &s, s)
 		fmt.Println("[func] slice items:")
 		for i := 0; i < len(s); i++ {
 			fmt.Printf("item %d: addr=%p, val=%d\n", i, &s[i], s[i])
@@ -517,7 +515,7 @@ func testGetGoroutinesCount() {
 // MainDemo04 main for golang demo04.
 func MainDemo04() {
 	// testGetFileName()
-	// testGoVersion()
+	// testVerifyGoVersion()
 	// testTimeOpSub()
 	// testRandomValues()
 	// testInitBytes()

@@ -44,7 +44,21 @@ func testIteratorChars() {
 	fmt.Println()
 }
 
-// demo, custom reader
+// demo, value and reference variable
+func testValueAndRefVar() {
+	arr := [5]int{1, 2, 3, 4, 5}
+	fmt.Printf("\narray: addr=%p, val_addr=%p, val=%v\n", &arr, arr, arr)
+	fmt.Printf("array item[0]: addr=%p, val=%d\n", &arr[0], arr[0])
+
+	s := []int{1, 2, 3, 4, 5}
+	fmt.Printf("\nslice: addr=%p, val_addr=%p, val=%v\n", &s, s, s)
+	fmt.Printf("slice item[0]: addr=%p, val=%d\n", &s[0], s[0])
+
+	m := make(map[int]string, 2)
+	fmt.Printf("\nmap: addr=%p, val_addr=%p, val=%v\n", &m, m, m)
+}
+
+// demo, custom reader (override Read())
 type alphaReader1 struct {
 	src string
 	cur int
@@ -86,7 +100,7 @@ func newAlphaReader1(src string) *alphaReader1 {
 	return &alphaReader1{src: src}
 }
 
-func testAlphaReader1() {
+func testCustomAlphaReader1() {
 	reader := newAlphaReader1("Hello! It's 9am, where is the sun?")
 	p := make([]byte, 4)
 	var b []byte
@@ -105,7 +119,7 @@ func testAlphaReader1() {
 	fmt.Println("\noutput:", string(b))
 }
 
-// demo, custom reader
+// demo, custom reader (override Read())
 type alphaReader2 struct {
 	reader io.Reader
 }
@@ -130,7 +144,7 @@ func newAlphaReader2(reader io.Reader) *alphaReader2 {
 	return &alphaReader2{reader: reader}
 }
 
-func testAlphaReader2() {
+func testCustomAlphaReader2() {
 	reader := newAlphaReader2(strings.NewReader("Hello! It's 9am, where is the sun?"))
 	p := make([]byte, 4)
 
@@ -148,7 +162,7 @@ func testAlphaReader2() {
 	fmt.Println()
 }
 
-// demo, custom writer
+// demo, custom writer (override Write())
 type chanWriter struct {
 	ch chan byte
 }
@@ -176,7 +190,7 @@ func newChanWriter() *chanWriter {
 	return &chanWriter{make(chan byte, 256)}
 }
 
-func testChanWriter() {
+func testCustomChanWriter() {
 	writer := newChanWriter()
 
 	for i := 0; i < 10; i++ {
@@ -397,15 +411,6 @@ func testFuncVariable() {
 	fmt.Printf("min results: %d\n", myCalculation02(2, 8, funcMyMin))
 }
 
-func funcMyAdd(num1, num2 int) int {
-	return num1 + num2
-}
-
-func funcMyMin(num1, num2 int) int {
-	ret := num1 - num2
-	return int(math.Abs(float64(ret)))
-}
-
 func myCalculation01(num1, num2 int, fnCal func(n1, n2 int) int) int {
 	return fnCal(num1, num2)
 }
@@ -414,6 +419,15 @@ type calculateFunc func(n1, n2 int) int
 
 func myCalculation02(num1, num2 int, fnCal calculateFunc) int {
 	return fnCal(num1, num2)
+}
+
+func funcMyAdd(num1, num2 int) int {
+	return num1 + num2
+}
+
+func funcMyMin(num1, num2 int) int {
+	ret := num1 - num2
+	return int(math.Abs(float64(ret)))
 }
 
 // demo, function decoration
@@ -491,12 +505,13 @@ func assertAPIs(args interface{}, fn func(args interface{}) *apiResponse) *apiRe
 
 // MainDemo03 main for golang demo03.
 func MainDemo03() {
-	testCheckMapEntry()
+	// testCheckMapEntry()
 	// testIteratorChars()
+	// testValueAndRefVar()
 
-	// testAlphaReader1()
-	// testAlphaReader2()
-	// testChanWriter()
+	// testCustomAlphaReader1()
+	// testCustomAlphaReader2()
+	// testCustomChanWriter()
 
 	// testSelectTimeTicker01()
 	// testSelectTimeTicker02()

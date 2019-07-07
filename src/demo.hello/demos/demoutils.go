@@ -23,12 +23,9 @@ import (
 	"github.com/larspensjo/config"
 )
 
-const (
-	testFilePath = "/Users/zhengjin/Downloads/tmp_files/test.out"
-)
-
 // file handlers
 func testGetBaseFileName() {
+	testFilePath := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/test.out")
 	if _, err := os.Stat(testFilePath); os.IsNotExist(err) {
 		fmt.Println("file not found:", testFilePath)
 	} else {
@@ -36,6 +33,7 @@ func testGetBaseFileName() {
 	}
 }
 
+// write text to /dev/null
 func testCopyBytesToNull() {
 	b := bytes.NewReader([]byte("content put to /dev/null"))
 	n, err := io.Copy(ioutil.Discard, b)
@@ -100,7 +98,7 @@ func getTextMD5Sum(b []byte) string {
 	return fmt.Sprintf("%x", bMd5)
 }
 
-// hash check - fnv32
+// hash check: fnv32
 func testHashFNV32() {
 	url := "www.qiniu.io"
 	hashedNum := hashFNV32(url)
@@ -167,6 +165,8 @@ func readRespBytesByRange(reqURL string) error {
 
 // file download and save by http Get
 func testMockFileDownload() {
+	testFilePath := filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files/test.out")
+
 	query := &url.Values{}
 	query.Add("uid", "1380469261")
 	query.Add("bucket", "publicbucket_z0")

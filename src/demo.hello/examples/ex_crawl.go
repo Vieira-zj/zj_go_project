@@ -9,8 +9,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-// example 01
-// Fetch prints the content found at a URL.
+// example 01, fetch prints the content found at a URL.
 func testFetchURL() {
 	const url string = "http://gopl.io"
 	fmt.Printf("\nbytes of url (%s): %d\n", url, len(myFetchURL(url)))
@@ -277,7 +276,7 @@ func isExitCrawlProcess(urls map[string]bool, limit int) bool {
 	return false
 }
 
-// MainCrawl : main function for crawl web links examples.
+// MainCrawl : main for crawl web links.
 func MainCrawl() {
 	// testFetchURL()
 	// testFetchlLinks01()
@@ -287,5 +286,5 @@ func MainCrawl() {
 	// testCrawl02()
 	// testCrawl03()
 
-	fmt.Println("golang crawl example DONE.")
+	fmt.Println("golang crawl examples DONE.")
 }

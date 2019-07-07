@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func testValueAndRef() {
+func testArrayValAndRef() {
 	myUpper := func(s *string) {
 		*s = strings.ToUpper(*s)
 	}
@@ -25,7 +25,7 @@ func testValueAndRef() {
 	fmt.Printf("src array: %v\n", srcArr)
 
 	var vCopiedArr = srcArr
-	var pCopiedArr *[3]int // type pointer
+	var pCopiedArr *[3]int
 	pCopiedArr = &srcArr
 	fmt.Printf("p type: %T\n", pCopiedArr)
 
@@ -51,7 +51,7 @@ type person struct {
 }
 
 func testStructValAndRef() {
-	// default, struct pass as value but not reference
+	// struct pass as value but not reference
 	fmt.Println("\npass by value:")
 	p1 := person{"Tom", 30, "ShangHai China"}
 	fmt.Println("before update:", p1)
@@ -83,12 +83,12 @@ type fullName struct {
 }
 
 func testStructArgs() {
-	name1 := fullName{
+	name := fullName{
 		firstName: "fname1",
 		lastName:  "lname1",
 		nickName:  "nname1",
 	}
-	myPrintFullName(name1)
+	myPrintFullName(name)
 	myPrintFullName(fullName{firstName: "fname2", lastName: "lname2", nickName: "nname2"})
 }
 
@@ -277,10 +277,10 @@ func (x customSort) Swap(i, j int) {
 
 func testSliceSort02() {
 	var tracks = []*track{
-		{"Go", "Delilah", "Root Up", 2012, getDuration("3m38s")},
-		{"Go", "Moby", "Moby", 1992, getDuration("3m37s")},
-		{"Ahead", "Alicia", "As I Am", 2007, getDuration("4m36s")},
-		{"Ready", "Martin", "Smash", 2011, getDuration("4m24s")},
+		{"Go", "Delilah", "Root Up", 2012, getTimeDuration("3m38s")},
+		{"Go", "Moby", "Moby", 1992, getTimeDuration("3m37s")},
+		{"Ahead", "Alicia", "As I Am", 2007, getTimeDuration("4m36s")},
+		{"Ready", "Martin", "Smash", 2011, getTimeDuration("4m24s")},
 	}
 
 	fmt.Println("\nbefore sort:")
@@ -318,7 +318,7 @@ func printTracks(tracks []*track) {
 	}
 }
 
-func getDuration(s string) time.Duration {
+func getTimeDuration(s string) time.Duration {
 	d, err := time.ParseDuration(s)
 	if err != nil {
 		panic(s)
@@ -326,9 +326,9 @@ func getDuration(s string) time.Duration {
 	return d
 }
 
-// MainOO : main function for struct and interface examples.
+// MainOO : main for struct and interface examples.
 func MainOO() {
-	// testValueAndRef()
+	// testArrayValAndRef()
 	// testStructValAndRef()
 	// testStructArgs()
 
@@ -341,5 +341,5 @@ func MainOO() {
 	// testSliceSort01()
 	// testSliceSort02()
 
-	fmt.Println("golang OO example DONE.")
+	fmt.Println("golang OO examples DONE.")
 }

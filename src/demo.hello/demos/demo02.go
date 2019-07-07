@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -140,6 +141,36 @@ func testOOInherit() {
 	sub2.PrintDesc()
 }
 
+// demo, rw mutex
+func testRwMutex() {
+	mutex := new(sync.RWMutex)
+	fmt.Println("\nready in main")
+	mutex.Lock()
+	fmt.Println("mutex locked in main")
+
+	chs := make([]chan int, 4)
+	for i := 0; i < 4; i++ {
+		chs[i] = make(chan int)
+		go func(i int, ch chan<- int) {
+			fmt.Println("ready in routine:", i)
+			mutex.RLock()
+			fmt.Println("mutex read locked in routine:", i)
+			time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
+			fmt.Println("mutex read unlocked in routine:", i)
+			mutex.RUnlock()
+			ch <- i
+		}(i, chs[i])
+	}
+
+	time.Sleep(time.Second)
+	fmt.Println("mutex unlocked in main")
+	mutex.Unlock()
+
+	for _, ch := range chs {
+		<-ch
+	}
+}
+
 // demo, panic and recover()
 func testPanicRecover() {
 	defer func() {
@@ -195,92 +226,38 @@ func testCreateError() {
 	fmt.Println("custom error:", myErr)
 }
 
-// demo, base64 encode and decode
-func testBase64Code() {
-	const str = "Go 言语编程 "
-	base64EncodeAndDecode(base64.StdEncoding, str)
-	base64EncodeAndDecode(base64.URLEncoding, str)
-	base64EncodeAndDecode(base64.RawStdEncoding, str)
-	base64EncodeAndDecode(base64.RawURLEncoding, str)
-}
-
-func base64EncodeAndDecode(enc *base64.Encoding, input string) {
-	encStr := enc.EncodeToString([]byte(input))
-	fmt.Printf("\nbase64 encoded string: %s\n", encStr)
-
-	decStr, err := enc.DecodeString(encStr)
-	if err != nil {
-		panic("base64 decode error!")
-	}
-	fmt.Printf("base64 decoded string: %s\n", decStr)
-
-	if input != string(decStr) {
-		panic(errors.New("not equal"))
-	}
-}
-
-// demo, rw mutex
-func testRwMutex() {
-	mutex := new(sync.RWMutex)
-	fmt.Println("\nready in main")
-	mutex.Lock()
-	fmt.Println("mutex locked in main")
-
-	chs := make([]chan int, 4)
-	for i := 0; i < 4; i++ {
-		chs[i] = make(chan int)
-		go func(i int, ch chan<- int) {
-			fmt.Println("ready in routine:", i)
-			mutex.RLock()
-			fmt.Println("mutex read locked in routine:", i)
-			time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
-			fmt.Println("mutex read unlocked in routine:", i)
-			mutex.RUnlock()
-			ch <- i
-		}(i, chs[i])
-	}
-
-	time.Sleep(time.Second)
-	fmt.Println("mutex unlocked in main")
-	mutex.Unlock()
-
-	for _, ch := range chs {
-		<-ch
-	}
-}
-
-// demo, []string in array
-func testStringsInArray() {
-	fmt.Println("\n#1. by map:")
+// demo, []string in array and map
+func testArrayInMap() {
+	fmt.Println("\n#1: by map:")
 	m := make(map[int][]string, 3)
 	m[1] = []string{"a1", "a2", "a3"}
 	m[2] = []string{"b1", "b2", "b3"}
 	fmt.Printf("map length: %d\n", len(m))
 	for k, v := range m {
-		fmt.Printf("%d=%v\n", k, v)
+		fmt.Printf("%d=%v\n", k, strings.Join(v, ","))
 	}
 
-	fmt.Println("\n#2. by slice:")
+	fmt.Println("\n#2: by slice:")
 	arr := [...][3]string{
 		{"a1", "a2", "a3"},
 		{"b1", "b2", "b3"},
 		{"c1", "c2", "c3"},
 	}
 	for idx, item := range arr {
-		fmt.Printf("%d=%v\n", idx, item)
+		fmt.Printf("%d=%v\n", idx, strings.Join(item[:], ":"))
 	}
 
-	fmt.Println("\n#3. by slice:")
+	fmt.Println("\n#3: by slice:")
 	var s [][]string
 	for i := 0; i < 3; i++ {
-		var tmpSlice []string
+		var sTmp []string
 		for j := 0; j < 3; j++ {
-			tmpSlice = append(tmpSlice, strconv.Itoa(i+j))
+			sTmp = append(sTmp, strconv.Itoa(i+j))
 		}
-		s = append(s, tmpSlice)
+		s = append(s, sTmp)
 	}
 	for idx, item := range s {
-		fmt.Printf("%d=%v\n", idx, item)
+		fmt.Printf("%d=%v\n", idx, strings.Join(item, "|"))
 	}
 }
 
@@ -431,6 +408,30 @@ func testRuneType() {
 	fmt.Println("top 2 cn words:", string(r[:2]))
 }
 
+// demo, base64 encode and decode
+func testBase64Code() {
+	const str = "Go 言语编程 "
+	base64EncodeAndDecode(base64.StdEncoding, str)
+	base64EncodeAndDecode(base64.URLEncoding, str)
+	base64EncodeAndDecode(base64.RawStdEncoding, str)
+	base64EncodeAndDecode(base64.RawURLEncoding, str)
+}
+
+func base64EncodeAndDecode(enc *base64.Encoding, input string) {
+	encStr := enc.EncodeToString([]byte(input))
+	fmt.Printf("\nbase64 encoded string: %s\n", encStr)
+
+	decStr, err := enc.DecodeString(encStr)
+	if err != nil {
+		panic("base64 decode error!")
+	}
+	fmt.Printf("base64 decoded string: %s\n", decStr)
+
+	if input != string(decStr) {
+		panic(errors.New("not equal"))
+	}
+}
+
 // demo, io writer
 func testIOWriter() {
 	// #1
@@ -524,14 +525,12 @@ func MainDemo02() {
 	// testInterface01()
 	// testInterface02()
 	// testOOInherit()
+	// testRwMutex()
 
 	// testPanicRecover()
 	// testCreateError()
 
-	// testBase64Code()
-	// testRwMutex()
-
-	// testStringsInArray()
+	// testArrayInMap()
 	// testSliceOrder()
 	// testMapOrder()
 	// testGetMapValue()
@@ -542,6 +541,7 @@ func MainDemo02() {
 	// testPrintfFormat()
 	// testRegExpMore()
 	// testRuneType()
+	// testBase64Code()
 
 	// testIOWriter()
 	// testIOReader()

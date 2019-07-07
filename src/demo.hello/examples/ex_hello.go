@@ -19,7 +19,7 @@ func intFormatTest() {
 	fmt.Println("\nformat int64 / 36:", strconv.FormatInt(num, 36))
 }
 
-func returnTest() {
+func returnVarsTest() {
 	firstName, _, _ := getNames()
 	_, lastName, _ := getNames()
 	fmt.Printf("name: %s %s\n", firstName, lastName)
@@ -29,8 +29,8 @@ func getNames() (firstName, lastName, nickName string) {
 	return "May", "Chan", "Chibi Maruko"
 }
 
-func intVarTest() {
-	fmt.Println("\n#1. vars declare and init:")
+func intVarsTest() {
+	fmt.Println("\n#1: vars declare and init:")
 	// var v1 int = 10
 	// fmt.Println(v1)
 	var v2 = 10
@@ -40,14 +40,14 @@ func intVarTest() {
 	// fmt.Println("v3=" + strconv.Itoa(v3))
 	fmt.Printf("v3=%d\n", v3)
 
-	fmt.Println("\n#2. vars exchange:")
+	fmt.Println("\n#2: vars exchange:")
 	i := 1
 	j := 3
 	i, j = j, i
 	fmt.Println(i)
 	fmt.Println(j)
 
-	fmt.Println("\n#3. enum type:")
+	fmt.Println("\n#3: enum type:")
 	type weekday int
 	const (
 		Sunday weekday = iota
@@ -64,14 +64,14 @@ func intVarTest() {
 	fmt.Println("today:", today)
 }
 
-func stringVarTest() {
-	fmt.Println("\n#1. string basic:")
+func stringVarsTest() {
+	fmt.Println("\n#1: string basic:")
 	str := "hello world"
 	fmt.Printf("length of %s is %d\n", str, len(str))
 	fmt.Printf("first char of %s is %c\n", str, str[0])
 	fmt.Printf("char at 0 to 5 is %v\n", str[0:5])
 
-	fmt.Println("\n#2. iterator on string:")
+	fmt.Println("\n#2: iterator on string:")
 	str = "hello"
 	for i := 0; i < len(str); i++ {
 		fmt.Printf("str[%d] = %c,", i, str[i]) // char
@@ -82,7 +82,7 @@ func stringVarTest() {
 	}
 	fmt.Println()
 
-	fmt.Println("\n#3. create value by new:")
+	fmt.Println("\n#3: create value by new:")
 	p := new(int)
 	fmt.Printf("p type: %T\n", p) // type pointer
 	fmt.Printf("p value: %d\n", *p)
@@ -90,17 +90,17 @@ func stringVarTest() {
 	fmt.Printf("update p value: %d\n", *p)
 }
 
-func arrayVarTest() {
-	fmt.Println("\n#1. define array:")
+func arrayVarsTest() {
+	fmt.Println("\n#1: define array:")
 	q := [...]int{1, 2, 3}
 	fmt.Printf("array q: %T\n", q)
 
-	fmt.Println("\n#2. array pass as value (not reference):")
+	fmt.Println("\n#2: array pass as value (not reference):")
 	array := [5]int{1, 2, 3, 4, 5}
 	modifyArray(array)
 	fmt.Println("in main(), array values:", array)
 
-	fmt.Println("\n#3. create slice from array:")
+	fmt.Println("\n#3: create slice from array:")
 	myArray := [10]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	fmt.Println("myArray elements:")
 	for _, v := range myArray {
@@ -122,14 +122,14 @@ func modifyArray(array [5]int) {
 	fmt.Println("in modifyArray(), array values:", array)
 }
 
-func sliceVarTest() {
-	fmt.Println("\n#1. init slice:")
+func sliceVarsTest() {
+	fmt.Println("\n#1: init slice:")
 	mySlice1 := make([]int, 0)
 	fmt.Println("mySlice1 init length:", len(mySlice1))
 	mySlice1 = append(mySlice1, 1, 2)
 	fmt.Printf("mySlice1 length: %d values: %v\n", len(mySlice1), mySlice1)
 
-	fmt.Println("\n#2. slice pass as value:")
+	fmt.Println("\n#2: slice pass as value:")
 	// init 5 elements with default value 0, capbility is 10
 	mySlice2 := make([]int, 5, 10)
 	fmt.Println("mySlice2 length:", len(mySlice2))
@@ -142,7 +142,7 @@ func sliceVarTest() {
 	myUpdateSlice(mySlice2)
 	fmt.Println("in main(), slice:", mySlice2)
 
-	fmt.Println("\n#3. copy slice:")
+	fmt.Println("\n#3: copy slice:")
 	mySlice3 := []int{21, 22, 23}
 	copy(mySlice2, mySlice3)
 	fmt.Printf("mySlice2 after copied: %v\n", mySlice2)
@@ -154,8 +154,8 @@ func myUpdateSlice(s []int) {
 	fmt.Println("in updateSlice(), slice:", s)
 }
 
-func mapVarTest01() {
-	fmt.Println("\n#1. map init and iterator:")
+func mapVarsTest01() {
+	fmt.Println("\n#1: map init and iterator:")
 	tmpMap1 := map[string]int{
 		"one": 1,
 		"two": 2,
@@ -164,12 +164,12 @@ func mapVarTest01() {
 	fmt.Printf("map1 type: %T\n", tmpMap1)
 	fmt.Printf("map1 length: %d\n", len(tmpMap1))
 
-	fmt.Println("\n#2. iterator on map1:")
+	fmt.Println("\n#2: iterator on map1:")
 	for k, v := range tmpMap1 {
 		fmt.Printf("%d=%s\n", v, k)
 	}
 
-	fmt.Println("\n#3. map2 keys:")
+	fmt.Println("\n#3: map2 keys:")
 	tmpMap2 := make(map[string]int)
 	tmpMap2["four"] = 4
 	tmpMap2["five"] = 5
@@ -185,8 +185,8 @@ type personInfo struct {
 	Address string
 }
 
-func mapVarTest02() {
-	fmt.Println("\n#1. map pass as reference:")
+func mapVarsTest02() {
+	fmt.Println("\n#1: map pass as reference:")
 	var persons map[string]personInfo
 	persons = make(map[string]personInfo)
 	persons["01"] = personInfo{"id01", "Tom", "Room 203,..."}
@@ -194,7 +194,7 @@ func mapVarTest02() {
 	myUpdateMap(persons)
 	fmt.Printf("in main(), person map: %v\n", persons)
 
-	fmt.Println("\n#2. print map as sorted:")
+	fmt.Println("\n#2: print map as sorted:")
 	// var ids []string
 	ids := make([]string, 0, len(persons))
 	for id := range persons {
@@ -205,12 +205,12 @@ func mapVarTest02() {
 		fmt.Printf("%s\t%s\n", id, persons[id].Name)
 	}
 
-	fmt.Println("\n#3. delete map entry by key:")
+	fmt.Println("\n#3: delete map entry by key:")
 	delete(persons, "01")
 	if person, ok := persons["01"]; ok {
 		fmt.Println("person found:", person.Name)
 	} else {
-		fmt.Println("person not found.")
+		fmt.Println("person not found!")
 	}
 }
 
@@ -366,7 +366,7 @@ func objectTest() {
 	fmt.Println("after scale:", p2.String())
 }
 
-// PrintGoEnvValues : print go root and path env values.
+// PrintGoEnvValues : print go root and path env values (public).
 func PrintGoEnvValues() {
 	fmt.Printf("$GOROOT: %s\n", os.Getenv("GOROOT"))
 	fmt.Printf("$GOPATH: %s\n", os.Getenv("GOPATH"))
@@ -375,16 +375,15 @@ func PrintGoEnvValues() {
 // MainHello : main function for general golang examples.
 func MainHello() {
 	// hello("zheng", "jin")
-
 	// intFormatTest()
-	// returnTest()
+	// returnVarsTest()
 
-	// intVarTest()
-	// stringVarTest()
-	// arrayVarTest()
-	// sliceVarTest()
-	// mapVarTest01()
-	// mapVarTest02()
+	// intVarsTest()
+	// stringVarsTest()
+	// arrayVarsTest()
+	// sliceVarsTest()
+	// mapVarsTest01()
+	// mapVarsTest02()
 
 	// switchTest()
 	// controlTest()
@@ -395,8 +394,7 @@ func MainHello() {
 	// funcClosureTest()
 
 	// varTypeCheckTest()
-
 	// objectTest()
 
-	fmt.Println("golang hello example DONE.")
+	fmt.Println("golang hello examples DONE.")
 }

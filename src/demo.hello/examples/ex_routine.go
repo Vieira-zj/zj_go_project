@@ -239,7 +239,7 @@ loop:
 	printSpaceUsage(nfiles, nbytes)
 }
 
-// MainGoRoutine : main function for goroutine, channel examples.
+// MainGoRoutine : main for goroutine, channel examples.
 func MainGoRoutine() {
 	// testRoutine01()
 	// testRoutine02()
@@ -253,5 +253,5 @@ func MainGoRoutine() {
 	// getDirTotalSize01()
 	// getDirTotalSize02()
 
-	fmt.Println("golang routine example DONE.")
+	fmt.Println("golang routine examples DONE.")
 }

@@ -330,7 +330,7 @@ func init() {
 	PrintGoEnvValues()
 }
 
-// MainIO : main function for golang IO examples.
+// MainIO : main for golang IO rw examples.
 func MainIO() {
 	// testFileExist()
 
@@ -350,5 +350,5 @@ func MainIO() {
 	// testReadFlag01()
 	// testReadFlag02()
 
-	fmt.Println("golang IO example DONE.")
+	fmt.Println("golang IO examples DONE.")
 }

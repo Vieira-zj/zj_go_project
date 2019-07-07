@@ -189,7 +189,7 @@ func display(name string, v reflect.Value) {
 	}
 }
 
-// MainReflect : main function for reflect examples.
+// MainReflect : main for reflect examples.
 func MainReflect() {
 	// testReflect()
 	// testMySprint()
