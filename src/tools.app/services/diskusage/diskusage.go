@@ -1,4 +1,4 @@
-package services
+package diskusage
 
 import (
 	"fmt"
@@ -25,6 +25,47 @@ func NewDiskUsage() *DiskUsage {
 		semaphore: make(chan struct{}, numParallel),
 	}
 }
+
+// ********* FilesTree
+
+// PrintFilesTree print files tree for a directory by limited levels.
+func (du *DiskUsage) PrintFilesTree(dirPath string, limit int) error {
+	return du.printFilesTreeAtCurDir(dirPath, 0, limit)
+}
+
+func (du *DiskUsage) printFilesTreeAtCurDir(dirPath string, curLevel, limit int) error {
+	if limit != -1 && curLevel >= limit {
+		return nil
+	}
+	if err := du.verifyPath(dirPath); err != nil {
+		return err
+	}
+
+	fInfos, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		return err
+	}
+
+	fnPrintPrefix := func(level int) {
+		for i := level; i > 0; i-- {
+			fmt.Print("|\t")
+		}
+	}
+
+	for _, info := range fInfos {
+		if info.IsDir() {
+			fnPrintPrefix(curLevel)
+			fmt.Println(info.Name() + "\\")
+			du.printFilesTreeAtCurDir(filepath.Join(dirPath, info.Name()), curLevel+1, limit)
+		} else {
+			fnPrintPrefix(curLevel)
+			fmt.Println(info.Name())
+		}
+	}
+	return nil
+}
+
+// ********* DiskUsage
 
 // PrintDirDiskUsage returns disk space usage for specified directory.
 func (du *DiskUsage) PrintDirDiskUsage(dirPath string) error {

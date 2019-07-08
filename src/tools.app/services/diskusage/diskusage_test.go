@@ -1,4 +1,4 @@
-package services_test
+package diskusage_test
 
 import (
 	"os"

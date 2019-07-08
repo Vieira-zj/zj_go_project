@@ -46,19 +46,22 @@ function go_benchmark_test() {
 
 # TOOLS TEST
 function tool_svc_test() {
-    go test -v -count=1 src/tools.app/services/$1
-}
-
-function tool_svc_httprouter_test() {
-    go test -v src/tools.app/services/httprouter/
+    test_dir=$1
+    if [ -z $2 ]; then
+        go test -v -count=1 src/tools.app/services/${test_dir}
+    else
+        test_file=$2
+        go test -v -count=1 src/tools.app/services/${test_dir}/${test_file}
+    fi
 }
 
 function tool_utils_test() {
     if [ -z $1 ]; then
         go test -v src/tools.app/utils
-        return
+    else
+        test_file=$1
+        go test -v src/tools.app/utils/${test_file}
     fi
-    go test -v src/tools.app/utils/$1
 }
 
 function tool_utils_benchmark_test() {
@@ -292,9 +295,7 @@ function shell_test_09() {
 # go_func_test
 # go_benchmark_test
 
-# tool_svc_httprouter_test
-tool_svc_test diskusage_test.go
-# tool_utils_test
+# tool_svc_test diskusage filestree_test.go
 # tool_utils_test httputil_test.go
 # tool_utils_benchmark_test ioutil_bmark_test.go
 
