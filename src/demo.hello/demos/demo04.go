@@ -257,7 +257,6 @@ func testLogInfoToStdout() {
 		isError = true
 		isPanic = false
 	)
-
 	if isError {
 		//print();os.Exit(1);
 		logger.Fatal("this is a error")

@@ -63,9 +63,9 @@ function build_tools_bin() {
     # scp_remote ${bin_path}
 }
 
-if [[ $1 == "ddtest" ]]; then
-    build_tools_bin $1
-    # build_tools_bin $1 "linux"
+if [[ $1 == "tool" ]]; then
+    build_tools_bin $2
+    # build_tools_bin $2 "linux"
     exit 0
 fi
 

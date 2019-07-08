@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
+	"sync"
+	"time"
 )
 
 // demo, type assert
@@ -81,11 +84,98 @@ func testPointerVar02() {
 	fmt.Printf("\nsrc s: %v, p: %v, s1: %v\n", s, *p, s1)
 }
 
+// demo, panic in routine
+func testPanicInRoutine() {
+	fmt.Println("start go routine and panic.")
+	ch := make(chan int)
+
+	go func() {
+		defer func() {
+			if p := recover(); p != nil {
+				fmt.Println("routine internal error:", p)
+				close(ch)
+			}
+		}()
+
+		for i := 0; i < 10; i++ {
+			time.Sleep(time.Second)
+			ch <- i
+			if i == 3 {
+				panic(fmt.Errorf("mock panic in routine"))
+			}
+		}
+	}()
+
+	for i := range ch {
+		fmt.Println("receive:", i)
+	}
+	fmt.Println("main routine done.")
+}
+
+// demo, WaitGroup
+func testSyncWaitGroup() {
+	var wg sync.WaitGroup
+
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func(idx int, wg *sync.WaitGroup) {
+			defer wg.Done()
+			fmt.Printf("go routine 1_%d is running...\n", idx)
+			time.Sleep(time.Duration(2) * time.Second)
+		}(i, &wg)
+	}
+
+	// use WaitGroup as global var
+	for j := 0; j < 5; j++ {
+		wg.Add(1)
+		go func(idx int) {
+			defer wg.Done()
+			fmt.Printf("go routine 2_%d is running...\n", idx)
+			time.Sleep(time.Duration(3) * time.Second)
+		}(j)
+	}
+
+	time.Sleep(time.Duration(500) * time.Millisecond)
+	fmt.Println("go routines count:", runtime.NumGoroutine())
+
+	wg.Wait()
+	fmt.Println("all go routines are done")
+}
+
+// demo, invoke method which receiver as value or reference
+type myCalculation struct {
+	val int
+}
+
+func (c *myCalculation) Greater(i int) bool {
+	return i > c.val
+}
+
+func (c myCalculation) Less(i int) bool {
+	return i < c.val
+}
+
+func testMethodsWithDiffRev() {
+	const base = 3
+	calRef := &myCalculation{val: base}
+	fmt.Println("\n4 > base:", calRef.Greater(4))
+	fmt.Println("2 < base:", calRef.Less(2))
+
+	calVal := myCalculation{val: base}
+	fmt.Println("2 > base:", calVal.Greater(2))
+	fmt.Println("5 < base:", calVal.Less(5))
+}
+
 // MainDemo05 main for golang demo05.
 func MainDemo05() {
-	testVarTypeAssert()
+	// testVarTypeAssert()
 	// testPointerVar01()
 	// testPointerVar02()
+
+	testPanicInRoutine()
+	// testSyncWaitGroup()
+
+	// testMethodsWithDiffRev()
 
 	fmt.Println("golang demo05 DONE.")
 }
