@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	mysvc "tools.app/services"
+	mysvc "tools.app/services/diskusage"
 )
 
 func TestListFiles(t *testing.T) {

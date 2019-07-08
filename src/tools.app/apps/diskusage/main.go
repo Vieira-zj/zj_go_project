@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	mysvc "tools.app/services"
+	mysvc "tools.app/services/diskusage"
 )
 
 var (

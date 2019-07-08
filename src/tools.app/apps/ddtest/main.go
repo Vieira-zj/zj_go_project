@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"tools.app/services"
+	mysvc "tools.app/services/ddtest"
 )
 
 var (
@@ -39,8 +39,8 @@ func main() {
 	}
 	fmt.Printf("ddtest timeout %d(minutes)\n", timeout)
 
-	ddtest := services.NewDDTest()
-	args := services.DDArgs{
+	ddtest := mysvc.NewDDTest()
+	args := mysvc.DDArgs{
 		Mode:       mode,
 		FileName:   fileName,
 		BlockSize:  blockSize * 1024 * 1024,
