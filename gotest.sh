@@ -296,7 +296,7 @@ function shell_test_09() {
 # go_benchmark_test
 
 # tool_svc_test diskusage filestree_test.go
-# tool_utils_test httputil_test.go
+# tool_utils_test ioutil_test.go
 # tool_utils_benchmark_test ioutil_bmark_test.go
 
 # go_bdd_test_01

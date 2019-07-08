@@ -9,6 +9,7 @@ import (
 )
 
 func TestReadFileContent(t *testing.T) {
+	t.Skip("skip TestReadFileContent.")
 	var (
 		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 		fPath      = filepath.Join(tmpDirPath, "test.out")
@@ -36,6 +37,7 @@ func TestReadFileContent(t *testing.T) {
 }
 
 func TestReadFileLines(t *testing.T) {
+	t.Skip("skip TestReadFileLines.")
 	var (
 		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 		fPath      = filepath.Join(tmpDirPath, "test.out")
@@ -53,6 +55,7 @@ func TestReadFileLines(t *testing.T) {
 }
 
 func TestWriteToNewFile(t *testing.T) {
+	t.Skip("skip TestWriteToNewFile.")
 	var (
 		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 		fPath      = filepath.Join(tmpDirPath, "write_test.out")
@@ -80,6 +83,7 @@ func TestWriteToNewFile(t *testing.T) {
 }
 
 func TestAppendToFile(t *testing.T) {
+	t.Skip("skip TestAppendToFile.")
 	var (
 		tmpDirPath = filepath.Join(os.Getenv("HOME"), "Downloads/tmp_files")
 		fPath      = filepath.Join(tmpDirPath, "append_test.out")
@@ -116,4 +120,9 @@ func TestAppendToFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestGetCurPath(t *testing.T) {
+	t.Log("Case01: test get current run abs path.")
+	t.Log("current path:", myutils.GetCurPath())
 }

@@ -5,14 +5,15 @@ import (
 	"fmt"
 
 	mysvc "tools.app/services/diskusage"
+	myutils "tools.app/utils"
 )
 
 var (
-	h = flag.Bool("h", false, "help")
-	t = flag.Bool("t", false, "print files tree of dir")
-	l = flag.Int("l", 1, "files tree level to print")
-	u = flag.Bool("u", false, "print disk usage of dir")
-	p = flag.String("p", "", "dir path")
+	h = flag.Bool("h", false, "help.")
+	t = flag.Bool("t", false, "print files tree of dir.")
+	l = flag.Int("l", 1, "files tree level to print.")
+	u = flag.Bool("u", false, "print disk usage of dir.")
+	p = flag.String("p", myutils.GetCurPath(), "specified dir path.")
 )
 
 // build cmd: ./gorun.sh tool diskusage

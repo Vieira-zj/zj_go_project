@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 // IsFileExist returns bool for file exist.
@@ -30,6 +31,12 @@ func DeleteFile(path string) error {
 		return err
 	}
 	return os.Remove(path)
+}
+
+// GetCurPath returns current run abs path.
+func GetCurPath() string {
+	dir, _ := filepath.Split(os.Args[0])
+	return dir
 }
 
 // ********* File Read
