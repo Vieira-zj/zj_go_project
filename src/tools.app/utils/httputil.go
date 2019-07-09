@@ -139,7 +139,7 @@ func intMin(a, b int) int {
 
 func printDivLine() {
 	if IsHTTPLog {
-		fmt.Println("# ***************************************************")
+		fmt.Println("#", strings.Repeat("*", 60))
 	}
 }
 

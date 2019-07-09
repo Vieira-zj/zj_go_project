@@ -1,11 +1,14 @@
 package demos
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 )
@@ -166,16 +169,138 @@ func testMethodsWithDiffRev() {
 	fmt.Println("5 < base:", calVal.Less(5))
 }
 
+// demo, inherit in struct
+type t1 struct {
+	s1 string
+}
+
+func (*t1) f1() {
+	fmt.Println("t1.f1")
+}
+
+type t2 struct {
+	s2 string
+}
+
+func (*t2) f2() {
+	fmt.Println("t2.f2")
+}
+
+type ts struct {
+	*t1 // pointer
+	t2  // value
+}
+
+func testStructInherit() {
+	t := ts{
+		t1: &t1{"foo"},
+		t2: t2{"bar"},
+	}
+	t.f1()
+	t.f2()
+	fmt.Println(t.s1)
+	fmt.Println(t.s2)
+}
+
+// demo, bufio Writer
+type myWriter struct{}
+
+func (myWriter) Write(b []byte) (n int, err error) {
+	fmt.Println(len(b))
+	return len(b), nil
+}
+
+func testBufioWriter() {
+	fmt.Println("\n|", strings.Repeat("-", 30))
+	fmt.Println("Unbuffered I/O")
+	w := myWriter{}
+	w.Write([]byte{'a'})
+	w.Write([]byte{'b'})
+	w.Write([]byte{'c'})
+	w.Write([]byte{'d'})
+
+	fmt.Println("Buffered I/O")
+	bw := bufio.NewWriterSize(w, 3)
+	bw.Write([]byte{'a'})
+	bw.Write([]byte{'b'})
+	bw.Write([]byte{'c'})
+	bw.Write([]byte{'d'})
+
+	fmt.Println("buffered bytes:", bw.Buffered())
+	fmt.Println("buffered available:", bw.Available())
+	if err := bw.Flush(); err != nil {
+		panic(err)
+	}
+}
+
+// demo, bufio Reader (WriterTo)
+type myReader struct {
+	n int
+}
+
+func (r *myReader) Read(p []byte) (n int, err error) {
+	fmt.Printf("read #%d\n", r.n)
+	if r.n >= 10 {
+		return 0, io.EOF
+	}
+
+	copy(p, "abcd")
+	r.n++
+	return 4, nil
+}
+
+func testBufioReader() {
+	r := &myReader{}
+	br := bufio.NewReaderSize(r, 16)
+	n, err := br.WriteTo(ioutil.Discard)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("written bytes: %d\n", n)
+}
+
+// demo, bufio ReadWriter
+func testBufioRW() {
+	s := strings.NewReader("abcd")
+	br := bufio.NewReaderSize(s, 4)
+	w := new(bytes.Buffer)
+	bw := bufio.NewWriterSize(w, 4)
+	rw := bufio.NewReadWriter(br, bw)
+
+	// buffer read
+	b := make([]byte, 2)
+	if _, err := rw.Read(b); err != nil {
+		panic(err)
+	}
+	fmt.Printf("\nread bytes: %q\n", b)
+	fmt.Println("reader buffer:", rw.Reader.Buffered())
+
+	// buffer write
+	if _, err := rw.Write([]byte("efgh")); err != nil {
+		panic(err)
+	}
+	if err := rw.Flush(); err != nil {
+		panic(err)
+	}
+	fmt.Println("write bytes:", w.String())
+	fmt.Println("writer buffer:", rw.Writer.Buffered())
+}
+
 // MainDemo05 main for golang demo05.
 func MainDemo05() {
 	// testVarTypeAssert()
 	// testPointerVar01()
 	// testPointerVar02()
 
-	testPanicInRoutine()
+	// testPanicInRoutine()
 	// testSyncWaitGroup()
 
 	// testMethodsWithDiffRev()
+	// testStructInherit()
+
+	// testBufioWriter()
+	// testBufioReader()
+	// testBufioRW()
 
 	fmt.Println("golang demo05 DONE.")
 }
