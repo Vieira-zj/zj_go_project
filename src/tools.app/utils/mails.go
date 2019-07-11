@@ -10,10 +10,11 @@ import (
 
 // MailEntry entry for send an mail.
 type MailEntry struct {
-	MailTo   []string
-	Subject  string
-	Body     string
-	ConnPass string
+	ConnPass    string
+	MailTo      []string
+	Subject     string
+	Body        string
+	AttachFiles []string
 }
 
 // SendMail sends a mail by smtp.
@@ -29,6 +30,10 @@ func SendMail(entry *MailEntry) error {
 	m.SetHeader("To", entry.MailTo...)
 	m.SetHeader("Subject", entry.Subject)
 	m.SetBody("text/html", entry.Body)
+
+	for _, f := range entry.AttachFiles {
+		m.Attach(f)
+	}
 
 	d := gomail.NewDialer(connHost, connPort, connUser, entry.ConnPass)
 	err := d.DialAndSend(m)
