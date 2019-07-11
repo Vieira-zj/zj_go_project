@@ -3,6 +3,8 @@ package demos
 import (
 	"bufio"
 	"bytes"
+	"container/heap"
+	"container/list"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -286,6 +288,104 @@ func testBufioRW() {
 	fmt.Println("writer buffer:", rw.Writer.Buffered())
 }
 
+// demo, container/list 双向链表
+func testContainerList() {
+	fnPrint := func(l *list.List) {
+		fmt.Println("\nlist elements:")
+		for e := l.Front(); e != nil; e = e.Next() {
+			fmt.Println(e.Value)
+		}
+	}
+
+	l := list.New()
+	l.PushBack(1)
+	l.PushBack(2)
+	fnPrint(l)
+
+	l.PushFront(0)
+	fnPrint(l)
+
+	for e := l.Front(); e != nil; e = e.Next() {
+		if e.Value == 1 {
+			l.InsertAfter(1.1, e)
+		}
+		if e.Value == 2 {
+			l.InsertBefore(1.2, e)
+		}
+	}
+	fnPrint(l)
+
+	fmt.Println("\nlist elements in reserve:")
+	for e := l.Back(); e != nil; e = e.Prev() {
+		fmt.Println(e.Value)
+	}
+}
+
+// demo, container/heap 最小二叉树
+type student struct {
+	name  string
+	score int
+}
+
+type studentHeap []student
+
+func (h studentHeap) Len() int {
+	return len(h)
+}
+
+func (h studentHeap) Less(i, j int) bool {
+	return h[i].score < h[j].score // 最小堆
+}
+
+func (h studentHeap) Swap(i, j int) {
+	h[i], h[j] = h[j], h[i]
+}
+
+func (h *studentHeap) Push(x interface{}) {
+	// Push and Pop use pointer receivers because they modify the slice's length, not just its contents.
+	*h = append(*h, x.(student))
+}
+
+func (h *studentHeap) Pop() interface{} {
+	old := *h
+	n := len(old)
+	x := old[n-1]
+	*h = old[0 : n-1]
+	return x
+}
+
+func testContainerHeap() {
+	fnPrint := func(h *studentHeap) {
+		fmt.Println("\nstudent heap items:")
+		for _, ele := range *h {
+			fmt.Printf("student name %s, score %d\n", ele.name, ele.score)
+		}
+	}
+
+	h := &studentHeap{
+		{name: "xiaoming", score: 82},
+		{name: "xiaozhang", score: 88},
+		{name: "laowang", score: 85},
+	}
+	heap.Init(h)
+	heap.Push(h, student{name: "xiaoli", score: 66})
+	fnPrint(h)
+
+	for i, ele := range *h {
+		if ele.name == "xiaozhang" {
+			(*h)[i].score = 60
+			heap.Fix(h, i)
+		}
+	}
+	fnPrint(h)
+
+	fmt.Println("\nstudent heap pop items:")
+	for h.Len() > 0 {
+		item := heap.Pop(h).(student)
+		fmt.Printf("student name %s,score %d\n", item.name, item.score)
+	}
+}
+
 // MainDemo05 main for golang demo05.
 func MainDemo05() {
 	// testVarTypeAssert()
@@ -301,6 +401,9 @@ func MainDemo05() {
 	// testBufioWriter()
 	// testBufioReader()
 	// testBufioRW()
+
+	// testContainerList()
+	// testContainerHeap()
 
 	fmt.Println("golang demo05 DONE.")
 }
