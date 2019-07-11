@@ -52,3 +52,6 @@
 [submodule "src/github.com/julienschmidt/httprouter"]
 	path = src/github.com/julienschmidt/httprouter
 	url = https://github.com/julienschmidt/httprouter.git
+[submodule "src/tools.app/vendor/gopkg.in/gomail.v2"]
+	path = src/tools.app/vendor/gopkg.in/gomail.v2
+	url = https://github.com/go-gomail/gomail.git
