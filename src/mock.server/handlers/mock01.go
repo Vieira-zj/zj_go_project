@@ -1,4 +1,4 @@
-package mocks
+package handlers
 
 import (
 	"bytes"
@@ -196,7 +196,7 @@ func Mock04(rw http.ResponseWriter, req *http.Request) {
 		if isMD5 {
 			md5 := GetBoolInReqForm(req, "md5")
 			if md5 {
-				rw.Header().Set("Content-MD5", zjutils.GetMd5ForText(string(buf)))
+				rw.Header().Set("Content-MD5", zjutils.GetMd5HexText(string(buf)))
 				// rw.Header().Set("Content-MD5", encode.GetURLBasedMd5ForText(string(buf)))
 			} else {
 				errMD5 := "0980a9e10670ccc4895432d4b4ae9fff"

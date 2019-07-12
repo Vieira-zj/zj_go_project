@@ -69,6 +69,17 @@ function tool_utils_benchmark_test() {
 }
 
 
+# MOCK TEST
+function mock_server_test() {
+    if [ -z $1 ]; then
+        go test -v src/tools.app/utils
+    else
+        test_file=$1
+        go test -v src/mock.server/handlers/${test_file}
+    fi
+}
+
+
 # BDD TEST
 # ginkgo: http://onsi.github.io/ginkgo/
 # gomega: http://onsi.github.io/gomega/
@@ -298,6 +309,8 @@ function shell_test_09() {
 # tool_svc_test diskusage filestree_test.go
 # tool_utils_test mails_test.go
 # tool_utils_benchmark_test ioutil_bmark_test.go
+
+# mock_server_test mockdemo_test.go
 
 # go_bdd_test_01
 # go_bdd_test_02
