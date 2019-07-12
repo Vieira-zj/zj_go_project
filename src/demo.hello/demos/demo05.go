@@ -9,9 +9,11 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"runtime"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -386,6 +388,128 @@ func testContainerHeap() {
 	}
 }
 
+// demo, sync Cond
+func testSyncCond() {
+	var (
+		count = 3
+		num   = 3
+	)
+	ch := make(chan struct{}, num)
+
+	var lock sync.Mutex
+	cond := sync.NewCond(&lock)
+
+	for i := 0; i < num; i++ {
+		go func(i int) {
+			cond.L.Lock()
+			defer func() {
+				cond.L.Unlock()
+				ch <- struct{}{}
+			}()
+
+			for i < count {
+				fmt.Printf("goroutine_%d start and wait\n", i)
+				cond.Wait()
+				fmt.Printf("goroutine_%d receive a notify\n", i)
+			}
+			fmt.Printf("goroutine_%d end\n", i)
+		}(i)
+	}
+
+	time.Sleep(time.Second)
+	fmt.Println("broadcast...")
+	cond.L.Lock()
+	count--
+	cond.Broadcast()
+	cond.L.Unlock()
+
+	time.Sleep(time.Second)
+	fmt.Println("signal...")
+	cond.L.Lock()
+	count--
+	cond.Signal()
+	cond.L.Unlock()
+
+	time.Sleep(time.Second)
+	fmt.Println("broadcast...")
+	cond.L.Lock()
+	count--
+	cond.Broadcast()
+	cond.L.Unlock()
+
+	for i := 0; i < num; i++ {
+		<-ch
+	}
+}
+
+// demo, sync atomic add
+func testSyncAtomicAdd() {
+	var ops uint32
+
+	for i := 0; i < 10; i++ {
+		go func() {
+			for {
+				atomic.AddUint32(&ops, 1)
+				time.Sleep(time.Millisecond)
+			}
+		}()
+	}
+
+	time.Sleep(time.Second)
+	finalOps := atomic.LoadUint32(&ops)
+	fmt.Println("\nfinal ops:", finalOps)
+}
+
+// demo, interface reflection
+type user struct {
+	ID   int
+	Name string
+	Age  int
+}
+
+func (u user) ReflectCallFunc() {
+	fmt.Println("Allen.Wu ReflectCallFunc")
+}
+
+func testStructReflect() {
+	u := user{1, "Allen.Wu", 25}
+	printFieldsAndMethod(u)
+}
+
+func printFieldsAndMethod(input interface{}) {
+	rType := reflect.TypeOf(input)
+	fmt.Println("interface type:", rType)
+	rValue := reflect.ValueOf(input)
+	fmt.Println("interface value:", rValue)
+
+	for i := 0; i < rType.NumField(); i++ {
+		field := rType.Field(i)
+		value := rValue.Field(i).Interface()
+		fmt.Printf("%s (%v) = %v\n", field.Name, field.Type, value)
+	}
+
+	for i := 0; i < rType.NumMethod(); i++ {
+		m := rType.Method(i)
+		fmt.Printf("%s: %v\n", m.Name, m.Type)
+	}
+}
+
+// demo, reflection, update value by ref
+func testUpdateValByReflect() {
+	var num float32 = 1.2345
+	fmt.Println("\nold value of number:", num)
+
+	pointer := reflect.ValueOf(&num)
+	elem := pointer.Elem()
+	fmt.Println("type of point element:", elem.Type())
+	fmt.Println("settability of element:", elem.CanSet())
+
+	if elem.CanSet() {
+		elem.SetFloat(6.66)
+		fmt.Println("new value of number:", num)
+	}
+}
+
 // MainDemo05 main for golang demo05.
 func MainDemo05() {
 	// testVarTypeAssert()
@@ -404,6 +528,12 @@ func MainDemo05() {
 
 	// testContainerList()
 	// testContainerHeap()
+
+	// testSyncCond()
+	// testSyncAtomicAdd()
+
+	// testStructReflect()
+	// testUpdateValByReflect()
 
 	fmt.Println("golang demo05 DONE.")
 }
