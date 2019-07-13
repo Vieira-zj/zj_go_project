@@ -43,7 +43,6 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 			return
 		}
 	}
-
 	if r.Method == "POST" {
 		switch id {
 		case 3:
@@ -56,13 +55,8 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 	}
 }
 
-// demo, parse get request => Get /demo/01?userid=xxx&username=xxx
+// demo, parse get request => Get /demo/1?userid=xxx&username=xxx
 func mockDemo01(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
 	r.ParseForm()
 	log.Println("Request Method:", r.Method)
 	log.Println("Form Data:")
@@ -73,13 +67,8 @@ func mockDemo01(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
-// demo, parse get request => Get /demo/02?userid=xxx&username=xxx&key=val1&key=val2
+// demo, parse get request => Get /demo/2?userid=xxx&username=xxx&key=val1&key=val2
 func mockDemo02(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
 	values := r.URL.Query()
 	log.Println("Request Query:")
 	fmt.Println("userid:", values["userid"][0])
@@ -103,13 +92,8 @@ type serverInfo struct {
 	SvrGrpID string   `json:"server_group_id"`
 }
 
-// => Post /demo/03
+// => Post /demo/3
 func mockDemo03(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
 	body, _ := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	printServerInfo(body)
@@ -130,13 +114,8 @@ func printServerInfo(jsonBody []byte) {
 	}
 }
 
-// demo, parse post form with cookie => POST /demo/04
+// demo, parse post form with cookie => POST /demo/4
 func mockDemo04(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
 	log.Println("Request Data:")
 	log.Printf("content type: %s\n", r.Header.Get(common.TextContentType))
 	log.Printf("form kv: key1=%s\n", r.PostFormValue("key1"))
@@ -164,14 +143,9 @@ func mockDemo04(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
-// demo, test get access count by redis => GET /demo/05
+// demo, store access count by redis => GET /demo/5
 // redis env: docker run --name redis -p 6379:6379 --rm -d redis:4.0
 func mockDemo05(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
 	if len(common.RunConfigs.Server.RedisURI) == 0 {
 		common.ErrHandler(w, fmt.Errorf("config redis uri is empty"))
 		return
