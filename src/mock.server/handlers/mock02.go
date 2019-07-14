@@ -44,7 +44,8 @@ func MockTestHandler02(w http.ResponseWriter, r *http.Request, params httprouter
 	}
 }
 
-// mock test, returns 403 Forbidden, or file content => GET /mocktest/two/1
+// mock test, returns 403 Forbidden, or file content.
+// GET /mocktest/two/1
 func mockTest0201(w http.ResponseWriter, r *http.Request) {
 	isErr, err := common.GetBoolArgFromQuery(r, "iserr")
 	if err != nil {
@@ -79,7 +80,8 @@ func mockTest0201(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, returns chunked of bytes by flush => GET /mocktest/two/2
+// mock test, returns chunked of bytes by flush.
+// GET /mocktest/two/2
 func mockTest0202(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
@@ -105,7 +107,8 @@ func mockTest0202(w http.ResponseWriter, r *http.Request) {
 	// < Transfer-Encoding: chunked
 }
 
-// mock test, returns bytes by range with wait => GET /mocktest/two/3
+// mock test, returns bytes by range with wait.
+// GET /mocktest/two/3
 func mockTest0203(w http.ResponseWriter, r *http.Request) {
 	// data block is set in request header by: Range:bytes=0-4095
 	// for qiniuproxy, default range is 4M
@@ -159,7 +162,8 @@ func (mr *mockReader) Seek(offset int64, whence int) (int64, error) {
 	return mr.r.Seek(offset, whence)
 }
 
-// mock test, returns kb data with wait in each read
+// mock test, returns kb data with wait in each read.
+// GET /mocktest/two/4
 func mockTest0204(w http.ResponseWriter, r *http.Request) {
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
@@ -192,7 +196,8 @@ func mockTest0204(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, server side close connection => Get /mocktest/two/5
+// mock test, server side close connection.
+// Get /mocktest/two/5
 func mockTest0205(w http.ResponseWriter, r *http.Request) {
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {

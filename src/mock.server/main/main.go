@@ -17,8 +17,8 @@ func init() {
 }
 
 func main() {
-	help := flag.Bool("h", false, "help")
-	port := flag.Int("p", 17891, "mock server listening port")
+	help := flag.Bool("h", false, "help.")
+	port := flag.Int("p", 17891, "mock server listening port.")
 
 	flag.Parse()
 	if *help {

@@ -46,7 +46,8 @@ func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter
 	}
 }
 
-// mock test, returns bytes body with wait => Get /mocktest/one/1
+// mock test, returns bytes body with wait.
+// Get /mocktest/one/1
 func mockTest0101(w http.ResponseWriter, r *http.Request) {
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -88,7 +89,8 @@ func mockTest0101(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, returns file content with wait => Get /mocktest/one/2
+// mock test, returns file content with wait.
+// Get /mocktest/one/2
 func mockTest0102(w http.ResponseWriter, r *http.Request) {
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -132,7 +134,8 @@ func mockTest0102(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, returns custom error code, like 404, 503 => Get /mocktest/one/3
+// mock test, returns custom error code, like 404, 503.
+// Get /mocktest/one/3
 func mockTest0103(w http.ResponseWriter, r *http.Request) {
 	retCode, err := common.GetIntArgFromQuery(r, "code")
 	if err != nil {
@@ -153,7 +156,8 @@ func mockTest0103(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, returns httpdns json string => Get /mocktest/one/4
+// mock test, returns httpdns json string.
+// Get /mocktest/one/4
 func mockTest0104(w http.ResponseWriter, r *http.Request) {
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
@@ -176,7 +180,8 @@ func mockTest0104(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock test, returns gzip and chunked http response => Get /mocktest/one/5
+// mock test, returns gzip and chunked http response
+// Get /mocktest/one/5
 func mockTest0105(w http.ResponseWriter, r *http.Request) {
 	var (
 		b   []byte
@@ -208,7 +213,8 @@ func mockTest0105(w http.ResponseWriter, r *http.Request) {
 	// < Transfer-Encoding: chunked
 }
 
-// mock test, returns http response with diff mimetype => Get /mocktest/one/6
+// mock test, returns http response with diff mimetype.
+// Get /mocktest/one/6
 func mockTest0106(w http.ResponseWriter, r *http.Request) {
 	mimetypeTable := make(map[string]string)
 	mimetypeTable["txt"] = "text/plain"

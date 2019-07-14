@@ -3,6 +3,7 @@ package httptemplate
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -95,6 +96,6 @@ func TemplateHandler04(w http.ResponseWriter, r *http.Request) {
 }
 
 func errHandler(w http.ResponseWriter, err error) {
+	log.Println(err)
 	myutil.WriteErrJSONResp(w, http.StatusInternalServerError, "Internal Server Error")
-	fmt.Println(err)
 }

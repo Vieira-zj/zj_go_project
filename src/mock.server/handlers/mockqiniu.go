@@ -38,7 +38,8 @@ func MockQiNiuHandler(w http.ResponseWriter, r *http.Request, params httprouter.
 	}
 }
 
-// mock mirror file server handler => Get /mockqiniu/1
+// mock mirror file server handler.
+// Get /mockqiniu/1
 func mockQiNiu01(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write([]byte("success")); err != nil {
@@ -67,14 +68,14 @@ func mockQiNiu01(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// cdn refresh request handler
+// mock CDN refresh request handler.
 type refreshResp struct {
 	Code      int    `json:"code"`
 	Error     string `json:"error"`
 	RequestID string `json:"requestId"`
 }
 
-// => Get /mockqiniu/2
+// Get /mockqiniu/2
 func mockQiNiu02(w http.ResponseWriter, r *http.Request) {
 	retJSON := refreshResp{
 		Code:      http.StatusOK,
@@ -89,7 +90,8 @@ func mockQiNiu02(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// mock return diff file content by arg "start" => Get /mockqiniu/3
+// mock return diff file content by arg "start".
+// Get /mockqiniu/3
 func mockQiNiu03(w http.ResponseWriter, r *http.Request) {
 	start, err := common.GetIntArgFromQuery(r, "start")
 	if err != nil {

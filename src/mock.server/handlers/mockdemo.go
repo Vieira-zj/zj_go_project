@@ -48,7 +48,8 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 	}
 }
 
-// demo, parse get request => Get /demo/1?userid=xxx&username=xxx
+// demo, parse get request.
+// Get /demo/1?userid=xxx&username=xxx
 func mockDemo01(w http.ResponseWriter, r *http.Request) {
 	var userID, userName string
 
@@ -74,7 +75,8 @@ func mockDemo01(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
-// demo, parse get request => Get /demo/2?userid=xxx&username=xxx&key=val1&key=val2
+// demo, parse get request.
+// Get /demo/2?userid=xxx&username=xxx&key=val1&key=val2
 func mockDemo02(w http.ResponseWriter, r *http.Request) {
 	var userID, userName string
 
@@ -104,7 +106,7 @@ func mockDemo02(w http.ResponseWriter, r *http.Request) {
 	common.WriteOKHTMLResp(w, b)
 }
 
-// demo, parse post json body
+// demo, parse post json body.
 type server struct {
 	ServerName string `json:"server_name"`
 	ServerIP   string `json:"server_ip"`
@@ -115,7 +117,7 @@ type serverInfo struct {
 	SvrGrpID string   `json:"server_group_id"`
 }
 
-// => Post /demo/3
+// Post /demo/3
 func mockDemo03(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -135,7 +137,8 @@ func mockDemo03(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
-// demo, parse post form with cookie => POST /demo/4
+// demo, parse post form with cookie
+// POST /demo/4
 func mockDemo04(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Content type: %s\n", r.Header.Get(common.TextContentType))
 
@@ -164,8 +167,9 @@ func printCookie(c *http.Cookie) {
 	log.Println("expires:", c.Expires)
 }
 
-// demo, get total access count from redis => GET /demo/5
+// demo, get total access count from redis.
 // redis env: docker run --name redis -p 6379:6379 --rm -d redis:4.0
+// GET /demo/5
 func mockDemo05(w http.ResponseWriter, r *http.Request) {
 	if len(common.RunConfigs.Server.RedisURI) == 0 {
 		common.ErrHandler(w, fmt.Errorf("config redis uri is empty"))
