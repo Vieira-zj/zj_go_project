@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/http/httputil"
 	"strconv"
@@ -15,11 +16,12 @@ import (
 
 // LogRequestData logs http resquest.
 func LogRequestData(r *http.Request) error {
-	reqData, err := httputil.DumpRequest(r, true)
+	req, err := httputil.DumpRequest(r, true)
 	if err != nil {
 		return err
 	}
-	log.Println("Request:\n", strings.Trim(string(reqData), "\n"))
+
+	log.Println("Request:\n", strings.Trim(string(req), "\n"))
 	return nil
 }
 
@@ -48,42 +50,53 @@ type ErrorDesc struct {
 	Desc   string `json:"desc"`
 }
 
-// WriteOKJSONResp writes the response as a standard JSON response with StatusOK.
-func WriteOKJSONResp(w http.ResponseWriter, m interface{}) {
+// WriteOKJSONResp writes http ok response as a standard JSON.
+func WriteOKJSONResp(w http.ResponseWriter, m interface{}) error {
 	w.Header().Set(TextContentType, ContentTypeJSON)
 	w.WriteHeader(http.StatusOK)
+
 	if err := json.NewEncoder(w).Encode(&JSONResponse{Data: m}); err != nil {
-		WriteErrJSONResp(w, http.StatusInternalServerError, SvrErrRespMsg)
+		return err
 	}
+	return nil
 }
 
-// WriteOKHTMLResp returns html with StatusOK.
-func WriteOKHTMLResp(w http.ResponseWriter, data []byte) {
+// WriteOKHTMLResp writes http ok response as html.
+func WriteOKHTMLResp(w http.ResponseWriter, data []byte) error {
 	w.Header().Set(TextContentType, ContentTypeHTML)
+	w.Header().Set(TextContentLength, strconv.Itoa(len(data)))
 	w.WriteHeader(http.StatusOK)
+
 	if _, err := w.Write(data); err != nil {
-		WriteErrJSONResp(w, http.StatusInternalServerError, SvrErrRespMsg)
+		return err
 	}
+	return nil
 }
 
-// WriteErrJSONResp writes the error response as a Standard API JSON response with a response code.
-func WriteErrJSONResp(w http.ResponseWriter, errCode int, errMsg string) {
+// WriteErrJSONResp writes http error response as a Standard API JSON with a resp code.
+func WriteErrJSONResp(w http.ResponseWriter, errCode int, errMsg string) error {
 	w.Header().Set(TextContentType, ContentTypeJSON)
 	w.WriteHeader(errCode)
-	json.NewEncoder(w).Encode(&JSONErrResponse{
-		Error: &ErrorDesc{Status: errCode, Desc: errMsg},
-	})
+
+	if err := json.NewEncoder(w).Encode(
+		&JSONErrResponse{Error: &ErrorDesc{Status: errCode, Desc: errMsg}}); err != nil {
+		return err
+	}
+	return nil
 }
 
-// ErrHandler sends error response and logs error.
+// ErrHandler handles "internal server error".
 func ErrHandler(w http.ResponseWriter, err error) {
-	WriteErrJSONResp(w, http.StatusInternalServerError, SvrErrRespMsg)
 	log.Println(strings.Repeat("*", 6), err)
+	if err := WriteErrJSONResp(w, http.StatusInternalServerError, SvrErrRespMsg); err != nil {
+		log.Println(strings.Repeat("*", 6), err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 }
 
 // ******** Parse Http Request Query
 
-// GetStringArgFromQuery returns string value of args from request query form.
+// GetStringArgFromQuery returns string value of arg from request query form.
 func GetStringArgFromQuery(r *http.Request, argName string) (string, error) {
 	if err := r.ParseForm(); err != nil {
 		return "", err
@@ -97,47 +110,31 @@ func GetStringArgFromQuery(r *http.Request, argName string) (string, error) {
 	return "", nil
 }
 
-// GetIntArgFromQuery returns int value of args from request query form.
+// GetIntArgFromQuery returns int value of arg from request query form.
 func GetIntArgFromQuery(r *http.Request, argName string) (int, error) {
 	val, err := GetStringArgFromQuery(r, argName)
-	if err != nil {
+	if err != nil || len(val) == 0 {
 		return -1, err
 	}
-	if len(val) == 0 {
-		val = "-1"
-	}
-
-	ret, err := strconv.Atoi(val)
-	if err != nil {
-		return -1, err
-	}
-	return ret, err
+	return strconv.Atoi(val)
 }
 
 // GetBoolArgFromQuery returns bool value of args from request query form.
 func GetBoolArgFromQuery(r *http.Request, argName string) (bool, error) {
 	val, err := GetStringArgFromQuery(r, argName)
-	if err != nil {
+	if err != nil || len(val) == 0 {
 		return false, err
 	}
-	if len(val) == 0 {
-		val = "false"
-	}
-
-	ret, err := strconv.ParseBool(val)
-	if err != nil {
-		return false, err
-	}
-	return ret, nil
+	return strconv.ParseBool(val)
 }
 
-// ******** Helper functions
+// ******** Helper Functions
 
-// CreateMockBytes returns mock md5 string for size of bytes.
-func CreateMockBytes(size int) string {
+// CreateMockString returns mock md5 string for size of bytes.
+func CreateMockString(size int) string {
 	buf := make([]byte, size, size)
 	for i := 0; i < size; i++ {
-		buf[i] = uint8(i % 64)
+		buf[i] = uint8(rand.Intn(128))
 	}
 	return myutils.GetBase64Text(buf)
 }

@@ -97,7 +97,7 @@ func mockTest0202(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	const size = 128
 	for i := 0; i < 10; i++ {
 		log.Println("mock block of bytes:", size)
-		_, err := io.Copy(w, bufio.NewReader(strings.NewReader(common.CreateMockBytes(size))))
+		_, err := io.Copy(w, bufio.NewReader(strings.NewReader(common.CreateMockString(size))))
 		if err != nil {
 			log.Println(err)
 			break
@@ -138,7 +138,7 @@ func mockTest0203(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	size := 1024 * 1024 * 10
 	fmt.Println("mock bytes body:", size)
-	buf := []byte(common.CreateMockBytes(size))
+	buf := []byte(common.CreateMockString(size))
 
 	// send data by range, and return code: 206 Partial Content
 	sleepEachRead := 500 // millisecond, sleep between each range request
@@ -188,7 +188,7 @@ func mockTest0204(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		kb = limit
 	}
 
-	b := []byte(common.CreateMockBytes(1024 * kb))
+	b := []byte(common.CreateMockString(1024 * kb))
 	w.Header().Set(common.TextContentLength, strconv.Itoa(len(b)))
 	w.WriteHeader(http.StatusOK)
 
@@ -205,7 +205,7 @@ func mockTest0205(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		wait = 1
 	}
 
-	s := common.CreateMockBytes(1024 * 1024 * 1024)
+	s := common.CreateMockString(1024 * 1024 * 1024)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return

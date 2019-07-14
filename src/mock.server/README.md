@@ -1,15 +1,24 @@
 # Mock Server APIs
 
+### /
+
+1. Default page:
+
+`curl -v "http://127.0.0.1:17891/`
+
 ### /demo/:id
 
-Demo parse Get request:
+1. Demo, parse Get request:
+
 `curl -v "http://127.0.0.1:17891/demo/1?userid=xxx&username=xxx"`
 
-Demo parse Get request:
-- `curl -v "http://127.0.0.1:17891/demo/2?userid=xxx&username=xxx&key=val1&key=val2"`
+2. Demo, parse Get request:
 
-Demo, parse Post json body:
-- `curl -v -X POST "http://127.0.0.1:17891/demo/3" -H "Content-Type:application/json" --data-binary @test.json`
+`curl -v "http://127.0.0.1:17891/demo/2?userid=xxx&username=xxx&key=val1&key=val2"`
+
+3. Demo, parse Post json body:
+
+`curl -v -X POST "http://127.0.0.1:17891/demo/3" -H "Content-Type:application/json" --data-binary @test.json`
 
 ```json
 {
@@ -27,17 +36,19 @@ Demo, parse Post json body:
 }
 ```
 
-Demo, parse Post form with cookie:
-- `curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --form key1=val1 --form key2=val2`
+4. Demo, parse Post form with cookie:
 
-- `curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --data-binary @test.out`
+`curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --form key1=val1 --form key2=val2`
+
+`curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --data-binary @test.out`
 
 ```text
 key1=val1;key2=val2
 ```
 
-Demo, show access count which is stored in redis:
-- `curl -v "http://127.0.0.1:17891/demo/5"`
+5. Demo, show access count which is stored in redis:
+
+`curl -v "http://127.0.0.1:17891/demo/5"`
 
 ### /mocktest/one/:id
 

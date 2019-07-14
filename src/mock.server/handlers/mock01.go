@@ -45,16 +45,6 @@ func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter
 	}
 }
 
-// MockNotFound mocks server not found page.
-func MockNotFound(w http.ResponseWriter, r *http.Request) {
-	retContent := fmt.Sprintf("Default Not Found Page.\nPage not found for path: %s\n", r.RequestURI)
-	w.Header().Set(common.TextContentLength, strconv.Itoa(len([]byte(retContent))))
-	w.WriteHeader(http.StatusNotFound)
-	log.Printf("page not found: %s.\n", r.URL.Path)
-
-	io.Copy(w, strings.NewReader(retContent))
-}
-
 // test, mock return bytes body with wait => Get /mocktest/one/1
 func mockTest0101(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	hostname, err := os.Hostname()
@@ -72,7 +62,7 @@ func mockTest0101(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 	if size > 0 {
 		log.Printf("create mock bytes of length %d.\n", size)
-		s += common.CreateMockBytes(size)
+		s += common.CreateMockString(size)
 	}
 
 	// wait before send header

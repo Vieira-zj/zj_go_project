@@ -58,3 +58,10 @@ func (h *Hooks) afterHooks(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Done (%s %s): %v\n", r.Method, r.URL.Path, time.Since(h.start))
 	common.LogDivLine()
 }
+
+// WrapHandlerFunc wraps a httprouter.Handle and returns a http.Handler.
+func WrapHandlerFunc(fn httprouter.Handle) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		fn(w, r, nil)
+	}
+}

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,14 +15,8 @@ import (
 	"mock.server/common"
 )
 
-// MockDemoHandler router for mock demos.
+// MockDemoHandler router for mock demo handlers.
 func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	defer func() {
-		if p := recover(); p != nil {
-			common.ErrHandler(w, p.(error))
-		}
-	}()
-
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
 		common.ErrHandler(w, err)
@@ -33,11 +26,11 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 	if r.Method == "GET" {
 		switch id {
 		case 1:
-			mockDemo01(w, r, params)
+			mockDemo01(w, r)
 		case 2:
-			mockDemo02(w, r, params)
+			mockDemo02(w, r)
 		case 5:
-			mockDemo05(w, r, params)
+			mockDemo05(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 			return
@@ -46,9 +39,9 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 	if r.Method == "POST" {
 		switch id {
 		case 3:
-			mockDemo03(w, r, params)
+			mockDemo03(w, r)
 		case 4:
-			mockDemo04(w, r, params)
+			mockDemo04(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("POST for invalid path: %s", r.URL.Path))
 		}
@@ -56,7 +49,7 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 }
 
 // demo, parse get request => Get /demo/1?userid=xxx&username=xxx
-func mockDemo01(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func mockDemo01(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	log.Println("Request Method:", r.Method)
 	log.Println("Form Data:")
@@ -68,7 +61,7 @@ func mockDemo01(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 // demo, parse get request => Get /demo/2?userid=xxx&username=xxx&key=val1&key=val2
-func mockDemo02(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func mockDemo02(w http.ResponseWriter, r *http.Request) {
 	values := r.URL.Query()
 	log.Println("Request Query:")
 	fmt.Println("userid:", values["userid"][0])
@@ -77,8 +70,8 @@ func mockDemo02(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		fmt.Println("key:", v)
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
+	b := []byte(fmt.Sprintf("hi, thanks for access %s", html.EscapeString(r.URL.Path[1:])))
+	common.WriteOKHTMLResp(w, b)
 }
 
 // demo, parse post json body
@@ -93,79 +86,73 @@ type serverInfo struct {
 }
 
 // => Post /demo/3
-func mockDemo03(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func mockDemo03(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
-	printServerInfo(body)
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
-}
-
-func printServerInfo(jsonBody []byte) {
 	var s serverInfo
-	json.Unmarshal(jsonBody, &s)
-	log.Printf("Request body: %+v\n", s)
-
+	if err := json.Unmarshal(body, &s); err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 	log.Println("Server Info:")
 	log.Println("server group id:", s.SvrGrpID)
 	for _, svr := range s.SvrList {
 		log.Printf("server name: %s, server ip: %s\n", svr.ServerName, svr.ServerIP)
 	}
+
+	common.WriteOKJSONResp(w, s)
+	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
 // demo, parse post form with cookie => POST /demo/4
-func mockDemo04(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	log.Println("Request Data:")
-	log.Printf("content type: %s\n", r.Header.Get(common.TextContentType))
-	log.Printf("form kv: key1=%s\n", r.PostFormValue("key1"))
-	log.Printf("form kv: key2=%s\n", r.PostFormValue("key2"))
+func mockDemo04(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Content type: %s\n", r.Header.Get(common.TextContentType))
 
-	cookie, err := r.Cookie("user")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-	log.Println("name:", cookie.Name)
-	log.Println("value:", cookie.Value)
+	log.Println("Form data:")
+	log.Printf("kv: key1=%s\n", r.PostFormValue("key1"))
+	log.Printf("kv: key2=%s\n", r.PostFormValue("key2"))
 
-	cookie, err = r.Cookie("pwd")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
+	log.Println("Cookie data:")
+	for _, v := range []string{"user", "pwd"} {
+		cookie, err := r.Cookie(v)
+		if err != nil {
+			common.ErrHandler(w, err)
+			return
+		}
+		printCookie(cookie)
 	}
-	log.Println("name:", cookie.Name)
-	log.Println("value:", cookie.Value)
-	log.Println("domain:", cookie.Domain)
-	log.Println("expires:", cookie.Expires)
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
-// demo, store access count by redis => GET /demo/5
+func printCookie(c *http.Cookie) {
+	log.Println("name:", c.Name)
+	log.Println("value:", c.Value)
+	log.Println("domain:", c.Domain)
+	log.Println("expires:", c.Expires)
+}
+
+// demo, get total access count from redis => GET /demo/5
 // redis env: docker run --name redis -p 6379:6379 --rm -d redis:4.0
-func mockDemo05(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func mockDemo05(w http.ResponseWriter, r *http.Request) {
 	if len(common.RunConfigs.Server.RedisURI) == 0 {
 		common.ErrHandler(w, fmt.Errorf("config redis uri is empty"))
 		return
 	}
 
-	log.Println("redis server:", common.RunConfigs.Server.RedisURI)
-	accessCount, err := getAccessCount()
+	log.Println("Redis server:", common.RunConfigs.Server.RedisURI)
+	accessCount, err := getAccessCountFromRedis()
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	log.Println("Total Access:", accessCount)
-
-	retContent := fmt.Sprintln("Total Access: " + accessCount)
-	w.Header().Set(common.TextContentLength, strconv.Itoa(len([]byte(retContent))))
-	w.WriteHeader(http.StatusOK)
-	io.Copy(w, strings.NewReader(retContent))
+	log.Println("*Total Access:", accessCount)
+	common.WriteOKHTMLResp(w, []byte(fmt.Sprintln("Total Access: "+accessCount)))
 }
 
-func getAccessCount() (string, error) {
+func getAccessCountFromRedis() (string, error) {
 	errNum := "-1"
 	options := redis.Options{
 		Addr:     common.RunConfigs.Server.RedisURI,

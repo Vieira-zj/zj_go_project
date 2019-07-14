@@ -5,24 +5,23 @@ import (
 	"io/ioutil"
 )
 
-// ServerConfigs struct for server configs.
-type ServerConfigs struct {
-	RedisURI string `json:"redis_uri"`
-}
-
-// Configs configs for mock server.
+// Configs mock server configs.
 type Configs struct {
 	Meta   string        `json:"meta"`
 	Server ServerConfigs `json:"server"`
 }
 
-// RunConfigs stores configs for mock server.
+// ServerConfigs server configs.
+type ServerConfigs struct {
+	RedisURI string `json:"redis_uri"`
+}
+
+// RunConfigs stores configs of mock server.
 var RunConfigs Configs
 
-// InitConfigs reads mock server configs from cur dir.
+// InitConfigs reads mock server configs from cur directory.
 func InitConfigs() error {
-	configsFile := "mock_conf.json"
-	data, err := ioutil.ReadFile(configsFile)
+	data, err := ioutil.ReadFile("mock_conf.json")
 	if err != nil {
 		return err
 	}

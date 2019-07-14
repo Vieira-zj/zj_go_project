@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/golib/httprouter"
 )
 
@@ -17,6 +15,7 @@ type RouterEntry struct {
 // NewHTTPRouter returns a new http server.
 func NewHTTPRouter() *httprouter.Router {
 	routers := make([]RouterEntry, 0, 10)
+	routers = append(routers, RouterEntry{"MockDefault", "GET", "/", MockDefault})
 	// mock demo
 	routers = append(routers, RouterEntry{"MockDemoGet", "GET", "/demo/:id", MockDemoHandler})
 	routers = append(routers, RouterEntry{"MockDemoPost", "POST", "/demo/:id", MockDemoHandler})
@@ -31,6 +30,7 @@ func NewHTTPRouter() *httprouter.Router {
 	for _, route := range routers {
 		router.Handle(route.Method, route.Path, hooks.RunHooks(route.HandlerFunc))
 	}
-	router.NotFound = http.HandlerFunc(MockNotFound)
+	router.NotFound = WrapHandlerFunc(hooks.RunHooks(MockNotFound))
+
 	return router
 }

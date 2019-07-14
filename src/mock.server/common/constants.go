@@ -15,6 +15,6 @@ const (
 	// ContentTypeForm http content type form.
 	ContentTypeForm = "application/x-www-form-urlencoded"
 
-	// SvrErrRespMsg http response error message "Internal Server Error"
+	// SvrErrRespMsg error message "Internal Server Error".
 	SvrErrRespMsg = "Internal Server Error"
 )
