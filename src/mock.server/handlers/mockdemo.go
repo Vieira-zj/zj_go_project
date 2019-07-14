@@ -50,11 +50,25 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 
 // demo, parse get request => Get /demo/1?userid=xxx&username=xxx
 func mockDemo01(w http.ResponseWriter, r *http.Request) {
+	var userID, userName string
+
 	r.ParseForm()
 	log.Println("Request Method:", r.Method)
+
 	log.Println("Form Data:")
-	log.Println("userid:", r.Form["userid"][0])
-	log.Println("username:", r.Form["username"][0])
+	if val, ok := r.Form["userid"]; ok {
+		userID = val[0]
+	} else {
+		userID = "null"
+	}
+	log.Println("userid:", userID)
+
+	if val, ok := r.Form["username"]; ok {
+		userName = val[0]
+	} else {
+		userName = "null"
+	}
+	log.Println("username:", userName)
 
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
@@ -62,12 +76,28 @@ func mockDemo01(w http.ResponseWriter, r *http.Request) {
 
 // demo, parse get request => Get /demo/2?userid=xxx&username=xxx&key=val1&key=val2
 func mockDemo02(w http.ResponseWriter, r *http.Request) {
-	values := r.URL.Query()
+	var userID, userName string
+
 	log.Println("Request Query:")
-	fmt.Println("userid:", values["userid"][0])
-	fmt.Println("username:", values["username"][0])
-	for _, v := range values["key"] {
-		fmt.Println("key:", v)
+	values := r.URL.Query()
+	if val, ok := values["userid"]; ok {
+		userID = val[0]
+	} else {
+		userID = "nil"
+	}
+	fmt.Println("userid:", userID)
+
+	if val, ok := values["username"]; ok {
+		userName = val[0]
+	} else {
+		userName = "nil"
+	}
+	fmt.Println("username:", userName)
+
+	if val, ok := values["key"]; ok {
+		for _, v := range val {
+			fmt.Println("key:", v)
+		}
 	}
 
 	b := []byte(fmt.Sprintf("hi, thanks for access %s", html.EscapeString(r.URL.Path[1:])))

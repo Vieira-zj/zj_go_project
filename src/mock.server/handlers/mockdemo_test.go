@@ -15,7 +15,7 @@ import (
 func TestMockDemo01(t *testing.T) {
 	t.Log("Case01: test mock demo01, get resquest.")
 	method := "GET"
-	req, err := http.NewRequest(method, "/demo/01?userid=xxx&username=xxx", nil)
+	req, err := http.NewRequest(method, "/demo/1?userid=xxx&username=xxx", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -24,13 +24,13 @@ func TestMockDemo01(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Error("Unexpected returned code:", rr.Code)
 	}
-	t.Log("response:", rr.Body.String())
+	t.Log("Response:", rr.Body.String())
 }
 
 func TestMockDemo02(t *testing.T) {
 	t.Log("Case01: test mock demo02, post resquest with cookie.")
 	method := "POST"
-	req, err := http.NewRequest(method, "/demo/04", strings.NewReader("key1=val1;key2=val2"))
+	req, err := http.NewRequest(method, "/demo/4", strings.NewReader("key1=val1;key2=val2"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestMockDemo02(t *testing.T) {
 	if rr.Code != http.StatusOK {
 		t.Error("Unexpected returned code:", rr.Code)
 	}
-	t.Log("response:", rr.Body.String())
+	t.Log("Response:", rr.Body.String())
 }
 
 // Mocks a handler and returns a httptest.ResponseRecorder

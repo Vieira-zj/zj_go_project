@@ -52,33 +52,41 @@ key1=val1;key2=val2
 
 ### /mocktest/one/:id
 
-Test, mock return bytes body with wait.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/1?size=128&wait=1"`
+1. Mock test, returns bytes body with wait:
 
-Test, mock return file content with wait.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/2?file=test.out&wait=1"`
+`curl -v "http://127.0.0.1:17891/mocktest/one/1?size=128&wait=1"`
 
-Test, mock return custom error code.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"`
+2. Mock test, returns file content with wait:
 
-Test, mock httpdns server which returns json string.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=1"`
+`curl -v "http://127.0.0.1:17891/mocktest/one/2?file=test_log.txt&wait=1"`
 
-Test, mock gzip and chunk http response.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/5"`
+3. Mock test, returns custom error code, like 403, 502:
 
-Test, mock http response diff mimetype.
-- `curl -v "http://127.0.0.1:17891/mocktest/one/6?type=txt&errlen=false"`
+`curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"`
+
+4. Mock test, returns httpdns json string:
+
+`curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=1"`
+
+5. Mock test, returns gzip and chunked http response:
+
+`curl -v "http://127.0.0.1:17891/mocktest/one/5"`
+
+6. Mock test, returns http response with diff mimetype:
+
+`curl -v "http://127.0.0.1:17891/mocktest/one/6?type=txt&errlen=false"`
 
 ### /mocktest/two/:id
 
-Test, mock 403 Forbidden, or return file content.
-- `curl -v "http://127.0.0.1:17891/mocktest/two/1?iserr=false"`
+1. Mock test, returns 403 Forbidden, or file content:
 
-Test, mock return bytes data by flush.
-- `curl -v "http://127.0.0.1:17891/mocktest/two/2"`
+`curl -v "http://127.0.0.1:17891/mocktest/two/1?iserr=false"`
 
-Test, mock return bytes by range with wait.
+2. Mock test, returns chunked of bytes by flush:
+
+`curl -v "http://127.0.0.1:17891/mocktest/two/2"`
+
+3. Mock test, returns bytes by range with wait:
 
 ```sh
 #!/bin/bash
@@ -91,19 +99,24 @@ done
 echo "done"
 ```
 
-Test, mock kb data with wait between each read.
-- `curl -v "http://127.0.0.1:17891/mocktest/two/4?kb=3&wait=2"`
+4. Mock test, returns kb data with wait in each read:
 
-Test, mock server side disconnect.
-- `curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"`
+`curl -v "http://127.0.0.1:17891/mocktest/two/4?wait=100&kb=3"`
+
+5. Mock test, server side close connection:
+
+`curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"`
 
 ### /mockqiniu/:id
 
-Mock mirror file server handler.
-- `curl -v "http://127.0.0.1:17891/mockqiniu/1?wait=1"`
+1. Mock mirror file server handler:
 
-CDN refresh request handler.
-- `curl -v "http://127.0.0.1:17891/mockqiniu/2"`
+`curl -v "http://127.0.0.1:17891/mockqiniu/1?wait=2"`
 
-Mock return diff file content by arg "start".
-- `curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"`
+2. Mock CDN refresh request handler:
+
+`curl -v "http://127.0.0.1:17891/mockqiniu/2"`
+
+3. Mock return diff file content by arg "start":
+
+`curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"`

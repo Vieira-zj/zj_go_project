@@ -17,13 +17,13 @@ func NewHTTPRouter() *httprouter.Router {
 	routers := make([]RouterEntry, 0, 10)
 	routers = append(routers, RouterEntry{"MockDefault", "GET", "/", MockDefault})
 	// mock demo
-	routers = append(routers, RouterEntry{"MockDemoGet", "GET", "/demo/:id", MockDemoHandler})
-	routers = append(routers, RouterEntry{"MockDemoPost", "POST", "/demo/:id", MockDemoHandler})
+	routers = append(routers, RouterEntry{"MockDemo", "GET", "/demo/:id", MockDemoHandler})
+	routers = append(routers, RouterEntry{"MockDemo", "POST", "/demo/:id", MockDemoHandler})
 	// mock test
-	routers = append(routers, RouterEntry{"MockTestGetPart1", "GET", "/mocktest/one/:id", MockTestHandler01})
-	routers = append(routers, RouterEntry{"MockTestGetPart2", "GET", "/mocktest/two/:id", MockTestHandler02})
+	routers = append(routers, RouterEntry{"MockTestPart1", "GET", "/mocktest/one/:id", MockTestHandler01})
+	routers = append(routers, RouterEntry{"MockTestPart2", "GET", "/mocktest/two/:id", MockTestHandler02})
 	// mock qiniu
-	routers = append(routers, RouterEntry{"MockQiNiuTestGet", "GET", "/mockqiniu/:id", MockQiNiuHandler})
+	routers = append(routers, RouterEntry{"MockQiNiuTest", "GET", "/mockqiniu/:id", MockQiNiuHandler})
 
 	router := httprouter.New()
 	hooks := NewHooks()

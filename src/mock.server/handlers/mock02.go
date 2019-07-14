@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,10 +16,9 @@ import (
 	"mock.server/common"
 	httputil "qbox.us/httputil.v1"
 	"qbox.us/rpc"
-	myutils "tools.app/utils"
 )
 
-// MockTestHandler02 router for mock test.
+// MockTestHandler02 router for mock test handlers.
 func MockTestHandler02(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
@@ -29,52 +29,43 @@ func MockTestHandler02(w http.ResponseWriter, r *http.Request, params httprouter
 	if r.Method == "GET" {
 		switch id {
 		case 1:
-			mockTest0201(w, r, params)
+			mockTest0201(w, r)
 		case 2:
-			mockTest0202(w, r, params)
+			mockTest0202(w, r)
 		case 3:
-			mockTest0203(w, r, params)
+			mockTest0203(w, r)
 		case 4:
-			mockTest0204(w, r, params)
+			mockTest0204(w, r)
 		case 5:
-			mockTest0205(w, r, params)
+			mockTest0205(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
 	}
 }
 
-// test, mock 403 Forbidden, or return file content => GET /mocktest/two/1
-func mockTest0201(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var (
-		err   error
-		isErr = false
-	)
-	values := r.URL.Query()
-	if val, ok := values["iserr"]; !ok {
-		log.Println("isErr as default false.")
-	} else {
-		isErr, err = strconv.ParseBool(val[0])
-		if err != nil {
-			common.ErrHandler(w, err)
-			return
-		}
+// mock test, returns 403 Forbidden, or file content => GET /mocktest/two/1
+func mockTest0201(w http.ResponseWriter, r *http.Request) {
+	isErr, err := common.GetBoolArgFromQuery(r, "iserr")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
 	}
 
 	var (
 		retCode  int
 		retBytes []byte
-		filePath = "ab_test.out"
 	)
 	if isErr {
 		// mock error
 		retCode = http.StatusForbidden
-		retBytes = []byte("mock error content.")
 		log.Println("mock return error code:", retCode)
+		retBytes = []byte("mock error content.")
 	} else {
 		// read file
 		retCode = http.StatusOK
-		retBytes, err = myutils.ReadFileContentBuf(filePath)
+		filePath := "ab_test.out"
+		retBytes, err = ioutil.ReadFile(filePath)
 		if err != nil {
 			common.ErrHandler(w, err)
 			return
@@ -83,17 +74,16 @@ func mockTest0201(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	w.Header().Set(common.TextContentLength, strconv.Itoa(len(retBytes)))
 	w.WriteHeader(retCode)
-
-	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(retBytes))); err != nil {
+	if _, err := w.Write(retBytes); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
 
-// test, mock return bytes data by flush => GET /mocktest/two/2
-func mockTest0202(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns chunked of bytes by flush => GET /mocktest/two/2
+func mockTest0202(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
-	// mock block of bytes data
+	// mock block of bytes
 	const size = 128
 	for i := 0; i < 10; i++ {
 		log.Println("mock block of bytes:", size)
@@ -107,13 +97,16 @@ func mockTest0202(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	b := []byte("\nmockTest0202, mock bytes body.")
-	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
+	if _, err := w.Write(b); err != nil {
 		common.ErrHandler(w, err)
 	}
+	// Response Headers:
+	// < Content-Type: text/plain; charset=utf-8
+	// < Transfer-Encoding: chunked
 }
 
-// test, mock return bytes by range with wait => GET /mocktest/two/3
-func mockTest0203(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns bytes by range with wait => GET /mocktest/two/3
+func mockTest0203(w http.ResponseWriter, r *http.Request) {
 	// data block is set in request header by: Range:bytes=0-4095
 	// for qiniuproxy, default range is 4M
 
@@ -140,10 +133,10 @@ func mockTest0203(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	fmt.Println("mock bytes body:", size)
 	buf := []byte(common.CreateMockString(size))
 
-	// send data by range, and return code: 206 Partial Content
-	sleepEachRead := 500 // millisecond, sleep between each range request
+	// send data by range, and return: 206 Partial Content
+	wait := 500 // millisecond, wait between each range response
 	// mr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
-	mr := rpc.ReadSeeker2RangeReader{&mockReader{wait: sleepEachRead, r: bytes.NewReader(buf)}}
+	mr := rpc.ReadSeeker2RangeReader{&mockReader{wait: wait, r: bytes.NewReader(buf)}}
 	w = rpc.ResponseWriter{w}
 	if err := w.(rpc.ResponseWriter).ReplyRange(mr, int64(len(buf)), &rpc.Metas{}, r); err != nil {
 		common.ErrHandler(w, err)
@@ -166,55 +159,62 @@ func (mr *mockReader) Seek(offset int64, whence int) (int64, error) {
 	return mr.r.Seek(offset, whence)
 }
 
-// test, mock kb data with wait between each read
-func mockTest0204(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	sleepEachRead, err := common.GetIntArgFromQuery(r, "wait")
+// mock test, returns kb data with wait in each read
+func mockTest0204(w http.ResponseWriter, r *http.Request) {
+	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	limit := 1
-	if sleepEachRead <= limit {
-		sleepEachRead = limit
-	}
-
 	kb, err := common.GetIntArgFromQuery(r, "kb")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	limit = 3
+
+	limit := 100 // millisecond
+	if wait <= limit {
+		wait = limit
+	}
+	limit = 3 // kb
 	if kb <= limit {
 		kb = limit
 	}
 
-	b := []byte(common.CreateMockString(1024 * kb))
-	w.Header().Set(common.TextContentLength, strconv.Itoa(len(b)))
+	s := []byte(common.CreateMockString(1024 * kb))
+	w.Header().Set(common.TextContentLength, strconv.Itoa(len(s)))
 	w.WriteHeader(http.StatusOK)
 
-	reader := &mockReader{wait: sleepEachRead, r: bytes.NewReader(b)}
+	// custom mock reader, wait in each read()
+	reader := &mockReader{wait: wait, r: bytes.NewReader([]byte(s))}
 	if _, err := io.Copy(w, reader); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
 
-// test, mock server side disconnect => Get /mocktest/two/5
-func mockTest0205(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, server side close connection => Get /mocktest/two/5
+func mockTest0205(w http.ResponseWriter, r *http.Request) {
 	wait, err := common.GetIntArgFromQuery(r, "wait")
+	if err != nil {
+		common.ErrHandler(w, err)
+	}
 	if wait <= 0 {
 		wait = 1
 	}
 
-	s := common.CreateMockString(1024 * 1024 * 1024)
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
+	s := common.CreateMockString(1024)
 	w.Header().Set(common.TextContentLength, strconv.Itoa(len(s)))
 	w.WriteHeader(http.StatusOK)
 
 	// wait and close connection
 	go func() {
+		defer func() {
+			if p := recover(); p != nil {
+				common.ErrHandler(w, p.(error))
+				return
+			}
+		}()
+
 		time.Sleep(time.Duration(wait) * time.Second)
 		if jacker, ok := httputil.GetHijacker(w); ok {
 			conn, _, err := jacker.Hijack()
@@ -229,7 +229,12 @@ func mockTest0205(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		}
 	}()
 
+	time.Sleep(time.Duration(wait) * time.Second)
 	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(s))); err != nil {
 		common.ErrHandler(w, err)
 	}
+	// Http Response:
+	// > transfer closed with 1368 bytes remaining to read
+	// > stopped the pause stream!
+	// > Closing connection 0
 }

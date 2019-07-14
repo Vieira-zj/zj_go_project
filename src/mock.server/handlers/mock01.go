@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -17,7 +18,7 @@ import (
 	myutils "tools.app/utils"
 )
 
-// MockTestHandler01 router for mock test.
+// MockTestHandler01 router for mock test handlers.
 func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
@@ -28,49 +29,50 @@ func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter
 	if r.Method == "GET" {
 		switch id {
 		case 1:
-			mockTest0101(w, r, params)
+			mockTest0101(w, r)
 		case 2:
-			mockTest0102(w, r, params)
+			mockTest0102(w, r)
 		case 3:
-			mockTest0103(w, r, params)
+			mockTest0103(w, r)
 		case 4:
-			mockTest0104(w, r, params)
+			mockTest0104(w, r)
 		case 5:
-			mockTest0105(w, r, params)
+			mockTest0105(w, r)
 		case 6:
-			mockTest0106(w, r, params)
+			mockTest0106(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
 	}
 }
 
-// test, mock return bytes body with wait => Get /mocktest/one/1
-func mockTest0101(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns bytes body with wait => Get /mocktest/one/1
+func mockTest0101(w http.ResponseWriter, r *http.Request) {
 	hostname, err := os.Hostname()
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	s := fmt.Sprintf("mockTest01, from Host: %s\n", hostname)
+	s := fmt.Sprintf("mockTest01: from Host %s\n", hostname)
 
-	// mock bytes
+	// get query args
 	size, err := common.GetIntArgFromQuery(r, "size")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	if size > 0 {
-		log.Printf("create mock bytes of length %d.\n", size)
-		s += common.CreateMockString(size)
-	}
-
-	// wait before send header
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
+
+	// mock bytes
+	if size > 0 {
+		log.Printf("create mock bytes of length %d.\n", size)
+		s += common.CreateMockString(size)
+	}
+	// wait before send header
 	if wait > 0 {
 		log.Printf("wait %d seconds before send header.\n", wait)
 		time.Sleep(time.Duration(wait) * time.Second)
@@ -86,59 +88,59 @@ func mockTest0101(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
-// test, mock return file content with wait => Get /mocktest/one/2
-func mockTest0102(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var b []byte
+// mock test, returns file content with wait => Get /mocktest/one/2
+func mockTest0102(w http.ResponseWriter, r *http.Request) {
 	hostname, err := os.Hostname()
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	b = []byte(fmt.Sprintf("mockTest02, from Host: %s\n", hostname))
+	s := fmt.Sprintf("mockTest02: from Host %s\n", hostname)
 
-	// read file bytes
+	// get query args
 	filepath, err := common.GetStringArgFromQuery(r, "file")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	if len(filepath) > 0 {
-		b, err = myutils.ReadFileContentBuf(filepath)
-		if err != nil {
-			common.ErrHandler(w, err)
-			return
-		}
-	}
-
-	w.Header().Set(common.TextContentLength, strconv.Itoa(len(b)))
-	w.WriteHeader(http.StatusOK)
-
-	// wait before send body
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
+
+	// read file bytes
+	if len(filepath) > 0 {
+		fContent, err := myutils.ReadFileContent(filepath)
+		if err != nil {
+			common.ErrHandler(w, err)
+			return
+		}
+		s += fContent
+	}
+
+	w.Header().Set(common.TextContentLength, strconv.Itoa(len(s)))
+	w.WriteHeader(http.StatusOK)
+
+	// wait before send body
 	if wait > 0 {
 		fmt.Printf("wait %d seconds before send body.\n", wait)
 		time.Sleep(time.Duration(wait) * time.Second)
 	}
-
-	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
+	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(s))); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
 
-// test, mock return custom error code, ex 404, 503 => Get /mocktest/one/3
-func mockTest0103(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var (
-		retCode = http.StatusOK
-		err     error
-	)
-
-	if retCode, err = common.GetIntArgFromQuery(r, "code"); err != nil {
+// mock test, returns custom error code, like 404, 503 => Get /mocktest/one/3
+func mockTest0103(w http.ResponseWriter, r *http.Request) {
+	retCode, err := common.GetIntArgFromQuery(r, "code")
+	if err != nil {
 		common.ErrHandler(w, err)
 		return
+	}
+	if retCode < http.StatusOK {
+		retCode = http.StatusOK
 	}
 
 	b := []byte("mockTest0103, mock return error code.")
@@ -146,13 +148,13 @@ func mockTest0103(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(retCode)
 	log.Println("mock return error code:", retCode)
 
-	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
+	if _, err := w.Write(b); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
 
-// test, mock httpdns server which returns json string => Get /mocktest/one/4
-func mockTest0104(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns httpdns json string => Get /mocktest/one/4
+func mockTest0104(w http.ResponseWriter, r *http.Request) {
 	wait, err := common.GetIntArgFromQuery(r, "wait")
 	if err != nil {
 		common.ErrHandler(w, err)
@@ -160,27 +162,27 @@ func mockTest0104(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 
 	retIP := `"42.48.232.7", "10.200.20.21"`
+	retJSON := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
 	// retContent := `{"errno":-1, "iplist":[]}`
-	retContent := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
-	w.Header().Set(common.TextContentLength, strconv.Itoa(len(retContent)))
+	w.Header().Set(common.TextContentLength, strconv.Itoa(len(retJSON)))
 	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
 	w.WriteHeader(http.StatusOK)
 
 	if wait > 0 {
 		time.Sleep(time.Duration(wait) * time.Second)
 	}
-	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(retContent))); err != nil {
+	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(retJSON))); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
 
-// test, mock gzip and chunk http response => Get /mocktest/one/5
-func mockTest0105(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns gzip and chunked http response => Get /mocktest/one/5
+func mockTest0105(w http.ResponseWriter, r *http.Request) {
 	var (
 		b   []byte
 		err error
 	)
-	b, err = myutils.ReadFileContentBuf("ab_test.out")
+	b, err = ioutil.ReadFile("diskusage")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -189,7 +191,7 @@ func mockTest0105(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// gzip encode
 	b, err = myutils.GzipEncode(b)
 	if err != nil {
-		b = []byte(fmt.Sprintln("error in gzip encode:", err))
+		b = []byte(fmt.Sprintln("gzip encode error:", err))
 		w.Header().Set(common.TextContentLength, strconv.Itoa(len(b)))
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
@@ -200,52 +202,52 @@ func mockTest0105(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
 		common.ErrHandler(w, err)
 	}
-	// response headers:
-	// Content-Type: application/x-gzip
-	// Transfer-Encoding: chunked
+	// Response Header:
+	// < Content-Encoding: gzip
+	// < Content-Type: application/x-gzip
+	// < Transfer-Encoding: chunked
 }
 
-// test, mock http response diff mimetype => Get /mocktest/one/6
-func mockTest0106(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+// mock test, returns http response with diff mimetype => Get /mocktest/one/6
+func mockTest0106(w http.ResponseWriter, r *http.Request) {
 	mimetypeTable := make(map[string]string)
 	mimetypeTable["txt"] = "text/plain"
 	mimetypeTable["jpg"] = "image/jpeg"
 	mimetypeTable["bin"] = "application/octet-stream"
 
-	var (
-		b   []byte
-		err error
-	)
+	// get query args
 	mimetype, err := common.GetStringArgFromQuery(r, "type")
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
+	isErrLength, err := common.GetBoolArgFromQuery(r, "errlen")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+
+	// set mimetype
 	if len(mimetype) == 0 {
 		mimetype = "txt"
 	}
-
-	b, err = myutils.ReadFileContentBuf(fmt.Sprintf("testfile.%s", mimetype))
+	b, err := ioutil.ReadFile(fmt.Sprintf("testfile.%s", mimetype))
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
 
-	isMismatchLen, err := common.GetBoolArgFromQuery(r, "errlen")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
+	// set mismatch body length
 	contentLen := len(b)
-	if isMismatchLen {
+	if isErrLength {
 		contentLen += 10
 	}
 
 	w.Header().Set(common.TextContentType, mimetypeTable[mimetype])
 	w.Header().Set(common.TextContentLength, strconv.Itoa(contentLen))
 	w.WriteHeader(http.StatusOK)
-
 	w.(http.Flusher).Flush() // write response headers
+
 	time.Sleep(time.Second)
 	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
 		common.ErrHandler(w, err)

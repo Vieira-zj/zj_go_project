@@ -9,9 +9,11 @@ const (
 	TextContentEncoding = "Content-Encoding"
 
 	// ContentTypeJSON http content type application/json.
-	ContentTypeJSON = "application/json; charset=UTF-8"
+	ContentTypeJSON = "application/json; charset=utf-8"
+	// ContentTypeTEXT http content type text/plain.
+	ContentTypeTEXT = "text/plain; charset=utf-8"
 	// ContentTypeHTML http content type text/html.
-	ContentTypeHTML = "text/html; charset=UTF-8"
+	ContentTypeHTML = "text/html; charset=uft-8"
 	// ContentTypeForm http content type form.
 	ContentTypeForm = "application/x-www-form-urlencoded"
 
