@@ -5,6 +5,8 @@ const (
 	TextContentType = "Content-Type"
 	// TextContentLength http header "Content-Length".
 	TextContentLength = "Content-Length"
+	// TextContentEncoding http header "Content-Encoding".
+	TextContentEncoding = "Content-Encoding"
 
 	// ContentTypeJSON http content type application/json.
 	ContentTypeJSON = "application/json; charset=UTF-8"

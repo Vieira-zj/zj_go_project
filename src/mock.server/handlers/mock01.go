@@ -33,9 +33,14 @@ func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter
 			mockTest0102(w, r, params)
 		case 3:
 			mockTest0103(w, r, params)
+		case 4:
+			mockTest0104(w, r, params)
+		case 5:
+			mockTest0105(w, r, params)
+		case 6:
+			mockTest0106(w, r, params)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
-			return
 		}
 	}
 }
@@ -88,7 +93,6 @@ func mockTest0101(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(s))); err != nil {
 		common.ErrHandler(w, err)
-		return
 	}
 }
 
@@ -132,7 +136,6 @@ func mockTest0102(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
 		common.ErrHandler(w, err)
-		return
 	}
 }
 
@@ -155,286 +158,106 @@ func mockTest0103(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
 		common.ErrHandler(w, err)
-		return
 	}
 }
 
-// var total05 int
+// test, mock httpdns server which returns json string => Get /mocktest/one/4
+func mockTest0104(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	wait, err := common.GetIntArgFromQuery(r, "wait")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 
-// // Mock05 : mock stream data by wait and kb
-// func Mock05(rw http.ResponseWriter, req *http.Request) {
-// 	total05++
-// 	log.Printf("\n===> Mock05, access at %d time\n", total05)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+	retIP := `"42.48.232.7", "10.200.20.21"`
+	// retContent := `{"errno":-1, "iplist":[]}`
+	retContent := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
+	w.Header().Set(common.TextContentLength, strconv.Itoa(len(retContent)))
+	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
+	w.WriteHeader(http.StatusOK)
 
-// 	req.ParseForm()
-// 	wait := GetNumberInReqForm(req, "wait")
-// 	if wait == 0 {
-// 		wait = 3
-// 	}
-// 	kb := GetNumberInReqForm(req, "kb")
-// 	if kb == 0 {
-// 		kb = 1
-// 	}
+	if wait > 0 {
+		time.Sleep(time.Duration(wait) * time.Second)
+	}
+	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(retContent))); err != nil {
+		common.ErrHandler(w, err)
+	}
+}
 
-// 	b := InitBytesBySize(1024 * kb)
-// 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
+// test, mock gzip and chunk http response => Get /mocktest/one/5
+func mockTest0105(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	var (
+		b   []byte
+		err error
+	)
+	b, err = myutils.ReadFileContentBuf("ab_test.out")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 
-// 	io.Copy(rw, &mockReader{wait: wait, r: bytes.NewReader(b)})
-// 	log.Print("===> Mock05, send data done\n\n")
-// }
+	// gzip encode
+	b, err = myutils.GzipEncode(b)
+	if err != nil {
+		b = []byte(fmt.Sprintln("error in gzip encode:", err))
+		w.Header().Set(common.TextContentLength, strconv.Itoa(len(b)))
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.Header().Set(common.TextContentEncoding, "gzip")
+		w.WriteHeader(http.StatusOK)
+	}
 
-// var total06 int
+	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
+		common.ErrHandler(w, err)
+	}
+	// response headers:
+	// Content-Type: application/x-gzip
+	// Transfer-Encoding: chunked
+}
 
-// // Mock06 : mock httpdns server
-// func Mock06(rw http.ResponseWriter, req *http.Request) {
-// 	total06++
-// 	log.Printf("===> Mock06, access dns server at %d time\n", total06)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
+// test, mock http response diff mimetype => Get /mocktest/one/6
+func mockTest0106(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	mimetypeTable := make(map[string]string)
+	mimetypeTable["txt"] = "text/plain"
+	mimetypeTable["jpg"] = "image/jpeg"
+	mimetypeTable["bin"] = "application/octet-stream"
 
-// 	// ret := `{"errno":-1, "iplist":[]}`
-// 	retIP := `"10.200.20.21"`
-// 	// retIP := `"42.48.232.7", "10.200.20.21"`
-// 	ret := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
+	var (
+		b   []byte
+		err error
+	)
+	mimetype, err := common.GetStringArgFromQuery(r, "type")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+	if len(mimetype) == 0 {
+		mimetype = "txt"
+	}
 
-// 	retCode := 200
-// 	if total06%5 == 0 {
-// 		retCode = 500
-// 	}
-// 	rw.Header().Set("Content-Length", strconv.Itoa(len(ret)))
-// 	rw.Header().Set("Content-Type", "application/json")
-// 	rw.WriteHeader(retCode)
-// 	log.Printf("return code => %d\n", retCode)
+	b, err = myutils.ReadFileContentBuf(fmt.Sprintf("testfile.%s", mimetype))
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 
-// 	if total06%4 == 0 {
-// 		wait := 3
-// 		time.Sleep(time.Duration(wait) * time.Second)
-// 		log.Printf("sleep %d seconds\n", wait)
-// 	}
+	isMismatchLen, err := common.GetBoolArgFromQuery(r, "errlen")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+	contentLen := len(b)
+	if isMismatchLen {
+		contentLen += 10
+	}
 
-// 	io.Copy(rw, strings.NewReader(ret))
-// 	log.Print("===> Mock06, send data done\n\n")
-// }
+	w.Header().Set(common.TextContentType, mimetypeTable[mimetype])
+	w.Header().Set(common.TextContentLength, strconv.Itoa(contentLen))
+	w.WriteHeader(http.StatusOK)
 
-// var total07 int
-
-// // Mock07 : mock mirror file server
-// func Mock07(rw http.ResponseWriter, req *http.Request) {
-// 	total07++
-// 	log.Printf("\n===> Mock07, access mirror at %d time\n", total07)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-// 	io.Copy(rw, strings.NewReader("success"))
-// 	rw.(http.Flusher).Flush()
-
-// 	if total07%2 == 0 {
-// 		wait := 3
-// 		time.Sleep(time.Duration(wait) * time.Second)
-// 		log.Printf("sleep %d seconds\n", wait)
-// 	}
-
-// 	// io.Copy(rw, Strings.NewReader("** test content"))
-// 	b := ReadBytesFromFile(testFilePath)
-// 	io.Copy(rw, bytes.NewReader(b))
-// 	log.Print("===> Mock07, data returned\n\n")
-// }
-
-// var total08 = 0
-
-// type refreshRet struct {
-// 	Code      int    `json:"code"`
-// 	Error     string `json:"error"`
-// 	RequestID string `json:"requestId"`
-// }
-
-// // Mock08 : handle cdn refresh post request, and return
-// func Mock08(rw http.ResponseWriter, req *http.Request) {
-// 	total08++
-// 	log.Printf("\n===> Mock08, access mirror at %d time\n", total08)
-// 	reqData, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqData), "\n"))
-
-// 	// result, _ := ioutil.ReadAll(req.Body)
-// 	// defer req.Body.Close()
-// 	// fmt.Printf("request body: %s\n", string(result))
-
-// 	JSONObj := refreshRet{
-// 		Code:      http.StatusOK,
-// 		Error:     "null",
-// 		RequestID: "cdnrefresh-test-01",
-// 	}
-// 	b, err := json.Marshal(JSONObj)
-// 	if err != nil {
-// 		log.Fatalln(err.Error())
-// 		b = []byte("json encode error")
-// 	}
-
-// 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-
-// 	io.Copy(rw, bytes.NewReader(b))
-// 	log.Print("===> Mock08, data returned\n\n")
-// }
-
-// var total09 int
-
-// // Mock09 : mock download file by arg "start"
-// func Mock09(rw http.ResponseWriter, req *http.Request) {
-// 	total09++
-// 	log.Printf("\n===> Mock09, access at %d time\n", total09)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-// 	if err := req.ParseForm(); err != nil {
-// 		log.Fatalln(err.Error())
-// 	}
-
-// 	var filepath string
-// 	start := GetNumberInReqForm(req, "start")
-// 	if start < 1000 {
-// 		filepath = "./test1.file"
-// 	} else {
-// 		filepath = "./test2.file"
-// 	}
-// 	b := ReadBytesFromFile(filepath)
-
-// 	rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-
-// 	time.Sleep(500 * time.Millisecond)
-// 	io.Copy(rw, bytes.NewReader(b))
-// 	log.Print("===> mock09, send data done\n\n")
-// }
-
-// var total10 int
-
-// // Mock10 : mock server disconnect
-// func Mock10(rw http.ResponseWriter, req *http.Request) {
-// 	total10++
-// 	log.Printf("\n===> Mock10, access at %d time\n", total10)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-// 	req.ParseForm()
-// 	b := ReadBytesFromFile(testFilePath)
-// 	// set resp header Content-Length
-// 	if GetBoolInReqForm(req, "isSetLen") {
-// 		rw.Header().Set("Content-Length", strconv.Itoa(len(b)))
-// 	}
-
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-
-// 	wait := GetNumberInReqForm(req, "wait")
-// 	if wait == 0 {
-// 		wait = 3
-// 	}
-// 	go func() {
-// 		time.Sleep(time.Duration(wait) * time.Second)
-// 		if jacker, ok := httpv1.GetHijacker(rw); ok {
-// 			conn, _, err := jacker.Hijack()
-// 			if err != nil {
-// 				fmt.Printf("hijack err: %v\n", err)
-// 			} else {
-// 				log.Println("response can hijack, connection closed")
-// 				conn.Close()
-// 			}
-// 		} else {
-// 			fmt.Printf("http.ResponseWriter not http.Hijacker")
-// 		}
-// 	}()
-
-// 	len, err := io.Copy(rw, bytes.NewReader(b))
-// 	if err != nil {
-// 		log.Println("copy resp writer error:", err.Error())
-// 		return
-// 	}
-// 	fmt.Printf("copied length: %d\n", len)
-// 	log.Print("===> mock10, send data done\n\n")
-// }
-
-// var total11 int
-
-// // Mock11 : mock gzip and chunk
-// func Mock11(rw http.ResponseWriter, req *http.Request) {
-// 	total11++
-// 	log.Printf("\n===> Mock11, access at %d time\n", total11)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-// 	srcb := ReadBytesFromFile(testFilePath)
-// 	retb, err := zjutils.GzipEncode(srcb)
-// 	if err != nil {
-// 		retErr := fmt.Sprintln("error in gzip encode:", err.Error())
-// 		rw.Header().Set("Content-Length", strconv.Itoa(len(retErr)))
-// 		rw.WriteHeader(599)
-// 		log.Println("return code => 599")
-// 		io.Copy(rw, strings.NewReader(retErr))
-// 		return
-// 	}
-
-// 	rw.Header().Set("Content-Encoding", "gzip")
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-
-// 	io.Copy(rw, bytes.NewReader(retb))
-// 	log.Print("===> mock11, send data done\n\n")
-// 	// resp headers:
-// 	// Content-Type: application/x-gzip
-// 	// Transfer-Encoding: chunked
-// }
-
-// var total12 int
-
-// // Mock12 : mimetype
-// func Mock12(rw http.ResponseWriter, req *http.Request) {
-// 	total12++
-// 	log.Printf("\n===> Mock12, access at %d time\n", total12)
-// 	reqHeader, _ := httputil.DumpRequest(req, true)
-// 	fmt.Println(strings.Trim(string(reqHeader), "\n"))
-
-// 	mimetypeTable := make(map[string]string)
-// 	mimetypeTable["txt"] = "text/plain"
-// 	mimetypeTable["jpg"] = "image/jpeg"
-// 	mimetypeTable["bin"] = "application/octet-stream"
-
-// 	req.ParseForm()
-// 	mimetype := GetStringInReqForm(req, "type")
-// 	if len(mimetype) == 0 {
-// 		mimetype = "txt"
-// 	}
-// 	rw.Header().Set("Content-Type", mimetypeTable[mimetype])
-
-// 	var b []byte
-// 	isEmpty := GetBoolInReqForm(req, "isempty")
-// 	if !isEmpty {
-// 		path := testFilePath + "." + mimetype
-// 		b = ReadBytesFromFile(path)
-// 	}
-
-// 	isMismatchContentLen := GetBoolInReqForm(req, "isfaillen")
-// 	contentLen := len(b)
-// 	if isMismatchContentLen {
-// 		contentLen += 10
-// 	}
-
-// 	rw.Header().Set("Content-Length", strconv.Itoa(contentLen))
-// 	rw.WriteHeader(http.StatusOK)
-// 	log.Println("return code => 200")
-
-// 	if len(b) > 0 {
-// 		rw.(http.Flusher).Flush() // write response headers
-// 		time.Sleep(2 * time.Second)
-// 		io.Copy(rw, bytes.NewReader(b))
-// 	}
-// 	log.Print("===> mock12, send data done\n\n")
-// }
+	w.(http.Flusher).Flush() // write response headers
+	time.Sleep(time.Second)
+	if _, err := io.Copy(w, bufio.NewReader(bytes.NewReader(b))); err != nil {
+		common.ErrHandler(w, err)
+	}
+}

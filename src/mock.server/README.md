@@ -39,7 +39,7 @@ key1=val1;key2=val2
 Demo, show access count which is stored in redis:
 - `curl -v "http://127.0.0.1:17891/demo/5"`
 
-### /test/one/:id
+### /mocktest/one/:id
 
 Test, mock return bytes body with wait.
 - `curl -v "http://127.0.0.1:17891/mocktest/one/1?size=128&wait=1"`
@@ -50,7 +50,16 @@ Test, mock return file content with wait.
 Test, mock return custom error code.
 - `curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"`
 
-### /test/two/:id
+Test, mock httpdns server which returns json string.
+- `curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=1"`
+
+Test, mock gzip and chunk http response.
+- `curl -v "http://127.0.0.1:17891/mocktest/one/5"`
+
+Test, mock http response diff mimetype.
+- `curl -v "http://127.0.0.1:17891/mocktest/one/6?type=txt&errlen=false"`
+
+### /mocktest/two/:id
 
 Test, mock 403 Forbidden, or return file content.
 - `curl -v "http://127.0.0.1:17891/mocktest/two/1?iserr=false"`
@@ -70,3 +79,20 @@ for i in {1..10};do
 done
 echo "done"
 ```
+
+Test, mock kb data with wait between each read.
+- `curl -v "http://127.0.0.1:17891/mocktest/two/4?kb=3&wait=2"`
+
+Test, mock server side disconnect.
+- `curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"`
+
+### /mockqiniu/:id
+
+Mock mirror file server handler.
+- `curl -v "http://127.0.0.1:17891/mockqiniu/1?wait=1"`
+
+CDN refresh request handler.
+- `curl -v "http://127.0.0.1:17891/mockqiniu/2"`
+
+Mock return diff file content by arg "start".
+- `curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"`

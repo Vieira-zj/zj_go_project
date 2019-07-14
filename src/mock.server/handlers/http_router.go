@@ -22,9 +22,9 @@ func NewHTTPRouter() *httprouter.Router {
 	routers = append(routers, RouterEntry{"MockDemoPost", "POST", "/demo/:id", MockDemoHandler})
 	// mock test
 	routers = append(routers, RouterEntry{"MockTestGetPart1", "GET", "/mocktest/one/:id", MockTestHandler01})
-	routers = append(routers, RouterEntry{"MockTestPostPart1", "POST", "/mocktest/one/:id", MockTestHandler01})
 	routers = append(routers, RouterEntry{"MockTestGetPart2", "GET", "/mocktest/two/:id", MockTestHandler02})
-	routers = append(routers, RouterEntry{"MockTestPostPart2", "POST", "/mocktest/two/:id", MockTestHandler02})
+	// mock qiniu
+	routers = append(routers, RouterEntry{"MockQiNiuTestGet", "GET", "/mockqiniu/:id", MockQiNiuHandler})
 
 	router := httprouter.New()
 	hooks := NewHooks()
