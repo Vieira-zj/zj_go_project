@@ -87,7 +87,38 @@ func runSystemCmd(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// MainRespJSON send mail response json.
+type MainRespJSON struct {
+	Meta    string `json:"meta,omitempty"`
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
 // sendMail, sends mail.
 // Post /tools/mail
 func sendMail(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+	defer r.Body.Close()
+
+	entry := myutils.MailEntry{ServerPwd: "*******"}
+	if err := json.Unmarshal(body, &entry); err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+	if err := myutils.SendMail(&entry); err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+
+	retJSON := MainRespJSON{
+		Status:  http.StatusOK,
+		Message: "success",
+	}
+	if err := common.WriteOKJSONResp(w, &retJSON); err != nil {
+		common.ErrHandler(w, err)
+	}
 }

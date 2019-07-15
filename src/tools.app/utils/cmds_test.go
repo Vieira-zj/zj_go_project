@@ -9,6 +9,8 @@ import (
 
 func TestRunShellCmd(t *testing.T) {
 	t.Skip("skip TestRunShellCmd.")
+	// TODO: output is empty for command: "java -version"
+	// cmd := "java -version"
 	cmd := "go version"
 	t.Logf("Case01: test run shell command: %s\n", cmd)
 	output1, err := myutils.RunShellCmd(cmd)

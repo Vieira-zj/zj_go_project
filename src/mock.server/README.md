@@ -123,16 +123,65 @@ echo "done"
 
 ### /tools/:name
 
-1. Run shell command and return results:
+1. Run shell commands:
 
 `curl -v -X POST "http://127.0.0.1:17891/tools/cmd" -H "Content-Type:application/json" --data-binary "@test.json"`
 
+request input json:
+
 ```json
 {
-    "meta": "reserve keyword",
+    "meta": "reserved keyword",
     "commands": [
         "hostname",
         "go version"
     ]
+}
+```
+
+response output json:
+
+```json
+{
+  "meta": null,
+  "data": {
+    "status": 200,
+    "message": "success",
+    "results": "zjmbp\ngo version go1.11 darwin/amd64\n"
+  }
+}
+```
+
+2. Send a mail:
+
+`curl -v -X POST "http://127.0.0.1:17891/tools/mail" -H "Content-Type:application/json" --data-binary "@test.json"`
+
+request input json:
+
+```json
+{
+    "meta": "reserved keyword",
+    "receivers": [
+        "zhengjin@4paradigm.com"
+    ],
+    "subject": "Go Mail Test",
+    "body": "This is a go mail test from MockServer.",
+    "attachments": [
+        "./test_log.txt",
+        "./logs"
+    ],
+    "archive": true
+}
+```
+
+response output json:
+
+```json
+{
+  "meta": null,
+  "data": {
+    "status": 200,
+    "message": "success"
+  }
 }
 ```

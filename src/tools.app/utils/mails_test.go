@@ -12,10 +12,10 @@ func TestSendMail(t *testing.T) {
 	t.Skip("skip TestSendMail.")
 	t.Log("Case01: test send an email.")
 	entry := &myutils.MailEntry{
-		ConnPass: "*******",
-		MailTo:   []string{"zhengjin@4paradigm.com"},
-		Subject:  "go mail test",
-		Body:     "this is a go mail test.",
+		ServerPwd: "*******",
+		MailTo:    []string{"zhengjin@4paradigm.com"},
+		Subject:   "Go Mail Test",
+		Body:      "This is a go mail test.",
 	}
 	if err := myutils.SendMail(entry); err != nil {
 		t.Fatal(err)
@@ -32,10 +32,10 @@ func TestSendMailWithAttachFiles(t *testing.T) {
 	}
 
 	entry := &myutils.MailEntry{
-		ConnPass:    "*******",
+		ServerPwd:   "*******",
 		MailTo:      []string{"zhengjin@4paradigm.com"},
-		Subject:     "go mail test",
-		Body:        "this is a go mail test with attached files.",
+		Subject:     "Go Mail Test",
+		Body:        "This is a go mail test with attached files.",
 		AttachFiles: files,
 		IsArchive:   false,
 	}
@@ -55,10 +55,10 @@ func TestSendMailWithAttachArchive(t *testing.T) {
 	}
 
 	entry := &myutils.MailEntry{
-		ConnPass:    "*******",
+		ServerPwd:   "*******",
 		MailTo:      []string{"zhengjin@4paradigm.com"},
-		Subject:     "go mail test",
-		Body:        "this is a go mail test with attached archive file.",
+		Subject:     "Go Mail Test",
+		Body:        "This is a go mail test with attached archive file.",
 		AttachFiles: files,
 		IsArchive:   true,
 	}

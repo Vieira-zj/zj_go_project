@@ -11,12 +11,13 @@ import (
 
 // MailEntry entry for send an mail.
 type MailEntry struct {
-	ConnPass    string
-	MailTo      []string
-	Subject     string
-	Body        string
-	AttachFiles []string
-	IsArchive   bool
+	Meta        string   `json:"meta"`
+	ServerPwd   string   `json:"pwd"`
+	MailTo      []string `json:"receivers"`
+	Subject     string   `json:"subject"`
+	Body        string   `json:"body"`
+	AttachFiles []string `json:"attachments"`
+	IsArchive   bool     `json:"archive"`
 }
 
 // SendMail sends a mail by smtp.
@@ -45,7 +46,7 @@ func SendMail(entry *MailEntry) error {
 		}
 	}
 
-	d := gomail.NewDialer(connHost, connPort, connUser, entry.ConnPass)
+	d := gomail.NewDialer(connHost, connPort, connUser, entry.ServerPwd)
 	return d.DialAndSend(m)
 }
 
