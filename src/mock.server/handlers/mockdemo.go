@@ -119,7 +119,11 @@ type serverInfo struct {
 
 // Post /demo/3
 func mockDemo03(w http.ResponseWriter, r *http.Request) {
-	body, _ := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 	defer r.Body.Close()
 
 	var s serverInfo

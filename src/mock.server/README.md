@@ -120,3 +120,19 @@ echo "done"
 3. Mock return diff file content by arg "start":
 
 `curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"`
+
+### /tools/:name
+
+1. Run shell command and return results:
+
+`curl -v -X POST "http://127.0.0.1:17891/tools/cmd" -H "Content-Type:application/json" --data-binary "@test.json"`
+
+```json
+{
+    "meta": "reserve keyword",
+    "commands": [
+        "hostname",
+        "go version"
+    ]
+}
+```
