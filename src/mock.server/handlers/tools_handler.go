@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/golib/httprouter"
 	"mock.server/common"
@@ -16,16 +17,30 @@ import (
 // ToolsHandler router for tools handlers.
 func ToolsHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	name := params.ByName("name")
+	ch := make(chan struct{})
 
 	if r.Method == "POST" {
 		switch name {
 		case "cmd":
-			runSystemCmd(w, r)
+			go runSystemCmd(w, r, ch)
 		case "mail":
-			sendMail(w, r)
+			go sendMail(w, r, ch)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
+	}
+
+	for {
+		select {
+		case <-ch:
+			return
+		case <-time.Tick(time.Second):
+			log.Println("tools handler is processing...")
+		case <-time.After(time.Duration(15) * time.Second):
+			common.ErrHandler(w, fmt.Errorf("Time out"))
+			return
+		}
+		time.Sleep(time.Duration(300) * time.Millisecond)
 	}
 }
 
@@ -45,7 +60,11 @@ type CmdRespJSON struct {
 
 // runSystemCmd, runs shell command and returns results.
 // Post /tools/cmd
-func runSystemCmd(w http.ResponseWriter, r *http.Request) {
+func runSystemCmd(w http.ResponseWriter, r *http.Request, ch chan<- struct{}) {
+	defer func() {
+		ch <- struct{}{}
+	}()
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		common.ErrHandler(w, err)
@@ -96,7 +115,11 @@ type MainRespJSON struct {
 
 // sendMail, sends mail.
 // Post /tools/mail
-func sendMail(w http.ResponseWriter, r *http.Request) {
+func sendMail(w http.ResponseWriter, r *http.Request, ch chan<- struct{}) {
+	defer func() {
+		ch <- struct{}{}
+	}()
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		common.ErrHandler(w, err)
