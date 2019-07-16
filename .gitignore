@@ -1,5 +1,5 @@
 pkg/
-bin/
+# bin/
 
 # vscode plugins
 #src/github.com
@@ -14,6 +14,4 @@ src/mock.server/vendor/qbox.us
 src/mock.server/vendor/qiniu.com
 src/mock.server/vendor/qiniupkg.com
 
-# bins
-mockserver
 src/sys.app/main/main
