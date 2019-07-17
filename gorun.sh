@@ -76,11 +76,14 @@ if [[ $1 = "httprouter" ]]; then
 fi
 
 if [[ $1 = "grpc" ]]; then
-    target=$2 # helloworld
+    target=$2 # route_guide
     main_dir="${ZJ_GOPRJ}/src/tools.app/apps/grpc/${target}"
     bin_path="${HOME}/Downloads/tmp_files/${target}"
     go build -o ${bin_path}/server ${main_dir}/server/main.go
     go build -o ${bin_path}/client ${main_dir}/client/main.go
+    if [[ -d ${main_dir}/testdata ]]; then
+        cp -r ${main_dir}/testdata ${bin_path}
+    fi
     exit 0
 fi
 

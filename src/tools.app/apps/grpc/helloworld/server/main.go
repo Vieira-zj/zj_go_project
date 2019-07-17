@@ -23,7 +23,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 
 func (s *server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
 	log.Printf("Received again: %v", in.Name)
-	return &pb.HelloReply{Message: "Hello again " + in.Name}, nil
+	return &pb.HelloReply{Message: "again, Hello " + in.Name}, nil
 }
 
 func main() {
