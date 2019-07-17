@@ -75,6 +75,15 @@ if [[ $1 = "httprouter" ]]; then
     exit 0
 fi
 
+if [[ $1 = "grpc" ]]; then
+    target=$2 # helloworld
+    main_dir="${ZJ_GOPRJ}/src/tools.app/apps/grpc/${target}"
+    bin_path="${HOME}/Downloads/tmp_files/${target}"
+    go build -o ${bin_path}/server ${main_dir}/server/main.go
+    go build -o ${bin_path}/client ${main_dir}/client/main.go
+    exit 0
+fi
+
 
 # BUILD MOCK BIN
 function go_build_bin() {
