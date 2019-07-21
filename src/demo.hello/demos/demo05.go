@@ -98,17 +98,20 @@ func testPanicInRoutine() {
 
 	go func() {
 		defer func() {
+			// if not recover(), panic in routine will cause main routine exit with 2.
+			// after panic(), defer func() will be invoked and we can check error by recover().
 			if p := recover(); p != nil {
 				fmt.Println("routine internal error:", p)
-				close(ch)
 			}
+			fmt.Println("routine exit, and close channel.")
+			close(ch)
 		}()
 
 		for i := 0; i < 10; i++ {
 			time.Sleep(time.Second)
 			ch <- i
 			if i == 3 {
-				panic(fmt.Errorf("mock panic in routine"))
+				panic(fmt.Errorf("mock panic"))
 			}
 		}
 	}()
@@ -146,7 +149,7 @@ func testSyncWaitGroup() {
 	fmt.Println("go routines count:", runtime.NumGoroutine())
 
 	wg.Wait()
-	fmt.Println("all go routines are done")
+	fmt.Println("all go routines are done.")
 }
 
 // demo, invoke method which receiver as value or reference
