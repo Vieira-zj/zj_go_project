@@ -9,6 +9,7 @@ import (
 	"demo.hello/apps"
 	"demo.hello/demos"
 	"demo.hello/examples"
+	"demo.hello/sort"
 )
 
 func init() {
@@ -80,14 +81,22 @@ func mainAppDemo() {
 	apps.TestCache()
 }
 
+func sortDemo() {
+	// sort.TestBucketSort()
+	// sort.TestBubbleSort()
+	sort.TestQuickSort()
+}
+
 func main() {
 	// testFlagParser()
 	// testAccControl()
 	// testInvokeOrder()
 
-	mainDemo()
+	// mainDemo()
 	// mainExample()
 	// mainAppDemo()
+
+	sortDemo()
 
 	fmt.Println("GO demo main done.")
 }
