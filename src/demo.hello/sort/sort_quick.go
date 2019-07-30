@@ -21,7 +21,6 @@ func quickSort(s []int, left, right int) {
 		for s[left] <= base && left < right {
 			left++
 		}
-
 		// 没有相遇时，交互两个数在数组中的位置
 		if left < right {
 			s[left], s[right] = s[right], s[left]

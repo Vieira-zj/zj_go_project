@@ -36,11 +36,26 @@ func isRecycleString(s string) bool {
 	return false
 }
 
+func isRecycleString2(s string) bool {
+	start := 0
+	end := len(s) - 1
+
+	for start < end {
+		if s[start] != s[end] {
+			return false
+		}
+		start++
+		end--
+	}
+	return true
+}
+
 // TestRecycleString test for isRecycleString.
 func TestRecycleString() {
 	tmp := []string{"ahaha", "ahha", "haha"}
 	fmt.Println()
 	for _, s := range tmp {
-		fmt.Printf("%s is recycle string: %v\n", s, isRecycleString(s))
+		fmt.Printf("#1: %s is recycle string: %v\n", s, isRecycleString(s))
+		fmt.Printf("#2: %s is recycle string: %v\n", s, isRecycleString2(s))
 	}
 }
