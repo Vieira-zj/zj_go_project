@@ -84,7 +84,10 @@ func mainAppDemo() {
 func sortDemo() {
 	// sort.TestBucketSort()
 	// sort.TestBubbleSort()
-	sort.TestQuickSort()
+	// sort.TestQuickSort()
+
+	// sort.TestRecycleString()
+	sort.TestLinkedList()
 }
 
 func main() {
