@@ -88,8 +88,10 @@ func sortDemo() {
 
 	// sort.TestLinkedList()
 
-	sort.TestRecycleString()
+	// sort.TestRecycleString()
 	// sort.TestRevertByWord()
+	sort.TestStringsAlgorithms()
+
 	// sort.TestIntOctAndBinary()
 }
 
