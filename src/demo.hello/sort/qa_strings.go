@@ -75,9 +75,23 @@ func longestContinuiousNumbers(s string) string {
 	return s[start : start+max]
 }
 
-// 子串匹配的个数
-
-// 对称子字符串的最大长度
+// 字符串查找，返回该字字符串在文本中的位置
+func searchSubString(s, sub string) int {
+	size := len(s)
+	subSize := len(sub)
+	for i := 0; i <= size-subSize; i++ {
+		j := 0
+		for ; j < subSize; j++ {
+			if s[i+j] != sub[j] {
+				break
+			}
+		}
+		if j == subSize {
+			return i
+		}
+	}
+	return -1
+}
 
 // TestStringsAlgorithms test for strings algorithms.
 func TestStringsAlgorithms() {
@@ -89,4 +103,8 @@ func TestStringsAlgorithms() {
 
 	s = "abcd13579ed124ss123456789"
 	fmt.Println("\nlongest continuious numbers:", longestContinuiousNumbers(s))
+
+	s = "this is a string test, find sub string in text."
+	sub := "ing"
+	fmt.Printf("\nsearch sub string (%s) at: %d\n", sub, searchSubString(s, sub))
 }
