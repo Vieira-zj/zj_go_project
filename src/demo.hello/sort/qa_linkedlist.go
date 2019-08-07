@@ -14,39 +14,69 @@ type myNode struct {
 
 func printLinkedList(head *myNode) {
 	s := make([]string, 0, 10)
-	for cur := head; cur.next != nil; cur = cur.next {
+	for cur := head; cur != nil; cur = cur.next {
 		s = append(s, strconv.Itoa(cur.value))
 	}
 	fmt.Printf("linked list: [%s]\n", strings.Join(s, ","))
 }
 
-// 单链表排序 选择排序
+// 单链表排序 选择排序（交换值）
 func linkedListSort01(head *myNode) {
-	for curNode := head; curNode.next != nil; curNode = curNode.next {
-		for nextNode := curNode.next; nextNode.next != nil; nextNode = nextNode.next {
-			if curNode.value > nextNode.value { // 找到最小值
-				curNode.value, nextNode.value = nextNode.value, curNode.value
+	for cNode := head; cNode.next != nil; cNode = cNode.next {
+		for nNode := cNode.next; nNode != nil; nNode = nNode.next {
+			if cNode.value > nNode.value { // 找到最小值
+				cNode.value, nNode.value = nNode.value, cNode.value
 			}
 		}
 	}
 }
 
-// 单链表排序 冒泡排序
+// 单链表排序 冒泡排序（交换值）
 func linkedListSort02(head *myNode) {
 	for node := head; node.next != nil; node = node.next {
-		curNode := head
-		for nextNode := head.next; nextNode.next != nil; nextNode = nextNode.next {
-			if curNode.value > nextNode.value {
-				curNode.value, nextNode.value = nextNode.value, curNode.value
+		cNode := head
+		nNode := head.next
+		for cNode.next != nil {
+			if cNode.value > nNode.value { // 比较相邻元素
+				cNode.value, nNode.value = nNode.value, cNode.value
 			}
-			curNode = nextNode
+			cNode = nNode
+			nNode = nNode.next
 		}
 	}
 }
 
-// 单链表反转
-func linkedListReverse(head *myNode) {
-	// TODO:
+// 单链表反转（交换结点）
+// https://www.cnblogs.com/mafeng/p/7149980.html
+func linkedListReverse01(head *myNode) *myNode {
+	nArr := make([]*myNode, 0, 10) // node array
+	for cur := head; cur != nil; cur = cur.next {
+		nArr = append(nArr, cur)
+	}
+
+	last := len(nArr) - 1
+	for i := last; i > 0; i-- {
+		nArr[i].next = nArr[i-1]
+	}
+	nArr[0].next = nil
+	return nArr[last]
+}
+
+// 单链表反转（交换结点）
+func linkedListReverse02(head *myNode) *myNode {
+	var nNode *myNode  // next node
+	pNode := head      // pre node
+	cNode := head.next // current node
+	head.next = nil
+
+	for cNode != nil {
+		nNode = cNode.next
+		cNode.next = pNode
+		// move next
+		pNode = cNode
+		cNode = nNode
+	}
+	return pNode
 }
 
 // TestLinkedListAlgorithms test for linkedlist algorithms.
@@ -55,7 +85,7 @@ func TestLinkedListAlgorithms() {
 		value: 0,
 	}
 
-	rand.Seed(7891)
+	rand.Seed(666)
 	cur := head
 	for i := 1; i <= 10; i++ {
 		new := &myNode{
@@ -69,5 +99,10 @@ func TestLinkedListAlgorithms() {
 	fmt.Println("sorted:")
 	// linkedListSort01(head)
 	linkedListSort02(head)
+	printLinkedList(head)
+
+	fmt.Println("reverse:")
+	head = linkedListReverse01(head)
+	// head = linkedListReverse02(head)
 	printLinkedList(head)
 }
