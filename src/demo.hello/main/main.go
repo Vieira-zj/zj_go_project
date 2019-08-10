@@ -84,16 +84,16 @@ func mainAppDemo() {
 func sortDemo() {
 	// sort.TestBucketSort()
 	// sort.TestBubbleSort()
-	// sort.TestQuickSort()
+	sort.TestQuickSort()
 
-	// sort.TestRecycleString()
+	// sort.TestIntOctAndBinary()
+	// sort.TestNumbersAlgorithms()
+
 	// sort.TestRevertByWord()
 	// sort.TestStringsAlgorithms()
 
-	// sort.TestIntOctAndBinary()
-
 	// sort.TestLinkedList()
-	sort.TestLinkedListAlgorithms()
+	// sort.TestLinkedListAlgorithms()
 }
 
 func main() {

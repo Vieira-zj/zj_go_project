@@ -30,40 +30,38 @@ func (list *linkedList) append(val int) {
 	list.last = n
 }
 
+// 插入节点后保持有序
 func (list *linkedList) insert(val int) {
 	n := &node{
 		value: val,
 		next:  nil,
 	}
+	// list is empty
 	if list.head == nil {
-		// list is empty
 		list.head = n
 		list.last = n
 		return
 	}
+
+	// insert at head
 	if list.head.value > val {
-		// insert head
 		n.next = list.head
 		list.head = n
 		return
 	}
 
-	var base *node
-	for tmp := list.head; tmp != nil; tmp = tmp.next {
-		if tmp.next != nil && tmp.next.value > val {
-			base = tmp
-			break
+	// insert at mid
+	for tmp := list.head; tmp.next != nil; tmp = tmp.next {
+		if tmp.next.value > val {
+			n.next = tmp.next
+			tmp.next = n
+			return
 		}
 	}
-	if base == nil {
-		// insert tail
-		list.last.next = n
-		list.last = n
-	} else {
-		// insert mid
-		n.next = base.next
-		base.next = n
-	}
+
+	// insert at tail
+	list.last.next = n
+	list.last = n
 }
 
 func (list *linkedList) toString() string {
@@ -80,14 +78,16 @@ func (list *linkedList) toString() string {
 
 // TestLinkedList test for linked list.
 func TestLinkedList() {
+	values := []int{1, 16, 15, 7, 99, 7, 50, 99, 0}
+
 	l := &linkedList{}
-	for _, num := range []int{1, 16, 15, 7, 99, 50, 0, 99} {
-		l.append(num)
+	for _, val := range values {
+		l.append(val)
 	}
 	fmt.Println("\nappend linked list values:", l.toString())
 
 	l = &linkedList{}
-	for _, num := range []int{1, 16, 15, 7, 99, 50, 0, 99} {
+	for _, num := range values {
 		l.insert(num)
 	}
 	fmt.Println("insert linked list values:", l.toString())

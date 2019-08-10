@@ -8,7 +8,8 @@ import (
 	"strings"
 )
 
-func intOctToBinary(num int) []string {
+// 十进制转二进制
+func intOctToBinary(num int) string {
 	stack := list.New()
 	for num > 0 {
 		stack.PushBack(strconv.Itoa(num % 2))
@@ -26,9 +27,10 @@ func intOctToBinary(num int) []string {
 			ret = append(ret, num)
 		}
 	}
-	return ret
+	return strings.Join(ret, "")
 }
 
+// 十进制转二进制
 func intOctToBinary2(num int) string {
 	var ret string
 	for num > 0 {
@@ -38,6 +40,7 @@ func intOctToBinary2(num int) string {
 	return ret
 }
 
+// 二进制转十进制
 func intBinaryToOct(bin string) int {
 	bin = myReverse(bin)
 
@@ -69,11 +72,9 @@ func myReverse(s string) string {
 func TestIntOctAndBinary() {
 	num := 10 // 1010
 	fmt.Println("\nint oct to binary:")
-	fmt.Printf("#1: %d=%s\n", num, strings.Join(intOctToBinary(num), ""))
-	fmt.Printf("#2: %d=%s\n", num, intOctToBinary2(num))
+	fmt.Printf("%d=%s\n", num, intOctToBinary(num))
 	num = 110 // 1101110
-	fmt.Printf("#1: %d=%s\n", num, strings.Join(intOctToBinary(num), ""))
-	fmt.Printf("#2: %d=%s\n", num, intOctToBinary2(num))
+	fmt.Printf("%d=%s\n", num, intOctToBinary2(num))
 
 	fmt.Println("\nint binary to oct:")
 	b := "1010"

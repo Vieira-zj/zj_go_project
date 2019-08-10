@@ -20,6 +20,20 @@ func printLinkedList(head *myNode) {
 	fmt.Printf("linked list: [%s]\n", strings.Join(s, ","))
 }
 
+// 链表去重
+func distinctLinkedList(head *myNode) {
+	for cur := head; cur.next != nil; cur = cur.next {
+		for node := cur; node.next != nil; node = node.next {
+			if node.next.value == cur.value {
+				node.next = node.next.next
+				if node.next == nil {
+					break
+				}
+			}
+		}
+	}
+}
+
 // 单链表排序 选择排序（交换值）
 func linkedListSort01(head *myNode) {
 	for cNode := head; cNode.next != nil; cNode = cNode.next {
@@ -81,18 +95,34 @@ func linkedListReverse02(head *myNode) *myNode {
 
 // TestLinkedListAlgorithms test for linkedlist algorithms.
 func TestLinkedListAlgorithms() {
+	// #1
 	head := &myNode{
+		value: 1,
+	}
+	cur := head
+	for _, i := range []int{1, 3, 7, 5, 6, 3, 3, 2, 5} {
+		cur.next = &myNode{
+			value: i,
+		}
+		cur = cur.next
+	}
+	printLinkedList(head)
+	fmt.Println("distinct:")
+	distinctLinkedList(head)
+	printLinkedList(head)
+	fmt.Println()
+
+	// #2
+	head = &myNode{
 		value: 0,
 	}
-
 	rand.Seed(666)
-	cur := head
+	cur = head
 	for i := 1; i <= 10; i++ {
-		new := &myNode{
+		cur.next = &myNode{
 			value: rand.Intn(100),
 		}
-		cur.next = new
-		cur = new
+		cur = cur.next
 	}
 
 	printLinkedList(head)
@@ -100,9 +130,9 @@ func TestLinkedListAlgorithms() {
 	// linkedListSort01(head)
 	linkedListSort02(head)
 	printLinkedList(head)
+	fmt.Println()
 
 	fmt.Println("reverse:")
-	head = linkedListReverse01(head)
-	// head = linkedListReverse02(head)
-	printLinkedList(head)
+	// printLinkedList(linkedListReverse01(head))
+	printLinkedList(linkedListReverse02(head))
 }
