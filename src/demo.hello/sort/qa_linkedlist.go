@@ -93,6 +93,21 @@ func linkedListReverse02(head *myNode) *myNode {
 	return pNode
 }
 
+// 链表中是否有环
+func isRecycleLinkedlist(head *myNode) bool {
+	// 快慢指针, 定义p,q两个指针, p指针每次向前走1步, q每次向前走2步, 若在某个时刻出现p==q, 则存在环
+	slow := head
+	fast := head
+	for fast != nil && fast.next != nil {
+		slow = slow.next
+		fast = fast.next.next
+		if slow == fast {
+			return true
+		}
+	}
+	return false
+}
+
 // TestLinkedListAlgorithms test for linkedlist algorithms.
 func TestLinkedListAlgorithms() {
 	// #1
@@ -135,4 +150,20 @@ func TestLinkedListAlgorithms() {
 	fmt.Println("reverse:")
 	// printLinkedList(linkedListReverse01(head))
 	printLinkedList(linkedListReverse02(head))
+
+	// #3
+	cycle := &myNode{
+		value: 0,
+	}
+	rand.Seed(123)
+	cur = cycle
+	for i := 1; i <= 20; i++ {
+		cur.next = &myNode{
+			value: rand.Intn(100),
+		}
+		cur = cur.next
+	}
+	cur.next = cycle
+	fmt.Println("\nis recycle linkedlist:", isRecycleLinkedlist(head))
+	fmt.Println("is recycle linkedlist:", isRecycleLinkedlist(cycle))
 }
