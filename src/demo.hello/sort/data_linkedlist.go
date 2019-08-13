@@ -76,7 +76,7 @@ func (list *linkedList) toString() string {
 	return strings.Join(ret, ",")
 }
 
-// TestLinkedList test for linked list.
+// TestLinkedList test for linkedlist struct.
 func TestLinkedList() {
 	values := []int{1, 16, 15, 7, 99, 7, 50, 99, 0}
 

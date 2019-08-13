@@ -93,7 +93,7 @@ func linkedListReverse02(head *myNode) *myNode {
 	return pNode
 }
 
-// 链表中是否有环
+// 链表中是否有环（两个指针）
 func isRecycleLinkedlist(head *myNode) bool {
 	// 快慢指针, 定义p,q两个指针, p指针每次向前走1步, q每次向前走2步, 若在某个时刻出现p==q, 则存在环
 	slow := head
@@ -107,6 +107,10 @@ func isRecycleLinkedlist(head *myNode) bool {
 	}
 	return false
 }
+
+// 链表中是否有环（hash表）
+// 通过hash表来检查一个结点此前是否被访问过来判断链表是否为环形链表。
+// 过程：遍历所有结点并在hash表中存储每个结点引用（内存地址）。
 
 // TestLinkedListAlgorithms test for linkedlist algorithms.
 func TestLinkedListAlgorithms() {
