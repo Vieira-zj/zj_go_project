@@ -79,10 +79,11 @@ func (tree *treeHeap) trickleDown(index int) {
 
 func (tree *treeHeap) change(index, newValue int) {
 	oldValue := tree.heapArray[index]
-	tree.heapArray[index] = newValue
 	if newValue == oldValue {
 		return
 	}
+
+	tree.heapArray[index] = newValue
 	if newValue > oldValue {
 		tree.trickleUp(index)
 		return

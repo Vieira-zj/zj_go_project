@@ -33,9 +33,9 @@ func firstCharAppearOnce(s string) string {
 		}
 	}
 
-	for _, b := range keys {
-		if dict[b] == 1 {
-			return string(b)
+	for _, k := range keys {
+		if dict[k] == 1 {
+			return string(k)
 		}
 	}
 	return "nil"

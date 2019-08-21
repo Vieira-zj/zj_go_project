@@ -60,6 +60,11 @@ func linkedListSort02(head *myNode) {
 	}
 }
 
+// 单链表排序 归并排序
+func linkedListSort03(head *myNode) {
+	// TODO:
+}
+
 // 单链表反转（交换结点）
 // https://www.cnblogs.com/mafeng/p/7149980.html
 func linkedListReverse01(head *myNode) *myNode {
@@ -131,7 +136,7 @@ func TestLinkedListAlgorithms() {
 	printLinkedList(head)
 	fmt.Println()
 
-	// #2
+	// #2 sort
 	head = &myNode{
 		value: 0,
 	}

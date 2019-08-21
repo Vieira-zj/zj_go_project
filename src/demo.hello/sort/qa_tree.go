@@ -96,9 +96,9 @@ func (stack *treeNodeStack) pop() *myBinTreeNode {
 		panic("stack is empty!")
 	}
 
-	node := stack.nodes[stack.top-1]
-	stack.nodes[stack.top-1] = nil
 	stack.top--
+	node := stack.nodes[stack.top]
+	stack.nodes[stack.top] = nil
 	return node
 }
 

@@ -82,10 +82,6 @@ func mainAppDemo() {
 }
 
 func sortDemo() {
-	// sort.TestBucketSort()
-	// sort.TestBubbleSort()
-	sort.TestQuickSort()
-
 	// sort.TestIntOctAndBinary()
 	// sort.TestNumbersAlgorithms()
 
@@ -97,6 +93,8 @@ func sortDemo() {
 
 	// sort.TestTreeHeap()
 	// sort.TestTreeAlgorithms()
+
+	sort.TestSortAlgorithms()
 }
 
 func main() {

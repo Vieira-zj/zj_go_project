@@ -43,6 +43,34 @@ func sortOddNumbersFront(arr []int) {
 	}
 }
 
+// 将有序数组a[]和b[]合并到c[]中
+func mergeSortedSlice(a, b []int) []int {
+	var (
+		idxA = 0
+		idxB = 0
+		lenA = len(a)
+		lenB = len(b)
+		ret  = make([]int, 0, len(a)+len(b))
+	)
+
+	for idxA < lenA && idxB < lenB {
+		if a[idxA] < b[idxB] {
+			ret = append(ret, a[idxA])
+			idxA++
+		} else {
+			ret = append(ret, b[idxB])
+			idxB++
+		}
+	}
+	if idxA < lenA {
+		ret = append(ret, a[idxA:]...)
+	}
+	if idxB < lenB {
+		ret = append(ret, b[idxB:]...)
+	}
+	return ret
+}
+
 // 查找最小的k个元素（topK）
 func topKMinNumbers(nums []int, k int) []int {
 	// 部分排序 维护一个大小为K的数组 由大到小排序 保持有序
@@ -125,10 +153,15 @@ func TestNumbersAlgorithms() {
 	fmt.Println("numebers with odd in front:", numbers)
 
 	// #3
+	a := []int{2, 4, 6, 13, 15}
+	b := []int{1, 7, 9, 11, 14}
+	fmt.Println("\nmerge for sorted slices:", mergeSortedSlice(a, b))
+
+	// #4
 	numbers = []int{3, 11, 6, 2, 13, 1, 6, 7, 10}
 	fmt.Printf("\n(%v) top 4 min numbers: %v\n", numbers, topKMinNumbers(numbers, 4))
 
-	// #4
+	// #5
 	numbers = make([]int, 0, 10)
 	for i := 0; i < 10; i++ {
 		numbers = append(numbers, i)
