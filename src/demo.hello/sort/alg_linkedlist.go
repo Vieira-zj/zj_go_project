@@ -113,6 +113,7 @@ func isRecycleLinkedlist(head *myNode) bool {
 // 过程：遍历所有结点并在hash表中存储每个结点引用（内存地址）。
 
 // 单链表排序 归并排序
+// https://www.cnblogs.com/zhanghaiba/p/3534521.html
 func linkedListMergeSort(head *myNode) *myNode {
 	if head == nil || head.next == nil {
 		return head

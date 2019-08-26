@@ -94,7 +94,8 @@ func sortDemo() {
 	// sort.TestTreeHeap()
 	// sort.TestTreeAlgorithms()
 
-	sort.TestSortAlgorithms()
+	// sort.TestSortAlgorithms()
+	sort.TestSearchAlgorithms()
 }
 
 func main() {
