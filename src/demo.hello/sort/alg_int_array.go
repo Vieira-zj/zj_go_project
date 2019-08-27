@@ -124,6 +124,27 @@ func (l *mySortFixedIntList) add(num int) {
 	}
 }
 
+// 数组2*n个元素，n个奇数、n个偶数，使得数组奇数下标位置放置的都是奇数，偶数下标位置放置的都是偶数
+func numbersSelect(nums []int) {
+	var (
+		evenIdx = 0
+		oddIdx  = 1
+		size    = len(nums)
+	)
+
+	for oddIdx < size && evenIdx < size {
+		for evenIdx < size && nums[evenIdx]%2 == 0 {
+			evenIdx += 2
+		}
+		for oddIdx < size && nums[oddIdx]%2 == 1 {
+			oddIdx += 2
+		}
+		if oddIdx < size && evenIdx < size {
+			nums[evenIdx], nums[oddIdx] = nums[oddIdx], nums[evenIdx]
+		}
+	}
+}
+
 // 抽样, 从n个中抽m个
 func numberSampling(nums []int, m int) []int {
 	selected := make([]int, 0, m)
@@ -162,6 +183,11 @@ func TestNumbersAlgorithms() {
 	fmt.Printf("\n(%v) top 4 min numbers: %v\n", numbers, topKMinNumbers(numbers, 4))
 
 	// #5
+	numbers = []int{3, 11, 17, 6, 2, 13, 6, 7, 10, 20}
+	numbersSelect(numbers)
+	fmt.Println("\nodd(even) numbers in odd(even) index:", numbers)
+
+	// #6
 	numbers = make([]int, 0, 10)
 	for i := 0; i < 10; i++ {
 		numbers = append(numbers, i)
