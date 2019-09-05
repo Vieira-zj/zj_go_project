@@ -46,12 +46,13 @@ func (h *Hooks) RunHooks(fn httprouter.Handle) httprouter.Handle {
 func (h *Hooks) beforeHooks(w http.ResponseWriter, r *http.Request) {
 	common.LogDivLine()
 	log.Printf("Start: %s %s\n", r.Method, r.URL.Path)
-
 	if err := common.LogRequestData(r); err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
+
 	h.start = time.Now()
+	common.WriteCorsHeader(w)
 }
 
 func (h *Hooks) afterHooks(w http.ResponseWriter, r *http.Request) {
