@@ -2,6 +2,7 @@ package demos
 
 import (
 	"fmt"
+	"reflect"
 	"runtime"
 
 	myutils "tools.app/utils"
@@ -38,10 +39,65 @@ func testInitSliceAndRecovery() {
 	fmt.Println("\nbytes:", string(b))
 }
 
+// demo, interface and type assert
+type mockError struct {
+	message string
+}
+
+func (e mockError) Error() string {
+	return "mock " + e.message
+}
+
+func printError01(err interface{}) {
+	if e, ok := err.(mockError); ok { // type assert
+		fmt.Println("Mock Error:", e.Error())
+		return
+	}
+	fmt.Println("not an error!")
+}
+
+func printError02(err interface{}) {
+	if e, ok := err.(interface{ Error() string }); ok { // interface assert
+		fmt.Println("Error:", e.Error())
+		return
+	}
+	fmt.Println("not an error!")
+}
+
+func testInterfaceTypeAssert() {
+	mockErr := mockError{
+		message: "file write error!",
+	}
+	fmt.Println("\ntype assert:")
+	printError01(mockErr)
+	printError01("type")
+
+	fmt.Println("\ninterface assert:")
+	printError02(mockErr)
+	printError02("interface")
+}
+
+// demo, point type assert
+func isPointer(object interface{}) bool {
+	t := reflect.TypeOf(object)
+	fmt.Println("\nobject kind:", t.Kind())
+	return t.Kind() == reflect.Ptr
+}
+
+func testPointTypeAssert() {
+	mockErr := mockError{
+		message: "file write error!",
+	}
+	fmt.Println("is point:", isPointer(mockErr))
+	fmt.Println("is point:", isPointer(&mockErr))
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
 	// testBase64Encode()
 	// testInitSliceAndRecovery()
+	// testInterfaceTypeAssert()
+	testPointTypeAssert()
 
 	fmt.Println("golang demo06 DONE.")
 }
