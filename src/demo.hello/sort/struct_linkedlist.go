@@ -6,18 +6,18 @@ import (
 	"strings"
 )
 
-type node struct {
+type lnode struct {
 	value int
-	next  *node
+	next  *lnode
 }
 
 type linkedList struct {
-	head *node
-	last *node
+	head *lnode
+	last *lnode
 }
 
 func (list *linkedList) append(val int) {
-	n := &node{
+	n := &lnode{
 		value: val,
 		next:  nil,
 	}
@@ -32,7 +32,7 @@ func (list *linkedList) append(val int) {
 
 // 插入节点后保持有序
 func (list *linkedList) insert(val int) {
-	n := &node{
+	n := &lnode{
 		value: val,
 		next:  nil,
 	}
