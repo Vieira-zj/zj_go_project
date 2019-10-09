@@ -43,10 +43,17 @@ function go_benchmark_test() {
     go test -v -bench=. -benchmem src/demo.tests/gotests/word_bmark_test.go
 }
 
+# go unit tests
+function go_func_unittest() {
+    local test_dir="${GOPATH}/src/demo.tests/gotests"
+    local target="calculation"
+    go test -v ${test_dir}/${target}.go ${test_dir}/${target}_test.go
+}
+
 
 # TOOLS TEST
 function tool_svc_test() {
-    test_dir=$1
+    local test_dir=$1
     if [ -z $2 ]; then
         go test -v -count=1 src/tools.app/services/${test_dir}
     else
@@ -305,6 +312,7 @@ function shell_test_09() {
 # go_test_help
 # go_func_test
 # go_benchmark_test
+go_func_unittest
 
 # tool_svc_test diskusage filestree_test.go
 # tool_utils_test mails_test.go

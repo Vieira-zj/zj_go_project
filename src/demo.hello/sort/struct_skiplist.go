@@ -616,7 +616,6 @@ Test
 */
 
 func (s *SkipList) printRepr() {
-
 	fmt.Printf("header:\n")
 	for i, link := range s.header.forward {
 		if link != nil {
