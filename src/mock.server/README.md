@@ -54,11 +54,11 @@ key1=val1;key2=val2
 
 1. Demo, parse Post request, and return templated json:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=mmm&username=nnn&age=19&key1=val1&key2=val2" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=mmm&username=nnn&age=19&sex=male&key1=val1&key2=val2" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
 
-2. Demo, parse Post request, with keywords and return templated json:
+2. Demo, parse Post request with keywords (randint, randstr), and return templated json:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=yyy&age=randint(37)&key1=val1&key2=randstr(16)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=yyy&age=randint(37)&sex=randchoice(male,female)&key1=val1&key2=randstr(16)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
 
 request body (data.txt):
 
@@ -68,6 +68,7 @@ request body (data.txt):
         "user_id": "{{.userid}}",
         "user_name": "{{.username}}",
         "user_age": {{.age}},
+        "user_sex": "{{.sex}}",
         "meta": {
             "key1": "{{.key1}}",
             "key2": "{{.key2}}"
@@ -84,6 +85,7 @@ response json:
         "user_id": "xxxxx",
         "user_name": "xxxxx",
         "user_age": 21,
+        "user_sex": "male",
         "meta": {
             "key1": "val1",
             "key2": "rand_string"

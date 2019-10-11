@@ -149,14 +149,19 @@ func ParseParamsForTempl(query map[string][]string) (map[string]string, error) {
 				return nil, err
 			}
 			val = strconv.Itoa(rand.Intn(num))
-		} else if strings.Contains(v[0], "randstr") {
+		} else if strings.Contains(val, "randstr") {
 			num, err := getNumberArg(val)
 			if err != nil {
 				return nil, err
 			}
 			tmp := strconv.Itoa(int(time.Now().Unix()))
 			val = myutils.GetBase64MD5Text(tmp)[:num]
+		} else if strings.Contains(val, "randchoice") {
+			strArgs := val[strings.Index(val, "(")+1 : len(val)-1]
+			args := strings.Split(strArgs, ",")
+			val = args[rand.Intn(len(args))]
 		}
+
 		values[k] = val
 	}
 
