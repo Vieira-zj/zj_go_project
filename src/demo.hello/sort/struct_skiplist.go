@@ -616,7 +616,7 @@ Test
 */
 
 func (s *SkipList) printRepr() {
-	fmt.Printf("header:\n")
+	fmt.Println("header:") // key:nil, value:nil
 	for i, link := range s.header.forward {
 		if link != nil {
 			fmt.Printf("\t%d: -> %v\n", i, link.key)
@@ -626,7 +626,7 @@ func (s *SkipList) printRepr() {
 	}
 
 	for node := s.header.next(); node != nil; node = node.next() {
-		fmt.Printf("%v: %v (level %d)\n", node.key, node.value, len(node.forward))
+		fmt.Printf("%v:%v (level %d)\n", node.key, node.value, len(node.forward))
 		for i, link := range node.forward {
 			if link != nil {
 				fmt.Printf("\t%d: -> %v\n", i, link.key)
@@ -652,8 +652,7 @@ func TestSkipList() {
 	s.printRepr()
 	fmt.Println()
 
-	firstValue, ok := s.Get(0)
-	if ok {
+	if firstValue, ok := s.Get(0); ok {
 		fmt.Println(firstValue)
 	}
 	fmt.Println()
@@ -661,14 +660,13 @@ func TestSkipList() {
 	//  zero
 
 	s.Delete(7)
-	secondValue, ok := s.Get(7)
-	if ok {
+	if secondValue, ok := s.Get(7); ok {
 		fmt.Println(secondValue)
 	} else {
 		fmt.Println("key=7 not found!")
 	}
 	fmt.Println()
-	// prints: nothing.
+	// prints: not found!
 
 	s.Set(9, "niner")
 	// Iterate through all the elements, in order.

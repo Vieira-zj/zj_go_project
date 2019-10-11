@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/golib/httprouter"
@@ -17,19 +17,14 @@ import (
 
 // MockDemoHandler router for mock demo handlers.
 func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	id, err := strconv.Atoi(params.ByName("id"))
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-
+	id := params.ByName("id")
 	if r.Method == "GET" {
 		switch id {
-		case 1:
+		case "1":
 			mockDemo01(w, r)
-		case 2:
+		case "2":
 			mockDemo02(w, r)
-		case 5:
+		case "5":
 			mockDemo05(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
@@ -38,9 +33,11 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 	}
 	if r.Method == "POST" {
 		switch id {
-		case 3:
+		case "2-1":
+			mockDemo0201(w, r)
+		case "3":
 			mockDemo03(w, r)
-		case 4:
+		case "4":
 			mockDemo04(w, r)
 		default:
 			common.ErrHandler(w, fmt.Errorf("POST for invalid path: %s", r.URL.Path))
@@ -87,23 +84,46 @@ func mockDemo02(w http.ResponseWriter, r *http.Request) {
 	} else {
 		userID = "nil"
 	}
-	fmt.Println("userid:", userID)
+	log.Println("userid:", userID)
 
 	if val, ok := values["username"]; ok {
 		userName = val[0]
 	} else {
 		userName = "nil"
 	}
-	fmt.Println("username:", userName)
+	log.Println("username:", userName)
 
 	if val, ok := values["key"]; ok {
 		for _, v := range val {
-			fmt.Println("key:", v)
+			log.Println("key:", v)
 		}
 	}
 
 	b := []byte(fmt.Sprintf("hi, thanks for access %s", html.EscapeString(r.URL.Path[1:])))
 	common.WriteOKHTMLResp(w, b)
+}
+
+// demo, parse input data and return templated json body
+// Post /demo/2-1?userid=xxx&username=xxx&key1=val1&key2=val2"
+func mockDemo0201(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+	defer r.Body.Close()
+
+	tmpl, err := template.New("mock").Parse(string(body))
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	if err := tmpl.Execute(w, r.URL.Query()); err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 }
 
 // demo, parse post json body.
@@ -117,7 +137,6 @@ type serverInfo struct {
 	SvrGrpID string   `json:"server_group_id"`
 }
 
-// Post /demo/3
 func mockDemo03(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -138,7 +157,7 @@ func mockDemo03(w http.ResponseWriter, r *http.Request) {
 	}
 
 	common.WriteOKJSONResp(w, s)
-	fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
+	// fmt.Fprintf(w, "hi, thanks for access %s", html.EscapeString(r.URL.Path[1:]))
 }
 
 // demo, parse post form with cookie

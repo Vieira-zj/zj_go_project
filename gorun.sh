@@ -42,8 +42,8 @@ fi
 
 # BUILD TOOLS BIN
 function scp_remote() {
-    bin_path="$1"
-    remote_ip="10.200.20.21"
+    local bin_path="$1"
+    local remote_ip="10.200.20.21"
     ping ${remote_ip} -c 1
     if [ $? == 0 ]; then
         cd ${ZJ_GOPRJ}/src/mock.server/main
@@ -52,9 +52,9 @@ function scp_remote() {
 }
 
 function build_tools_bin() {
-    target=$1
-    main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
-    bin_path="${HOME}/Downloads/tmp_files/${target}"
+    local target=$1
+    local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
+    local bin_path="${HOME}/Downloads/tmp_files/${target}"
     if [[ $2 == "linux" ]]; then
         GOOS=linux GOARCH=amd64 go build -o ${bin_path} ${main_dir}/main.go
     else
@@ -88,17 +88,17 @@ if [[ $1 = "grpc" ]]; then
 fi
 
 
-# BUILD MOCK BIN
+# BUILD MOCK BIN  ./gorun.sh mock [linux|arm]
 function go_build_bin() {
-    target_bin="$1"
+    local target_bin="$1"
     cd ${ZJ_GOPRJ}/src/mock.server/main
     if [ $2 ]; then
         GOOS=linux GOARCH=$2 go build -o ${target_bin} main.go
     else
         go build -o ${target_bin} main.go
     fi
-
-    target_dir="${HOME}/Downloads/tmp_files"
+    
+    local target_dir="${HOME}/Downloads/tmp_files/mockserver"
     # scp_remote ${target_bin}; scp_remote mock_conf.json
     mv ${target_bin} ${target_dir} && cp mock_conf.json ${target_dir}
 }
