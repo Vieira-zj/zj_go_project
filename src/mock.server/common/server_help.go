@@ -6,8 +6,10 @@ import (
 	"math/rand"
 	"net/http"
 	"net/http/httputil"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	myutils "tools.app/utils"
 )
@@ -132,6 +134,46 @@ func GetBoolArgFromQuery(r *http.Request, argName string) (bool, error) {
 		return false, err
 	}
 	return strconv.ParseBool(val)
+}
+
+// ******** Template Functions
+
+// ParseParamsForTempl parse query params for templated response.
+func ParseParamsForTempl(query map[string][]string) (map[string]string, error) {
+	values := make(map[string]string, len(query))
+	for k, v := range query {
+		val := v[0]
+		if strings.Contains(val, "randint") {
+			num, err := getNumberArg(val)
+			if err != nil {
+				return nil, err
+			}
+			val = strconv.Itoa(rand.Intn(num))
+		} else if strings.Contains(v[0], "randstr") {
+			num, err := getNumberArg(val)
+			if err != nil {
+				return nil, err
+			}
+			tmp := strconv.Itoa(int(time.Now().Unix()))
+			val = myutils.GetBase64MD5Text(tmp)[:num]
+		}
+		values[k] = val
+	}
+
+	return values, nil
+}
+
+func getNumberArg(text string) (int, error) {
+	r, err := regexp.Compile(`\d+`)
+	if err != nil {
+		return -1, err
+	}
+	num, err := strconv.Atoi(r.FindString(text))
+	if err != nil {
+		return -1, err
+	}
+
+	return num, nil
 }
 
 // ******** Helper Functions

@@ -103,8 +103,9 @@ func mockDemo02(w http.ResponseWriter, r *http.Request) {
 	common.WriteOKHTMLResp(w, b)
 }
 
-// demo, parse input data and return templated json body
-// Post /demo/2-1?userid=xxx&username=xxx&key1=val1&key2=val2"
+// demo, parse input data with keyword, and return templated json body
+// Post /demo/2-1?userid=xxx&username=xxx&age=19&key1=val1&key2=val2"
+// Post /demo/2-2?userid=xxx&username=xxx&age=randint(27)&key1=val1&key2=randstr(8)
 func mockDemo0201(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -119,10 +120,16 @@ func mockDemo0201(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	if err := tmpl.Execute(w, r.URL.Query()); err != nil {
+	params, err := common.ParseParamsForTempl(r.URL.Query())
+	if err != nil {
 		common.ErrHandler(w, err)
 		return
+	}
+
+	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
+	w.WriteHeader(http.StatusOK)
+	if err := tmpl.Execute(w, params); err != nil {
+		log.Fatalln(err)
 	}
 }
 

@@ -114,13 +114,18 @@ func hashFNV32(text string) uint32 {
 
 // reg expression
 func testRegExp() {
-	const testStr = "test1, hello, test2,test3, 99,test4"
+	testStr := "test1, hello, test2,test3, 99,test4"
 	if r, err := regexp.Compile(`hello|world`); err == nil {
 		fmt.Println("\n#1 string matched:", r.MatchString(testStr))
 	}
 
 	if r, err := regexp.Compile(`(\d\d)`); err == nil {
 		fmt.Println("#2 number found:", r.FindString(testStr))
+	}
+
+	testStr = "randint(10,20)"
+	if r, err := regexp.Compile(`\d+`); err == nil {
+		fmt.Println("#3 numbers:", r.FindAllString(testStr, -1))
 	}
 }
 

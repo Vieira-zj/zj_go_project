@@ -50,20 +50,24 @@ key1=val1;key2=val2
 
 `curl -v "http://127.0.0.1:17891/demo/5"`
 
-
 #### mock with templated json response
 
-1. Demo, parse Post request and return templated json:
+1. Demo, parse Post request, and return templated json:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=xxx&key1=val1&key2=val2" --data-binary @test.json`
+`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=mmm&username=nnn&age=19&key1=val1&key2=val2" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
 
-request json:
+2. Demo, parse Post request, with keywords and return templated json:
 
-```json
+`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=yyy&age=randint(37)&key1=val1&key2=randstr(16)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+
+request body (data.txt):
+
+```text
 {
     "user_info": {
         "user_id": "{{.userid}}",
         "user_name": "{{.username}}",
+        "user_age": {{.age}},
         "meta": {
             "key1": "{{.key1}}",
             "key2": "{{.key2}}"
@@ -79,42 +83,7 @@ response json:
     "user_info": {
         "user_id": "xxxxx",
         "user_name": "xxxxx",
-        "meta": {
-            "key1": "val1",
-            "key2": "val2"
-        }
-    }
-}
-```
-
-2. Demo, parse Post request with keywords and return templated json:
-
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-2?userid=xxx&username=xxx&age=randint(20)&key1=val1&key2=randstr()" --data-binary @test.json`
-
-request json:
-
-```json
-{
-    "user_info": {
-        "user_id": "{{.userid}}",
-        "user_name": "{{.username}}",
-        "user_age": "{{.age}}",
-        "meta": {
-            "key1": "{{.key1}}",
-            "key2": "{{.key2}}"
-        }
-    }
-}
-```
-
-response json:
-
-```json
-{
-    "user_info": {
-        "user_id": "xxxxx",
-        "user_name": "xxxxx",
-        "user_age": "21",
+        "user_age": 21,
         "meta": {
             "key1": "val1",
             "key2": "rand_string"
