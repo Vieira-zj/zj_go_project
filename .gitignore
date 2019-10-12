@@ -15,3 +15,4 @@ src/mock.server/vendor/qiniu.com
 src/mock.server/vendor/qiniupkg.com
 
 src/sys.app/main/main
+src/mock.server/data

@@ -50,7 +50,7 @@ key1=val1;key2=val2
 
 `curl -v "http://127.0.0.1:17891/demo/5"`
 
-#### mock with templated json response
+### /demo/2-1, demo with templated json response
 
 1. Demo, parse Post request, and return templated json:
 
@@ -64,16 +64,16 @@ request body (data.txt):
 
 ```text
 {
-    "user_info": {
-        "user_id": "{{.userid}}",
-        "user_name": "{{.username}}",
-        "user_age": {{.age}},
-        "user_sex": "{{.sex}}",
-        "meta": {
-            "key1": "{{.key1}}",
-            "key2": "{{.key2}}"
-        }
+  "user_info": {
+    "user_id": "{{.userid}}",
+    "user_name": "{{.username}}",
+    "user_age": {{.age}},
+    "user_sex": "{{.sex}}",
+    "meta": {
+      "key1": "{{.key1}}",
+      "key2": "{{.key2}}"
     }
+  }
 }
 ```
 
@@ -81,16 +81,16 @@ response json:
 
 ```json
 {
-    "user_info": {
-        "user_id": "xxxxx",
-        "user_name": "xxxxx",
-        "user_age": 21,
-        "user_sex": "male",
-        "meta": {
-            "key1": "val1",
-            "key2": "rand_string"
-        }
+  "user_info": {
+    "user_id": "xxxxx",
+    "user_name": "xxxxx",
+    "user_age": 21,
+    "user_sex": "male",
+    "meta": {
+      "key1": "val1",
+      "key2": "rand_string"
     }
+  }
 }
 ```
 
@@ -150,6 +150,62 @@ echo "done"
 5. Mock test, server side close connection:
 
 `curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"`
+
+### Mock generic api
+
+1. Register random uri with params and template body (/mock/register/:uri):
+
+`curl -v "http://127.0.0.1:17891/mock/register/mock-001?userid=xxx&username=yyy&age=randint(17)&sex=randchoice(male,female)&key1=val1&key2=randstr(12)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+
+request body (data.txt):
+
+```text
+{
+  "user_info": {
+    "user_id": "{{.userid}}",
+    "user_name": "{{.username}}",
+    "user_age": {{.age}},
+    "user_sex": "{{.sex}}",
+    "meta": {
+      "key1": "{{.key1}}",
+      "key2": "{{.key2}}"
+    }
+  }
+}
+```
+
+response json:
+
+```json
+{
+  "meta": null,
+  "data": {
+    "status": 200,
+    "message": "success"
+  }
+}
+```
+
+2. Access register uri, and get templated json body (/mock/:uri):
+
+`curl -v "http://127.0.0.1:17891/mock/mock-001"`
+
+response json:
+
+```json
+{
+  "user_info": {
+    "user_id": "xxxxx",
+    "user_name": "xxxxx",
+    "user_age": 21,
+    "user_sex": "male",
+    "meta": {
+      "key1": "val1",
+      "key2": "rand_string"
+    }
+  }
+}
+```
 
 ### /mockqiniu/:id
 

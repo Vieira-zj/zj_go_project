@@ -125,14 +125,14 @@ func ReadFileLines(path string) ([]string, error) {
 
 // ********* File Write
 
-// WriteContentToNewFile write content to a new file.
-func WriteContentToNewFile(path, content string) error {
+// WriteContentToFile writes content to file.
+func WriteContentToFile(path, content string, isOverwrite bool) error {
 	exist, err := IsFileExist(path)
-	if exist {
-		return fmt.Errorf("file (%s) is exist", path)
-	}
 	if err != nil {
 		return err
+	}
+	if !isOverwrite && exist {
+		return fmt.Errorf("file (%s) is exist", path)
 	}
 
 	if err := ioutil.WriteFile(path, []byte(content), 0644); err != nil {
@@ -141,7 +141,7 @@ func WriteContentToNewFile(path, content string) error {
 	return nil
 }
 
-// AppendContentToFile if file exist, append content at the end, or write content to a new file.
+// AppendContentToFile if file exist, appends content at the end, or writes content to a new file.
 func AppendContentToFile(path, content string) (int, error) {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {

@@ -1,5 +1,15 @@
 package common
 
+import (
+	"os"
+	"path/filepath"
+)
+
+var (
+	// DataDirPath data dir path of mock.
+	DataDirPath = filepath.Join(os.Getenv("GOPATH"), "src/mock.server/data")
+)
+
 const (
 	// TextContentType http header "Content-Type".
 	TextContentType = "Content-Type"

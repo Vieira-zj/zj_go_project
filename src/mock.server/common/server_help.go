@@ -181,6 +181,18 @@ func getNumberArg(text string) (int, error) {
 	return num, nil
 }
 
+// QueryToMap formats string query to map[string][]string (consistant with r.URL.Query()).
+func QueryToMap(query string) map[string][]string {
+	items := strings.Split(query, "&")
+	retMap := make(map[string][]string, len(items))
+
+	for _, item := range items {
+		tmp := strings.Split(item, "=")
+		retMap[tmp[0]] = []string{tmp[1]}
+	}
+	return retMap
+}
+
 // ******** Helper Functions
 
 // CreateMockString returns mock md5 string for size of bytes.

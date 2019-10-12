@@ -61,15 +61,15 @@ func TestWriteToNewFile(t *testing.T) {
 		fPath      = filepath.Join(tmpDirPath, "write_test.out")
 	)
 
-	t.Log("Case01: write content to a new file.")
+	t.Log("Case01: write content to a file with overwrite=false.")
 	content := "1|one\n2|two\n3|three\n4|four\n5|five"
-	err := myutils.WriteContentToNewFile(fPath, content)
+	err := myutils.WriteContentToFile(fPath, content, false)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log("Case02: write content to an exist file.")
-	err = myutils.WriteContentToNewFile(fPath, content)
+	t.Log("Case02: write content to an exist file with overwrite=false.")
+	err = myutils.WriteContentToFile(fPath, content, false)
 	if err == nil {
 		t.Error("Failed: write to an exist file!")
 	}
