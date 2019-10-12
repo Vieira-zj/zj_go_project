@@ -4,7 +4,7 @@
 
 1. Default page:
 
-`curl -v "http://127.0.0.1:17891/`
+`curl -v "http://127.0.0.1:17891/"`
 
 ### /demo/:id
 
@@ -153,9 +153,9 @@ echo "done"
 
 ### Mock generic api
 
-1. Register random uri with params and template body (/mock/register/:uri):
+1. Register a uri with params and template body (Post /mock/register/:uri):
 
-`curl -v "http://127.0.0.1:17891/mock/register/mock-001?userid=xxx&username=yyy&age=randint(17)&sex=randchoice(male,female)&key1=val1&key2=randstr(12)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+`curl -v "http://127.0.0.1:17891/mock/register/mock-001?userid=xxx&username=yyy&age=randint(27)&sex=randchoice(male,female)&key1=val1&key2=randstr(12)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
 
 request body (data.txt):
 
@@ -186,7 +186,7 @@ response json:
 }
 ```
 
-2. Access register uri, and get templated json body (/mock/:uri):
+2. Access register uri, and get templated json body (Get /mock/:uri):
 
 `curl -v "http://127.0.0.1:17891/mock/mock-001"`
 
@@ -195,8 +195,8 @@ response json:
 ```json
 {
   "user_info": {
-    "user_id": "xxxxx",
-    "user_name": "xxxxx",
+    "user_id": "xxx",
+    "user_name": "yyy",
     "user_age": 21,
     "user_sex": "male",
     "meta": {
@@ -252,7 +252,7 @@ response json:
 }
 ```
 
-1. Send a mail:
+2. Send an email:
 
 `curl -v -X POST "http://127.0.0.1:17891/tools/mail" -H "Content-Type:application/json" --data-binary "@test.json"`
 

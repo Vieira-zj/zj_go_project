@@ -12,12 +12,18 @@ import (
 	myutils "tools.app/utils"
 )
 
-// MockAPIRegisterHandler register random uri with params and template body.
+const (
+	uriName              = "uri"
+	queryFilePathPattern = "%s/%s_query.txt"
+	bodyFilePathPattern  = "%s/%s_body.txt"
+)
+
+// MockAPIRegisterHandler register a uri with params and template body.
 // Post /mock/register/:uri
 func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	// TODO: use db instead of text files.
-	uri := params.ByName("uri")
-	filePath := fmt.Sprintf("%s/%s_query.txt", common.DataDirPath, uri)
+	// TODO: use db instead of text files to save uri:params:template_body.
+	uri := params.ByName(uriName)
+	filePath := fmt.Sprintf(queryFilePathPattern, common.DataDirPath, uri)
 	if err := myutils.WriteContentToFile(filePath, r.URL.RawQuery, true); err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -30,7 +36,7 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 	}
 	defer r.Body.Close()
 
-	filePath = fmt.Sprintf("%s/%s_body.txt", common.DataDirPath, uri)
+	filePath = fmt.Sprintf(bodyFilePathPattern, common.DataDirPath, uri)
 	if err := myutils.WriteContentToFile(filePath, string(body), true); err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -47,14 +53,13 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 // MockAPIHandler sends templated json response by register params and body.
 // Post /mock/:uri
 func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	uri := params.ByName("uri")
-	filePath := fmt.Sprintf("%s/%s_body.txt", common.DataDirPath, uri)
+	uri := params.ByName(uriName)
+	filePath := fmt.Sprintf(bodyFilePathPattern, common.DataDirPath, uri)
 	body, err := myutils.ReadFileContentBuf(filePath)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
-	defer r.Body.Close()
 
 	tmpl, err := template.New("mockapi").Parse(string(body))
 	if err != nil {
@@ -62,7 +67,7 @@ func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		return
 	}
 
-	filePath = fmt.Sprintf("%s/%s_query.txt", common.DataDirPath, uri)
+	filePath = fmt.Sprintf(queryFilePathPattern, common.DataDirPath, uri)
 	query, err := myutils.ReadFileContent(filePath)
 	if err != nil {
 		common.ErrHandler(w, err)

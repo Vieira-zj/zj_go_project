@@ -14,9 +14,7 @@ const p = 0.25
 
 const defaultMaxLevel = 32
 
-/*
-Node
-*/
+// ********* Node
 
 // A node is a container for key-value pairs that are stored in a skip list.
 type snode struct {
@@ -48,9 +46,7 @@ func (n *snode) hasPrevious() bool {
 	return n.previous() != nil
 }
 
-/*
-SkipList
-*/
+// ********* SkipList
 
 // A SkipList is a map-like data structure that maintains an ordered
 // collection of key-value pairs. Insertion, lookup, and deletion are all O(log n) operations.
@@ -82,9 +78,7 @@ func (s *SkipList) Len() int {
 	return s.length
 }
 
-/*
-Iterator
-*/
+// ********* Iterator
 
 // Iterator is an interface that you can use to iterate through the skip list (in its entirety or fragments).
 // For an use example, see the documentation of SkipList.
@@ -189,9 +183,7 @@ func (i *iter) Close() {
 	i.list = nil
 }
 
-/*
-rangeIterator
-*/
+// ********* rangeIterator
 
 type rangeIterator struct {
 	iter
@@ -245,6 +237,8 @@ func (i *rangeIterator) Close() {
 	i.upperLimit = nil
 	i.lowerLimit = nil
 }
+
+// ********* SkipList
 
 // Iterator returns an Iterator that will go through all elements s.
 func (s *SkipList) Iterator() Iterator {
@@ -473,6 +467,8 @@ func (s *SkipList) Delete(key interface{}) (value interface{}, ok bool) {
 	return candidate.value, true
 }
 
+// ********* New
+
 // NewCustomMap returns a new SkipList that will use lessThan as the comparison function.
 // lessThan should define a linear order on keys you intend to use with the SkipList.
 func NewCustomMap(lessThan func(l, r interface{}) bool) *SkipList {
@@ -485,9 +481,7 @@ func NewCustomMap(lessThan func(l, r interface{}) bool) *SkipList {
 	}
 }
 
-/*
-Ordered
-*/
+// ********* Ordered
 
 // Ordered is an interface which can be linearly ordered by the LessThan method,
 // whereby this instance is deemed to be less than other.
@@ -518,6 +512,8 @@ func NewStringMap() *SkipList {
 		return l.(string) < r.(string)
 	})
 }
+
+// ********* Set
 
 // Set is an ordered set data structure.
 //
@@ -611,9 +607,7 @@ func (s *Set) GetMaxLevel() int {
 	return s.skiplist.MaxLevel
 }
 
-/*
-Test
-*/
+// ********* Skiplist Test
 
 func (s *SkipList) printRepr() {
 	fmt.Println("header:") // key:nil, value:nil

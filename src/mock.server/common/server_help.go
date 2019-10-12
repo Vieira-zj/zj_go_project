@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	myutils "tools.app/utils"
 )
@@ -136,7 +135,7 @@ func GetBoolArgFromQuery(r *http.Request, argName string) (bool, error) {
 	return strconv.ParseBool(val)
 }
 
-// ******** Template Functions
+// ******** Mock API, Template Functions
 
 // ParseParamsForTempl parse query params for templated response.
 func ParseParamsForTempl(query map[string][]string) (map[string]string, error) {
@@ -154,8 +153,7 @@ func ParseParamsForTempl(query map[string][]string) (map[string]string, error) {
 			if err != nil {
 				return nil, err
 			}
-			tmp := strconv.Itoa(int(time.Now().Unix()))
-			val = myutils.GetBase64MD5Text(tmp)[:num]
+			val = CreateMockString(num)
 		} else if strings.Contains(val, "randchoice") {
 			strArgs := val[strings.Index(val, "(")+1 : len(val)-1]
 			args := strings.Split(strArgs, ",")
@@ -181,7 +179,7 @@ func getNumberArg(text string) (int, error) {
 	return num, nil
 }
 
-// QueryToMap formats string query to map[string][]string (consistant with r.URL.Query()).
+// QueryToMap formats string query to map[string][]string (compatible with r.URL.Query()).
 func QueryToMap(query string) map[string][]string {
 	items := strings.Split(query, "&")
 	retMap := make(map[string][]string, len(items))
