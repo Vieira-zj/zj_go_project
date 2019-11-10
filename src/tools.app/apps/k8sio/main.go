@@ -1,15 +1,20 @@
 package main
 
 import (
+	"bufio"
 	"flag"
+	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	mysvc "tools.app/services/k8sio"
 )
 
 func main() {
+	// Refer: https://github.com/kubernetes/kubernetes/tree/v1.6.1/test/e2e/framework
 	log.Println("K8S Client app start.")
 
 	const desc = "(optional) absolute path to the kubeconfig file"
@@ -17,8 +22,11 @@ func main() {
 	kubeconfig := flag.String("kubeconfig", defaultPath, desc)
 	flag.Parse()
 
-	printClusterInfo(*kubeconfig)
-	execRemoteCommand(*kubeconfig)
+	execCliCommand()
+	if false {
+		printClusterInfo(*kubeconfig)
+		execRemoteCommand(*kubeconfig)
+	}
 }
 
 func printClusterInfo(kubeconfig string) {
@@ -53,4 +61,32 @@ func execRemoteCommand(kubeconfig string) {
 	if err := rc.RemoteExecAndPrint(namespace, podname, "ls -l"); err != nil {
 		panic(err.Error())
 	}
+}
+
+func execCliCommand() {
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Print("go-cli$ ")
+		cmdStr, err := reader.ReadString('\n')
+		if err != nil {
+			panic(err.Error())
+		}
+		if err = runCommand(cmdStr); err != nil {
+			panic(err.Error())
+		}
+	}
+}
+
+func runCommand(cmdStr string) error {
+	cmdStr = strings.TrimSuffix(cmdStr, "\n")
+	cmdSlice := strings.Fields(cmdStr)
+	switch cmdSlice[0] {
+	case "exit":
+		log.Println("go-cli shell exit.")
+		os.Exit(0)
+	}
+	cmd := exec.Command(cmdSlice[0], cmdSlice[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
