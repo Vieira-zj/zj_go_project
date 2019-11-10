@@ -24,6 +24,7 @@ src/tools.app/vendor/github.com/imdario
 src/tools.app/vendor/github.com/json-iterator
 src/tools.app/vendor/github.com/modern-go
 src/tools.app/vendor/github.com/spf13
+src/tools.app/vendor/github.com/docker
 src/tools.app/vendor/golang.org/x
 src/tools.app/vendor/gopkg.in/inf.v0
 src/tools.app/vendor/gopkg.in/yaml.v2

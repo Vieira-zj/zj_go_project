@@ -30,7 +30,8 @@ if [[ $1 == "main" ]]; then
 fi
 
 if [[ $1 == "app" ]]; then
-    go run src/demo.app/main/main.go
+    # go run src/demo.app/main/main.go
+    go run src/tools.app/apps/k8sio/main.go
     exit 0
 fi
 
@@ -119,6 +120,5 @@ mock_bin="mockserver"
 if [[ $1 == "mock" ]]; then
     build_mock_bin $2
 fi
-
 
 set +ex # set configs off
