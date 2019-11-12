@@ -13,24 +13,30 @@ import (
 	mysvc "tools.app/services/k8sio"
 )
 
+var (
+	kubeConfig, namespace, podName *string
+)
+
 func main() {
 	// Refer: https://github.com/kubernetes/kubernetes/tree/v1.6.1/test/e2e/framework
 	log.Println("K8S Client app start.")
 
-	const desc = "(optional) absolute path to the kubeconfig file"
 	defaultPath := filepath.Join(os.Getenv("HOME"), ".kube", "config")
-	kubeconfig := flag.String("kubeconfig", defaultPath, desc)
+	kubeConfig = flag.String("kubeconfig", defaultPath, "abs path to the kubeconfig file")
+	namespace = flag.String("nspace", "mini-test-ns", "specified namespace")
+	podName = flag.String("podname", "hello-minikube-59ddd8676b-vkl26", "specified pod name")
 	flag.Parse()
 
-	execCliCommand()
-	if false {
-		printClusterInfo(*kubeconfig)
-		execRemoteCommand(*kubeconfig)
+	printClusterInfo()
+	if true {
+		// cli := &ExecLocalCommand{}
+		cli := &ExecRemoteCommand2{}
+		execCliCommand(cli)
 	}
 }
 
-func printClusterInfo(kubeconfig string) {
-	client, err := mysvc.NewK8SClient(kubeconfig)
+func printClusterInfo() {
+	client, err := mysvc.NewK8SClient(*kubeConfig)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -38,32 +44,12 @@ func printClusterInfo(kubeconfig string) {
 	if err := client.PrintNumberOfAllPods(); err != nil {
 		panic(err.Error())
 	}
-
-	const (
-		namespace = "mini-test-ns"
-		podname   = "hello-minikube-59ddd8676b-vkl26"
-	)
-	if err := client.PrintPodInfo(namespace, podname); err != nil {
+	if err := client.PrintPodInfo(*namespace, *podName); err != nil {
 		panic(err.Error())
 	}
 }
 
-func execRemoteCommand(kubeconfig string) {
-	rc, err := mysvc.NewRemoteCMD(kubeconfig)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	var (
-		namespace = "mini-test-ns"
-		podname   = "hello-minikube-59ddd8676b-vkl26"
-	)
-	if err := rc.RemoteExecAndPrint(namespace, podname, "ls -l"); err != nil {
-		panic(err.Error())
-	}
-}
-
-func execCliCommand() {
+func execCliCommand(cli ExecCommand) {
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print("go-cli$ ")
@@ -71,22 +57,83 @@ func execCliCommand() {
 		if err != nil {
 			panic(err.Error())
 		}
-		if err = runCommand(cmdStr); err != nil {
+
+		cmdStr = strings.TrimSuffix(cmdStr, "\n")
+		if len(cmdStr) == 0 {
+			continue
+		}
+		cmdSlice := strings.Fields(cmdStr)
+		if cmdSlice[0] == "exit" {
+			log.Println("go-cli shell exit.")
+			os.Exit(0)
+		}
+
+		if err = cli.run(ExecOptions{
+			Configs:   *kubeConfig,
+			Namespace: *namespace,
+			PodName:   *podName,
+			Command:   cmdStr,
+		}); err != nil {
 			panic(err.Error())
 		}
 	}
 }
 
-func runCommand(cmdStr string) error {
-	cmdStr = strings.TrimSuffix(cmdStr, "\n")
-	cmdSlice := strings.Fields(cmdStr)
-	switch cmdSlice[0] {
-	case "exit":
-		log.Println("go-cli shell exit.")
-		os.Exit(0)
-	}
+// ExecOptions contains exec options to run a command.
+type ExecOptions struct {
+	Configs   string
+	Namespace string
+	PodName   string
+	Command   string
+}
+
+// ExecCommand an interface to run a command.
+type ExecCommand interface {
+	run(ExecOptions) error
+}
+
+// ExecLocalCommand runs local command.
+type ExecLocalCommand struct {
+}
+
+func (cli *ExecLocalCommand) run(options ExecOptions) error {
+	cmdSlice := strings.Fields(options.Command)
 	cmd := exec.Command(cmdSlice[0], cmdSlice[1:]...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+// ExecRemoteCommand runs remote command on given pod in namespace with output in stdout.
+type ExecRemoteCommand struct {
+}
+
+func (cli *ExecRemoteCommand) run(options ExecOptions) error {
+	re, err := mysvc.NewRemoteExec(options.Configs)
+	if err != nil {
+		return err
+	}
+	return re.RunCommandWithStdout(options.Namespace, options.PodName, options.Command)
+}
+
+// ExecRemoteCommand2 runs remote command on given pod in namespace, and returns stdout string.
+type ExecRemoteCommand2 struct {
+}
+
+func (cli *ExecRemoteCommand2) run(options ExecOptions) error {
+	rc2, err := mysvc.NewRemoteExec2(options.Configs)
+	if err != nil {
+		return err
+	}
+
+	cmds := strings.Split(options.Command, " ")
+	stdout, stderr, err := rc2.RunCommandInPod(options.Namespace, options.PodName, cmds...)
+	if err != nil {
+		if len(stderr) > 0 {
+			log.Println("Error:", stderr)
+		}
+		return err
+	}
+	fmt.Print(stdout)
+	return nil
 }

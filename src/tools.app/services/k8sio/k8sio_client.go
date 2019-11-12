@@ -12,15 +12,18 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-// K8SClient inculdes utils for k8s client.
+// IsDebug flag for printing debug string.
+var IsDebug = false
+
+// K8SClient inculdes k8s client utils.
 type K8SClient struct {
 	KubeConfig *restclient.Config
 	KubeClient *kubernetes.Clientset
 }
 
 // NewK8SClient returns an instance of K8SClient.
-func NewK8SClient(kubeconfig string) (*K8SClient, error) {
-	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
+func NewK8SClient(kubeConfig string) (*K8SClient, error) {
+	config, err := clientcmd.BuildConfigFromFlags("", kubeConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +49,7 @@ func (kc *K8SClient) PrintNumberOfAllPods() error {
 	return nil
 }
 
-// PrintPodInfo prints pod info by namespace and name.
+// PrintPodInfo prints pod info by given namespace and name.
 func (kc *K8SClient) PrintPodInfo(namespace, podName string) error {
 	pod, err := kc.GetPod(namespace, podName)
 	if err != nil {
@@ -60,7 +63,7 @@ func (kc *K8SClient) PrintPodInfo(namespace, podName string) error {
 	return nil
 }
 
-// GetPod returns a pod by namespace and name.
+// GetPod returns a pod by given namespace and name.
 func (kc *K8SClient) GetPod(namespace, podName string) (pod *v1.Pod, err error) {
 	pod, err = kc.KubeClient.CoreV1().Pods(namespace).Get(podName, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
@@ -74,6 +77,8 @@ func (kc *K8SClient) GetPod(namespace, podName string) (pod *v1.Pod, err error) 
 		return nil, err
 	}
 
-	log.Printf("Found pod [%s] in namespace [%s].\n", podName, namespace)
+	if IsDebug {
+		log.Printf("Found pod [%s] in namespace [%s].\n", podName, namespace)
+	}
 	return pod, nil
 }
