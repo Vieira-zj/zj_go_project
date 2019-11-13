@@ -90,7 +90,7 @@ if [[ $1 == "ws" ]]; then
 fi
 
 if [[ $1 == "grpc" ]]; then
-    target=$2 # route_guide
+    target=$2 # $2="route_guide"
     build_cs_tools_bin ${target}
     if [[ -d ${main_dir}/testdata ]]; then
         cp -r ${main_dir}/testdata ${bin_path}
