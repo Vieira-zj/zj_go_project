@@ -65,23 +65,33 @@ function build_tools_bin() {
 }
 
 if [[ $1 == "tool" ]]; then
-    build_tools_bin $2
-    # build_tools_bin $2 "linux"
+    build_tools_bin $2 # $2="linux"
     exit 0
 fi
 
-if [[ $1 = "httprouter" ]]; then
+if [[ $1 == "httprouter" ]]; then
     build_tools_bin $1
     cp -r ${ZJ_GOPRJ}/src/tools.app/services/httptemplate/templates ${HOME}/Downloads/tmp_files
     exit 0
 fi
 
-if [[ $1 = "grpc" ]]; then
+function build_cs_tools_bin() {
+    local target=$1
+    local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
+    local bin_path="${HOME}/Downloads/tmp_files/${target}"
+    go build -o ${bin_path}/${target}_server ${main_dir}/server/main.go
+    go build -o ${bin_path}/${target}_client ${main_dir}/client/main.go
+}
+
+if [[ $1 == "ws" ]]; then
+    target="webshell"
+    build_cs_tools_bin ${target}
+    exit 0
+fi
+
+if [[ $1 == "grpc" ]]; then
     target=$2 # route_guide
-    main_dir="${ZJ_GOPRJ}/src/tools.app/apps/grpc/${target}"
-    bin_path="${HOME}/Downloads/tmp_files/${target}"
-    go build -o ${bin_path}/server ${main_dir}/server/main.go
-    go build -o ${bin_path}/client ${main_dir}/client/main.go
+    build_cs_tools_bin ${target}
     if [[ -d ${main_dir}/testdata ]]; then
         cp -r ${main_dir}/testdata ${bin_path}
     fi
@@ -91,20 +101,21 @@ fi
 
 # BUILD MOCK BIN  ./gorun.sh mock [linux|arm]
 function go_build_bin() {
-    local target_bin="$1"
+    local target_bin=$1
     cd ${ZJ_GOPRJ}/src/mock.server/main
-    if [ $2 ]; then
-        GOOS=linux GOARCH=$2 go build -o ${target_bin} main.go
-    else
+    if [[  $2 == "" ]]; then
         go build -o ${target_bin} main.go
+    else
+        GOOS=linux GOARCH=$2 go build -o ${target_bin} main.go
     fi
-    
+
     local target_dir="${HOME}/Downloads/tmp_files/mockserver"
-    # scp_remote ${target_bin}; scp_remote mock_conf.json
     mv ${target_bin} ${target_dir} && cp mock_conf.json ${target_dir}
+    # scp_remote ${target_bin}; scp_remote mock_conf.json
 }
 
 function build_mock_bin {
+    local mock_bin="mockserver"
     if [[ $1 == "linux" ]]; then
         go_build_bin "${mock_bin}_$1" "amd64"
         return
@@ -116,7 +127,6 @@ function build_mock_bin {
     go_build_bin "${mock_bin}_mac"
 }
 
-mock_bin="mockserver"
 if [[ $1 == "mock" ]]; then
     build_mock_bin $2
 fi
