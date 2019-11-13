@@ -82,3 +82,22 @@ func (kc *K8SClient) GetPod(namespace, podName string) (pod *v1.Pod, err error) 
 	}
 	return pod, nil
 }
+
+// CheckPod checks the given pod is validate.
+func (kc *K8SClient) CheckPod(namespace, podName, containerName string) (bool, error) {
+	pod, err := kc.KubeClient.CoreV1().Pods(namespace).Get(podName, metav1.GetOptions{})
+	if err != nil {
+		return false, err
+	}
+
+	if pod.Status.Phase == v1.PodSucceeded || pod.Status.Phase == v1.PodFailed {
+		return false, fmt.Errorf("cannot exec in a container of [%s] pod", pod.Status.Phase)
+	}
+
+	for _, c := range pod.Spec.Containers {
+		if c.Name == containerName {
+			return true, nil
+		}
+	}
+	return false, fmt.Errorf("no container [%s] found in pod [%s]", containerName, podName)
+}
