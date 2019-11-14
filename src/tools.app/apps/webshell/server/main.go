@@ -5,8 +5,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"os"
-	"path/filepath"
 	"text/template"
 
 	"github.com/gorilla/websocket"
@@ -28,8 +26,7 @@ func main() {
 
 // Home http handler for home page.
 func Home(w http.ResponseWriter, r *http.Request) {
-	filePath := filepath.Join(os.Getenv("GOPATH"), "src/tools.app/apps/webshell/server", "home.html")
-	htmlContent, err := myutils.ReadFileContent(filePath)
+	htmlContent, err := myutils.ReadFileContent("home.html")
 	if err != nil {
 		panic(err)
 	}

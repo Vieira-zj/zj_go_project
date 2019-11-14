@@ -11,8 +11,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// WebSocket client demo.
-
 func main() {
 	var addr = flag.String("addr", "localhost:8080", "http service (websocket) address")
 	flag.Parse()

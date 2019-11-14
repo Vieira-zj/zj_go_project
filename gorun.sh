@@ -46,7 +46,7 @@ function scp_remote() {
     local bin_path="$1"
     local remote_ip="10.200.20.21"
     ping ${remote_ip} -c 1
-    if [ $? == 0 ]; then
+    if [[ $? == 0 ]]; then
         cd ${ZJ_GOPRJ}/src/mock.server/main
         scp ${bin_path} qboxserver@${remote_ip}:~/zhengjin/ && rm ${bin_path}
     fi
@@ -75,26 +75,40 @@ if [[ $1 == "httprouter" ]]; then
     exit 0
 fi
 
-function build_cs_tools_bin() {
-    local target=$1
+function build_webshell_btools_bin() {
+    local target="webshell"
     local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
-    local bin_path="${HOME}/Downloads/tmp_files/${target}"
-    go build -o ${bin_path}/${target}_server ${main_dir}/server/main.go
-    go build -o ${bin_path}/${target}_client ${main_dir}/client/main.go
+    local bin_dir="${HOME}/Downloads/tmp_files/${target}"
+    go build -o ${bin_dir}/${target}_server ${main_dir}/server/main.go
+    go build -o ${bin_dir}/${target}_client ${main_dir}/client/main.go
+    
+    local data_file="${main_dir}/server/home.html"
+    cp ${data_file} ${bin_dir}
 }
 
 if [[ $1 == "ws" ]]; then
-    target="webshell"
-    build_cs_tools_bin ${target}
+    build_webshell_btools_bin
     exit 0
 fi
 
-if [[ $1 == "grpc" ]]; then
-    target=$2 # $2="route_guide"
-    build_cs_tools_bin ${target}
+function build_grpc_tools_bin() {
+    local target=$1
+    local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/grpc/${target}"
+    local bin_dir="${HOME}/Downloads/tmp_files/grpc/${target}"
+    go build -o ${bin_dir}/${target}_server ${main_dir}/server/main.go
+    go build -o ${bin_dir}/${target}_client ${main_dir}/client/main.go
+
     if [[ -d ${main_dir}/testdata ]]; then
-        cp -r ${main_dir}/testdata ${bin_path}
+        cp -r ${main_dir}/testdata ${bin_dir}
     fi
+}
+
+if [[ $1 == "grpc" ]]; then
+    target="route_guide"
+    if [[ $2 != "" ]]; then
+        target=$2
+    fi
+    build_grpc_tools_bin ${target}
     exit 0
 fi
 
