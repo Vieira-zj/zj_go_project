@@ -10,9 +10,7 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-// Refer: https://github.com/maoqide/kubeutil
-
-// PtyHandler is what remotecommand expects from a pty
+// PtyHandler is what remotecommand expects from a pty.
 type PtyHandler interface {
 	io.Reader
 	io.Writer
@@ -20,7 +18,7 @@ type PtyHandler interface {
 	Done() chan struct{}
 }
 
-// ExecPod exec in given pod.
+// ExecPod execs command in given pod.
 func ExecPod(kubeClient kubernetes.Interface, cfg *restclient.Config,
 	cmd []string, ptyHandler PtyHandler, namespace, podName, containerName string) error {
 	req := kubeClient.CoreV1().RESTClient().Post().

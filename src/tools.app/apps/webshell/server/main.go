@@ -20,7 +20,7 @@ func main() {
 	http.HandleFunc("/", Home)
 	http.HandleFunc("/echo", EchoMsg)
 
-	log.Println("http server (websocket) is started...")
+	log.Println("http server (websocket) is started at :8080...")
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 

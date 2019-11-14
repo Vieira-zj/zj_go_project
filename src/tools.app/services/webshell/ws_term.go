@@ -26,7 +26,15 @@ const (
 	EndOfTransmission = "\u0004"
 )
 
-var upgrader = websocket.Upgrader{}
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		if r.Method != "GET" {
+			log.Println("websocket not support GET")
+			return false
+		}
+		return true
+	},
+}
 
 // TerminalMessage is the messaging protocol between ShellController and TerminalSession.
 type TerminalMessage struct {
@@ -43,7 +51,7 @@ type TerminalSession struct {
 	doneChan chan struct{}
 }
 
-// NewTerminalSessionWS create TerminalSession.
+// NewTerminalSessionWS creates TerminalSession.
 func NewTerminalSessionWS(conn *websocket.Conn) *TerminalSession {
 	return &TerminalSession{
 		wsConn:   conn,
@@ -52,7 +60,7 @@ func NewTerminalSessionWS(conn *websocket.Conn) *TerminalSession {
 	}
 }
 
-// NewTerminalSession create TerminalSession.
+// NewTerminalSession creates TerminalSession.
 func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader http.Header) (*TerminalSession, error) {
 	conn, err := upgrader.Upgrade(w, r, responseHeader)
 	if err != nil {
@@ -82,6 +90,7 @@ func (t *TerminalSession) Next() *remotecommand.TerminalSize {
 	}
 }
 
+// Read reads message from webshell, and copies to stdin of k8s exec.
 // Read called in a loop from remotecommand as long as the process is running.
 func (t *TerminalSession) Read(p []byte) (int, error) {
 	_, message, err := t.wsConn.ReadMessage()
@@ -108,6 +117,7 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	}
 }
 
+// Write gets output from stdout of k8s exec, and writes to webshell.
 // Write called from remotecommand whenever there is any output.
 func (t *TerminalSession) Write(p []byte) (int, error) {
 	msg, err := json.Marshal(TerminalMessage{

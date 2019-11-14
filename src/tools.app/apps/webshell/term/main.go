@@ -14,6 +14,8 @@ import (
 	wssvc "tools.app/services/webshell"
 )
 
+// Refer: https://github.com/maoqide/kubeutil
+
 var (
 	defaultPath = filepath.Join(os.Getenv("HOME"), ".kube", "config")
 	kubeConfig  = flag.String("kubeconfig", defaultPath, "abs path to the kubeconfig file")
@@ -25,6 +27,8 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/terminal", serveTerminal)
 	router.HandleFunc("/ws/{namespace}/{pod}/{container_name}/webshell", serveWs)
+
+	log.Println("http server (webshell) is started at :8090...")
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
 
@@ -46,7 +50,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	namespace := pathParams["namespace"]
 	pod := pathParams["pod"]
 	containerName := pathParams["container_name"]
-	log.Printf("exec pod: %s, container: %s, namespace: %s", pod, containerName, namespace)
+	log.Printf("request: exec pod:%s, container:%s, namespace:%s", pod, containerName, namespace)
 
 	term, err := wssvc.NewTerminalSession(w, r, nil)
 	if err != nil {
@@ -64,17 +68,26 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ok, err := k8sClient.CheckPod(namespace, pod, containerName)
-	if err != nil {
-		log.Printf("check pod failed: pod:%s, container:%s, namespace:%s\n", pod, containerName, namespace)
-		return
-	}
-	if !ok {
-		msg := fmt.Sprintf("Validate pod error! err: %v", err)
-		log.Println(msg)
-		term.Write([]byte(msg))
-		term.Done()
-		return
+	if containerName != "null" {
+		ok, err := k8sClient.CheckPod(namespace, pod, containerName)
+		if err != nil {
+			log.Printf("check pod failed: pod:%s, container:%s, namespace:%s\n", pod, containerName, namespace)
+			return
+		}
+		if !ok {
+			msg := fmt.Sprintf("Validate pod error! err: %v", err)
+			log.Println(msg)
+			term.Write([]byte(msg))
+			term.Done()
+			return
+		}
+	} else {
+		pod, err := k8sClient.GetPod(namespace, pod)
+		if err != nil {
+			log.Printf("get pod failed: pod:%s, namespace:%s\n", pod, namespace)
+			return
+		}
+		containerName = pod.Spec.Containers[0].Name
 	}
 
 	if err := wssvc.ExecPod(k8sClient.KubeClient, k8sClient.KubeConfig, cmd, term, namespace, pod, containerName); err != nil {

@@ -75,7 +75,23 @@ if [[ $1 == "httprouter" ]]; then
     exit 0
 fi
 
-function build_webshell_btools_bin() {
+
+# BUILD WEBSHELL BIN
+function build_webshell_tools_bin() {
+    local target="webshell/term"
+    local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
+    local bin_path="${HOME}/Downloads/tmp_files/${target}/webshell_term"
+    go build -o ${bin_path} ${main_dir}/main.go
+    cp -r ${main_dir}/static ${HOME}/Downloads/tmp_files/${target}
+}
+
+if [[ $1 == "webshell" ]]; then
+    build_webshell_tools_bin
+    exit 0
+fi
+
+# BUILD WEBSOCKET BIN
+function build_websocket_tools_bin() {
     local target="webshell"
     local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/${target}"
     local bin_dir="${HOME}/Downloads/tmp_files/${target}"
@@ -86,11 +102,12 @@ function build_webshell_btools_bin() {
     cp ${data_file} ${bin_dir}
 }
 
-if [[ $1 == "ws" ]]; then
-    build_webshell_btools_bin
+if [[ $1 == "websocket" ]]; then
+    build_websocket_tools_bin
     exit 0
 fi
 
+# BUILD GRPC BIN
 function build_grpc_tools_bin() {
     local target=$1
     local main_dir="${ZJ_GOPRJ}/src/tools.app/apps/grpc/${target}"

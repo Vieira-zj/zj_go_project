@@ -14,14 +14,18 @@ function getQueryVariable (variable) {
 function connect () {
   let namespace = getQueryVariable('namespace')
   let pod = getQueryVariable('pod')
-  container_name = getQueryVariable('container_name')
-  if (!namespace || !pod || !container_name) {
+  let container_name = getQueryVariable('container_name')
+  if (!container_name) {
+    container_name = 'null'
+  }
+
+  if (!namespace || !pod) {
     alert('connect to kube api server failed!')
     return
   }
   console.log(`ns: ${namespace}, pod: ${pod}, container: ${container_name}`)
 
-  let url = `ws://${document.location.host}/ws/${namespace}/${pod}/${container_name}/webshell`
+  let url = `ws://localhost:8090/ws/${namespace}/${pod}/${container_name}/webshell`
   console.log(`url: ${url}`)
 
   let term = new Terminal({
