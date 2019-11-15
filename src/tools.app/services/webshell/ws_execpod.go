@@ -2,6 +2,7 @@ package webshell
 
 import (
 	"io"
+	"log"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes"
@@ -21,6 +22,8 @@ type PtyHandler interface {
 // ExecPod execs command in given pod.
 func ExecPod(kubeClient kubernetes.Interface, cfg *restclient.Config,
 	cmd []string, ptyHandler PtyHandler, namespace, podName, containerName string) error {
+	log.Println("init pod executor with sh session:", cmd)
+
 	req := kubeClient.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Name(podName).
@@ -34,7 +37,6 @@ func ExecPod(kubeClient kubernetes.Interface, cfg *restclient.Config,
 		Stderr:    true,
 		TTY:       true,
 	}, scheme.ParameterCodec)
-
 	executor, err := remotecommand.NewSPDYExecutor(cfg, "POST", req.URL())
 	if err != nil {
 		return err

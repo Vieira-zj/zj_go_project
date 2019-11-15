@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <title>web shell (xterm) demo</title>
+    <title>webshell xterm demo</title>
     <link rel="stylesheet" type="text/css" href="./dist/xterm.css" />
     <style>
       h1 {
@@ -23,9 +23,8 @@
       }
     </style>
   </head>
-
   <body style="border-width: 0;margin: 0">
-    <h1>K8S Web Shell Demo</h1>
+    <h2>K8S Web Shell Demo</h2>
     <div id="terminal"></div>
     <script src="./dist/xterm.js"></script>
     <script src="./dist/addons/fit/fit.js"></script>
@@ -36,7 +35,7 @@
       window.onload = function() {
         Terminal.applyAddon(fit)
         // Terminal.applyAddon(fullscreen)
-        connect()
+        connectWS()
       }
     </script>
   </body>

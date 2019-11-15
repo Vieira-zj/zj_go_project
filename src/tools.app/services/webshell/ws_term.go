@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	isDebug = false
 	// Time allowed to write a message to the peer.
 	writeWait = 10 * time.Second
 	// Maximum message size allowed from peer.
@@ -38,13 +39,14 @@ var upgrader = websocket.Upgrader{
 
 // TerminalMessage is the messaging protocol between ShellController and TerminalSession.
 type TerminalMessage struct {
+	// stdin: term to pod; resize: term to pod; stdout: pod to term;
 	Operation string `json:"operation"`
 	Data      string `json:"data"`
 	Rows      uint16 `json:"rows"`
 	Cols      uint16 `json:"cols"`
 }
 
-// TerminalSession implements PtyHandler.
+// TerminalSession implements PtyHandler, and handles pod executor stdin and stdout.
 type TerminalSession struct {
 	wsConn   *websocket.Conn
 	sizeChan chan remotecommand.TerminalSize
@@ -76,32 +78,42 @@ func NewTerminalSession(w http.ResponseWriter, r *http.Request, responseHeader h
 }
 
 // Done done.
-func (t *TerminalSession) Done() chan struct{} {
-	return t.doneChan
+func (term *TerminalSession) Done() chan struct{} {
+	return term.doneChan
 }
 
-// Next called in a loop from remotecommand as long as the process is running.
-func (t *TerminalSession) Next() *remotecommand.TerminalSize {
+// Close close terminal session.
+func (term *TerminalSession) Close() error {
+	return term.wsConn.Close()
+}
+
+// Next is called in a loop from remotecommand as long as the process is running.
+func (term *TerminalSession) Next() *remotecommand.TerminalSize {
+	myLogPrintln("[Next] terminal session")
 	select {
-	case size := <-t.sizeChan:
+	case size := <-term.sizeChan:
+		myLogPrintln("[NextEnd] terminal is resized")
 		return &size
-	case <-t.doneChan:
+	case <-term.doneChan:
 		return nil
 	}
 }
 
-// Read reads message from webshell, and copies to stdin of k8s exec.
-// Read called in a loop from remotecommand as long as the process is running.
-func (t *TerminalSession) Read(p []byte) (int, error) {
-	_, message, err := t.wsConn.ReadMessage()
+// Read implements io.Reader (stdin), workflow:
+// webshell term => by websocket => term server => by copy => pod executor stdin => pod
+// Read is called in a loop from remotecommand as long as the process is running.
+func (term *TerminalSession) Read(p []byte) (int, error) {
+	myLogPrintln("[Read] terminal session")
+	_, message, err := term.wsConn.ReadMessage()
+	myLogPrintln("[ReadEnd] read message from ws, and copy to stdin")
 	if err != nil {
-		log.Printf("read message err: %v", err)
+		log.Printf("ws read message err: %v\n", err)
 		return copy(p, EndOfTransmission), err
 	}
 
 	var msg TerminalMessage
 	if err := json.Unmarshal([]byte(message), &msg); err != nil {
-		log.Printf("json parse message err: %v", err)
+		log.Printf("json unmarshal ws message err: %v\n", err)
 		return copy(p, EndOfTransmission), err
 	}
 
@@ -109,32 +121,38 @@ func (t *TerminalSession) Read(p []byte) (int, error) {
 	case "stdin":
 		return copy(p, msg.Data), nil
 	case "resize":
-		t.sizeChan <- remotecommand.TerminalSize{Width: msg.Cols, Height: msg.Rows}
+		term.sizeChan <- remotecommand.TerminalSize{Width: msg.Cols, Height: msg.Rows}
 		return 0, nil
 	default:
-		log.Printf("unknown message type '%s'", msg.Operation)
+		log.Printf("unknown message type '%s'\n", msg.Operation)
 		return copy(p, EndOfTransmission), fmt.Errorf("unknown message type '%s'", msg.Operation)
 	}
 }
 
-// Write gets output from stdout of k8s exec, and writes to webshell.
-// Write called from remotecommand whenever there is any output.
-func (t *TerminalSession) Write(p []byte) (int, error) {
+// Write implements io.Writer (stdout), workflow:
+// pod => pod exec stdout => by write => terminal server => by websocket => webshell term
+// Write is called from remotecommand whenever there is any output from stdout.
+func (term *TerminalSession) Write(p []byte) (int, error) {
+	myLogPrintln("[Write] terminal session")
 	msg, err := json.Marshal(TerminalMessage{
 		Operation: "stdout",
 		Data:      string(p),
 	})
 	if err != nil {
+		log.Printf("json marshal stdin bytes error: %v\n", err)
 		return 0, err
 	}
 
-	if err := t.wsConn.WriteMessage(websocket.TextMessage, msg); err != nil {
+	if err := term.wsConn.WriteMessage(websocket.TextMessage, msg); err != nil {
+		log.Printf("ws write message err: %v\n", err)
 		return 0, err
 	}
+	myLogPrintln("[WriteEnd] copy message from stdout, and write to ws")
 	return len(p), nil
 }
 
-// Close close session
-func (t *TerminalSession) Close() error {
-	return t.wsConn.Close()
+func myLogPrintln(msg string) {
+	if isDebug {
+		log.Println(msg)
+	}
 }

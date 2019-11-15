@@ -11,7 +11,7 @@ function getQueryVariable (variable) {
   return false
 }
 
-function connect () {
+function connectWS () {
   let namespace = getQueryVariable('namespace')
   let pod = getQueryVariable('pod')
   let container_name = getQueryVariable('container_name')
@@ -20,13 +20,14 @@ function connect () {
   }
 
   if (!namespace || !pod) {
-    alert('connect to kube api server failed!')
+    alert('namespace or pod is empty in query!')
     return
   }
   console.log(`ns: ${namespace}, pod: ${pod}, container: ${container_name}`)
 
-  let url = `ws://localhost:8090/ws/${namespace}/${pod}/${container_name}/webshell`
-  console.log(`url: ${url}`)
+  let ws_host = 'localhost:8090'
+  let url = `ws://${ws_host}/ws/${namespace}/${pod}/${container_name}/webshell`
+  console.log(`ws url: ${url}`)
 
   let term = new Terminal({
     'cursorBlink': true,
@@ -43,6 +44,7 @@ function connect () {
   term.fit()
   // term.toggleFullScreen(true)
 
+  // send req data to backend websocket
   term.on('data', function (data) {
     msg = { operation: 'stdin', data: data }
     conn.send(JSON.stringify(msg))
@@ -53,26 +55,28 @@ function connect () {
     conn.send(JSON.stringify(msg))
   })
 
+  // init pod term env
   conn = new WebSocket(url)
   conn.onopen = function (e) {
     term.write('\r')
-    msg = { operation: 'stdin', data: 'export TERM=xterm && clear \r' }
+    msg = { operation: 'stdin', data: 'export TERM=xterm\r' }
     conn.send(JSON.stringify(msg))
     // term.clear()
   }
+  // write resp data to term
   conn.onmessage = function (event) {
     msg = JSON.parse(event.data)
     if (msg.operation === 'stdout') {
       term.write(msg.data)
     } else {
-      console.log('invalid msg operation:', msg)
+      console.warn('invalid msg operation:', msg)
     }
   }
   conn.onclose = function (event) {
     if (event.wasClean) {
       console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`)
     } else {
-      console.log('[close] Connection died')
+      console.warn('[close] Connection died')
       term.writeln("")
     }
     term.write('Connection Reset By Peer! Try Refresh.')

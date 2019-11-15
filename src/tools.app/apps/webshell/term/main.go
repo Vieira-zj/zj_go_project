@@ -15,6 +15,7 @@ import (
 )
 
 // Refer: https://github.com/maoqide/kubeutil
+// Access URL: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
 
 var (
 	defaultPath = filepath.Join(os.Getenv("HOME"), ".kube", "config")
@@ -28,7 +29,7 @@ func main() {
 	router.HandleFunc("/terminal", serveTerminal)
 	router.HandleFunc("/ws/{namespace}/{pod}/{container_name}/webshell", serveWs)
 
-	log.Println("http server (webshell) is started at :8090...")
+	log.Println("http server (websocket) is started at :8090...")
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
 
@@ -50,7 +51,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	namespace := pathParams["namespace"]
 	pod := pathParams["pod"]
 	containerName := pathParams["container_name"]
-	log.Printf("request: exec pod:%s, container:%s, namespace:%s", pod, containerName, namespace)
+	log.Printf("ws request: exec pod:%s, container:%s, namespace:%s", pod, containerName, namespace)
 
 	term, err := wssvc.NewTerminalSession(w, r, nil)
 	if err != nil {
@@ -68,6 +69,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// check and set container name
 	if containerName != "null" {
 		ok, err := k8sClient.CheckPod(namespace, pod, containerName)
 		if err != nil {
@@ -75,7 +77,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if !ok {
-			msg := fmt.Sprintf("Validate pod error! err: %v", err)
+			msg := fmt.Sprintf("Validate pod error: %v", err)
 			log.Println(msg)
 			term.Write([]byte(msg))
 			term.Done()
@@ -90,8 +92,9 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		containerName = pod.Spec.Containers[0].Name
 	}
 
+	// term is pty handler for exec pod stdin and stdout
 	if err := wssvc.ExecPod(k8sClient.KubeClient, k8sClient.KubeConfig, cmd, term, namespace, pod, containerName); err != nil {
-		msg := fmt.Sprintf("Exec to pod error! err: %v", err)
+		msg := fmt.Sprintf("Exec pod error: %v", err)
 		log.Println(msg)
 		term.Write([]byte(msg))
 		term.Done()
