@@ -1,3 +1,11 @@
+/**
+Created at 2019-11-15, webshell terminal demo for k8s pod.
+Refer: https://github.com/maoqide/kubeutil
+
+Workflow: xterm.js => websocket (client) => websocket (server) => k8s client remotecommand exec stdin/stdout => pod
+Test URL: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
+*/
+
 package main
 
 import (
@@ -13,9 +21,6 @@ import (
 	k8ssvc "tools.app/services/k8sio"
 	wssvc "tools.app/services/webshell"
 )
-
-// Refer: https://github.com/maoqide/kubeutil
-// Access URL: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
 
 var (
 	defaultPath = filepath.Join(os.Getenv("HOME"), ".kube", "config")

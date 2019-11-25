@@ -27,8 +27,12 @@ func main() {
 	podName = flag.String("podname", "hello-minikube-59ddd8676b-vkl26", "specified pod name")
 	flag.Parse()
 
-	printClusterInfo()
+	// for debug
 	if true {
+		printClusterInfo()
+		printComponentsName()
+	}
+	if false {
 		// cli := &ExecLocalCommand{}
 		cli := &ExecRemoteCommand2{}
 		execCliCommand(cli)
@@ -41,12 +45,50 @@ func printClusterInfo() {
 		panic(err.Error())
 	}
 
+	log.Println("Cluster pods info:")
 	if err := client.PrintNumberOfAllPods(); err != nil {
 		panic(err.Error())
 	}
+
+	log.Printf("Info for namespace [%s] pod [%s]:\n", *namespace, *podName)
 	if err := client.PrintPodInfo(*namespace, *podName); err != nil {
 		panic(err.Error())
 	}
+}
+
+func printComponentsName() {
+	var testNs, testPod string
+
+	client, err := mysvc.NewK8SClient(*kubeConfig)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println("Cluster namespaces info:")
+	if ns, err := client.GetAllNamespacesName(); err != nil {
+		panic(err.Error())
+	} else {
+		log.Println(strings.Join(ns, ","))
+		for _, name := range ns {
+			if strings.Contains(name, "test") {
+				testNs = name
+			}
+		}
+	}
+
+	log.Printf("Pods in namespace [%s]:\n", testNs)
+	pods, err := client.GetPodNamesByNamespace(testNs)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println(strings.Join(pods, ","))
+
+	testPod = pods[0]
+	log.Printf("Containers in namespace [%s] pod [%s]:\n", testNs, testPod)
+	containers, err := client.GetContainerNamesByNsAndPod(testNs, testPod)
+	if err != nil {
+		panic(err.Error())
+	}
+	log.Println(strings.Join(containers, ","))
 }
 
 func execCliCommand(cli ExecCommand) {
