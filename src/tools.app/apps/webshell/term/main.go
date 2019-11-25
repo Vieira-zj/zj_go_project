@@ -9,6 +9,7 @@ Test URL: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-m
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -18,6 +19,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
+	"mock.server/common"
 	k8ssvc "tools.app/services/k8sio"
 	wssvc "tools.app/services/webshell"
 )
@@ -31,12 +33,147 @@ var (
 
 func main() {
 	router := mux.NewRouter()
+	router.HandleFunc("/ns", getAllNamespaces)
+	router.HandleFunc("/pods", getAllPodsByNamespace)
+	router.HandleFunc("/containers", getAllContainersByNsAndPod)
+
 	router.HandleFunc("/terminal", serveTerminal)
 	router.HandleFunc("/ws/{namespace}/{pod}/{container_name}/webshell", serveWs)
 
 	log.Println("http server (websocket) is started at :8090...")
 	log.Fatal(http.ListenAndServe(*addr, router))
 }
+
+// ------------------------------
+// K8S resources query api
+// ------------------------------
+
+type respJSONData struct {
+	Meta interface{} `json:"meta,omitempty"`
+	Data interface{} `json:"data"`
+}
+
+type respErrorMsg struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
+type respK8SComponents struct {
+	Namespaces []string `json:"namespaces,omitempty"`
+	Pods       []string `json:"pods,omitempty"`
+	Containers []string `json:"containers,omitempty"`
+}
+
+func getAllNamespaces(w http.ResponseWriter, r *http.Request) {
+	client, err := k8ssvc.NewK8SClient(*kubeConfig)
+	if err != nil {
+		log.Println("Init k8s client error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	namespaces, err := client.GetAllNamespacesName()
+	if err != nil {
+		log.Println("Get all namespaces error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writeOkJSONResp(w, respK8SComponents{Namespaces: namespaces})
+}
+
+func getAllPodsByNamespace(w http.ResponseWriter, r *http.Request) {
+	namespace := "default"
+
+	values := r.URL.Query()
+	if val, ok := values["ns"]; ok {
+		namespace = val[0]
+	} else {
+		log.Println("Use default namespace [default] to query pods.")
+	}
+
+	client, err := k8ssvc.NewK8SClient(*kubeConfig)
+	if err != nil {
+		log.Println("Init k8s client error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	pods, err := client.GetPodNamesByNamespace(namespace)
+	if err != nil {
+		log.Println("Get all pods error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writeOkJSONResp(w, respK8SComponents{Pods: pods})
+}
+
+func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
+	var namespace, pod string
+
+	values := r.URL.Query()
+	if val, ok := values["ns"]; ok {
+		namespace = val[0]
+	} else {
+		errMsg := "Namespace is not set in the query!"
+		log.Println(errMsg)
+		errResp := respErrorMsg{
+			Status:  -1,
+			Message: errMsg,
+		}
+		writeJSONRespWithStatus(w, http.StatusNotAcceptable, errResp)
+		return
+	}
+
+	if val, ok := values["pod"]; ok {
+		pod = val[0]
+	} else {
+		errMsg := "Pod is not set in the query!"
+		log.Println(errMsg)
+		errResp := respErrorMsg{
+			Status:  -1,
+			Message: errMsg,
+		}
+		writeJSONRespWithStatus(w, http.StatusNotAcceptable, errResp)
+		return
+	}
+
+	client, err := k8ssvc.NewK8SClient(*kubeConfig)
+	if err != nil {
+		log.Println("Init k8s client error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	containers, err := client.GetContainerNamesByNsAndPod(namespace, pod)
+	if err != nil {
+		log.Println("Get all containers error:", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writeOkJSONResp(w, respK8SComponents{Containers: containers})
+}
+
+func writeOkJSONResp(w http.ResponseWriter, data interface{}) {
+	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(&respJSONData{Data: data}); err != nil {
+		log.Println("Write json response error:", err.Error())
+	}
+}
+
+func writeJSONRespWithStatus(w http.ResponseWriter, retcode int, data interface{}) {
+	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
+	w.WriteHeader(retcode)
+
+	if err := json.NewEncoder(w).Encode(&respJSONData{Data: data}); err != nil {
+		log.Println("Write json response error:", err.Error())
+	}
+}
+
+// ------------------------------
+// K8S webshell
+// ------------------------------
 
 func internalError(conn *websocket.Conn, msg string, err error) {
 	log.Printf("message: %s, error: %v\n", msg, err)
