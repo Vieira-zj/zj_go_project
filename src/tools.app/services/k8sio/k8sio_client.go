@@ -47,7 +47,7 @@ func NewK8SClient(kubeConfig string) (*K8SClient, error) {
 }
 
 // ------------------------------
-// Print k8s cluster info for debug.
+// Check and print k8s cluster resources info for debug.
 // ------------------------------
 
 // PrintNumberOfAllPods prints the number of all pods in cluster.
@@ -60,9 +60,9 @@ func (kc *K8SClient) PrintNumberOfAllPods() error {
 	numbers := len(pods.Items)
 	log.Printf("All pods count: %d\n", numbers)
 
-	names := make([]string, numbers, numbers)
-	for idx, pod := range pods.Items {
-		names[idx] = pod.Name
+	names := make([]string, 0, numbers)
+	for _, pod := range pods.Items {
+		names = append(names, pod.Name)
 	}
 	log.Println("All pods:", strings.Join(names, ","))
 	return nil
@@ -125,45 +125,45 @@ func (kc *K8SClient) CheckPod(namespace, podName, containerName string) (bool, e
 // Get name string for ns, pods and containers.
 // ------------------------------
 
-// GetAllNamespacesName returns list of names of all namespaces.
+// GetAllNamespacesName returns a list of names of all namespaces.
 func (kc *K8SClient) GetAllNamespacesName() ([]string, error) {
 	ns, err := kc.KubeClient.CoreV1().Namespaces().List(metav1.ListOptions{})
 	if err != nil {
 		return []string{}, nil
 	}
 
-	retNsNames := make([]string, len(ns.Items), len(ns.Items))
-	for idx, item := range ns.Items {
-		retNsNames[idx] = item.Name
+	retNsNames := make([]string, 0, len(ns.Items))
+	for _, item := range ns.Items {
+		retNsNames = append(retNsNames, item.Name)
 	}
 	return retNsNames, nil
 }
 
-// GetPodNamesByNamespace returns list of names of pods in given namespace.
-func (kc *K8SClient) GetPodNamesByNamespace(namespace string) ([]string, error) {
+// GetPodsNameByNamespace returns a list of names of pods in given namespace.
+func (kc *K8SClient) GetPodsNameByNamespace(namespace string) ([]string, error) {
 	pods, err := kc.KubeClient.CoreV1().Pods(namespace).List(metav1.ListOptions{})
 	if err != nil {
 		return []string{}, nil
 	}
 
-	retPodNames := make([]string, len(pods.Items), len(pods.Items))
-	for idx, pod := range pods.Items {
-		retPodNames[idx] = pod.Name
+	retPodNames := make([]string, 0, len(pods.Items))
+	for _, pod := range pods.Items {
+		retPodNames = append(retPodNames, pod.Name)
 	}
 	return retPodNames, nil
 }
 
-// GetContainerNamesByNsAndPod returns list of names of containers in given namespace and pod.
-func (kc *K8SClient) GetContainerNamesByNsAndPod(namespace, podName string) ([]string, error) {
+// GetContainersNameByNsAndPod returns a list of names of containers in given namespace and pod.
+func (kc *K8SClient) GetContainersNameByNsAndPod(namespace, podName string) ([]string, error) {
 	pod, err := kc.KubeClient.CoreV1().Pods(namespace).Get(podName, metav1.GetOptions{})
 	if err != nil {
 		return []string{}, err
 	}
 
 	containers := pod.Spec.Containers
-	retContainerNames := make([]string, len(containers), len(containers))
-	for idx, container := range containers {
-		retContainerNames[idx] = container.Name
+	retContainerNames := make([]string, 0, len(containers))
+	for _, container := range containers {
+		retContainerNames = append(retContainerNames, container.Name)
 	}
 	return retContainerNames, nil
 }

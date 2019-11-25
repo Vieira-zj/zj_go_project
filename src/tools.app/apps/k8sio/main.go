@@ -30,8 +30,9 @@ func main() {
 	// for debug
 	if true {
 		printClusterInfo()
-		printComponentsName()
+		printK8SResources()
 	}
+
 	if false {
 		// cli := &ExecLocalCommand{}
 		cli := &ExecRemoteCommand2{}
@@ -50,20 +51,20 @@ func printClusterInfo() {
 		panic(err.Error())
 	}
 
-	log.Printf("Info for namespace [%s] pod [%s]:\n", *namespace, *podName)
+	log.Printf("Namespace [%s] pod [%s] info:\n", *namespace, *podName)
 	if err := client.PrintPodInfo(*namespace, *podName); err != nil {
 		panic(err.Error())
 	}
 }
 
-func printComponentsName() {
+func printK8SResources() {
 	var testNs, testPod string
 
 	client, err := mysvc.NewK8SClient(*kubeConfig)
 	if err != nil {
 		panic(err.Error())
 	}
-	log.Println("Cluster namespaces info:")
+	log.Println("Cluster all namespaces name:")
 	if ns, err := client.GetAllNamespacesName(); err != nil {
 		panic(err.Error())
 	} else {
@@ -75,16 +76,16 @@ func printComponentsName() {
 		}
 	}
 
-	log.Printf("Pods in namespace [%s]:\n", testNs)
-	pods, err := client.GetPodNamesByNamespace(testNs)
+	log.Printf("Namespace [%s] all pods name:\n", testNs)
+	pods, err := client.GetPodsNameByNamespace(testNs)
 	if err != nil {
 		panic(err.Error())
 	}
 	log.Println(strings.Join(pods, ","))
 
 	testPod = pods[0]
-	log.Printf("Containers in namespace [%s] pod [%s]:\n", testNs, testPod)
-	containers, err := client.GetContainerNamesByNsAndPod(testNs, testPod)
+	log.Printf("Namespace [%s] pod [%s] all containers name:\n", testNs, testPod)
+	containers, err := client.GetContainersNameByNsAndPod(testNs, testPod)
 	if err != nil {
 		panic(err.Error())
 	}

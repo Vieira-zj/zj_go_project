@@ -33,9 +33,9 @@ var (
 
 func main() {
 	router := mux.NewRouter()
-	router.HandleFunc("/ns", getAllNamespaces)
-	router.HandleFunc("/pods", getAllPodsByNamespace)
-	router.HandleFunc("/containers", getAllContainersByNsAndPod)
+	router.HandleFunc("/query/ns", getAllNamespaces)
+	router.HandleFunc("/query/pods", getAllPodsByNamespace)
+	router.HandleFunc("/query/containers", getAllContainersByNsAndPod)
 
 	router.HandleFunc("/terminal", serveTerminal)
 	router.HandleFunc("/ws/{namespace}/{pod}/{container_name}/webshell", serveWs)
@@ -45,7 +45,12 @@ func main() {
 }
 
 // ------------------------------
-// K8S resources query api
+// K8S resources query api (json)
+//
+// Namespaces: curl -v "http://localhost:8090/query/ns" | jq
+// Pods: curl -v "http://localhost:8090/query/pods?ns=mini-test-ns" | jq
+// Containers: curl -v "http://localhost:8090/query/containers?ns=mini-test-ns&pod=containers-pod" | jq
+//
 // ------------------------------
 
 type respJSONData struct {
@@ -58,7 +63,7 @@ type respErrorMsg struct {
 	Message string `json:"message"`
 }
 
-type respK8SComponents struct {
+type respK8SResources struct {
 	Namespaces []string `json:"namespaces,omitempty"`
 	Pods       []string `json:"pods,omitempty"`
 	Containers []string `json:"containers,omitempty"`
@@ -74,11 +79,12 @@ func getAllNamespaces(w http.ResponseWriter, r *http.Request) {
 
 	namespaces, err := client.GetAllNamespacesName()
 	if err != nil {
-		log.Println("Get all namespaces error:", err.Error())
+		log.Println("Get cluster all namespaces error:", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	writeOkJSONResp(w, respK8SComponents{Namespaces: namespaces})
+	log.Println("Get cluster all namespaces")
+	writeOkJSONResp(w, respK8SResources{Namespaces: namespaces})
 }
 
 func getAllPodsByNamespace(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +94,7 @@ func getAllPodsByNamespace(w http.ResponseWriter, r *http.Request) {
 	if val, ok := values["ns"]; ok {
 		namespace = val[0]
 	} else {
-		log.Println("Use default namespace [default] to query pods.")
+		log.Printf("Use default namespace [%s] to query pods\n", namespace)
 	}
 
 	client, err := k8ssvc.NewK8SClient(*kubeConfig)
@@ -98,13 +104,14 @@ func getAllPodsByNamespace(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pods, err := client.GetPodNamesByNamespace(namespace)
+	pods, err := client.GetPodsNameByNamespace(namespace)
 	if err != nil {
-		log.Println("Get all pods error:", err.Error())
+		log.Printf("Get namespace [%s] all pods error: %s\n", namespace, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	writeOkJSONResp(w, respK8SComponents{Pods: pods})
+	log.Printf("Get namespace [%s] all pods\n", namespace)
+	writeOkJSONResp(w, respK8SResources{Pods: pods})
 }
 
 func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
@@ -114,11 +121,9 @@ func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
 	if val, ok := values["ns"]; ok {
 		namespace = val[0]
 	} else {
-		errMsg := "Namespace is not set in the query!"
-		log.Println(errMsg)
 		errResp := respErrorMsg{
-			Status:  -1,
-			Message: errMsg,
+			Status:  499,
+			Message: "Namespace is not set in query of request url",
 		}
 		writeJSONRespWithStatus(w, http.StatusNotAcceptable, errResp)
 		return
@@ -127,11 +132,9 @@ func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
 	if val, ok := values["pod"]; ok {
 		pod = val[0]
 	} else {
-		errMsg := "Pod is not set in the query!"
-		log.Println(errMsg)
 		errResp := respErrorMsg{
-			Status:  -1,
-			Message: errMsg,
+			Status:  499,
+			Message: "Pod is not set in query of request url",
 		}
 		writeJSONRespWithStatus(w, http.StatusNotAcceptable, errResp)
 		return
@@ -144,13 +147,14 @@ func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	containers, err := client.GetContainerNamesByNsAndPod(namespace, pod)
+	containers, err := client.GetContainersNameByNsAndPod(namespace, pod)
 	if err != nil {
-		log.Println("Get all containers error:", err.Error())
+		log.Printf("Get namespace [%s] and pod [%s] all containers error: %s\n", namespace, pod, err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	writeOkJSONResp(w, respK8SComponents{Containers: containers})
+	log.Printf("Get namespace [%s] and pod [%s] all containers\n", namespace, pod)
+	writeOkJSONResp(w, respK8SResources{Containers: containers})
 }
 
 func writeOkJSONResp(w http.ResponseWriter, data interface{}) {
@@ -158,7 +162,7 @@ func writeOkJSONResp(w http.ResponseWriter, data interface{}) {
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(&respJSONData{Data: data}); err != nil {
-		log.Println("Write json response error:", err.Error())
+		log.Println("Write json encoded response error:", err.Error())
 	}
 }
 
@@ -167,7 +171,7 @@ func writeJSONRespWithStatus(w http.ResponseWriter, retcode int, data interface{
 	w.WriteHeader(retcode)
 
 	if err := json.NewEncoder(w).Encode(&respJSONData{Data: data}); err != nil {
-		log.Println("Write json response error:", err.Error())
+		log.Println("Write json encoded response error:", err.Error())
 	}
 }
 
