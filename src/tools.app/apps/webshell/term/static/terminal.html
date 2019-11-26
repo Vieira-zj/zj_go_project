@@ -25,18 +25,138 @@
   </head>
   <body style="border-width: 0;margin: 0">
     <h2>K8S Web Shell Demo</h2>
+    <div id="app">
+      <select v-model="nsSelected">
+          <option v-for="option in nsOptions" v-bind:value="option.value">
+            {{ option.value }}
+          </option>
+      </select>
+      <select v-model="podSelected">
+          <option v-for="option in podOptions" v-bind:value="option.value">
+            {{ option.value }}
+          </option>
+      </select>
+      <select v-model="containerSelected">
+          <option v-for="option in containerOptions" v-bind:value="option.value">
+            {{ option.value }}
+          </option>
+      </select>
+      <p>Mamespace [ {{ nsSelected }} ] Pod [ {{ podSelected }} ] Container [ {{ containerSelected }} ]</p>
+      <button v-on:click="connect">Connect</button>
+    </div>
     <div id="terminal"></div>
     <script src="./dist/xterm.js"></script>
     <script src="./dist/addons/fit/fit.js"></script>
+    <script src="./dist/vue.js"></script>
+    <script src="./dist/axios.min.js"></script>
     <script src="./terminal.js"></script>
     <!-- <script src="./dist/addons/fullscreen/fullscreen.js"></script> -->
     <!-- <script src="./dist/addons/fullscreen/fullscreen.css"></script> -->
     <script>
       window.onload = function() {
         Terminal.applyAddon(fit)
-        // Terminal.applyAddon(fullscreen)
-        connectWS()
       }
+
+      let defaultValue = 'None'
+      let host = 'http://localhost:8090'
+
+      let app = new Vue({
+        el: '#app',
+        data () {
+          return {
+            nsSelected: defaultValue,
+            podSelected: defaultValue,
+            containerSelected: defaultValue,
+            nsOptions: [{value: defaultValue}],
+            podOptions: [{value: defaultValue}],
+            containerOptions: [{value: defaultValue}]
+          }
+        },
+        mounted () {
+          vm = this
+          axios
+            .get(`${host}/query/ns`)
+            .then(function(response) {
+              let options = [{value: defaultValue}]
+              let namespaces = response.data.data.namespaces
+              if (!Boolean(namespaces)) {
+                return
+              }
+              for (ns of namespaces) {
+                options.push({value: ns})
+              }
+              vm.nsOptions = options
+            })
+            .catch(function(err) {
+              console.warn('get cluster namespaces failed:', err)
+            })
+        },
+        methods: {
+          connect () {
+            console.log('connect to websocket server')
+            // Terminal.applyAddon(fullscreen)
+            if (this.nsSelected === defaultValue) {
+              alert('namespace is not set!')
+              return
+            }
+            if (this.podSelected === defaultValue) {
+              alert('pod is not set!')
+              return
+            }
+            if (this.containerSelected === defaultValue) {
+              connectWS(this.nsSelected, this.podSelected, false)
+              return
+            }
+            connectWS(this.nsSelected, this.podSelected, this.containerSelected)
+          }
+        },
+        watch: {
+          nsSelected: function (newValue, oldValue) {
+            if (newValue === defaultValue) {
+              return
+            }
+            vm = this
+            axios
+              .get(`${host}/query/pods?ns=${newValue}`)
+              .then(function(response) {
+                let options = [{value: defaultValue}]
+                let pods = response.data.data.pods
+                if (!Boolean(pods)) {
+                  return
+                }
+                for (pod of pods) {
+                  options.push({value: pod})
+                }
+                vm.podOptions = options
+              })
+              .catch(function(err) {
+                console.error(`get namespace [${newValue}] pods failed:`, err)
+              })
+          },
+          podSelected: function (newValue, oldValue) {
+            if (newValue === defaultValue) {
+              return
+            }
+            vm = this
+            axios
+              .get(`${host}/query/containers?ns=${vm.nsSelected}&pod=${newValue}`)
+              .then(function(response) {
+                let options = [{value: defaultValue}]
+                let containers = response.data.data.containers
+                if (!Boolean(containers)) {
+                  return
+                }
+                for (container of containers) {
+                  options.push({value: container})
+                }
+                vm.containerOptions = options
+              })
+              .catch(function(err) {
+                console.error(`get namespace [${vm.nsSelected}] pod [${newValue}] containers failed:`, err)
+              })
+          }
+        }
+      })
     </script>
   </body>
 </html>

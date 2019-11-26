@@ -3,7 +3,6 @@ Created at 2019-11-15, webshell terminal demo for k8s pod.
 Refer: https://github.com/maoqide/kubeutil
 
 Workflow: xterm.js => websocket (client) => websocket (server) => k8s client remotecommand exec stdin/stdout => pod
-Test URL: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
 */
 
 package main
@@ -158,6 +157,8 @@ func getAllContainersByNsAndPod(w http.ResponseWriter, r *http.Request) {
 }
 
 func writeOkJSONResp(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
 	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
 	w.WriteHeader(http.StatusOK)
 
@@ -167,6 +168,8 @@ func writeOkJSONResp(w http.ResponseWriter, data interface{}) {
 }
 
 func writeJSONRespWithStatus(w http.ResponseWriter, retcode int, data interface{}) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
 	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
 	w.WriteHeader(retcode)
 

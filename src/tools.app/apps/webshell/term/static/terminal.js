@@ -11,15 +11,17 @@ function getQueryVariable (variable) {
   return false
 }
 
-function connectWS () {
-  let namespace = getQueryVariable('namespace')
-  let pod = getQueryVariable('pod')
-  let container_name = getQueryVariable('container_name')
-  if (!container_name) {
+function connectWS (namespace, pod, container_name) {
+  // for debug: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
+  // let namespace = getQueryVariable('namespace')
+  // let pod = getQueryVariable('pod')
+  // let container_name = getQueryVariable('container_name')
+
+  if (!Boolean(container_name)) {
     container_name = 'null'
   }
 
-  if (!namespace || !pod) {
+  if (!Boolean(namespace) || !Boolean(pod)) {
     alert('namespace or pod is empty in query!')
     return
   }
@@ -27,7 +29,7 @@ function connectWS () {
 
   let ws_host = 'localhost:8090'
   let url = `ws://${ws_host}/ws/${namespace}/${pod}/${container_name}/webshell`
-  console.log(`ws url: ${url}`)
+  console.log(`connect to ws url: ${url}`)
 
   let term = new Terminal({
     'cursorBlink': true,
