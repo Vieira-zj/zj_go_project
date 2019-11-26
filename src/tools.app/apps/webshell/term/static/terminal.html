@@ -77,15 +77,13 @@
           axios
             .get(`${host}/query/ns`)
             .then(function(response) {
-              let options = [{value: defaultValue}]
               let namespaces = response.data.data.namespaces
               if (!Boolean(namespaces)) {
                 return
               }
               for (ns of namespaces) {
-                options.push({value: ns})
+                vm.nsOptions.push({value: ns})
               }
-              vm.nsOptions = options
             })
             .catch(function(err) {
               console.warn('get cluster namespaces failed:', err)
@@ -112,47 +110,53 @@
         },
         watch: {
           nsSelected: function (newValue, oldValue) {
+            let options = [{value: defaultValue}]
             if (newValue === defaultValue) {
+              this.podOptions = options
+              this.podSelected = defaultValue
               return
             }
             vm = this
             axios
               .get(`${host}/query/pods?ns=${newValue}`)
               .then(function(response) {
-                let options = [{value: defaultValue}]
                 let pods = response.data.data.pods
                 if (!Boolean(pods)) {
-                  return
+                  pods = []
                 }
                 for (pod of pods) {
                   options.push({value: pod})
                 }
                 vm.podOptions = options
+                vm.podSelected = defaultValue
               })
               .catch(function(err) {
-                console.error(`get namespace [${newValue}] pods failed:`, err)
+                console.warn(`get namespace [${newValue}] pods failed:`, err)
               })
           },
           podSelected: function (newValue, oldValue) {
+            let options = [{value: defaultValue}]
             if (newValue === defaultValue) {
+              this.containerOptions = options
+              this.containerSelected = defaultValue
               return
             }
             vm = this
             axios
               .get(`${host}/query/containers?ns=${vm.nsSelected}&pod=${newValue}`)
               .then(function(response) {
-                let options = [{value: defaultValue}]
                 let containers = response.data.data.containers
                 if (!Boolean(containers)) {
-                  return
+                  containers = []
                 }
                 for (container of containers) {
                   options.push({value: container})
                 }
                 vm.containerOptions = options
+                vm.containerSelected = defaultValue
               })
               .catch(function(err) {
-                console.error(`get namespace [${vm.nsSelected}] pod [${newValue}] containers failed:`, err)
+                console.warn(`get namespace [${vm.nsSelected}] pod [${newValue}] containers failed:`, err)
               })
           }
         }
