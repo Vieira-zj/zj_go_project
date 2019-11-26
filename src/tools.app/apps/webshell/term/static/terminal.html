@@ -57,8 +57,8 @@
         Terminal.applyAddon(fit)
       }
 
-      let defaultValue = 'None'
-      let host = 'http://localhost:8090'
+      const defaultValue = 'None'
+      const host = ws_host
 
       let app = new Vue({
         el: '#app',
@@ -73,15 +73,15 @@
           }
         },
         mounted () {
-          vm = this
+          let vm = this
           axios
-            .get(`${host}/query/ns`)
+            .get(`http://${host}/query/ns`)
             .then(function(response) {
               let namespaces = response.data.data.namespaces
               if (!Boolean(namespaces)) {
                 return
               }
-              for (ns of namespaces) {
+              for (let ns of namespaces) {
                 vm.nsOptions.push({value: ns})
               }
             })
@@ -116,15 +116,15 @@
               this.podSelected = defaultValue
               return
             }
-            vm = this
+            let vm = this
             axios
-              .get(`${host}/query/pods?ns=${newValue}`)
+              .get(`http://${host}/query/pods?ns=${newValue}`)
               .then(function(response) {
                 let pods = response.data.data.pods
                 if (!Boolean(pods)) {
                   pods = []
                 }
-                for (pod of pods) {
+                for (let pod of pods) {
                   options.push({value: pod})
                 }
                 vm.podOptions = options
@@ -141,15 +141,15 @@
               this.containerSelected = defaultValue
               return
             }
-            vm = this
+            let vm = this
             axios
-              .get(`${host}/query/containers?ns=${vm.nsSelected}&pod=${newValue}`)
+              .get(`http://${host}/query/containers?ns=${vm.nsSelected}&pod=${newValue}`)
               .then(function(response) {
                 let containers = response.data.data.containers
                 if (!Boolean(containers)) {
                   containers = []
                 }
-                for (container of containers) {
+                for (let container of containers) {
                   options.push({value: container})
                 }
                 vm.containerOptions = options

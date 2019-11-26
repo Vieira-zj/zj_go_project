@@ -11,6 +11,9 @@ function getQueryVariable (variable) {
   return false
 }
 
+// backend service address
+const ws_host = 'localhost:8090'
+
 function connectWS (namespace, pod, container_name) {
   // for debug: file:///local_path/to/terminal.html?namespace=mini-test-ns&pod=hello-minikube-59ddd8676b-vkl26
   // let namespace = getQueryVariable('namespace')
@@ -27,7 +30,6 @@ function connectWS (namespace, pod, container_name) {
   }
   console.log(`ns: ${namespace}, pod: ${pod}, container: ${container_name}`)
 
-  let ws_host = 'localhost:8090'
   let url = `ws://${ws_host}/ws/${namespace}/${pod}/${container_name}/webshell`
   console.log(`connect to ws url: ${url}`)
 
