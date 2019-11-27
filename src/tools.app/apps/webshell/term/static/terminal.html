@@ -7,7 +7,7 @@
     <style>
       body {
         border-width: 0;
-        margin: 0
+        margin: 0;
       }
       .content {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -74,13 +74,13 @@
       <button v-on:click="closeWs">Close</button>
     </div>
     <p><div id="terminal"></div>
-    <script src="./dist/xterm.js"></script>
-    <script src="./dist/addons/fit/fit.js"></script>
     <script src="./dist/vue.js"></script>
     <script src="./dist/axios.min.js"></script>
-    <script src="./terminal.js"></script>
+    <script src="./dist/xterm.js"></script>
+    <script src="./dist/addons/fit/fit.js"></script>
     <!-- <script src="./dist/addons/fullscreen/fullscreen.js"></script> -->
     <!-- <script src="./dist/addons/fullscreen/fullscreen.css"></script> -->
+    <script src="./terminal.js"></script>
     <script>
       window.onload = function() {
         Terminal.applyAddon(fit)

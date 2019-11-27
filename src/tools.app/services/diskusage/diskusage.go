@@ -12,7 +12,7 @@ import (
 	myutils "tools.app/utils"
 )
 
-// DiskUsage for disk usage tools.
+// DiskUsage includes disk tools.
 type DiskUsage struct {
 	semaphore chan struct{}
 	wg        sync.WaitGroup
@@ -26,9 +26,11 @@ func NewDiskUsage() *DiskUsage {
 	}
 }
 
-// ********* FilesTree
+// ------------------------------
+// Dir TreeMap
+// ------------------------------
 
-// PrintFilesTree print files tree for a directory by limited levels.
+// PrintFilesTree prints files tree map for given directory by limited levels.
 func (du *DiskUsage) PrintFilesTree(dirPath string, limit int) error {
 	return du.printFilesTreeAtCurDir(dirPath, 0, limit)
 }
@@ -41,37 +43,38 @@ func (du *DiskUsage) printFilesTreeAtCurDir(dirPath string, curLevel, limit int)
 		return err
 	}
 
-	fInfos, err := ioutil.ReadDir(dirPath)
-	if err != nil {
-		return err
-	}
-
 	fnPrintPrefix := func(level int) {
 		for i := level; i > 0; i-- {
 			fmt.Print("|\t")
 		}
 	}
 
+	fInfos, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		return err
+	}
 	for _, info := range fInfos {
+		fnPrintPrefix(curLevel)
 		if info.IsDir() {
-			fnPrintPrefix(curLevel)
 			fmt.Println(info.Name() + "\\")
 			du.printFilesTreeAtCurDir(filepath.Join(dirPath, info.Name()), curLevel+1, limit)
 		} else {
-			fnPrintPrefix(curLevel)
 			fmt.Println(info.Name())
 		}
 	}
 	return nil
 }
 
-// ********* DiskUsage
+// ------------------------------
+// Dir Disk Space Usage
+// ------------------------------
 
-// PrintDirDiskUsage returns disk space usage for specified directory.
+// PrintDirDiskUsage returns disk space usage for given directory.
 func (du *DiskUsage) PrintDirDiskUsage(dirPath string) error {
 	var (
-		nfiles, nbytes int64
-		ch             = make(chan int64)
+		filesCount int64
+		bytesCount int64
+		ch         = make(chan int64)
 	)
 
 	if err := du.verifyPath(dirPath); err != nil {
@@ -92,15 +95,15 @@ LOOP:
 			if !ok {
 				break LOOP
 			}
-			nfiles++
-			nbytes += fSize
+			filesCount++
+			bytesCount += fSize
 		case <-time.Tick(time.Duration(100) * time.Millisecond):
-			du.printSpaceUsage(nfiles, nbytes)
+			du.printSpaceUsage(filesCount, bytesCount)
 		}
 	}
 
 	log.Printf("total files and disk usage size (%s):\n", dirPath)
-	du.printSpaceUsage(nfiles, nbytes)
+	du.printSpaceUsage(filesCount, bytesCount)
 	return nil
 }
 
@@ -116,7 +119,6 @@ func (du *DiskUsage) walkDir(dirPath string, ch chan<- int64) {
 	if err != nil {
 		panic(err)
 	}
-
 	for _, f := range files {
 		if f.IsDir() {
 			du.wg.Add(1)
@@ -127,7 +129,7 @@ func (du *DiskUsage) walkDir(dirPath string, ch chan<- int64) {
 	}
 }
 
-// ListFiles lists dirs and files in directory.
+// ListFiles lists all dirs and files in given directory.
 func (du *DiskUsage) ListFiles(dirPath string) ([]os.FileInfo, error) {
 	du.semaphore <- struct{}{}
 	defer func() {
@@ -140,14 +142,18 @@ func (du *DiskUsage) ListFiles(dirPath string) ([]os.FileInfo, error) {
 	return ioutil.ReadDir(dirPath)
 }
 
-func (du *DiskUsage) printSpaceUsage(nfiles, nbytes int64) {
-	gbytes := float64(nbytes) / 1e9
+func (du *DiskUsage) printSpaceUsage(filesCount, bytesCount int64) {
+	gbytes := float64(bytesCount) / 1e9
 	if gbytes >= 1.0 {
-		log.Printf("%d files\t%.1f GB\n", nfiles, gbytes)
+		log.Printf("%d files\t%.1f GB\n", filesCount, gbytes)
 	} else {
-		log.Printf("%d files\t%.1f MB\n", nfiles, float64(nbytes)/1e6)
+		log.Printf("%d files\t%.1f MB\n", filesCount, float64(bytesCount)/1e6)
 	}
 }
+
+// ------------------------------
+// Utils
+// ------------------------------
 
 func (du *DiskUsage) verifyPath(path string) error {
 	if len(path) == 0 {
@@ -161,6 +167,5 @@ func (du *DiskUsage) verifyPath(path string) error {
 	if !exist {
 		return fmt.Errorf("dir/file (%s) is not exist", path)
 	}
-
 	return nil
 }
