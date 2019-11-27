@@ -1,8 +1,12 @@
 /**
 Created at 2019-11-15, webshell terminal demo for k8s pod.
-Refer: https://github.com/maoqide/kubeutil
 
+Refer: https://github.com/maoqide/kubeutil
 Workflow: xterm.js => websocket (client) => websocket (server) => k8s client remotecommand exec stdin/stdout => pod
+
+Build: ./gorun.sh webshell
+Access: open static/terminal.html on local.
+Verify: kc exec -it containers-pod -n mini-test-ns -c busybox sh
 */
 
 package main

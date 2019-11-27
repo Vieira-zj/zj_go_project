@@ -41,8 +41,9 @@
             {{ option.value }}
           </option>
       </select>
-      <p>Mamespace [ {{ nsSelected }} ] Pod [ {{ podSelected }} ] Container [ {{ containerSelected }} ]</p>
+      <p>Selected: Mamespace [ {{ nsSelected }} ] Pod [ {{ podSelected }} ] Container [ {{ containerSelected }} ]</p>
       <button v-on:click="connect">Connect</button>
+      <button v-on:click="closeWs">Close</button>
     </div>
     <div id="terminal"></div>
     <script src="./dist/xterm.js"></script>
@@ -86,19 +87,19 @@
               }
             })
             .catch(function(err) {
-              console.warn('get cluster namespaces failed:', err)
+              console.warn('Get cluster namespaces failed:', err)
             })
         },
         methods: {
           connect () {
-            console.log('connect to websocket server')
+            console.log('Connect to websocket server')
             // Terminal.applyAddon(fullscreen)
             if (this.nsSelected === defaultValue) {
-              alert('namespace is not set!')
+              alert('Namespace is not set!')
               return
             }
             if (this.podSelected === defaultValue) {
-              alert('pod is not set!')
+              alert('Pod is not set!')
               return
             }
             if (this.containerSelected === defaultValue) {
@@ -106,6 +107,10 @@
               return
             }
             connectWS(this.nsSelected, this.podSelected, this.containerSelected)
+          },
+          closeWs () {
+            console.log('Close websocket session')
+            disconnectWS()
           }
         },
         watch: {
@@ -131,7 +136,7 @@
                 vm.podSelected = defaultValue
               })
               .catch(function(err) {
-                console.warn(`get namespace [${newValue}] pods failed:`, err)
+                console.warn(`Get namespace [${newValue}] pods failed:`, err)
               })
           },
           podSelected: function (newValue, oldValue) {
@@ -156,7 +161,7 @@
                 vm.containerSelected = defaultValue
               })
               .catch(function(err) {
-                console.warn(`get namespace [${vm.nsSelected}] pod [${newValue}] containers failed:`, err)
+                console.warn(`Get namespace [${vm.nsSelected}] pod [${newValue}] containers failed:`, err)
               })
           }
         }
