@@ -5,8 +5,33 @@
     <title>webshell xterm demo</title>
     <link rel="stylesheet" type="text/css" href="./dist/xterm.css" />
     <style>
+      body {
+        border-width: 0;
+        margin: 0
+      }
+      .content {
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        color: #2c3e50;
+      }
       h1 {
         text-align: center;
+      }
+      #app {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 10px, 10px;
+      }
+      select, button {
+        margin: 3px;
+      }
+      button {
+        padding: 6px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        background: #f0f0f0;
+      }
+      button:hover {
+        background: #e0e0e0;
       }
       #terminal .terminal.xterm {
         height: 100%;
@@ -23,29 +48,32 @@
       }
     </style>
   </head>
-  <body style="border-width: 0;margin: 0">
-    <h2>K8S Web Shell Demo</h2>
-    <div id="app">
+  <body>
+    <h1 class="content">K8S Web Shell Demo</h1>
+    <div id="app" class="content">
+      <label>Namespace:</label>
       <select v-model="nsSelected">
           <option v-for="option in nsOptions" v-bind:value="option.value">
             {{ option.value }}
           </option>
       </select>
+      <label>Pod:</label>
       <select v-model="podSelected">
           <option v-for="option in podOptions" v-bind:value="option.value">
             {{ option.value }}
           </option>
       </select>
+      <label>Container:</label>
       <select v-model="containerSelected">
           <option v-for="option in containerOptions" v-bind:value="option.value">
             {{ option.value }}
           </option>
       </select>
-      <p>Selected: Mamespace [ {{ nsSelected }} ] Pod [ {{ podSelected }} ] Container [ {{ containerSelected }} ]</p>
+      <p>Selected: Namespace [ {{ nsSelected }} ] Pod [ {{ podSelected }} ] Container [ {{ containerSelected }} ]</p>
       <button v-on:click="connect">Connect</button>
       <button v-on:click="closeWs">Close</button>
     </div>
-    <div id="terminal"></div>
+    <p><div id="terminal"></div>
     <script src="./dist/xterm.js"></script>
     <script src="./dist/addons/fit/fit.js"></script>
     <script src="./dist/vue.js"></script>
