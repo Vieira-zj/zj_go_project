@@ -30,7 +30,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	// read message
+	// goroutine read message
 	done := make(chan struct{})
 	go func() {
 		closeErrors := []int{websocket.CloseGoingAway, websocket.CloseNormalClosure, websocket.CloseNoStatusReceived}
@@ -48,7 +48,7 @@ func main() {
 				}
 				panic(err)
 			}
-			log.Println("recv:", string(message))
+			log.Println("ws client recv:", string(message))
 		}
 	}()
 

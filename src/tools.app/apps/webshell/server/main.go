@@ -1,3 +1,8 @@
+// Refer: https://www.cnblogs.com/lanyangsh/p/9822403.html
+//
+// Build: ./gorun.sh websocket
+// Access url: http://localhost:8080/
+
 package main
 
 import (
@@ -10,8 +15,6 @@ import (
 	"github.com/gorilla/websocket"
 	myutils "tools.app/utils"
 )
-
-// Refer: https://www.cnblogs.com/lanyangsh/p/9822403.html
 
 func main() {
 	addr := flag.String("addr", "localhost:8080", "http service address")
@@ -77,7 +80,7 @@ func EchoMsg(w http.ResponseWriter, r *http.Request) {
 			}
 			panic(err)
 		}
-		log.Println("recv:", string(message))
+		log.Println("ws server recv:", string(message))
 
 		if err := conn.WriteMessage(msgType, message); err != nil {
 			panic(err)

@@ -2,15 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <h1>WebSocket Demo</h1>
+    <style>
+      h1, #desc, #output {
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        color: #2c3e50;
+      }
+    </style>
+    <title>websocket demo</title>
   </head>
   <body>
-    <div>
+      <h1>WebSocket CS Demo</h1>
+      <div id="desc">
       <p>Click "Open" to create a connection to the server.<p>
       <p>"Send" to send a message to the server and "Close" to close the connection.</p>
       <p>You can change the message and send multiple times.</p>
     </div>
-    <form>
+    <form id="submit">
       <button id="open">Open</button>
       <button id="close">Close</button>
       <p><input id="input" type="text" value="Hello world!">
@@ -22,6 +29,7 @@
         let ws
         let input = document.getElementById("input")
         let output = document.getElementById("output")
+
         let printMsg = function (message) {
           let ele = document.createElement("p")
           ele.innerHTML = message;
@@ -31,21 +39,21 @@
         document.getElementById("open").onclick = function(evt) {
           if (ws) {
             alert("WebSocket is already opened!")
-            return false
-          }
-          ws = new WebSocket("{{.}}")
-          ws.onopen = function(evt) {
-            printMsg("OPEN")
-          }
-          ws.onclose = function(evt) {
-            printMsg("CLOSE")
-            ws = null
-          }
-          ws.onmessage = function(evt) {
-            printMsg("RESPONSE: " + evt.data)
-          }
-          ws.onerror = function(evt) {
-            printMsg("ERROR: " + evt.data)
+          } else {
+            ws = new WebSocket("{{.}}")
+            ws.onopen = function(evt) {
+              printMsg("OPEN")
+            }
+            ws.onclose = function(evt) {
+              printMsg("CLOSE")
+              ws = null
+            }
+            ws.onmessage = function(evt) {
+              printMsg("RESPONSE: " + evt.data)
+            }
+            ws.onerror = function(evt) {
+              printMsg("ERROR: " + evt.data)
+            }
           }
           return false
         }
@@ -53,19 +61,19 @@
         document.getElementById("send").onclick = function(evt) {
           if (!ws) {
             alert("WebSocket is not opened!")
-            return false
+          } else {
+            printMsg("SEND: " + input.value)
+            ws.send(input.value)
           }
-          printMsg("SEND: " + input.value)
-          ws.send(input.value)
           return false
         }
 
         document.getElementById("close").onclick = function(evt) {
           if (!ws) {
             alert("WebSocket is already closed!")
-            return false
+          } else {
+            ws.close()
           }
-          ws.close()
           return false
         }
       })
