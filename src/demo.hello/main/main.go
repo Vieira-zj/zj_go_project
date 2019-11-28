@@ -97,9 +97,9 @@ func sortDemo() {
 	// sort.TestTreeAlgorithms()
 
 	// sort.TestSortAlgorithms()
-	// sort.TestSearchAlgorithms()
+	sort.TestSearchAlgorithms()
 
-	sort.TestSkipList()
+	// sort.TestSkipList()
 }
 
 func main() {
@@ -107,11 +107,11 @@ func main() {
 	// testAccControl()
 	// testInvokeOrder()
 
-	mainDemo()
+	// mainDemo()
 	// mainExample()
 	// mainAppDemo()
 
-	// sortDemo()
+	sortDemo()
 
 	fmt.Println("GO demo main done.")
 }

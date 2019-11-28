@@ -41,7 +41,9 @@ func binarySearch02(arr []int, val int) int {
 
 // TestSearchAlgorithms test for search algorithms.
 func TestSearchAlgorithms() {
-	arr := []int{1, 3, 4, 6, 8, 9, 10, 12, 13}
-	fmt.Println("\n#1 binary search results by index:", binarySearch01(arr, 0, len(arr), 10))
-	fmt.Println("#2 binary search results by index:", binarySearch02(arr, 3))
+	arr := []int{1, 3, 4, 6, 8, 9, 10, 12, 13, 77}
+	for _, val := range []int{1, 12, 77} {
+		fmt.Println("\n#1 binary search results by index:", binarySearch01(arr, 0, len(arr)-1, val))
+		fmt.Println("#2 binary search results by index:", binarySearch02(arr, val))
+	}
 }
