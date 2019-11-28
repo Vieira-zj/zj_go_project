@@ -26,7 +26,7 @@ func NewDDTest() *DDTest {
 	return &DDTest{}
 }
 
-// DDCheck runs dd read and write, and checks files.
+// DDCheck runs dd read and write to test disk io perf.
 func (dd DDTest) DDCheck(args DDArgs) bool {
 	base := "dd if=%s of=%s bs=%d count=%d oflag=direct"
 	var cmd string
@@ -38,20 +38,34 @@ func (dd DDTest) DDCheck(args DDArgs) bool {
 	}
 
 	// goroutine run dd
-	ch := make(chan bool)
-	go func(ch chan<- bool) {
+	ch := make(chan struct{})
+	go func(ch chan<- struct{}) {
+		defer func() {
+			if p := recover(); p != nil {
+				log.Println("run dd failed, error:", p.(error))
+				close(ch)
+			}
+		}()
+
 		results, err := dd.runShellCmd(cmd)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(results)
-		ch <- true
+		log.Println(results)
+		ch <- struct{}{}
 	}(ch)
 	time.Sleep(time.Second)
 
-	// goroutine montior dd
+	// goroutine monitor dd
 	chCheck := make(chan int64)
 	go func(ch chan<- int64) {
+		defer func() {
+			if p := recover(); p != nil {
+				log.Println("dd monitor failed, error:", p.(error))
+				close(ch)
+			}
+		}()
+
 		var lastSize int64
 		for {
 			curSize, err := dd.getFileSize(args.FileName)
