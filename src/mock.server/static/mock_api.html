@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>mock api server</title>
+    <style>
+      h1 {
+        text-align: center;
+      }
+      h1, #app {
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        color: #2c3e50;
+      }
+      #url_input {
+        width: 70%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mock API Server</h1>
+    <div id="app">
+      <div id="api_test">
+        <h2>API Test</h2>
+        <div id="input">
+          <label for="url_input">Request URL</label>
+          <input type="text" id="url_input" v-model="reqUrl"><br>
+          <div>
+            <label for="req_method">Request Method</label>
+            <input type="radio" id="r_get" value="get" v-model="reqMethod">
+            <label for="r_get">Get</label>
+            <input type="radio" id="r_post" value="post" v-model="reqMethod">
+            <label for="r_post">Post</label><br>            
+          </div>
+          <!-- TODO: add request headers fields -->
+          <label for="req_body">Request Body</label><br>
+          <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea><br>
+          <button v-on:click="sendRequest">Send</button>
+        </div>
+        <div id="output" v-show="repStatus !== -1">
+          <p>Response Status: {{ repStatus }}</p><br>
+          <label>Response Headers</label>
+          <p v-show="Boolean(repHeaders)">{{ repHeaders }}</p><br>
+          <label>Response Body</label>
+          <p v-show="Boolean(repBody)">{{ repBody }}</p>
+        </div>
+      </div>
+    </div>
+    <script src="./dist/vue.js"></script>
+    <script src="./dist/axios.min.js"></script>
+    <script>
+      const methodGet = 'get'
+      const methodPost = 'post'
+
+      let app = new Vue({
+        el: '#app',
+        data () {
+          return {
+            // request
+            reqUrl: '',
+            reqMethod: methodGet,
+            isReqBodyShow: false,
+            // response
+            reqBody: '',
+            repStatus: -1,
+            repHeaders: '',
+            repBody: ''
+          }
+        },
+        watch: {
+          reqMethod: function(newValue, oldValue) {
+            this.isReqBodyShow = newValue === methodPost ? true : false
+          }
+        },
+        methods: {
+          sendRequest () {
+            if (!Boolean(this.reqUrl)) {
+              alert("Request url is empty!")
+              return
+            }
+            if (!this.reqUrl.startsWith("http")) {
+              alert("Invalid request url!")
+              return
+            }
+
+            let vm = this
+            let req = null
+            if (this.reqMethod === methodGet) {
+              req = axios.get(vm.reqUrl)
+            }
+            if (this.reqMethod === methodPost) {
+              console.log(vm.reqBody)
+              req = axios.post(vm.reqUrl, vm.reqBody)
+            }
+            req.then(function (response) {
+                vm.repStatus = response.status
+                vm.repHeaders = JSON.stringify(response.headers)
+                vm.repBody = JSON.stringify(response.data)
+              })
+              .catch(function(err) {
+                console.warn(err)
+              })
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

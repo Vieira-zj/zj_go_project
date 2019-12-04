@@ -22,17 +22,17 @@
 
 ```json
 {
-    "server_list": [
-        {
-            "server_name": "svr_a_002",
-            "server_ip": "127.0.1.2"
-        },
-        {
-            "server_name": "svr_a_013",
-            "server_ip": "127.0.1.13"
-        }
-    ],
-    "server_group_id": "svr_grp_001"
+  "server_list": [
+    {
+      "server_name": "svr_a_002",
+      "server_ip": "127.0.1.2"
+    },
+    {
+      "server_name": "svr_a_013",
+      "server_ip": "127.0.1.13"
+    }
+  ],
+  "server_group_id": "svr_grp_001"
 }
 ```
 
@@ -231,11 +231,11 @@ request json:
 
 ```json
 {
-    "meta": "reserved keyword",
-    "commands": [
-        "hostname",
-        "go version"
-    ]
+  "meta": "reserved keyword",
+  "commands": [
+    "hostname",
+    "go version"
+  ]
 }
 ```
 
@@ -260,17 +260,17 @@ request json:
 
 ```json
 {
-    "meta": "reserved keyword",
-    "receivers": [
-        "zhengjin@4paradigm.com"
-    ],
-    "subject": "Go Mail Test",
-    "body": "This is a go mail test from MockServer.",
-    "attachments": [
-        "./test_log.txt",
-        "./logs"
-    ],
-    "archive": true
+  "meta": "reserved keyword",
+  "receivers": [
+    "zhengjin@4paradigm.com"
+  ],
+  "subject": "Go Mail Test",
+  "body": "This is a go mail test from MockServer.",
+  "attachments": [
+    "./test_log.txt",
+    "./logs"
+  ],
+  "archive": true
 }
 ```
 
