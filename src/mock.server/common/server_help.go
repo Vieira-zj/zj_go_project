@@ -78,6 +78,7 @@ func WriteOKHTMLResp(w http.ResponseWriter, data []byte) error {
 func WriteCorsHeader(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header")
 }
 
 // WriteErrJSONResp writes http error response as a Standard API JSON with a resp code.

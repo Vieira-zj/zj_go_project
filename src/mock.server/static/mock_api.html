@@ -22,18 +22,30 @@
       <div id="api_test">
         <h2>API Test</h2>
         <div id="input">
-          <label for="url_input">Request URL</label>
-          <input type="text" id="url_input" v-model="reqUrl"><br>
+          <div>
+            <label for="url_input">Request URL</label>
+            <input type="text" id="url_input" v-model="reqUrl"><br>
+          </div>
           <div>
             <label for="req_method">Request Method</label>
             <input type="radio" id="r_get" value="get" v-model="reqMethod">
             <label for="r_get">Get</label>
             <input type="radio" id="r_post" value="post" v-model="reqMethod">
-            <label for="r_post">Post</label><br>            
+            <label for="r_post">Post</label><br>
           </div>
-          <!-- TODO: add request headers fields -->
-          <label for="req_body">Request Body</label><br>
-          <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea><br>
+          <div>
+            <label>Request Headers (key-value)</label>
+            <button v-on:click="addHeader">+</button>
+            <button v-on:click="removeHeader">-</button>
+            <p v-for="header in reqHeaders" v-bind:value="header.idx">
+              <input type="text" v-model="header.key">
+              <input type="text" v-model="header.value">
+            </p>
+          </div>
+          <div>
+            <label for="req_body">Request Body</label><br>
+            <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea><br>
+          </div>
           <button v-on:click="sendRequest">Send</button>
         </div>
         <div id="output" v-show="repStatus !== -1">
@@ -51,6 +63,16 @@
       const methodGet = 'get'
       const methodPost = 'post'
 
+      let filterHeaders = function(headers) {
+        let retHeaders = {'Content-Type': 'application/json;charset=utf-8'}
+        for (let header of headers) {
+          if (Boolean(header.key) && Boolean(header.value)) {
+            retHeaders[header.key] = header.value
+          }
+        }
+        return retHeaders
+      }
+
       let app = new Vue({
         el: '#app',
         data () {
@@ -58,6 +80,7 @@
             // request
             reqUrl: '',
             reqMethod: methodGet,
+            reqHeaders: [{idx: 0, key: '', value: ''}],
             isReqBodyShow: false,
             // response
             reqBody: '',
@@ -72,6 +95,15 @@
           }
         },
         methods: {
+          addHeader () {
+            this.reqHeaders.push({idx: this.reqHeaders.length, key: '', value: ''})
+          },
+          removeHeader () {
+            if (this.reqHeaders.length === 1) {
+              return
+            }
+            this.reqHeaders.pop()
+          },
           sendRequest () {
             if (!Boolean(this.reqUrl)) {
               alert("Request url is empty!")
@@ -81,20 +113,20 @@
               alert("Invalid request url!")
               return
             }
+            console.log('custom headers:', JSON.stringify(filterHeaders(this.reqHeaders)))
 
             let vm = this
-            let req = null
-            if (this.reqMethod === methodGet) {
-              req = axios.get(vm.reqUrl)
-            }
-            if (this.reqMethod === methodPost) {
-              console.log(vm.reqBody)
-              req = axios.post(vm.reqUrl, vm.reqBody)
-            }
-            req.then(function (response) {
-                vm.repStatus = response.status
-                vm.repHeaders = JSON.stringify(response.headers)
-                vm.repBody = JSON.stringify(response.data)
+            axios({
+              method: vm.reqMethod,
+              url: vm.reqUrl,
+              // cors error when use custom headers
+              // headers: filterHeaders(vm.reqHeaders),
+              data: vm.reqBody
+            })
+              .then(function (resp) {
+                vm.repStatus = resp.status
+                vm.repHeaders = JSON.stringify(resp.headers)
+                vm.repBody = JSON.stringify(resp.data)
               })
               .catch(function(err) {
                 console.warn(err)
