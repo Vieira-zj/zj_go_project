@@ -9,6 +9,12 @@ import (
 	"path/filepath"
 )
 
+// GetCurPath returns current run abs path.
+func GetCurPath() string {
+	dir, _ := filepath.Split(os.Args[0])
+	return dir
+}
+
 // IsFileExist returns bool for file exist.
 func IsFileExist(path string) (bool, error) {
 	_, err := os.Stat(path)
@@ -33,13 +39,21 @@ func DeleteFile(path string) error {
 	return os.Remove(path)
 }
 
-// GetCurPath returns current run abs path.
-func GetCurPath() string {
-	dir, _ := filepath.Split(os.Args[0])
-	return dir
+// MakeDir makes a directory for given path.
+func MakeDir(path string) error {
+	isExist, err := IsFileExist(path)
+	if isExist {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	return os.Mkdir(path, os.ModePerm)
 }
 
-// ********* File Read
+// ------------------------------
+// File Read
+// ------------------------------
 
 // ReadFileContent reads file and returns file content string.
 func ReadFileContent(path string) (string, error) {
@@ -123,7 +137,9 @@ func ReadFileLines(path string) ([]string, error) {
 	return lines, nil
 }
 
-// ********* File Write
+// ------------------------------
+// File Write
+// ------------------------------
 
 // WriteContentToFile writes content to file.
 func WriteContentToFile(path, content string, isOverwrite bool) error {

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/golib/httprouter"
 	"mock.server/common"
@@ -18,12 +19,21 @@ const (
 	bodyFilePathPattern  = "%s/%s_body.txt"
 )
 
+var (
+	dataDirPath = filepath.Join(myutils.GetCurPath(), "data")
+)
+
 // MockAPIRegisterHandler register a uri with params and template body.
 // Post /mock/register/:uri
 func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	// TODO: use db instead of text files to save uri:params:template_body.
+	if err := myutils.MakeDir(dataDirPath); err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
+
 	uri := params.ByName(uriName)
-	filePath := fmt.Sprintf(queryFilePathPattern, common.DataDirPath, uri)
+	filePath := fmt.Sprintf(queryFilePathPattern, dataDirPath, uri)
 	if err := myutils.WriteContentToFile(filePath, r.URL.RawQuery, true); err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -36,7 +46,7 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 	}
 	defer r.Body.Close()
 
-	filePath = fmt.Sprintf(bodyFilePathPattern, common.DataDirPath, uri)
+	filePath = fmt.Sprintf(bodyFilePathPattern, dataDirPath, uri)
 	if err := myutils.WriteContentToFile(filePath, string(body), true); err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -54,7 +64,7 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 // Post /mock/:uri
 func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	uri := params.ByName(uriName)
-	filePath := fmt.Sprintf(bodyFilePathPattern, common.DataDirPath, uri)
+	filePath := fmt.Sprintf(bodyFilePathPattern, dataDirPath, uri)
 	body, err := myutils.ReadFileContentBuf(filePath)
 	if err != nil {
 		common.ErrHandler(w, err)
@@ -67,14 +77,19 @@ func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		return
 	}
 
-	filePath = fmt.Sprintf(queryFilePathPattern, common.DataDirPath, uri)
+	filePath = fmt.Sprintf(queryFilePathPattern, dataDirPath, uri)
 	query, err := myutils.ReadFileContent(filePath)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
 
-	tmplParams, err := common.ParseParamsForTempl(common.QueryToMap(query))
+	// 优先级：当前请求的参数 > 注册参数
+	queryMap := common.QueryToMap(query)
+	for k, v := range r.URL.Query() {
+		queryMap[k] = v
+	}
+	tmplParams, err := common.ParseParamsForTempl(queryMap)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
