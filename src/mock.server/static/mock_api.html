@@ -11,7 +11,7 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         color: #2c3e50;
       }
-      #register_api, #mock_test, #input, #output {
+      #register_api, #mock_test, #req_input, #resp_output {
         padding: 10px;
         border: 1px solid #ccc;
         margin: 10px, 10px;
@@ -19,6 +19,15 @@
       input {
         padding: 5px;
         margin: 10px;
+      }
+      button {
+        margin: 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        background: #f0f0f0;
+      }
+      button:hover {
+        background: #e0e0e0;
       }
       #url_input {
         width: 70%;
@@ -28,26 +37,30 @@
   <body>
     <h1>Mock API Server</h1>
     <div id="app">
+      <!-- mock api div -->
       <div id="mock_api">
-        <h2>Mock API</h2>
+        <h2>Mock APIs</h2>
         <div id="register_api">
           <h3>Register Mock API</h3>
           <div id="register_url">
             <label for="register_path">Register Path</label>
-            <input type="text" id="register_path" v-model="registerPath">
-            <p><b>Register URL:</b> {{ registerHost + registerPath }}</p>
-          </div><br>
+            <input type="text" id="register_path" v-model.lazy="registerPath">
+            <p>
+              <b>Register URL:</b> {{ registerHost + registerPath }}
+              <span id="reg_result">{{ registerResult }}</span>
+            </p>
+          </div>
           <div id="register_params">
-              <label>Template Parameters (key-value)</label>
-              <button v-on:click="addParam">+</button>
-              <button v-on:click="removeParam">-</button>
-              <div v-for="param in registerParams" v-bind:value="param.idx">
+            <label>Template Parameters (key-value)</label>
+            <button v-on:click="addParam">+</button>
+            <button v-on:click="removeParam">-</button>
+            <div v-for="param in registerParams" v-bind:value="param.idx">
               <input type="text" v-model="param.key">
               <input type="text" v-model="param.value">
             </div>
-          </div><br>
+          </div>
           <div id="register_body">
-            <p>Expected Body</p><br>
+            <p>Register Body</p>
             <textarea cols="80" rows="20" v-model="registerBody"></textarea>
           </div>
           <button v-on:click="sendRegisterApi">Register Mock API</button>
@@ -55,28 +68,34 @@
         <div id="mock_test">
           <h3>Mock Test</h3>
           <label for="mock_path">Mock Path</label>
-          <input type="text" id="mock_path" v-model="mockPath">
-          <p><b>Mock API URL:</b> {{ mockUrl + mockPath }}</p>
-          <button v-on:click="sendMock">Send Mock</button>
-          <p><b>Mock Response Data:</b> {{ repMockData }}</p>
+          <input type="text" id="mock_path" v-model.lazy="mockPath">
+          <p>
+            <b>Mock API URL:</b> {{ mockUrl + mockPath }}
+            <span id="mock_result">{{ mockResult }}</span>
+          </p>
+          <button v-on:click="testMock">Test Mock</button>
+          <p>
+            Mock Response: <span v-show="respMockCode!==-1">({{ respMockCode }})</span><br>
+            {{ respMockData }}
+          </p>
         </div>
-      </div>
-      <br><hr><br>
+      </div><br><hr>
+      <!-- api test div -->
       <div id="api_test">
         <h2>API Test</h2>
-        <div id="input">
+        <div id="req_input">
           <h3>HTTP Request</h3>
           <div>
             <label for="url_input">Request URL</label>
-            <input type="text" id="url_input" v-model="reqUrl"><br>
-          </div><br>
+            <input type="text" id="url_input" v-model="reqUrl">
+          </div>
           <div>
             <label for="req_method">Request Method</label>
             <input type="radio" id="r_get" value="get" v-model="reqMethod">
             <label for="r_get">Get</label>
             <input type="radio" id="r_post" value="post" v-model="reqMethod">
-            <label for="r_post">Post</label><br>
-          </div><br>
+            <label for="r_post">Post</label>
+          </div>
           <div>
             <label>Request Headers (key-value)</label>
             <button v-on:click="addHeader">+</button>
@@ -85,58 +104,36 @@
               <input type="text" v-model="header.key">
               <input type="text" v-model="header.value">
             </div>
-          </div><br>
+          </div>
           <div>
             <p>Request Body</p>
-            <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea><br>
-          </div><br>
+            <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea>
+          </div>
           <button v-on:click="sendRequest">Send</button>
         </div><br>
-        <div id="output" v-show="repStatus !== -1">
-          <h3>HTTP Response</h3>
-          <p><b>Status:</b> {{ repStatus }}</p>
-          <p><b>Response Headers:</b></p>
-          <p v-show="Boolean(repHeaders)">{{ repHeaders }}</p>
-          <p><b>Response Body:</b></p>
-          <p v-show="Boolean(repBody)">{{ repBody }}</p>
+        <div id="resp_output" v-show="respStatus!==-1 || Boolean(errMessage)">
+          <div id="output_content">
+            <h3>HTTP Response</h3>
+            <p><b>Status:</b> {{ respStatus }}</p>
+            <p>
+              <b>Response Headers:</b><br>
+              <span v-show="Boolean(respHeaders)">{{ respHeaders }}</span>
+            </p>
+            <p>
+              <b>Response Body:</b><br>
+              <span v-show="Boolean(respBody)">{{ respBody }}</span>
+            </p>
+          </div>
+          <div id="output_error">
+            <p style="color: red; font-weight: bold;">{{ errMessage }}</p>
+          </div>
         </div>
       </div>
     </div>
     <script src="./dist/vue.js"></script>
     <script src="./dist/axios.min.js"></script>
+    <script src="./mock_utils.js"></script>
     <script>
-      const methodGet = 'get'
-      const methodPost = 'post'
-
-      let addField = function (fields) {
-        fields.push({idx: fields.length, key: '', value: ''})
-      }
-
-      let removeField = function (fields) {
-        if (fields.length === 1) {
-              return
-            }
-            fields.pop()
-      }
-
-      let filterHeaders = function (headers) {
-        let retHeaders = {'Content-Type': 'application/json;charset=utf-8'}
-        for (let header of headers) {
-          if (Boolean(header.key) && Boolean(header.value)) {
-            retHeaders[header.key] = header.value
-          }
-        }
-        return retHeaders
-      }
-
-      let buildQuery = function (params) {
-        items = []
-        for (let param of params) {
-          items.push(`${param.key}=${param.value}`)
-        }
-        return items.join("&")
-      }
-
       let app = new Vue({
         el: '#app',
         data () {
@@ -146,24 +143,33 @@
             registerPath: '',
             registerParams: [{idx: 0, key: '', value: ''}],
             registerBody: '',
+            registerResult: '',
             mockUrl: 'http://127.0.0.1:17891/mock/',
-            mockPath: Boolean(this.registerPath) ? this.registerPath : '',
-            repMockData: '',
-            // request
+            mockPath: '',
+            mockResult: '',
+            respMockCode: -1,
+            respMockData: '',
+            // api test request
             reqUrl: 'http://127.0.0.1:17891/',
             reqMethod: methodGet,
             reqHeaders: [{idx: 0, key: '', value: ''}],
             isReqBodyShow: false,
-            // response
             reqBody: '',
-            repStatus: -1,
-            repHeaders: '',
-            repBody: ''
+            // api test response
+            respStatus: -1,
+            respHeaders: '',
+            respBody: '',
+            errMessage: ''
           }
         },
         watch: {
-          reqMethod: function(newValue, oldValue) {
+          reqMethod: function (newValue, oldValue) {
             this.isReqBodyShow = newValue === methodPost ? true : false
+          },
+          registerPath: function (newValue, oldValue) {
+            if (!Boolean(this.mockPath)) {
+              this.mockPath = newValue
+            }
           }
         },
         methods: {
@@ -188,35 +194,52 @@
               alert('Register body is empty!')
               return
             }
-            
             let vm = this
             axios({
               method: methodPost,
               url: vm.registerHost + vm.registerPath + '?' + buildQuery(vm.registerParams),
               data: vm.registerBody
             }).then(resp => {
+              console.log(resp.data)
               if (resp.status >= 400) {
-                console.warn('Request register api failed with status code:', resp.status)
+                vm.registerResult = resultFail
+                updateResultElementStyle(registerResultId, false)
+                console.error('register mock api failed with status code:', resp.status)
+                return
               }
-              if (Boolean(resp.data)) {
-                console.log(JSON.stringify(resp.data))
-              }
-            }
-            ).catch(err => console.warn(err))
+              vm.registerResult = resultPass
+              updateResultElementStyle(registerResultId, true)
+            }).catch(err => {
+              vm.registerResult = resultFail
+              updateResultElementStyle(registerResultId, false)
+              console.error("register mock api failed with error:", err)
+            })
           },
-          sendMock () {
+          testMock () {
             if (!Boolean(this.mockPath)) {
-              alert('Register path is empty!')
+              alert('Mock path is empty!')
               return
             }
-
             let vm = this
             axios({
               method: methodGet,
               url: vm.mockUrl + vm.mockPath,
             }).then(resp => {
-              vm.repMockData = resp.data
-            }).catch(err => console.warn(err))
+              vm.respMockCode = resp.status
+              vm.respMockData = resp.data
+              if (resp.status >= 400) {
+                vm.mockResult = resultFail
+                updateResultElementStyle(mockResultId, false)
+                console.error('test mock api failed with status code:', resp.status)
+                return
+              }
+              vm.mockResult = resultPass
+              updateResultElementStyle(mockResultId, true)
+            }).catch(err => {
+              vm.mockResult = resultFail
+              updateResultElementStyle(mockResultId, false)
+              console.error('test mock api failed with error:', err)
+            })
           },
           sendRequest () {
             if (!Boolean(this.reqUrl)) {
@@ -233,18 +256,18 @@
             axios({
               method: vm.reqMethod,
               url: vm.reqUrl,
-              // cors error when use custom headers
+              // cors error when request with custom headers
               // headers: filterHeaders(vm.reqHeaders),
               data: vm.reqBody
+            }).then(function (resp) {
+              vm.respStatus = resp.status
+              vm.respHeaders = JSON.stringify(resp.headers)
+              vm.respBody = resp.data
+              vm.errMessage = ''
+            }).catch(function (err) {
+              vm.errMessage = err
+              console.error('api test failed with error:', err)
             })
-              .then(function (resp) {
-                vm.repStatus = resp.status
-                vm.repHeaders = JSON.stringify(resp.headers)
-                vm.repBody = resp.data
-              })
-              .catch(function(err) {
-                console.warn(err)
-              })
           }
         }
       })
