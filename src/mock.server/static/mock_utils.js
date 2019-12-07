@@ -8,6 +8,20 @@ const resultFail = 'failed'
 const registerResultId = 'reg_result'
 const mockResultId = 'mock_result'
 
+function formatJson(input) {
+  if (!Boolean(input)) {
+    return input
+  }
+  if (typeof(input) === 'string') {
+    if (input.startsWith('{') && input.endsWith('}')) {
+      input = JSON.parse(input)
+    } else {
+      return input
+    }
+  }
+  return JSON.stringify(input, null, '  ')
+}
+
 function buildQuery(params) {
   items = []
   for (let param of params) {

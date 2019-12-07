@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta content="text/html;charset=utf-8" />
     <title>mock api server</title>
     <style>
-      h1 {
-        text-align: center;
-      }
       h1, #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         color: #2c3e50;
+      }
+      h1 {
+        text-align: center;
+      }
+      #app {
+        font-size: 80%;
       }
       #register_api, #mock_test, #req_input, #resp_output {
         padding: 10px;
         border: 1px solid #ccc;
         margin: 10px, 10px;
+      }
+      #resp_output {
+        height: 500px;
       }
       input {
         padding: 5px;
@@ -32,11 +38,30 @@
       #url_input {
         width: 70%;
       }
+      #nav p {
+        color: #7f8c8d;
+        text-decoration: underline;
+      }
+      #nav p:hover {
+        color: #4fc08d;
+        cursor: pointer;
+      }
+      #go_top {
+        position: fixed;
+        right: 50px;
+        bottom: 50px;
+        display: none;
+      }
     </style>
   </head>
   <body>
     <h1>Mock API Server</h1>
     <div id="app">
+      <!-- navigation -->
+      <div id="nav">
+        <p id="go_apitest" @click="scrollToPosition(document.querySelector('#api_test').offsetTop)">Go API Test</p>
+        <button id="go_top" @click="scrollToPosition(0)">Go Top</button>
+      </div>
       <!-- mock api div -->
       <div id="mock_api">
         <h2>Mock APIs</h2>
@@ -75,8 +100,8 @@
           </p>
           <button v-on:click="testMock">Test Mock</button>
           <p>
-            Mock Response: <span v-show="respMockCode!==-1">({{ respMockCode }})</span><br>
-            {{ respMockData }}
+            <b>Mock Response</b> <span v-show="respMockCode!==-1">({{ respMockCode }})</span><br>
+            <pre>{{ respMockData }}</pre>
           </p>
         </div>
       </div><br><hr>
@@ -111,17 +136,17 @@
           </div>
           <button v-on:click="sendRequest">Send</button>
         </div><br>
-        <div id="resp_output" v-show="respStatus!==-1 || Boolean(errMessage)">
-          <div id="output_content">
-            <h3>HTTP Response</h3>
+        <div id="resp_output">
+          <h3>HTTP Response</h3>
+          <div id="output_content" v-show="respStatus!==-1">
             <p><b>Status:</b> {{ respStatus }}</p>
             <p>
               <b>Response Headers:</b><br>
-              <span v-show="Boolean(respHeaders)">{{ respHeaders }}</span>
+              <span v-show="Boolean(respHeaders)"><pre>{{ respHeaders }}</pre></span>
             </p>
             <p>
               <b>Response Body:</b><br>
-              <span v-show="Boolean(respBody)">{{ respBody }}</span>
+              <span v-show="Boolean(respBody)"><pre>{{ respBody }}</pre></span>
             </p>
           </div>
           <div id="output_error">
@@ -159,7 +184,9 @@
             respStatus: -1,
             respHeaders: '',
             respBody: '',
-            errMessage: ''
+            errMessage: '',
+            // navigation
+            scrollTop: 0
           }
         },
         watch: {
@@ -170,6 +197,13 @@
             if (!Boolean(this.mockPath)) {
               this.mockPath = newValue
             }
+          }
+        },
+        mounted () {
+          let goTopBtn = document.querySelector('#go_top')
+          window.onscroll = () => {
+            this.scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+            this.scrollTop > 50 ? (goTopBtn.style.display = 'block') : (goTopBtn.style.display = 'none')
           }
         },
         methods: {
@@ -226,7 +260,7 @@
               url: vm.mockUrl + vm.mockPath,
             }).then(resp => {
               vm.respMockCode = resp.status
-              vm.respMockData = resp.data
+              vm.respMockData = formatJson(resp.data)
               if (resp.status >= 400) {
                 vm.mockResult = resultFail
                 updateResultElementStyle(mockResultId, false)
@@ -237,6 +271,8 @@
               updateResultElementStyle(mockResultId, true)
             }).catch(err => {
               vm.mockResult = resultFail
+              vm.respMockCode = -1
+              vm.respMockData = ''
               updateResultElementStyle(mockResultId, false)
               console.error('test mock api failed with error:', err)
             })
@@ -261,13 +297,35 @@
               data: vm.reqBody
             }).then(function (resp) {
               vm.respStatus = resp.status
-              vm.respHeaders = JSON.stringify(resp.headers)
-              vm.respBody = resp.data
+              vm.respHeaders = formatJson(resp.headers)
+              vm.respBody = formatJson(resp.data)
               vm.errMessage = ''
             }).catch(function (err) {
               vm.errMessage = err
+              vm.respStatus = -1
+              vm.respHeaders = ''
+              vm.respBody = ''
               console.error('api test failed with error:', err)
             })
+          },
+          scrollToPosition (position) {
+            let vm = this
+            // 清空上一次的定时器
+            let timer = null
+            clearInterval(timer)
+            // 定时器，每15ms执行一次滚动事件
+            timer = setInterval(() => {
+              if (Math.abs(vm.scrollTop - position) < 3) {
+                window.scrollTo(0, position)
+                clearInterval(timer)
+              }
+              if (vm.scrollTop > position) {
+                vm.scrollTop -= (vm.scrollTop - position) / 10 // 向上滚动
+              } else {
+                vm.scrollTop += (position - vm.scrollTop) / 10 // 向下滚动
+              }
+              window.scrollTo(0, vm.scrollTop)
+            }, 15)
           }
         }
       })
