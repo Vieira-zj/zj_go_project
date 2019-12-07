@@ -11,6 +11,15 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         color: #2c3e50;
       }
+      #register_api, #mock_test, #input, #output {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 10px, 10px;
+      }
+      input {
+        padding: 5px;
+        margin: 10px;
+      }
       #url_input {
         width: 70%;
       }
@@ -19,40 +28,76 @@
   <body>
     <h1>Mock API Server</h1>
     <div id="app">
+      <div id="mock_api">
+        <h2>Mock API</h2>
+        <div id="register_api">
+          <h3>Register Mock API</h3>
+          <div id="register_url">
+            <label for="register_path">Register Path</label>
+            <input type="text" id="register_path" v-model="registerPath">
+            <p><b>Register URL:</b> {{ registerHost + registerPath }}</p>
+          </div><br>
+          <div id="register_params">
+              <label>Template Parameters (key-value)</label>
+              <button v-on:click="addParam">+</button>
+              <button v-on:click="removeParam">-</button>
+              <div v-for="param in registerParams" v-bind:value="param.idx">
+              <input type="text" v-model="param.key">
+              <input type="text" v-model="param.value">
+            </div>
+          </div><br>
+          <div id="register_body">
+            <p>Expected Body</p><br>
+            <textarea cols="80" rows="20" v-model="registerBody"></textarea>
+          </div>
+          <button v-on:click="sendRegisterApi">Register Mock API</button>
+        </div><br>
+        <div id="mock_test">
+          <h3>Mock Test</h3>
+          <label for="mock_path">Mock Path</label>
+          <input type="text" id="mock_path" v-model="mockPath">
+          <p><b>Mock API URL:</b> {{ mockUrl + mockPath }}</p>
+          <button v-on:click="sendMock">Send Mock</button>
+          <p><b>Mock Response Data:</b> {{ repMockData }}</p>
+        </div>
+      </div>
+      <br><hr><br>
       <div id="api_test">
         <h2>API Test</h2>
         <div id="input">
+          <h3>HTTP Request</h3>
           <div>
             <label for="url_input">Request URL</label>
             <input type="text" id="url_input" v-model="reqUrl"><br>
-          </div>
+          </div><br>
           <div>
             <label for="req_method">Request Method</label>
             <input type="radio" id="r_get" value="get" v-model="reqMethod">
             <label for="r_get">Get</label>
             <input type="radio" id="r_post" value="post" v-model="reqMethod">
             <label for="r_post">Post</label><br>
-          </div>
+          </div><br>
           <div>
             <label>Request Headers (key-value)</label>
             <button v-on:click="addHeader">+</button>
             <button v-on:click="removeHeader">-</button>
-            <p v-for="header in reqHeaders" v-bind:value="header.idx">
+            <div v-for="header in reqHeaders" v-bind:value="header.idx">
               <input type="text" v-model="header.key">
               <input type="text" v-model="header.value">
-            </p>
-          </div>
+            </div>
+          </div><br>
           <div>
-            <label for="req_body">Request Body</label><br>
+            <p>Request Body</p>
             <textarea id="req_body" cols="120" rows="30" v-show="isReqBodyShow" v-model="reqBody"></textarea><br>
-          </div>
+          </div><br>
           <button v-on:click="sendRequest">Send</button>
-        </div>
+        </div><br>
         <div id="output" v-show="repStatus !== -1">
-          <p>Response Status: {{ repStatus }}</p><br>
-          <label>Response Headers</label>
-          <p v-show="Boolean(repHeaders)">{{ repHeaders }}</p><br>
-          <label>Response Body</label>
+          <h3>HTTP Response</h3>
+          <p><b>Status:</b> {{ repStatus }}</p>
+          <p><b>Response Headers:</b></p>
+          <p v-show="Boolean(repHeaders)">{{ repHeaders }}</p>
+          <p><b>Response Body:</b></p>
           <p v-show="Boolean(repBody)">{{ repBody }}</p>
         </div>
       </div>
@@ -63,7 +108,18 @@
       const methodGet = 'get'
       const methodPost = 'post'
 
-      let filterHeaders = function(headers) {
+      let addField = function (fields) {
+        fields.push({idx: fields.length, key: '', value: ''})
+      }
+
+      let removeField = function (fields) {
+        if (fields.length === 1) {
+              return
+            }
+            fields.pop()
+      }
+
+      let filterHeaders = function (headers) {
         let retHeaders = {'Content-Type': 'application/json;charset=utf-8'}
         for (let header of headers) {
           if (Boolean(header.key) && Boolean(header.value)) {
@@ -73,12 +129,28 @@
         return retHeaders
       }
 
+      let buildQuery = function (params) {
+        items = []
+        for (let param of params) {
+          items.push(`${param.key}=${param.value}`)
+        }
+        return items.join("&")
+      }
+
       let app = new Vue({
         el: '#app',
         data () {
           return {
+            // mock api
+            registerHost: 'http://127.0.0.1:17891/mock/register/',
+            registerPath: '',
+            registerParams: [{idx: 0, key: '', value: ''}],
+            registerBody: '',
+            mockUrl: 'http://127.0.0.1:17891/mock/',
+            mockPath: Boolean(this.registerPath) ? this.registerPath : '',
+            repMockData: '',
             // request
-            reqUrl: '',
+            reqUrl: 'http://127.0.0.1:17891/',
             reqMethod: methodGet,
             reqHeaders: [{idx: 0, key: '', value: ''}],
             isReqBodyShow: false,
@@ -95,22 +167,64 @@
           }
         },
         methods: {
+          addParam () {
+            addField(this.registerParams)
+          },
+          removeParam () {
+            removeField(this.registerParams)
+          },
           addHeader () {
-            this.reqHeaders.push({idx: this.reqHeaders.length, key: '', value: ''})
+            addField(this.reqHeaders)
           },
           removeHeader () {
-            if (this.reqHeaders.length === 1) {
+            removeField(this.reqHeaders)
+          },
+          sendRegisterApi () {
+            if (!Boolean(this.registerPath)) {
+              alert('Register path is empty!')
               return
             }
-            this.reqHeaders.pop()
+            if (!Boolean(this.registerBody)) {
+              alert('Register body is empty!')
+              return
+            }
+            
+            let vm = this
+            axios({
+              method: methodPost,
+              url: vm.registerHost + vm.registerPath + '?' + buildQuery(vm.registerParams),
+              data: vm.registerBody
+            }).then(resp => {
+              if (resp.status >= 400) {
+                console.warn('Request register api failed with status code:', resp.status)
+              }
+              if (Boolean(resp.data)) {
+                console.log(JSON.stringify(resp.data))
+              }
+            }
+            ).catch(err => console.warn(err))
+          },
+          sendMock () {
+            if (!Boolean(this.mockPath)) {
+              alert('Register path is empty!')
+              return
+            }
+
+            let vm = this
+            axios({
+              method: methodGet,
+              url: vm.mockUrl + vm.mockPath,
+            }).then(resp => {
+              vm.repMockData = resp.data
+            }).catch(err => console.warn(err))
           },
           sendRequest () {
             if (!Boolean(this.reqUrl)) {
-              alert("Request url is empty!")
+              alert('Request url is empty!')
               return
             }
-            if (!this.reqUrl.startsWith("http")) {
-              alert("Invalid request url!")
+            if (!this.reqUrl.startsWith('http')) {
+              alert('Invalid request url!')
               return
             }
             console.log('custom headers:', JSON.stringify(filterHeaders(this.reqHeaders)))
@@ -126,7 +240,7 @@
               .then(function (resp) {
                 vm.repStatus = resp.status
                 vm.repHeaders = JSON.stringify(resp.headers)
-                vm.repBody = JSON.stringify(resp.data)
+                vm.repBody = resp.data
               })
               .catch(function(err) {
                 console.warn(err)
