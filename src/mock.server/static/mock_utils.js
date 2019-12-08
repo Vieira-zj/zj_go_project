@@ -4,6 +4,7 @@ const methodGet = 'get'
 const methodPost = 'post'
 const resultPass = 'success'
 const resultFail = 'failed'
+
 // elements id
 const registerResultId = 'reg_result'
 const mockResultId = 'mock_result'
@@ -41,7 +42,7 @@ function removeField(fields) {
   fields.pop()
 }
 
-function filterHeaders(headers) {
+function buildHeaders(headers) {
   let retHeaders = {'Content-Type': 'application/json;charset=utf-8'}
   for (let header of headers) {
     if (Boolean(header.key) && Boolean(header.value)) {

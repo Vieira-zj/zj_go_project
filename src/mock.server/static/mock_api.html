@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta content="text/html;charset=utf-8" />
-    <title>mock api server</title>
+    <title>api mock server</title>
     <style>
       h1, #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -10,17 +10,6 @@
       }
       h1 {
         text-align: center;
-      }
-      #app {
-        font-size: 80%;
-      }
-      #register_api, #mock_test, #req_input, #resp_output {
-        padding: 10px;
-        border: 1px solid #ccc;
-        margin: 10px, 10px;
-      }
-      #resp_output {
-        height: 500px;
       }
       input {
         padding: 5px;
@@ -35,14 +24,25 @@
       button:hover {
         background: #e0e0e0;
       }
+      #app {
+        font-size: 80%;
+      }
+      #register_api, #mock_test, #http_req_input, #http_resp_output {
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 10px, 10px;
+      }
+      #http_resp_output {
+        height: 500px;
+      }
       #url_input {
         width: 70%;
       }
-      #nav p {
+      .link_btn {
         color: #7f8c8d;
         text-decoration: underline;
       }
-      #nav p:hover {
+      .link_btn:hover {
         color: #4fc08d;
         cursor: pointer;
       }
@@ -55,16 +55,17 @@
     </style>
   </head>
   <body>
-    <h1>Mock API Server</h1>
+    <h1>API Mock Server</h1>
     <div id="app">
-      <!-- navigation -->
+      <!-- navigation div -->
       <div id="nav">
-        <p id="go_apitest" @click="scrollToPosition(document.querySelector('#api_test').offsetTop)">Go API Test</p>
-        <button id="go_top" @click="scrollToPosition(0)">Go Top</button>
+        <p id="go_apitest" class="link_btn" @click="scrollToApiTest">Go API Test</p>
+        <button id="go_top" @click="scrollToTop">Go Top</button>
       </div>
-      <!-- mock api div -->
+      <!-- api mock div -->
       <div id="mock_api">
         <h2>Mock APIs</h2>
+        <!-- register api div -->
         <div id="register_api">
           <h3>Register Mock API</h3>
           <div id="register_url">
@@ -72,7 +73,7 @@
             <input type="text" id="register_path" v-model.lazy="registerPath">
             <p>
               <b>Register URL:</b> {{ registerHost + registerPath }}
-              <span id="reg_result">{{ registerResult }}</span>
+              <span class="link_btn" @click="copyToclipboard(registerHost+registerPath)">copy</span>
             </p>
           </div>
           <div id="register_params">
@@ -81,24 +82,33 @@
             <button v-on:click="removeParam">-</button>
             <div v-for="param in registerParams" v-bind:value="param.idx">
               <input type="text" v-model="param.key">
-              <input type="text" v-model="param.value">
+              <input type="text" v-model="param.value" :placeholder="paramInputHint" style="width: 250px;">
             </div>
           </div>
           <div id="register_body">
             <p>Register Body</p>
-            <textarea cols="80" rows="20" v-model="registerBody"></textarea>
+            <textarea cols="80" rows="20" v-model="registerBody" placeholder="body template {{.var}}"></textarea>
           </div>
-          <button v-on:click="sendRegisterApi">Register Mock API</button>
+          <div id="submit_register">
+            <p>
+              <button v-on:click="sendRegisterApi">Register Mock API</button>
+              <span id="reg_result">{{ registerResult }}</span>
+            </p>
+          </div>
         </div><br>
+        <!-- mock test div -->
         <div id="mock_test">
-          <h3>Mock Test</h3>
+          <h3>Mock API Test</h3>
           <label for="mock_path">Mock Path</label>
           <input type="text" id="mock_path" v-model.lazy="mockPath">
           <p>
             <b>Mock API URL:</b> {{ mockUrl + mockPath }}
+            <span class="link_btn" @click="copyToclipboard(mockUrl+mockPath)">copy</span>
+          </p>
+          <p>
+            <button v-on:click="testMock">Test Mock</button>
             <span id="mock_result">{{ mockResult }}</span>
           </p>
-          <button v-on:click="testMock">Test Mock</button>
           <p>
             <b>Mock Response</b> <span v-show="respMockCode!==-1">({{ respMockCode }})</span><br>
             <pre>{{ respMockData }}</pre>
@@ -107,8 +117,9 @@
       </div><br><hr>
       <!-- api test div -->
       <div id="api_test">
-        <h2>API Test</h2>
-        <div id="req_input">
+        <h2>HTTP API Test</h2>
+        <!-- http request div -->
+        <div id="http_req_input">
           <h3>HTTP Request</h3>
           <div>
             <label for="url_input">Request URL</label>
@@ -136,17 +147,18 @@
           </div>
           <button v-on:click="sendRequest">Send</button>
         </div><br>
-        <div id="resp_output">
+        <!-- http response div -->
+        <div id="http_resp_output">
           <h3>HTTP Response</h3>
           <div id="output_content" v-show="respStatus!==-1">
             <p><b>Status:</b> {{ respStatus }}</p>
             <p>
               <b>Response Headers:</b><br>
-              <span v-show="Boolean(respHeaders)"><pre>{{ respHeaders }}</pre></span>
+              <pre>{{ respHeaders }}</pre>
             </p>
             <p>
               <b>Response Body:</b><br>
-              <span v-show="Boolean(respBody)"><pre>{{ respBody }}</pre></span>
+              <pre>{{ respBody }}</pre>
             </p>
           </div>
           <div id="output_error">
@@ -169,6 +181,7 @@
             registerParams: [{idx: 0, key: '', value: ''}],
             registerBody: '',
             registerResult: '',
+            // mock test
             mockUrl: 'http://127.0.0.1:17891/mock/',
             mockPath: '',
             mockResult: '',
@@ -180,6 +193,7 @@
             reqHeaders: [{idx: 0, key: '', value: ''}],
             isReqBodyShow: false,
             reqBody: '',
+            paramInputHint: 'randint(n) / randstr(n) / randchoice(c1,c2)',
             // api test response
             respStatus: -1,
             respHeaders: '',
@@ -228,6 +242,7 @@
               alert('Register body is empty!')
               return
             }
+
             let vm = this
             axios({
               method: methodPost,
@@ -286,14 +301,14 @@
               alert('Invalid request url!')
               return
             }
-            console.log('custom headers:', JSON.stringify(filterHeaders(this.reqHeaders)))
+            console.log('custom headers:', JSON.stringify(buildHeaders(this.reqHeaders)))
 
             let vm = this
             axios({
               method: vm.reqMethod,
               url: vm.reqUrl,
               // cors error when request with custom headers
-              // headers: filterHeaders(vm.reqHeaders),
+              // headers: buildHeaders(vm.reqHeaders),
               data: vm.reqBody
             }).then(function (resp) {
               vm.respStatus = resp.status
@@ -313,6 +328,7 @@
             // 清空上一次的定时器
             let timer = null
             clearInterval(timer)
+
             // 定时器，每15ms执行一次滚动事件
             timer = setInterval(() => {
               if (Math.abs(vm.scrollTop - position) < 3) {
@@ -326,6 +342,25 @@
               }
               window.scrollTo(0, vm.scrollTop)
             }, 15)
+          },
+          scrollToTop () {
+            this.scrollToPosition(0)
+          },
+          scrollToApiTest () {
+            this.scrollToPosition(document.querySelector('#api_test').offsetTop)
+          },
+          copyToclipboard (text) {
+            const input = document.createElement('input')
+            document.body.appendChild(input)
+            input.setAttribute('value', text)
+            input.select()
+            if (document.execCommand('copy')) {
+              document.execCommand('copy')
+              alert('copied')
+            } else {
+              alert('copied failed! browser not support.')
+            }
+            document.body.removeChild(input)
           }
         }
       })
