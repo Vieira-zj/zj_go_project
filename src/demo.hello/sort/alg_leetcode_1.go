@@ -38,7 +38,7 @@ func isLetter(b byte) bool {
 }
 
 // ------------------------------
-// 两数之和：给定一个整数数组 nums 和一个目标值 target, 请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标
+// #2. 两数之和：给定一个整数数组 nums 和一个目标值 target, 请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标
 // ------------------------------
 
 // #2.1 时间复杂度：O(n^2) 空间复杂度：O(1)
@@ -130,6 +130,64 @@ func toLowerCase(str string) string {
 	return retStr
 }
 
+// ------------------------------
+// #5. 分割平衡字符串
+// ------------------------------
+
+type stack struct {
+	slice []int
+	top   int
+}
+
+func (s *stack) size() int {
+	return s.top
+}
+
+func (s *stack) getTop() (int, error) {
+	if s.size() == 0 {
+		return -1, fmt.Errorf("stack is empty")
+	}
+	return s.slice[s.top-1], nil
+}
+
+func (s *stack) push(val int) {
+	s.top++
+	s.slice[s.top-1] = val
+}
+
+func (s *stack) pop() (int, error) {
+	if s.size() == 0 {
+		return -1, fmt.Errorf("stack is empty")
+	}
+	retVal := s.slice[s.top-1]
+	s.top--
+	return retVal, nil
+}
+
+func balancedStringSplit(s string) int {
+	count := 0
+	st := &stack{
+		slice: make([]int, len(s)),
+		top:   0,
+	}
+
+	for _, c := range s {
+		if val, err := st.getTop(); err != nil { // stack empty
+			st.push(int(c))
+		} else {
+			if val == int(c) {
+				st.push(int(c))
+			} else {
+				st.pop()
+				if st.size() == 0 {
+					count++
+				}
+			}
+		}
+	}
+	return count
+}
+
 // LeetCodeMain contains leetcode algorithms.
 func LeetCodeMain() {
 	if false {
@@ -153,6 +211,11 @@ func LeetCodeMain() {
 
 		fmt.Println("\n#4. 转换成小写字母")
 		fmt.Println("expect 'hello', actual:", toLowerCase("Hello"))
+
+		fmt.Println("\n#5. 分割平衡字符串")
+		fmt.Println("expect 4, actual:", balancedStringSplit("RLRRLLRLRL"))
+		fmt.Println("expect 3, actual:", balancedStringSplit("RLLLLRRRLR"))
+		fmt.Println("expect 1, actual:", balancedStringSplit("LLLLRRRR"))
 	}
 
 	fmt.Println("leetcode sample done.")
