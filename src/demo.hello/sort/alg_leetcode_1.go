@@ -2,11 +2,13 @@ package sort
 
 import (
 	"fmt"
+	"math"
 	"strings"
 )
 
 // ------------------------------
-// #1. 验证回文串：给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写
+// #1. 验证回文串
+// 给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
 // ------------------------------
 
 func isPalindrome(s string) bool {
@@ -38,7 +40,8 @@ func isLetter(b byte) bool {
 }
 
 // ------------------------------
-// #2. 两数之和：给定一个整数数组 nums 和一个目标值 target, 请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标
+// #2. 两数之和
+// 给定一个整数数组 nums 和一个目标值 target, 请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
 // ------------------------------
 
 // #2.1 时间复杂度：O(n^2) 空间复杂度：O(1)
@@ -94,6 +97,28 @@ func createListNodes(values []int) *listNode {
 		}
 		curNode = curNode.Next
 	}
+	return header
+}
+
+func createCycleListNodes(values []int, end int) *listNode {
+	header := &listNode{
+		Val:  values[0],
+		Next: nil,
+	}
+	curNode := header
+	var endNode *listNode
+
+	for idx, val := range values[1:] {
+		curNode.Next = &listNode{
+			Val:  val,
+			Next: nil,
+		}
+		if end == idx {
+			endNode = curNode.Next
+		}
+		curNode = curNode.Next
+	}
+	curNode.Next = endNode
 	return header
 }
 
@@ -188,6 +213,88 @@ func balancedStringSplit(s string) int {
 	return count
 }
 
+// ------------------------------
+// #6. 反转链表
+// ------------------------------
+
+func reverseList(head *listNode) *listNode {
+	// head为nil或只有一个元素的情况
+	var pre *listNode
+	cur := head
+	for cur != nil {
+		next := cur.Next
+		cur.Next = pre
+		pre = cur
+		cur = next
+	}
+	return pre
+}
+
+// ------------------------------
+// #7. 环形链表
+// ------------------------------
+
+func hasCycle(head *listNode) bool {
+	fast := head
+	slow := head
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+		if slow == fast {
+			return true
+		}
+	}
+	return false
+}
+
+// ------------------------------
+// #8. 颠倒二进制位（考虑使用位运算）
+// ------------------------------
+
+func reverseBits(num uint32) uint32 {
+	size := 32
+	bits := make([]byte, size)
+	for i := size - 1; i >= 0 && num > 0; i-- {
+		bits[i] = byte(num % 2)
+		num /= 2
+	}
+
+	var retVal uint32
+	for i := 0; i < size; i++ {
+		if bits[i] == 1 {
+			retVal += uint32(math.Pow(float64(2), float64(i)))
+		}
+	}
+	return retVal
+}
+
+// ------------------------------
+// #9. 实现 strStr()
+// 给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。
+// 如果不存在，则返回 -1.
+// 注：当 needle 是空字符串时我们应当返回 0. 这与C语言的 strstr() 以及 Java的 indexOf() 定义相符。
+// ------------------------------
+
+func strStr(haystack string, needle string) int {
+	if needle == "" {
+		return 0
+	}
+
+	for i := 0; i <= len(haystack)-len(needle); i++ {
+		found := true
+		for j := 0; j < len(needle); j++ {
+			if haystack[i+j] != needle[j] {
+				found = false
+				break
+			}
+		}
+		if found {
+			return i
+		}
+	}
+	return -1
+}
+
 // LeetCodeMain contains leetcode algorithms.
 func LeetCodeMain() {
 	if false {
@@ -216,6 +323,24 @@ func LeetCodeMain() {
 		fmt.Println("expect 4, actual:", balancedStringSplit("RLRRLLRLRL"))
 		fmt.Println("expect 3, actual:", balancedStringSplit("RLLLLRRRLR"))
 		fmt.Println("expect 1, actual:", balancedStringSplit("LLLLRRRR"))
+
+		fmt.Println("\n#6. 反转链表")
+		listNodes2 := createListNodes([]int{1, 2, 3, 4, 5})
+		fmt.Print("expect [5,4,3,2,1], actual: ")
+		printListNodes(reverseList(listNodes2))
+
+		fmt.Println("\n#7. 环形链表")
+		listNode3 := createCycleListNodes([]int{3, 2, 0, -4}, 1)
+		fmt.Println("expect true, actual:", hasCycle(listNode3))
+		listNode3 = createCycleListNodes([]int{3, 2, 0, -4}, -1)
+		fmt.Println("expect false, actual:", hasCycle(listNode3))
+
+		fmt.Println("\n#8. 颠倒二进制位")
+		fmt.Println("expect 964176192, actual:", reverseBits(43261596))
+
+		fmt.Println("\n#9. 实现strStr()")
+		fmt.Println("expect 2, actual: ", strStr("hello", "ll"))
+		fmt.Println("expect -1, actual: ", strStr("aaaaa", "bba"))
 	}
 
 	fmt.Println("leetcode sample done.")
