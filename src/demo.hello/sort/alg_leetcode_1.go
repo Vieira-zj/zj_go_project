@@ -295,6 +295,90 @@ func strStr(haystack string, needle string) int {
 	return -1
 }
 
+// ------------------------------
+// #10. 二叉树的最大深度
+// ------------------------------
+
+type treeNode struct {
+	Val   int
+	Left  *treeNode
+	Right *treeNode
+}
+
+func createBinTree(values []int) *treeNode {
+	treeNodes := make([]*treeNode, len(values))
+	for i := 0; i < len(values); i++ {
+		treeNodes[i] = &treeNode{
+			Val: values[i],
+		}
+	}
+
+	for i := 0; i < len(values)/2; i++ {
+		treeNodes[i].Left = treeNodes[i*2+1]
+		if i*2+2 < len(values) {
+			treeNodes[i].Right = treeNodes[i*2+2]
+		}
+	}
+	return treeNodes[0]
+}
+
+func maxDepth(root *treeNode) int {
+	if root == nil {
+		return 0
+	}
+
+	lDepth := maxDepth(root.Left) + 1
+	rDepth := maxDepth(root.Right) + 1
+	if lDepth > rDepth {
+		return lDepth
+	}
+	return rDepth
+}
+
+// ------------------------------
+// #11. Excel表列序号
+// A -> 1, AA -> 27
+// ------------------------------
+
+func titleToNumber(s string) int {
+	base := 1
+	retNum := 0
+	for i := len(s) - 1; i >= 0; i-- {
+		retNum += base * (int(s[i]) - 'A' + 1)
+		base *= 26
+	}
+	return retNum
+}
+
+// ------------------------------
+// #12. 合并两个有序数组
+// 给定两个有序整数数组 nums1 和 nums2, 将 nums2 合并到 nums1 中，使得 num1 成为一个有序数组。
+// 输入：
+// nums1 = [1,2,3,0,0,0], m = 3
+// nums2 = [2,5,6],       n = 3
+// 输出：[1,2,2,3,5,6]
+// ------------------------------
+
+func mergeSortedNums(nums1 []int, m int, nums2 []int, n int) {
+	cur := len(nums1) - 1
+	for m > 0 && n > 0 {
+		if nums1[m-1] > nums2[n-1] {
+			nums1[cur] = nums1[m-1]
+			m--
+		} else {
+			nums1[cur] = nums2[n-1]
+			n--
+		}
+		cur--
+	}
+
+	if m == 0 {
+		for i := 0; i < n; i++ {
+			nums1[i] = nums2[i]
+		}
+	}
+}
+
 // LeetCodeMain contains leetcode algorithms.
 func LeetCodeMain() {
 	if false {
@@ -341,6 +425,19 @@ func LeetCodeMain() {
 		fmt.Println("\n#9. 实现strStr()")
 		fmt.Println("expect 2, actual: ", strStr("hello", "ll"))
 		fmt.Println("expect -1, actual: ", strStr("aaaaa", "bba"))
+
+		fmt.Println("\n#10. 二叉树的最大深度")
+		fmt.Println("expect 3, actual:", maxDepth(createBinTree([]int{3, 9, 20, -1, -1, 15, 7})))
+
+		fmt.Println("\n#11. Excel表列序号")
+		fmt.Println("expect 28, actual:", titleToNumber("AB"))
+		fmt.Println("expect 701, actual:", titleToNumber("ZY"))
+
+		fmt.Println("\n#12. 合并两个有序数组")
+		nums1 := []int{1, 2, 3, 0, 0, 0}
+		nums2 := []int{2, 5, 6}
+		mergeSortedNums(nums1, 3, nums2, len(nums2))
+		fmt.Println("expect [1,2,2,3,5,6], actual:", nums1)
 	}
 
 	fmt.Println("leetcode sample done.")
