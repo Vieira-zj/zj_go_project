@@ -406,6 +406,7 @@ func geneTriangle(numRows int) [][]int {
 // ------------------------------
 // #14. 对称二叉树
 // ------------------------------
+
 func isSymmetric(root *treeNode) bool {
 	if root == nil {
 		return true
@@ -425,8 +426,9 @@ func isMirror(node1 *treeNode, node2 *treeNode) bool {
 
 // ------------------------------
 // #15. 只出现一次的数字
-// 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+// 给定一个非空整数数组，除了某个元素只出现 1 次以外，其余每个元素均出现 2 次。找出那个只出现了 1 次的元素。
 // ------------------------------
+
 func singleNumber(nums []int) int {
 	base := nums[0]
 	for i := 1; i < len(nums); i++ {
@@ -435,8 +437,8 @@ func singleNumber(nums []int) int {
 	return base
 }
 
-// LeetCodeMain contains leetcode algorithms.
-func LeetCodeMain() {
+// LeetCodeMain01 contains leetcode algorithms.
+func LeetCodeMain01() {
 	if false {
 		fmt.Println("\n#1. 验证回文串")
 		fmt.Println("excpect true, actual:", isPalindrome("A man, a plan, a canal: Panama"))
@@ -507,5 +509,5 @@ func LeetCodeMain() {
 		fmt.Println("expect 4, actual:", singleNumber([]int{4, 1, 2, 1, 2}))
 	}
 
-	fmt.Println("leetcode sample done.")
+	fmt.Println("leetcode sample1 done.")
 }

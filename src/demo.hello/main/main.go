@@ -100,7 +100,9 @@ func sortDemo() {
 
 	// sort.TestSortAlgorithms()
 	// sort.TestSearchAlgorithms()
-	sort.LeetCodeMain()
+
+	// sort.LeetCodeMain01()
+	sort.LeetCodeMain02()
 }
 
 func main() {
