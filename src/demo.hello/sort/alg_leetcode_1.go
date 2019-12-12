@@ -379,6 +379,62 @@ func mergeSortedNums(nums1 []int, m int, nums2 []int, n int) {
 	}
 }
 
+// ------------------------------
+// #13. 杨辉三角
+// ------------------------------
+
+func geneTriangle(numRows int) [][]int {
+	if numRows == 0 {
+		return [][]int{}
+	}
+
+	rows := make([][]int, numRows)
+	rows[0] = []int{1}
+	for i := 1; i < numRows; i++ {
+		curRow := make([]int, 0, i)
+		curRow = append(curRow, 1)
+		preRow := rows[i-1]
+		for j := 0; j < len(preRow)-1; j++ {
+			curRow = append(curRow, preRow[j]+preRow[j+1])
+		}
+		curRow = append(curRow, 1)
+		rows[i] = curRow
+	}
+	return rows
+}
+
+// ------------------------------
+// #14. 对称二叉树
+// ------------------------------
+func isSymmetric(root *treeNode) bool {
+	if root == nil {
+		return true
+	}
+	return isMirror(root.Left, root.Right)
+}
+
+func isMirror(node1 *treeNode, node2 *treeNode) bool {
+	if node1 == nil && node2 == nil {
+		return true
+	}
+	if node1 == nil || node2 == nil {
+		return false
+	}
+	return node1.Val == node2.Val && isMirror(node1.Left, node2.Right) && isMirror(node1.Right, node2.Left)
+}
+
+// ------------------------------
+// #15. 只出现一次的数字
+// 给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+// ------------------------------
+func singleNumber(nums []int) int {
+	base := nums[0]
+	for i := 1; i < len(nums); i++ {
+		base ^= nums[i]
+	}
+	return base
+}
+
 // LeetCodeMain contains leetcode algorithms.
 func LeetCodeMain() {
 	if false {
@@ -438,6 +494,17 @@ func LeetCodeMain() {
 		nums2 := []int{2, 5, 6}
 		mergeSortedNums(nums1, 3, nums2, len(nums2))
 		fmt.Println("expect [1,2,2,3,5,6], actual:", nums1)
+
+		fmt.Println("\n#13. 杨辉三角")
+		fmt.Println("expect [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]], actual:", geneTriangle(5))
+
+		fmt.Println("\n#14. 对称二叉树")
+		treeNodes := createBinTree([]int{1, 2, 2, 3, 4, 4, 3})
+		fmt.Println("expect true, actual:", isSymmetric(treeNodes))
+
+		fmt.Println("\n#15. 只出现一次的数字")
+		fmt.Println("expect 1, actual:", singleNumber([]int{2, 2, 1}))
+		fmt.Println("expect 4, actual:", singleNumber([]int{4, 1, 2, 1, 2}))
 	}
 
 	fmt.Println("leetcode sample done.")

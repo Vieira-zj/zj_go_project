@@ -8,6 +8,19 @@ import (
 	myutils "tools.app/utils"
 )
 
+// demo, bits operation
+func testBitsOperation() {
+	fmt.Println("左移 1<<2:", 1<<2)
+	fmt.Println("右移 10>>2:", 10>>2)
+	// 异或：两个二进位，不同则该位为1, 否则该位为0
+	fmt.Println("异或 10^2:", 10^2)
+	fmt.Println("异或 10^10:", 10^10)
+	// 或：两个二进位中只要有一个为1, 该位的结果值为1
+	fmt.Println("或 10|2:", 10|2)
+	// 与：两个二进位都为1, 该位的结果值才为1, 否则为0
+	fmt.Println("与 10&2:", 10&2)
+}
+
 // demo, base64 encode for bytes
 func testBase64Encode() {
 	size := 16
@@ -94,10 +107,11 @@ func testPointTypeAssert() {
 
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
+	testBitsOperation()
 	// testBase64Encode()
 	// testInitSliceAndRecovery()
 	// testInterfaceTypeAssert()
-	testPointTypeAssert()
+	// testPointTypeAssert()
 
 	fmt.Println("golang demo06 DONE.")
 }
