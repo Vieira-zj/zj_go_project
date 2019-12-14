@@ -2,8 +2,11 @@ package demos
 
 import (
 	"fmt"
+	"math/rand"
 	"reflect"
 	"runtime"
+	"sync"
+	"time"
 
 	myutils "tools.app/utils"
 )
@@ -105,6 +108,87 @@ func testPointTypeAssert() {
 	fmt.Println("is point:", isPointer(&mockErr))
 }
 
+// demo, event bus by channel
+type dataEvent struct {
+	Data  interface{}
+	Topic string
+}
+
+type dataChannel chan dataEvent
+type dataChannelSlice []dataChannel
+
+type eventBus struct {
+	subscribers map[string]dataChannelSlice
+	rm          sync.RWMutex
+}
+
+func (eb *eventBus) Subscribe(topic string, ch dataChannel) {
+	eb.rm.Lock()
+	defer eb.rm.Unlock()
+
+	if prev, found := eb.subscribers[topic]; found {
+		eb.subscribers[topic] = append(prev, ch)
+	} else {
+		eb.subscribers[topic] = []dataChannel{ch}
+	}
+}
+
+func (eb *eventBus) Publish(topic string, data interface{}) {
+	eb.rm.RLock()
+	defer eb.rm.RUnlock()
+
+	if chans, found := eb.subscribers[topic]; found {
+		channels := append(dataChannelSlice{}, chans...)
+		go func(data dataEvent, channels dataChannelSlice) {
+			for _, ch := range channels {
+				ch <- data
+			}
+		}(dataEvent{Data: data, Topic: topic}, channels)
+	}
+}
+
+func publisTo(eb *eventBus, topic string, data string) {
+	for i := 0; i < 10; i++ {
+		eb.Publish(topic, data)
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+	}
+}
+
+func printDataEvent(ch string, data dataEvent) {
+	fmt.Printf("Channel: %s; Topic: %s; DataEvent: %v\n", ch, data.Topic, data.Data)
+}
+
+func testEventBus() {
+	eb := &eventBus{
+		subscribers: map[string]dataChannelSlice{},
+	}
+
+	ch1 := make(chan dataEvent)
+	ch2 := make(chan dataEvent)
+	ch3 := make(chan dataEvent)
+	eb.Subscribe("topic1", ch1)
+	eb.Subscribe("topic2", ch2)
+	eb.Subscribe("topic2", ch3)
+
+	go publisTo(eb, "topic1", "Hi topic 1")
+	go publisTo(eb, "topic2", "Welcome to topic 2")
+
+	timeout := time.After(time.Duration(5) * time.Second)
+	for {
+		select {
+		case d := <-ch1:
+			go printDataEvent("ch1", d)
+		case d := <-ch2:
+			go printDataEvent("ch2", d)
+		case d := <-ch3:
+			go printDataEvent("ch3", d)
+		case <-timeout:
+			fmt.Println("timeout, and exit.")
+			return
+		}
+	}
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
 	testBitsOperation()
@@ -112,6 +196,7 @@ func MainDemo06() {
 	// testInitSliceAndRecovery()
 	// testInterfaceTypeAssert()
 	// testPointTypeAssert()
+	// testEventBus()
 
 	fmt.Println("golang demo06 DONE.")
 }

@@ -42,14 +42,39 @@ func fizzBuzz(n int) []string {
 	return strs
 }
 
+// ------------------------------
+// #3. 多数元素
+// 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数大于 ⌊ n/2 ⌋ 的元素。
+// ------------------------------
+func majorityElement(nums []int) int {
+	var group, count int
+	for i := 0; i < len(nums); i++ {
+		if count == 0 {
+			group = nums[i]
+			count++
+			continue
+		}
+		if group == nums[i] {
+			count++
+		} else {
+			count--
+		}
+	}
+	return group
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
-	if true {
+	if false {
 		fmt.Println("\n#1. 位1的个数")
 		fmt.Println("expect 3, actual:", hammingWeight(11))
 
 		fmt.Println("\n#2. Fizz Buzz")
 		fmt.Println("fizz buzz results:", fizzBuzz(15))
+
+		fmt.Println("\n#3. 多数元素")
+		fmt.Println("expect 3, actual:", majorityElement([]int{3, 3, 4}))
+		fmt.Println("expect 2, actual:", majorityElement([]int{2, 2, 1, 1, 1, 2, 2}))
 	}
 
 	fmt.Println("leetcode sample2 done.")
