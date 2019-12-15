@@ -157,6 +157,8 @@ func toLowerCase(str string) string {
 
 // ------------------------------
 // #5. 分割平衡字符串
+// 输入：s = "RLRRLLRLRL" 输出：4
+// 输入：s = "RLLLLRRRLR" 输出：3
 // ------------------------------
 
 type stack struct {

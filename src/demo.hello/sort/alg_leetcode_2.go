@@ -46,6 +46,7 @@ func fizzBuzz(n int) []string {
 // #3. 多数元素
 // 给定一个大小为 n 的数组，找到其中的多数元素。多数元素是指在数组中出现次数大于 ⌊ n/2 ⌋ 的元素。
 // ------------------------------
+
 func majorityElement(nums []int) int {
 	var group, count int
 	for i := 0; i < len(nums); i++ {
@@ -63,6 +64,76 @@ func majorityElement(nums []int) int {
 	return group
 }
 
+// ------------------------------
+// #4. 罗马数字转整数
+// 罗马数字 2 写做 II, 即为两个并列的 1. 12 写做 XII, 即为 X + II. 27 写做  XXVII, 即为 XX + V + II.
+// 通常情况下，罗马数字中小的数字在大的数字的右边。但也存在特例，例如 4 不写做 IIII, 而是 IV.
+// ------------------------------
+
+func romanToInt(s string) int {
+	retVal := 0
+	prev := getMapperInt(s[0])
+	for i := 1; i < len(s); i++ {
+		cur := getMapperInt(s[i])
+		if prev < cur {
+			retVal -= prev
+		} else {
+			retVal += prev
+		}
+		prev = cur
+	}
+	return retVal + prev
+}
+
+func getMapperInt(b byte) int {
+	switch b {
+	case 'I':
+		return 1
+	case 'V':
+		return 5
+	case 'X':
+		return 10
+	case 'L':
+		return 50
+	case 'C':
+		return 100
+	case 'D':
+		return 500
+	case 'M':
+		return 1000
+	default:
+		return 0
+	}
+}
+
+// ------------------------------
+// #5. 合并两个有序链表
+// ------------------------------
+
+func mergeTwoLists(l1 *listNode, l2 *listNode) *listNode {
+	// 考虑 l1 或 l2 为空的情况
+	head := &listNode{}
+	cur := head
+	for l1 != nil && l2 != nil {
+		if l1.Val < l2.Val {
+			cur.Next = l1
+			l1 = l1.Next
+		} else {
+			cur.Next = l2
+			l2 = l2.Next
+		}
+		cur = cur.Next
+	}
+
+	if l1 != nil {
+		cur.Next = l1
+	}
+	if l2 != nil {
+		cur.Next = l2
+	}
+	return head.Next
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -75,6 +146,16 @@ func LeetCodeMain02() {
 		fmt.Println("\n#3. 多数元素")
 		fmt.Println("expect 3, actual:", majorityElement([]int{3, 3, 4}))
 		fmt.Println("expect 2, actual:", majorityElement([]int{2, 2, 1, 1, 1, 2, 2}))
+
+		fmt.Println("\n#4. 罗马数字转整数")
+		fmt.Println("expect 58, actual:", romanToInt("LVIII"))
+		fmt.Println("expect 1994, actual:", romanToInt("MCMXCIV"))
+
+		fmt.Println("\n#5. 合并两个有序链表")
+		listNodes1 := createListNodes([]int{1, 2, 4})
+		listNodes2 := createListNodes([]int{1, 3, 4})
+		fmt.Print("expect [1->1->2->3->4->4], actual: ")
+		printListNodes(mergeTwoLists(listNodes1, listNodes2))
 	}
 
 	fmt.Println("leetcode sample2 done.")
