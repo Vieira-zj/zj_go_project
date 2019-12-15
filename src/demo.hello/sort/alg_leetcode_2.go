@@ -2,6 +2,7 @@ package sort
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -134,6 +135,85 @@ func mergeTwoLists(l1 *listNode, l2 *listNode) *listNode {
 	return head.Next
 }
 
+// ------------------------------
+// #6. 移动零
+// ------------------------------
+
+func moveZeroes01(nums []int) {
+	// 冒泡交换
+	n := 0
+	for i := 0; i < len(nums)-n; {
+		if nums[i] != 0 {
+			i++
+			continue
+		}
+		for j := i; j < len(nums)-n-1; j++ {
+			nums[j], nums[j+1] = nums[j+1], nums[j]
+		}
+		n++
+	}
+}
+
+func moveZeroes02(nums []int) {
+	// 非零数字前移
+	cur := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != 0 {
+			nums[cur] = nums[i]
+			cur++
+		}
+	}
+
+	for ; cur < len(nums); cur++ {
+		nums[cur] = 0
+	}
+}
+
+// ------------------------------
+// #7. 快乐数
+// 输入: 19
+// 输出: true
+// 解释:
+// 1^2 + 9^2 = 82
+// 8^2 + 2^2 = 68
+// 6^2 + 8^2 = 100
+// 1^2 + 0^2 + 0^2 = 1
+// ------------------------------
+
+func isHappy(n int) bool {
+	seen := []int{1}
+	for {
+		n = happySum(n)
+		if contains(seen, n) {
+			break
+		} else {
+			seen = append(seen, n)
+		}
+	}
+	if n == 1 {
+		return true
+	}
+	return false
+}
+
+func happySum(n int) int {
+	sum := 0
+	for n >= 10 {
+		sum += int(math.Pow(float64(n%10), 2))
+		n /= 10
+	}
+	return sum + int(math.Pow(float64(n), 2))
+}
+
+func contains(s []int, num int) bool {
+	for _, n := range s {
+		if n == num {
+			return true
+		}
+	}
+	return false
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -156,6 +236,15 @@ func LeetCodeMain02() {
 		listNodes2 := createListNodes([]int{1, 3, 4})
 		fmt.Print("expect [1->1->2->3->4->4], actual: ")
 		printListNodes(mergeTwoLists(listNodes1, listNodes2))
+
+		fmt.Println("\n#6. 移动零")
+		nums := []int{0, 1, 0, 3, 12}
+		// moveZeroes01(nums)
+		moveZeroes02(nums)
+		fmt.Println("expect [1,3,12,0,0], actual:", nums)
+
+		fmt.Println("\n#7. 快乐数")
+		fmt.Println("expect true, actual:", isHappy(19))
 	}
 
 	fmt.Println("leetcode sample2 done.")
