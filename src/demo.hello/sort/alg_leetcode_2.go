@@ -137,6 +137,7 @@ func mergeTwoLists(l1 *listNode, l2 *listNode) *listNode {
 
 // ------------------------------
 // #6. 移动零
+// 将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
 // ------------------------------
 
 func moveZeroes01(nums []int) {
@@ -214,6 +215,82 @@ func contains(s []int, num int) bool {
 	return false
 }
 
+// ------------------------------
+// #8. 买卖股票的最佳时机
+// 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+// 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+// ------------------------------
+
+func maxProfit01(prices []int) int {
+	// 考虑三种情况 单日涨、连续涨、非连续涨
+	if prices == nil || len(prices) == 0 {
+		return 0
+	}
+
+	base := prices[0]
+	profit := 0
+	for i := 0; i < len(prices)-1; i++ {
+		if prices[i] > prices[i+1] {
+			profit += prices[i] - base
+			base = prices[i+1]
+		}
+	}
+	if prices[len(prices)-1] > base {
+		profit += prices[len(prices)-1] - base
+	}
+	return profit
+}
+
+func maxProfit02(prices []int) int {
+	profit := 0
+	for i := 0; i < len(prices)-1; i++ {
+		if prices[i] < prices[i+1] {
+			profit += prices[i+1] - prices[i]
+		}
+	}
+	return profit
+}
+
+// ------------------------------
+// #9. 合并二叉树
+// ------------------------------
+
+func mergeTrees01(t1 *treeNode, t2 *treeNode) *treeNode {
+	if t1 == nil && t2 == nil {
+		return nil
+	}
+
+	t := &treeNode{}
+	if t1 == nil {
+		t.Val = t2.Val
+		t.Left = mergeTrees01(nil, t2.Left)
+		t.Right = mergeTrees01(nil, t2.Right)
+	} else if t2 == nil {
+		t.Val = t1.Val
+		t.Left = mergeTrees01(t1.Left, nil)
+		t.Right = mergeTrees01(t1.Right, nil)
+	} else {
+		t.Val = t1.Val + t2.Val
+		t.Left = mergeTrees01(t1.Left, t2.Left)
+		t.Right = mergeTrees01(t1.Right, t2.Right)
+	}
+	return t
+}
+
+func mergeTrees02(t1 *treeNode, t2 *treeNode) *treeNode {
+	if t1 == nil {
+		return t2
+	}
+	if t2 == nil {
+		return t1
+	}
+	t := &treeNode{}
+	t.Val = t1.Val + t2.Val
+	t.Left = mergeTrees02(t1.Left, t2.Left)
+	t.Right = mergeTrees02(t1.Right, t2.Right)
+	return t
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -245,6 +322,16 @@ func LeetCodeMain02() {
 
 		fmt.Println("\n#7. 快乐数")
 		fmt.Println("expect true, actual:", isHappy(19))
+
+		fmt.Println("\n#8.1 买卖股票的最佳时机")
+		fmt.Println("expect 7, and actual:", maxProfit01([]int{7, 1, 5, 3, 6, 4}))
+		fmt.Println("expect 4, and actual:", maxProfit01([]int{1, 2, 3, 4, 5}))
+		fmt.Println("expect 0, and actual:", maxProfit01([]int{7, 6, 4, 3, 1}))
+
+		fmt.Println("#8.2 买卖股票的最佳时机")
+		fmt.Println("expect 7, and actual:", maxProfit02([]int{7, 1, 5, 3, 6, 4}))
+		fmt.Println("expect 4, and actual:", maxProfit02([]int{1, 2, 3, 4, 5}))
+		fmt.Println("expect 0, and actual:", maxProfit02([]int{7, 6, 4, 3, 1}))
 	}
 
 	fmt.Println("leetcode sample2 done.")
