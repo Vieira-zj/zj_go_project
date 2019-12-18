@@ -291,6 +291,62 @@ func mergeTrees02(t1 *treeNode, t2 *treeNode) *treeNode {
 	return t
 }
 
+// ------------------------------
+// #10. 翻转二叉树
+// ------------------------------
+
+func invertTree(root *treeNode) *treeNode {
+	if root == nil {
+		return nil
+	}
+
+	t := &treeNode{
+		Val: root.Val,
+	}
+	t.Left = invertTree(root.Right)
+	t.Right = invertTree(root.Left)
+	return t
+}
+
+func printTree(root *treeNode) {
+	if root == nil {
+		return
+	}
+	fmt.Printf("%d ", root.Val)
+	printTree(root.Left)
+	printTree(root.Right)
+}
+
+// ------------------------------
+// #11. 二进制链表转整数
+// ------------------------------
+
+func getDecimalValue01(head *listNode) int {
+	bits := []int{}
+	for head != nil {
+		bits = append(bits, head.Val)
+		head = head.Next
+	}
+
+	num := 0
+	for i := len(bits) - 1; i >= 0; i-- {
+		if bits[i] == 1 {
+			num += int(math.Pow(float64(2), float64(len(bits)-1-i)))
+		}
+	}
+	return num
+}
+
+func getDecimalValue02(head *listNode) int {
+	nums := 0
+	for head != nil {
+		nums <<= 1
+		nums += head.Val
+		head = head.Next
+	}
+	return nums
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -332,6 +388,24 @@ func LeetCodeMain02() {
 		fmt.Println("expect 7, and actual:", maxProfit02([]int{7, 1, 5, 3, 6, 4}))
 		fmt.Println("expect 4, and actual:", maxProfit02([]int{1, 2, 3, 4, 5}))
 		fmt.Println("expect 0, and actual:", maxProfit02([]int{7, 6, 4, 3, 1}))
+
+		fmt.Println("\n#10. 翻转二叉树")
+		tree := createBinTree([]int{4, 2, 7, 1, 3, 6, 9})
+		fmt.Print("expect [4 7 9 6 2 3 1], and actual: ")
+		printTree(invertTree(tree))
+		fmt.Println()
+
+		fmt.Println("\n#11.1 二进制链表转整数")
+		head1 := createListNodes([]int{1, 0, 1})
+		fmt.Println("expect 5, and actual:", getDecimalValue01(head1))
+		head1 = createListNodes([]int{0})
+		fmt.Println("expect 0, and actual:", getDecimalValue01(head1))
+
+		fmt.Println("\n#11.2 二进制链表转整数")
+		head2 := createListNodes([]int{1, 0, 1})
+		fmt.Println("expect 5, and actual:", getDecimalValue02(head2))
+		head2 = createListNodes([]int{0})
+		fmt.Println("expect 0, and actual:", getDecimalValue02(head2))
 	}
 
 	fmt.Println("leetcode sample2 done.")
