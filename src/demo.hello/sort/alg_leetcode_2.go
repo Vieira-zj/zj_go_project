@@ -347,6 +347,74 @@ func getDecimalValue02(head *listNode) int {
 	return nums
 }
 
+// ------------------------------
+// #12. 将有序数组转换为二叉搜索树
+// 1）若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
+// 2）若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
+// 3）任意节点的左、右子树也分别为二叉搜索树。
+// ------------------------------
+
+func sortedArrayToBST01(nums []int) *treeNode {
+	// 中点作为根节点。中点左边的数作为左子树，中点右边的数作为右子树
+	if len(nums) == 0 {
+		return nil
+	}
+
+	mid := len(nums) / 2
+	node := &treeNode{
+		Val: nums[mid],
+	}
+	node.Left = sortedArrayToBST01(nums[:mid])
+	if mid+1 > len(nums)-1 {
+		node.Right = sortedArrayToBST01([]int{})
+	} else {
+		node.Right = sortedArrayToBST01(nums[mid+1:])
+	}
+	return node
+}
+
+func sortedArrayToBST02(nums []int) *treeNode {
+	if nums == nil || len(nums) == 0 {
+		return nil
+	}
+	return sortedArrayToBSTHelp(nums, 0, len(nums)-1)
+}
+
+func sortedArrayToBSTHelp(nums []int, start, end int) *treeNode {
+	if start > end {
+		return nil
+	}
+
+	mid := start + (end-start)/2
+	node := &treeNode{
+		Val: nums[mid],
+	}
+	node.Left = sortedArrayToBSTHelp(nums, start, mid-1)
+	node.Right = sortedArrayToBSTHelp(nums, mid+1, end)
+	return node
+}
+
+// ------------------------------
+// #13. 最大子序和
+// ------------------------------
+
+func maxSubArray(nums []int) int {
+	max := nums[0]
+	sum := 0
+	for i := 0; i < len(nums); i++ {
+		// 如果 sum > 0, 则说明 sum 对结果有增益效果，则 sum 保留并加上当前遍历数字
+		// 如果 sum <= 0, 则说明 sum 对结果无增益效果，需要舍弃，则 sum 直接更新为当前遍历数字
+		// if sum+nums[i] > nums[i] {
+		if sum > 0 {
+			sum += nums[i]
+		} else {
+			sum = nums[i]
+		}
+		max = maxInt(max, sum) // 取最大增益
+	}
+	return max
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -406,6 +474,9 @@ func LeetCodeMain02() {
 		fmt.Println("expect 5, and actual:", getDecimalValue02(head2))
 		head2 = createListNodes([]int{0})
 		fmt.Println("expect 0, and actual:", getDecimalValue02(head2))
+
+		fmt.Println("\n#13. 最大子序和")
+		fmt.Println("expect 6, and actual:", maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
 	}
 
 	fmt.Println("leetcode sample2 done.")
