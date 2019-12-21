@@ -415,6 +415,116 @@ func maxSubArray(nums []int) int {
 	return max
 }
 
+// ------------------------------
+// #14. 最小栈
+// ------------------------------
+
+type stackNode struct {
+	Val  int
+	Min  int
+	Next *stackNode
+}
+
+// MinStack 最小栈
+type MinStack struct {
+	head *stackNode
+}
+
+// Constructor initialize minStack.
+func Constructor() *MinStack {
+	return &MinStack{}
+}
+
+// Push 将元素 x 推入栈中
+func (s *MinStack) Push(x int) {
+	if s.head == nil {
+		s.head = &stackNode{
+			Val: x,
+			Min: x,
+		}
+		return
+	}
+	node := &stackNode{
+		Val:  x,
+		Min:  minInt(s.head.Min, x),
+		Next: s.head,
+	}
+	s.head = node
+}
+
+// Pop 删除栈顶的元素
+func (s *MinStack) Pop() {
+	if s.head != nil {
+		s.head = s.head.Next
+	}
+}
+
+// Top 获取栈顶元素
+func (s *MinStack) Top() int {
+	if s.head != nil {
+		return s.head.Val
+	}
+	return -1
+}
+
+// GetMin 检索栈中的最小元素
+func (s *MinStack) GetMin() int {
+	if s.head != nil {
+		return s.head.Min
+	}
+	return -1
+}
+
+func (s *MinStack) debugPrint() {
+	curNode := s.head
+	fmt.Println("{")
+	for curNode != nil {
+		fmt.Printf("[val:%d,min:%d]\n", curNode.Val, curNode.Min)
+		curNode = curNode.Next
+	}
+	fmt.Println("}")
+}
+
+// ------------------------------
+// #15. 二叉搜索树中的搜索
+// ------------------------------
+
+// 时间复杂度 O(n)
+// 空间复杂度 完全不平衡树O(n), 平衡树O(log(n))
+func searchBST01(root *treeNode, val int) *treeNode {
+	if root == nil {
+		return nil
+	}
+
+	if root.Val == val {
+		return root
+	} else if root.Val > val {
+		return searchBST01(root.Left, val)
+	} else {
+		return searchBST01(root.Right, val)
+	}
+}
+
+// 时间复杂度 O(n)
+// 空间复杂度 O(1)
+func searchBST02(root *treeNode, val int) *treeNode {
+	if root == nil {
+		return nil
+	}
+
+	cur := root
+	for cur != nil {
+		if cur.Val == val {
+			return cur
+		} else if cur.Val > val {
+			cur = cur.Left
+		} else {
+			cur = cur.Right
+		}
+	}
+	return nil
+}
+
 // LeetCodeMain02 contains leetcode algorithms.
 func LeetCodeMain02() {
 	if false {
@@ -477,6 +587,17 @@ func LeetCodeMain02() {
 
 		fmt.Println("\n#13. 最大子序和")
 		fmt.Println("expect 6, and actual:", maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
+
+		fmt.Println("\n#14. 最小栈")
+		stack := Constructor()
+		for _, val := range []int{-2, 0, -3} {
+			stack.Push(val)
+		}
+		stack.debugPrint()
+		fmt.Println("expect -3, and actual:", stack.GetMin())
+		stack.Pop()
+		fmt.Println("expect 0, actual:", stack.Top())
+		fmt.Println("expect -2, and actual:", stack.GetMin())
 	}
 
 	fmt.Println("leetcode sample2 done.")

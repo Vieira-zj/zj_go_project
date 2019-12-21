@@ -324,6 +324,13 @@ func maxInt(x, y int) int {
 	return y
 }
 
+func minInt(x, y int) int {
+	if x > y {
+		return y
+	}
+	return x
+}
+
 func (s *SkipList) effectiveMaxLevel() int {
 	return maxInt(s.level(), s.MaxLevel)
 }
