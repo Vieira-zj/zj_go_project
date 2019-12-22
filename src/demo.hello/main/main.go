@@ -102,7 +102,8 @@ func sortDemo() {
 	// sort.TestSearchAlgorithms()
 
 	// sort.LeetCodeMain01()
-	sort.LeetCodeMain02()
+	// sort.LeetCodeMain02()
+	sort.LeetCodeMain03()
 }
 
 func main() {
