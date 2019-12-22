@@ -84,26 +84,20 @@ func mainAppDemo() {
 }
 
 func sortDemo() {
-	// sort.TestIntOctAndBinary()
+	// sort.TestSearchAlgorithms()
+	// sort.TestSortAlgorithms()
+
 	// sort.TestNumbersAlgorithms()
+	sort.TestStringsAlgorithms()
 
-	// sort.TestRevertByWord()
-	// sort.TestStringsAlgorithms()
-
-	// sort.TestLinkedList()
+	// sort.TestSkipList()
 	// sort.TestLinkedListAlgorithms()
-
 	// sort.TestTreeHeap()
 	// sort.TestTreeAlgorithms()
 
-	// sort.TestSkipList()
-
-	// sort.TestSortAlgorithms()
-	// sort.TestSearchAlgorithms()
-
 	// sort.LeetCodeMain01()
 	// sort.LeetCodeMain02()
-	sort.LeetCodeMain03()
+	// sort.LeetCodeMain03()
 }
 
 func main() {

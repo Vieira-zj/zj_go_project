@@ -4,7 +4,10 @@ import (
 	"fmt"
 )
 
-// 二分查找 有序数组 O(logN) 递归
+// ------------------------------
+// #1. 二分查找 有序数组 O(logN) 递归
+// ------------------------------
+
 func binarySearch01(arr []int, start, end, val int) int {
 	if start > end {
 		return -1
@@ -20,7 +23,10 @@ func binarySearch01(arr []int, start, end, val int) int {
 	}
 }
 
-// 二分查找 有序数组 O(logN) 非递归
+// ------------------------------
+// #2. 二分查找 有序数组 O(logN) 非递归
+// ------------------------------
+
 func binarySearch02(arr []int, val int) int {
 	start := 0
 	end := len(arr) - 1
@@ -41,9 +47,18 @@ func binarySearch02(arr []int, val int) int {
 
 // TestSearchAlgorithms test for search algorithms.
 func TestSearchAlgorithms() {
-	arr := []int{1, 3, 4, 6, 8, 9, 10, 12, 13, 77}
-	for _, val := range []int{1, 12, 77} {
-		fmt.Println("\n#1 binary search results by index:", binarySearch01(arr, 0, len(arr)-1, val))
-		fmt.Println("#2 binary search results by index:", binarySearch02(arr, val))
+	if false {
+		fmt.Println("\n#1. 二分查找 有序数组 O(logN) 递归")
+		arr := []int{1, 3, 4, 6, 8, 9, 10, 12, 13, 77}
+		for _, val := range []int{1, 12, 77} {
+			fmt.Println("binary search results by index:", binarySearch01(arr, 0, len(arr)-1, val))
+		}
+
+		fmt.Println("\n#2. 二分查找 有序数组 O(logN) 非递归")
+		for _, val := range []int{1, 12, 77} {
+			fmt.Println("binary search results by index:", binarySearch02(arr, val))
+		}
 	}
+
+	fmt.Println("search algorithms done.")
 }

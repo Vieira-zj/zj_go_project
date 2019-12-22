@@ -6,36 +6,32 @@ import (
 	"math"
 	"math/rand"
 	"strconv"
-	"strings"
 )
 
 // ------------------------------
+// #1. 十进制转二进制
 // ------------------------------
 
-// 十进制转二进制
-func intOctToBinary(num int) string {
-	stack := list.New()
+func intOctToBinary01(num int) string {
+	l := list.New()
 	for num > 0 {
-		stack.PushBack(strconv.Itoa(num % 2))
+		l.PushBack(strconv.Itoa(num % 2))
 		num /= 2
 	}
 
-	var (
-		ret []string
-		len = stack.Len()
-	)
+	ret := ""
+	len := l.Len()
 	for i := 0; i < len; i++ {
-		ele := stack.Back()
-		stack.Remove(ele)
-		if num, ok := ele.Value.(string); ok {
-			ret = append(ret, num)
+		ele := l.Back()
+		l.Remove(ele)
+		if b, ok := ele.Value.(string); ok {
+			ret += b
 		}
 	}
-	return strings.Join(ret, "")
+	return ret
 }
 
-// 十进制转二进制
-func intOctToBinary2(num int) string {
+func intOctToBinary02(num int) string {
 	var ret string
 	for num > 0 {
 		ret = strconv.Itoa(num%2) + ret
@@ -44,20 +40,32 @@ func intOctToBinary2(num int) string {
 	return ret
 }
 
-// 二进制转十进制
-func intBinaryToOct(bin string) int {
-	bin = myReverse(bin)
+// ------------------------------
+// #2. 二进制转十进制
+// ------------------------------
 
+func intBinaryToOct01(bits string) int {
 	var ret float64
-	if string(bin[0]) == "1" {
+	if bits[len(bits)-1] == '1' {
 		ret = 1
 	}
-	for i := 1; i < len(bin); i++ {
-		if string(bin[i]) == "1" {
-			ret += math.Pow(2, float64(i))
+	for i := len(bits) - 2; i >= 0; i-- {
+		if bits[i] == '1' {
+			ret += math.Pow(2, float64(len(bits)-1-i))
 		}
 	}
 	return int(ret)
+}
+
+func intBinaryToOct02(bits string) int {
+	var ret int
+	for i := 0; i < len(bits); i++ {
+		ret *= 2
+		if bits[i] == '1' {
+			ret++
+		}
+	}
+	return ret
 }
 
 func myReverse(s string) string {
@@ -73,7 +81,7 @@ func myReverse(s string) string {
 }
 
 // ------------------------------
-// #1. 求n内的质数
+// #3. 求 n 内的质数
 // ------------------------------
 
 func getPrimeNumbersWithN(n int) []int {
@@ -97,7 +105,7 @@ func getPrimeNumbersWithN(n int) []int {
 
 // ------------------------------
 // Arrays
-// # 数组中的奇数排在前面
+// #4. 数组中的奇数排在前面
 // ------------------------------
 
 func sortOddNumbersFront(arr []int) {
@@ -117,7 +125,10 @@ func sortOddNumbersFront(arr []int) {
 	}
 }
 
-// 将有序数组a[]和b[]合并到c[]中
+// ------------------------------
+// #5. 将有序数组a[]和b[]合并到c[]中
+// ------------------------------
+
 func mergeSortedSlice(a, b []int) []int {
 	var (
 		idxA = 0
@@ -145,27 +156,30 @@ func mergeSortedSlice(a, b []int) []int {
 	return ret
 }
 
-// 查找最小的k个元素（topK）
+// ------------------------------
+// #6. 查找最小的k个元素（topK）
+// ------------------------------
+
 func topKMinNumbers(nums []int, k int) []int {
-	// 部分排序 维护一个大小为K的数组 由大到小排序 保持有序
-	list := mySortFixedIntList{}
-	list.init(nums[:k])
+	ints := mySortedFixedInts{}
+	ints.init(nums[:k])
 	for _, num := range nums[k:] {
-		list.add(num)
+		ints.add(num)
 	}
-	return list.getNumbers()
+	return ints.getNumbers()
 }
 
-type mySortFixedIntList struct {
+// 部分排序 维护一个大小为K的数组 由大到小排序 保持有序
+type mySortedFixedInts struct {
 	size    int
 	numbers []int
 }
 
-func (l *mySortFixedIntList) getNumbers() []int {
+func (l *mySortedFixedInts) getNumbers() []int {
 	return l.numbers
 }
 
-func (l *mySortFixedIntList) init(nums []int) {
+func (l *mySortedFixedInts) init(nums []int) {
 	l.size = len(nums)
 	l.numbers = make([]int, l.size, l.size)
 	copy(l.numbers, nums)
@@ -186,7 +200,7 @@ func (l *mySortFixedIntList) init(nums []int) {
 	}
 }
 
-func (l *mySortFixedIntList) add(num int) {
+func (l *mySortedFixedInts) add(num int) {
 	if num < l.numbers[0] {
 		l.numbers[0] = num
 	}
@@ -198,7 +212,10 @@ func (l *mySortFixedIntList) add(num int) {
 	}
 }
 
-// 数组2*n个元素，n个奇数、n个偶数，使得数组奇数下标位置放置的都是奇数，偶数下标位置放置的都是偶数
+// ------------------------------
+// #7. 数组2*n个元素，n个奇数、n个偶数，使得数组奇数下标位置放置的都是奇数，偶数下标位置放置的都是偶数
+// ------------------------------
+
 func numbersSelect(nums []int) {
 	var (
 		evenIdx = 0
@@ -219,7 +236,10 @@ func numbersSelect(nums []int) {
 	}
 }
 
-// 抽样, 从n个中抽m个
+// ------------------------------
+// #8. 抽样，从n个中抽m个
+// ------------------------------
+
 func numberSampling(nums []int, m int) []int {
 	selected := make([]int, 0, m)
 	remaining := len(nums)
@@ -238,45 +258,49 @@ func numberSampling(nums []int, m int) []int {
 
 // TestNumbersAlgorithms test for numbers algorithms.
 func TestNumbersAlgorithms() {
-	num := 10 // 1010
-	fmt.Println("\nint oct to binary:")
-	fmt.Printf("%d=%s\n", num, intOctToBinary(num))
-	num = 110 // 1101110
-	fmt.Printf("%d=%s\n", num, intOctToBinary2(num))
+	if false {
+		fmt.Println("\n#1. 十进制转二进制")
+		num := 10 // 1010
+		fmt.Printf("%d=%s\n", num, intOctToBinary01(num))
+		num = 110 // 1101110
+		fmt.Printf("%d=%s\n", num, intOctToBinary02(num))
 
-	fmt.Println("\nint binary to oct:")
-	bits := "1010"
-	fmt.Printf("%s=%d\n", bits, intBinaryToOct(bits))
-	bits = "1101110"
-	fmt.Printf("%s=%d\n", bits, intBinaryToOct(bits))
+		fmt.Println("\n#2. 二进制转十进制")
+		bits := "1010"
+		fmt.Printf("%s=%d\n", bits, intBinaryToOct01(bits))
+		bits = "1101110"
+		fmt.Printf("%s=%d\n", bits, intBinaryToOct02(bits))
 
-	// #1
-	fmt.Println("\nprime numbers in 100:", getPrimeNumbersWithN(100))
+		fmt.Println("\n#3. 求 n 内的质数")
+		fmt.Println("\nprime numbers in 100:", getPrimeNumbersWithN(100))
 
-	// #2
-	numbers := []int{3, 4, 6, 2, 1, 6, 7, 10, 13}
-	fmt.Println("\nsrc numbers:", numbers)
-	sortOddNumbersFront(numbers)
-	fmt.Println("numebers with odd in front:", numbers)
+		fmt.Println("\n#4. 数组中的奇数排在前面")
+		numbers := []int{3, 4, 6, 2, 1, 6, 7, 10, 13}
+		fmt.Println("\nsrc numbers:", numbers)
+		sortOddNumbersFront(numbers)
+		fmt.Println("numebers with odd in front:", numbers)
 
-	// #3
-	a := []int{2, 4, 6, 13, 15}
-	b := []int{1, 7, 9, 11, 14}
-	fmt.Println("\nmerge for sorted slices:", mergeSortedSlice(a, b))
+		fmt.Println("\n#5. 将有序数组a[]和b[]合并到c[]中")
+		a := []int{2, 4, 6, 13, 15}
+		b := []int{1, 7, 9, 11, 14}
+		fmt.Println("\nmerge for sorted slices:", mergeSortedSlice(a, b))
 
-	// #4
-	numbers = []int{3, 11, 6, 2, 13, 1, 6, 7, 10}
-	fmt.Printf("\n(%v) top 4 min numbers: %v\n", numbers, topKMinNumbers(numbers, 4))
+		fmt.Println("\n#6. 查找最小的k个元素（topK）")
+		numbers1 := []int{3, 11, 6, 2, 13, 1, 6, 7, 10}
+		fmt.Printf("\n(%v) top 4 min numbers: %v\n", numbers1, topKMinNumbers(numbers1, 4))
 
-	// #5
-	numbers = []int{3, 11, 17, 6, 2, 13, 6, 7, 10, 20}
-	numbersSelect(numbers)
-	fmt.Println("\nodd(even) numbers in odd(even) index:", numbers)
+		fmt.Println("\n#7. 数组2*n个元素，n个奇数、n个偶数，使得数组奇数下标位置放置的都是奇数，偶数下标位置放置的都是偶数")
+		numbers = []int{3, 11, 17, 6, 2, 13, 6, 7, 10, 20}
+		numbersSelect(numbers)
+		fmt.Println("\nodd(even) numbers in odd(even) index:", numbers)
 
-	// #6
-	numbers = make([]int, 0, 10)
-	for i := 0; i < 10; i++ {
-		numbers = append(numbers, i)
+		fmt.Println("\n#8. 抽样，从n个中抽m个")
+		numbers = make([]int, 0, 10)
+		for i := 0; i < 10; i++ {
+			numbers = append(numbers, i)
+		}
+		fmt.Printf("\n(%v) sampling 3 numbers: %v\n", numbers, numberSampling(numbers, 3))
 	}
-	fmt.Printf("\n(%v) sampling 3 numbers: %v\n", numbers, numberSampling(numbers, 3))
+
+	fmt.Println("numbers algorithms done.")
 }
