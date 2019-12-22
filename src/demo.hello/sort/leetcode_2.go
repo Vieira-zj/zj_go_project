@@ -395,7 +395,7 @@ func sortedArrayToBSTHelp(nums []int, start, end int) *treeNode {
 }
 
 // ------------------------------
-// #13. 最大子序和
+// #13. 最大子序和 (*)
 // ------------------------------
 
 func maxSubArray(nums []int) int {
