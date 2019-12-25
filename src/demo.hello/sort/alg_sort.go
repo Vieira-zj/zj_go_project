@@ -94,11 +94,11 @@ func mergeSort(s []int) []int {
 	mid := len(s) / 2
 	s1 := mergeSort(s[:mid])
 	s2 := mergeSort(s[mid:])
-	return merge(s1, s2)
+	return mergeOrderInts(s1, s2)
 }
 
 // 二路归并：两个有序的子序列合并为一个新的有序序列
-func merge(s1, s2 []int) []int {
+func mergeOrderInts(s1, s2 []int) []int {
 	var (
 		i   = 0
 		j   = 0
@@ -114,6 +114,7 @@ func merge(s1, s2 []int) []int {
 			j++
 		}
 	}
+
 	if i < len(s1) {
 		ret = append(ret, s1[i:]...)
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 // ------------------------------
-// linkedlist struct
+// #1. linkedlist struct
 // ------------------------------
 
 type lnode struct {
@@ -54,7 +54,6 @@ func (list *linkedList) insert(val int) {
 		list.head = n
 		return
 	}
-
 	// insert at mid
 	for tmp := list.head; tmp.next != nil; tmp = tmp.next {
 		if tmp.next.value > val {
@@ -63,7 +62,6 @@ func (list *linkedList) insert(val int) {
 			return
 		}
 	}
-
 	// insert at tail
 	list.last.next = n
 	list.last = n
@@ -71,14 +69,14 @@ func (list *linkedList) insert(val int) {
 
 func (list *linkedList) toString() string {
 	if list.head == nil {
-		return "nil"
+		return "null"
 	}
 
 	var ret []string
 	for tmp := list.head; tmp != nil; tmp = tmp.next {
 		ret = append(ret, strconv.Itoa(tmp.value))
 	}
-	return strings.Join(ret, ",")
+	return fmt.Sprintf("[%s]", strings.Join(ret, ","))
 }
 
 // ------------------------------
@@ -90,36 +88,83 @@ type myNode struct {
 	next  *myNode
 }
 
+func createLinkedList(nums []int) *myNode {
+	head := &myNode{
+		value: nums[0],
+	}
+	cur := head
+	for i := 1; i < len(nums); i++ {
+		cur.next = &myNode{
+			value: nums[i],
+		}
+		cur = cur.next
+	}
+
+	return head
+}
+
+func createRandLinkedList(size, seed int) *myNode {
+	head := &myNode{
+		value: 0,
+	}
+	rand.Seed(int64(seed))
+	cur := head
+	for i := 1; i <= size; i++ {
+		cur.next = &myNode{
+			value: rand.Intn(100),
+		}
+		cur = cur.next
+	}
+
+	return head
+}
+
+func createCycleLinkedList(size, seed int) *myNode {
+	head := &myNode{
+		value: 0,
+	}
+	rand.Seed(123)
+	cur := head
+	for i := 1; i <= size; i++ {
+		cur.next = &myNode{
+			value: rand.Intn(100),
+		}
+		cur = cur.next
+	}
+	cur.next = head
+
+	return head
+}
+
 func printLinkedList(head *myNode) {
 	s := make([]string, 0, 20)
 	for cur := head; cur != nil; cur = cur.next {
 		s = append(s, strconv.Itoa(cur.value))
 	}
-	fmt.Printf("linked list: [%s]\n", strings.Join(s, ","))
+	fmt.Printf("linkedlist: [%s]\n", strings.Join(s, ","))
 }
 
 // ------------------------------
-// 链表去重
+// #2. 链表去重
 // ------------------------------
 
 func distinctLinkedList(head *myNode) {
 	for cur := head; cur.next != nil; cur = cur.next {
-		for node := cur; node.next != nil; node = node.next {
+		for node := cur; node.next != nil; {
 			if node.next.value == cur.value {
 				node.next = node.next.next
-				if node.next == nil {
-					break
-				}
+			} else {
+				node = node.next
 			}
 		}
 	}
 }
 
 // ------------------------------
-// 单链表排序 选择排序（交换值）
+// #3. 单链表排序 选择排序（交换值）
 // ------------------------------
 
-func linkedListSort01(head *myNode) {
+func sortLinkedList01(head *myNode) {
 	for cNode := head; cNode.next != nil; cNode = cNode.next {
 		for nNode := cNode.next; nNode != nil; nNode = nNode.next {
 			if cNode.value > nNode.value { // 找到最小值
@@ -130,30 +175,29 @@ func linkedListSort01(head *myNode) {
 }
 
 // ------------------------------
-// 单链表排序 冒泡排序（交换值）
+// #4. 单链表排序 冒泡排序（交换值）
 // ------------------------------
 
-func linkedListSort02(head *myNode) {
+func sortLinkedList02(head *myNode) {
 	for node := head; node.next != nil; node = node.next {
 		cNode := head
-		nNode := head.next
 		for cNode.next != nil {
+			nNode := cNode.next
 			if cNode.value > nNode.value { // 比较相邻元素
 				cNode.value, nNode.value = nNode.value, cNode.value
 			}
-			cNode = nNode
-			nNode = nNode.next
+			cNode = cNode.next
 		}
 	}
 }
 
 // ------------------------------
-// 单链表反转（交换结点）
+// #5. 单链表反转（数组）
 // https://www.cnblogs.com/mafeng/p/7149980.html
 // ------------------------------
 
-func linkedListReverse01(head *myNode) *myNode {
-	nArr := make([]*myNode, 0, 10) // node array
+func reverseLinkedList01(head *myNode) *myNode {
+	nArr := make([]*myNode, 0, 10)
 	for cur := head; cur != nil; cur = cur.next {
 		nArr = append(nArr, cur)
 	}
@@ -166,7 +210,11 @@ func linkedListReverse01(head *myNode) *myNode {
 	return nArr[last]
 }
 
-func linkedListReverse02(head *myNode) *myNode {
+// ------------------------------
+// #6. 单链表反转（交换结点）
+// ------------------------------
+
+func reverseLinkedList02(head *myNode) *myNode {
 	var nNode *myNode  // next node
 	pNode := head      // pre node
 	cNode := head.next // current node
@@ -183,7 +231,7 @@ func linkedListReverse02(head *myNode) *myNode {
 }
 
 // ------------------------------
-// 链表中是否有环（两个指针）
+// #7. 链表中是否有环（两个指针）
 // ------------------------------
 
 func isRecycleLinkedlist(head *myNode) bool {
@@ -200,12 +248,16 @@ func isRecycleLinkedlist(head *myNode) bool {
 	return false
 }
 
-// 链表中是否有环（hash表）
+// ------------------------------
+// #8. 链表中是否有环（hash表）
+// ------------------------------
+
 // 通过hash表来检查一个结点此前是否被访问过来判断链表是否为环形链表。
 // 过程：遍历所有结点并在hash表中存储每个结点引用（内存地址）。
+// TODO:
 
 // ------------------------------
-// 单链表排序 归并排序
+// #9. 单链表排序 归并排序
 // https://www.cnblogs.com/zhanghaiba/p/3534521.html
 // ------------------------------
 
@@ -214,14 +266,14 @@ func linkedListMergeSort(head *myNode) *myNode {
 		return head
 	}
 
-	sub1, sub2 := linkedListDivide(head)
+	sub1, sub2 := divideLinkedList(head)
 	sorted1 := linkedListMergeSort(sub1)
 	sorted2 := linkedListMergeSort(sub2)
-	return linkedListMerge(sorted1, sorted2)
+	return mergeLinkedList(sorted1, sorted2)
 }
 
 // 合并两个有序链表
-func linkedListMerge(head1, head2 *myNode) *myNode {
+func mergeLinkedList(head1, head2 *myNode) *myNode {
 	if head1 == nil {
 		return head2
 	}
@@ -251,7 +303,8 @@ func linkedListMerge(head1, head2 *myNode) *myNode {
 	return retHead.next
 }
 
-func linkedListDivide(head *myNode) (left, right *myNode) {
+// 拆分链表
+func divideLinkedList(head *myNode) (left, right *myNode) {
 	slow := head
 	fast := head.next
 	for fast != nil {
@@ -262,138 +315,98 @@ func linkedListDivide(head *myNode) (left, right *myNode) {
 		}
 	}
 
-	left = head
 	right = slow.next
 	slow.next = nil
+	left = head
 	return
 }
 
 // TestLinkedListAlgorithms test for linkedlist algorithms.
 func TestLinkedListAlgorithms() {
 	if false {
-		fmt.Println("\n# linkedlist struct")
+		fmt.Println("\n#1. linkedlist struct")
 		values := []int{1, 16, 15, 7, 99, 7, 50, 99, 0}
-		l := &linkedList{}
+		l1 := &linkedList{}
 		for _, val := range values {
-			l.append(val)
+			l1.append(val)
 		}
-		fmt.Println("\nappend linked list values:", l.toString())
+		fmt.Println("append linked list values:", l1.toString())
 
-		l = &linkedList{}
+		l2 := &linkedList{}
 		for _, num := range values {
-			l.insert(num)
+			l2.insert(num)
 		}
-		fmt.Println("insert linked list values:", l.toString())
+		fmt.Println("insert linked list values:", l2.toString())
+
+		fmt.Println("\n#2. 链表去重")
+		head1 := createLinkedList([]int{1, 3, 7, 5, 6, 3, 3, 2, 5})
+		fmt.Print("src ")
+		printLinkedList(head1)
+		fmt.Println("distinct ")
+		distinctLinkedList(head1)
+		printLinkedList(head1)
+
+		fmt.Println("\n#3. 单链表排序 选择排序（交换值）")
+		head2 := createRandLinkedList(10, 666)
+		fmt.Print("src ")
+		printLinkedList(head2)
+		fmt.Printf("sorted ")
+		sortLinkedList01(head2)
+		printLinkedList(head2)
+
+		fmt.Println("\n#4. 单链表排序 冒泡排序（交换值）")
+		head3 := createRandLinkedList(10, 123)
+		fmt.Print("src ")
+		printLinkedList(head3)
+		fmt.Printf("sorted ")
+		sortLinkedList02(head3)
+		printLinkedList(head3)
+
+		fmt.Println("\n#5. 单链表反转（数组）")
+		head4 := createRandLinkedList(10, 234)
+		fmt.Print("src ")
+		printLinkedList(head4)
+		fmt.Print("reverse ")
+		printLinkedList(reverseLinkedList01(head4))
+
+		fmt.Println("\n#6. 单链表反转（交换结点）")
+		head5 := createRandLinkedList(10, 234)
+		fmt.Print("src ")
+		printLinkedList(head5)
+		fmt.Print("reverse ")
+		printLinkedList(reverseLinkedList02(head5))
+
+		fmt.Println("\n#7. 链表中是否有环（两个指针）")
+		head6 := createRandLinkedList(10, 456)
+		fmt.Println("recycle linkedlist:", isRecycleLinkedlist(head6))
+		cycle := createCycleLinkedList(20, 456)
+		fmt.Println("recycle linkedlist:", isRecycleLinkedlist(cycle))
+
+		fmt.Println("\n#9.1 合并两个有序链表")
+		head7 := createLinkedList([]int{3, 5, 7, 11, 15})
+		head8 := createLinkedList([]int{4, 6, 8, 10, 14, 20})
+		fmt.Println("src linkedlists:")
+		printLinkedList(head7)
+		printLinkedList(head8)
+		fmt.Print("merged ")
+		printLinkedList(mergeLinkedList(head7, head8))
+
+		fmt.Println("\n#9.2 拆分链表")
+		head9 := createRandLinkedList(10, 567)
+		fmt.Print("src ")
+		printLinkedList(head9)
+		fmt.Println("divide linkedlists:")
+		sub1, sub2 := divideLinkedList(head9)
+		printLinkedList(sub1)
+		printLinkedList(sub2)
+
+		fmt.Println("\n#9. 单链表排序 归并排序")
+		head10 := createLinkedList([]int{7, 3, 15, 5, 11, 6, 20, 10, 4, 14, 8})
+		fmt.Print("src ")
+		printLinkedList(head10)
+		fmt.Print("sorted ")
+		printLinkedList(linkedListMergeSort(head10))
 	}
 
-	// #1
-	head := &myNode{
-		value: 1,
-	}
-	cur := head
-	for _, i := range []int{1, 3, 7, 5, 6, 3, 3, 2, 5} {
-		cur.next = &myNode{
-			value: i,
-		}
-		cur = cur.next
-	}
-	fmt.Println("\nsrc linkedlist:")
-	printLinkedList(head)
-	fmt.Println("linkedlist distinct:")
-	distinctLinkedList(head)
-	printLinkedList(head)
-	fmt.Println()
-
-	// #2-1
-	head = &myNode{
-		value: 0,
-	}
-	rand.Seed(666)
-	cur = head
-	for i := 1; i <= 10; i++ {
-		cur.next = &myNode{
-			value: rand.Intn(100),
-		}
-		cur = cur.next
-	}
-
-	printLinkedList(head)
-	fmt.Println("linkedlist sort:")
-	// linkedListSort01(head)
-	linkedListSort02(head)
-	printLinkedList(head)
-	fmt.Println()
-
-	// #2-2
-	fmt.Println("\nlinkedlist reverse:")
-	// printLinkedList(linkedListReverse01(head))
-	printLinkedList(linkedListReverse02(head))
-
-	// #3
-	cycle := &myNode{
-		value: 0,
-	}
-	rand.Seed(123)
-	cur = cycle
-	for i := 1; i <= 20; i++ {
-		cur.next = &myNode{
-			value: rand.Intn(100),
-		}
-		cur = cur.next
-	}
-	cur.next = cycle
-	fmt.Println("\nrecycle linkedlist:", isRecycleLinkedlist(head))
-	fmt.Println("recycle linkedlist:", isRecycleLinkedlist(cycle))
-
-	// #4-1
-	head1 := &myNode{
-		value: 1,
-	}
-	cur = head1
-	for _, i := range []int{3, 5, 7, 11, 15} {
-		cur.next = &myNode{
-			value: i,
-		}
-		cur = cur.next
-	}
-	head2 := &myNode{
-		value: 2,
-	}
-	cur = head2
-	for _, i := range []int{4, 6, 8, 10, 14, 20} {
-		cur.next = &myNode{
-			value: i,
-		}
-		cur = cur.next
-	}
-	fmt.Println("\nsorted linkedlist merge:")
-	printLinkedList(linkedListMerge(head1, head2))
-
-	// #4-2
-	fmt.Println("\nsrc linkedlist:")
-	printLinkedList(head1)
-	fmt.Println("linkedlist divide:")
-	sub1, sub2 := linkedListDivide(head1)
-	printLinkedList(sub1)
-	printLinkedList(sub2)
-
-	// #4-3 merge-sort linkedlist
-	head = &myNode{
-		value: 1,
-	}
-	cur = head
-	for _, i := range []int{7, 3, 15, 5, 11} {
-		cur.next = &myNode{
-			value: i,
-		}
-		cur = cur.next
-	}
-	for _, i := range []int{6, 20, 10, 4, 14, 8} {
-		cur.next = &myNode{
-			value: i,
-		}
-		cur = cur.next
-	}
-	fmt.Println("\nmerge-sort linkedlist:")
-	printLinkedList(linkedListMergeSort(head))
+	fmt.Println("LinkedList algorithms done.")
 }
