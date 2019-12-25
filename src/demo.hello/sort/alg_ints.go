@@ -272,34 +272,34 @@ func TestNumbersAlgorithms() {
 		fmt.Printf("%s=%d\n", bits, intBinaryToOct02(bits))
 
 		fmt.Println("\n#3. 求 n 内的质数")
-		fmt.Println("\nprime numbers in 100:", getPrimeNumbersWithN(100))
+		fmt.Println("prime numbers in 100:", getPrimeNumbersWithN(100))
 
 		fmt.Println("\n#4. 数组中的奇数排在前面")
 		numbers := []int{3, 4, 6, 2, 1, 6, 7, 10, 13}
-		fmt.Println("\nsrc numbers:", numbers)
+		fmt.Println("src numbers:", numbers)
 		sortOddNumbersFront(numbers)
 		fmt.Println("numebers with odd in front:", numbers)
 
 		fmt.Println("\n#5. 将有序数组a[]和b[]合并到c[]中")
 		a := []int{2, 4, 6, 13, 15}
 		b := []int{1, 7, 9, 11, 14}
-		fmt.Println("\nmerge for sorted slices:", mergeSortedSlice(a, b))
+		fmt.Println("merge for sorted slices:", mergeSortedSlice(a, b))
 
 		fmt.Println("\n#6. 查找最小的k个元素（topK）")
 		numbers1 := []int{3, 11, 6, 2, 13, 1, 6, 7, 10}
-		fmt.Printf("\n(%v) top 4 min numbers: %v\n", numbers1, topKMinNumbers(numbers1, 4))
+		fmt.Printf("(%v) top 4 min numbers: %v\n", numbers1, topKMinNumbers(numbers1, 4))
 
 		fmt.Println("\n#7. 数组2*n个元素，n个奇数、n个偶数，使得数组奇数下标位置放置的都是奇数，偶数下标位置放置的都是偶数")
 		numbers = []int{3, 11, 17, 6, 2, 13, 6, 7, 10, 20}
 		numbersSelect(numbers)
-		fmt.Println("\nodd(even) numbers in odd(even) index:", numbers)
+		fmt.Println("odd/even numbers in odd/even index:", numbers)
 
 		fmt.Println("\n#8. 抽样，从n个中抽m个")
 		numbers = make([]int, 0, 10)
 		for i := 0; i < 10; i++ {
 			numbers = append(numbers, i)
 		}
-		fmt.Printf("\n(%v) sampling 3 numbers: %v\n", numbers, numberSampling(numbers, 3))
+		fmt.Printf("(%v) sampling 3 numbers: %v\n", numbers, numberSampling(numbers, 3))
 	}
 
 	fmt.Println("numbers algorithms done.")

@@ -6,10 +6,10 @@ import (
 )
 
 // ------------------------------
-// 回文字符串
+// #1. 回文字符串
 // ------------------------------
 
-func isRecycleString(s string) bool {
+func isRecycleStr(s string) bool {
 	start := 0
 	end := len(s) - 1
 	for start < end { // error: start != end
@@ -22,7 +22,10 @@ func isRecycleString(s string) bool {
 	return true
 }
 
-// 在一个字符串中找到第一个只出现一次的字符
+// ------------------------------
+// #2. 在一个字符串中找到第一个只出现一次的字符
+// ------------------------------
+
 func firstCharAppearOnce(s string) string {
 	keys := make([]byte, 0, len(s))
 	dict := make(map[byte]int, len(s)) // map无序
@@ -41,21 +44,24 @@ func firstCharAppearOnce(s string) string {
 			return string(k)
 		}
 	}
-	return "nil"
+	return ""
 }
 
-// 小写字母排在大写字母的前面
+// ------------------------------
+// #3. 小写字母排在大写字母的前面
+// ------------------------------
+
 func charLowerFrontOfUpper(s string) string {
 	// 'A'=65,'a'=97
 	b := []byte(s)
 	start := 0
 	end := len(b) - 1
 
-	for start != end {
-		for int(b[start]) >= 97 && start < end {
+	for start < end {
+		for int(b[start]) >= 'a' && start < end {
 			start++
 		}
-		for int(b[end]) < 97 && start < end {
+		for int(b[end]) < 'Z' && start < end {
 			end--
 		}
 		if start < end {
@@ -65,8 +71,11 @@ func charLowerFrontOfUpper(s string) string {
 	return string(b)
 }
 
-// 找出字符串中最长的连续数字
-func longestContinuiousNumbers(s string) string {
+// ------------------------------
+// #4. 找出字符串中最长的连续数字
+// ------------------------------
+
+func longestContinuiousNums(s string) string {
 	var tmp, max, start int
 	for i, ch := range s {
 		if _, err := strconv.Atoi(string(ch)); err != nil {
@@ -87,26 +96,33 @@ func longestContinuiousNumbers(s string) string {
 	return s[start : start+max]
 }
 
-// 字符串查找，返回该子字符串在文本中的位置
+// ------------------------------
+// #5. 字符串查找，返回该子字符串在文本中的位置
+// ------------------------------
+
 func searchSubString(s, sub string) int {
 	size := len(s)
 	subSize := len(sub)
 	for i := 0; i <= size-subSize; i++ {
-		j := 0
-		for ; j < subSize; j++ {
+		isFound := true
+		for j := 0; j < subSize; j++ {
 			if s[i+j] != sub[j] {
+				isFound = false
 				break
 			}
 		}
-		if j == subSize {
+		if isFound {
 			return i
 		}
 	}
 	return -1
 }
 
-// 两个字符串的相同字符
-func getSameCharsInStrings(s1, s2 string) string {
+// ------------------------------
+// #6. 两个字符串的相同字符
+// ------------------------------
+
+func getSameCharsInStrs(s1, s2 string) string {
 	same := make([]rune, 0, 10)
 	s := myString{
 		val: s2,
@@ -136,7 +152,10 @@ func (s *myString) containsChar(c rune) bool {
 	return false
 }
 
-// reverse words divied by space
+// ------------------------------
+// #7. reverse sentence words divied by space
+// ------------------------------
+
 func reverseByWord(s []rune, start, end int) {
 	strReverse(s, start, end)
 
@@ -164,43 +183,47 @@ func strReverse(s []rune, start, end int) {
 
 // TestStringsAlgorithms test for strings algorithms.
 func TestStringsAlgorithms() {
-	// #1
-	fmt.Println()
-	vals := []string{"ahaha", "ahha", "haha"}
-	for _, val := range vals {
-		fmt.Printf("%s is recycle string: %v\n", val, isRecycleString(val))
+	if false {
+		fmt.Println("\n#1. 回文字符串")
+		vals := []string{"ahaha", "ahha", "haha"}
+		for _, val := range vals {
+			fmt.Printf("%s is recycle string: %v\n", val, isRecycleStr(val))
+		}
+
+		fmt.Println("\n#2. 在一个字符串中找到第一个只出现一次的字符")
+		s := "ahacchdeff"
+		fmt.Println("first char appear once:", firstCharAppearOnce(s))
+
+		fmt.Println("\n#3. 小写字母排在大写字母的前面")
+		str := "HaJKPnobAAdCPc"
+		fmt.Println("lower letters front of upper letters:", charLowerFrontOfUpper(str))
+
+		fmt.Println("\n#4. 找出字符串中最长的连续数字")
+		str1 := "abcd13579ed124ss123456789z"
+		fmt.Println("longest continuious numbers:", longestContinuiousNums(str1))
+
+		fmt.Println("\n#5. 字符串查找，返回该子字符串在文本中的位置")
+		str2 := "this is a string test, search sub string."
+		sub := "ing"
+		fmt.Printf("sub string (%s) index at: %d\n", sub, searchSubString(str2, sub))
+
+		fmt.Println("\n#6. 两个字符串的相同字符")
+		s1 := "abcde"
+		s2 := "bwcxyz"
+		fmt.Printf("(%s) and (%s) same chars are: %s\n", s1, s2, getSameCharsInStrs(s1, s2))
+
+		fmt.Println("\n#7. reverse string")
+		word := []rune("hello")
+		fmt.Println("src string:", string(word))
+		strReverse(word, 0, len(word)-1)
+		fmt.Println("reverse string:", string(word))
+
+		fmt.Println("\n#7. reverse sentence words divied by space")
+		words := []rune("this is a test!")
+		fmt.Println("src string:", string(words))
+		reverseByWord(words, 0, len(words)-1)
+		fmt.Println("string reverse by word:", string(words))
 	}
 
-	// #2
-	s := "ahacchdeff"
-	fmt.Println("\nfirst char appear once:", firstCharAppearOnce(s))
-
-	// #3
-	s = "HaJKPnobAAdCPc"
-	fmt.Println("\nlower letters front of upper letters:", charLowerFrontOfUpper(s))
-
-	// #4
-	s = "abcd13579ed124ss123456789z"
-	fmt.Println("\nlongest continuious numbers:", longestContinuiousNumbers(s))
-
-	// #5
-	s = "this is a string test, search sub string."
-	sub := "ing"
-	fmt.Printf("\nsub string (%s) index at: %d\n", sub, searchSubString(s, sub))
-
-	// #6
-	s1 := "abcde"
-	s2 := "bwcxyz"
-	fmt.Printf("\n(%s) and (%s) same chars are: %s\n", s1, s2, getSameCharsInStrings(s1, s2))
-
-	// #7
-	word := []rune("hello")
-	fmt.Println("\nsrc string:", string(word))
-	strReverse(word, 0, len(word)-1)
-	fmt.Println("reverse string:", string(word))
-
-	words := []rune("this is a test!")
-	fmt.Println("\nsrc string:", string(words))
-	reverseByWord(words, 0, len(words)-1)
-	fmt.Println("string reverse by word:", string(words))
+	fmt.Println("strings algorithms done.")
 }
