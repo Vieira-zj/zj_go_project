@@ -4,7 +4,10 @@ import (
 	"fmt"
 )
 
-// 桶排序 O(2*(M+N)) 浪费空间 不兼容小数
+// ------------------------------
+// #1. 桶排序 O(2*(M+N)) 浪费空间 不兼容小数
+// ------------------------------
+
 func bucketSort(numbers []int) []int {
 	var buckets [100]int
 	fmt.Println("\ninit array of buckets:", buckets[:10])
@@ -24,7 +27,10 @@ func bucketSort(numbers []int) []int {
 	return ret
 }
 
-// 冒泡排序（交换排序）O(N*N)
+// ------------------------------
+// #2. 冒泡排序（交换排序）O(N*N)
+// ------------------------------
+
 func bubbleSort(s []int) {
 	n := len(s)
 	var isExchange bool
@@ -43,7 +49,10 @@ func bubbleSort(s []int) {
 	}
 }
 
-// 快速排序（交换排序）O(N*logN)
+// ------------------------------
+// #3. 快速排序（交换排序）O(N*logN)
+// ------------------------------
+
 func quickSort(s []int, start, end int) {
 	if start >= end {
 		return
@@ -53,7 +62,7 @@ func quickSort(s []int, start, end int) {
 	left := start
 	right := end
 	for left != right {
-		// 从右开始往左移动
+		// 从右开始往左移动 退出循环时 指向小于base的值
 		for s[right] >= base && left < right {
 			right--
 		}
@@ -72,8 +81,11 @@ func quickSort(s []int, start, end int) {
 	quickSort(s, left+1, end)
 }
 
-// 归并排序 O(N*logN)
+// ------------------------------
+// #4. 归并排序 O(N*logN)
 // https://my.oschina.net/mutoushirana/blog/1854644
+// ------------------------------
+
 func mergeSort(s []int) []int {
 	if len(s) == 1 {
 		return s
@@ -113,22 +125,26 @@ func merge(s1, s2 []int) []int {
 
 // TestSortAlgorithms test for sort algorithms.
 func TestSortAlgorithms() {
-	// bucket sort
-	numbers := bucketSort([]int{1, 16, 15, 99, 50, 0, 99, 13})
-	fmt.Println("bucket sort results:", numbers)
+	if false {
+		fmt.Println("\n#1. 桶排序 浪费空间 不兼容小数")
+		numbers := bucketSort([]int{1, 16, 15, 99, 50, 0, 99, 13})
+		fmt.Println("bucket sort results:", numbers)
 
-	// bubble sort
-	s := []int{1, 16, 15, 7, 99, 50, 0, 99, 13, 7}
-	fmt.Println("\ninit slice of numbers:", s)
-	bubbleSort(s) // 引用传递
-	fmt.Println("bubble sort results:", s)
+		fmt.Println("\n#2. 冒泡排序（交换排序）")
+		s := []int{1, 16, 15, 7, 99, 50, 0, 99, 13, 7}
+		fmt.Println("init slice of numbers:", s)
+		bubbleSort(s) // 引用传递
+		fmt.Println("bubble sort results:", s)
 
-	// quick sort
-	s = []int{1, 16, 15, 7, 99, 50, 0, 99, 11, 32}
-	quickSort(s, 0, len(s)-1) // 引用传递
-	fmt.Println("\nquick sort results:", s)
+		fmt.Println("\n#3. 快速排序（交换排序）")
+		s = []int{1, 16, 15, 7, 99, 50, 0, 99, 11, 32}
+		quickSort(s, 0, len(s)-1) // 引用传递
+		fmt.Println("quick sort results:", s)
 
-	// merge sort
-	s = []int{3, 16, 14, 8, 99, 53, 0, 99, 8, 32, 66}
-	fmt.Println("\nmerge sort results:", mergeSort(s))
+		fmt.Println("\n#4. 归并排序")
+		s = []int{3, 16, 14, 8, 99, 53, 0, 99, 8, 32, 66}
+		fmt.Println("merge sort results:", mergeSort(s))
+	}
+
+	fmt.Println("sort algorithms done.")
 }

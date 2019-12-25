@@ -84,16 +84,16 @@ func mainAppDemo() {
 }
 
 func sortDemo() {
+	// sort.TestNumbersAlgorithms()
+	// sort.TestStringsAlgorithms()
+
 	// sort.TestSearchAlgorithms()
 	// sort.TestSortAlgorithms()
 
-	// sort.TestNumbersAlgorithms()
-	sort.TestStringsAlgorithms()
-
+	sort.TestLinkedListAlgorithms()
 	// sort.TestSkipList()
-	// sort.TestLinkedListAlgorithms()
-	// sort.TestTreeHeap()
 	// sort.TestTreeAlgorithms()
+	// sort.TestTreeHeap()
 
 	// sort.LeetCodeMain01()
 	// sort.LeetCodeMain02()

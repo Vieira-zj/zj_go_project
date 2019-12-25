@@ -108,7 +108,7 @@ func (tree *treeHeap) toString() string {
 	return fmt.Sprint(strings.Join(ret, "\n"))
 }
 
-// TestTreeHeap test for TreeHeap struct.
+// TestTreeHeap test for treeheap struct.
 func TestTreeHeap() {
 	const size = 10
 	tree := treeHeap{}
@@ -127,4 +127,6 @@ func TestTreeHeap() {
 
 	tree.change(3, 11)
 	fmt.Println("\nchange values, and tree heap:\n", tree.toString())
+
+	fmt.Println("TreeHeap struct demo done.")
 }

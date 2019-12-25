@@ -196,7 +196,7 @@ func TestStringsAlgorithms() {
 
 		fmt.Println("\n#3. 小写字母排在大写字母的前面")
 		str := "HaJKPnobAAdCPc"
-		fmt.Println("lower letters front of upper letters:", charLowerFrontOfUpper(str))
+		fmt.Println("lower letters in front of upper letters:", charLowerFrontOfUpper(str))
 
 		fmt.Println("\n#4. 找出字符串中最长的连续数字")
 		str1 := "abcd13579ed124ss123456789z"
@@ -220,9 +220,9 @@ func TestStringsAlgorithms() {
 
 		fmt.Println("\n#7. reverse sentence words divied by space")
 		words := []rune("this is a test!")
-		fmt.Println("src string:", string(words))
+		fmt.Println("src sentence string:", string(words))
 		reverseByWord(words, 0, len(words)-1)
-		fmt.Println("string reverse by word:", string(words))
+		fmt.Println("sentence reverse by words:", string(words))
 	}
 
 	fmt.Println("strings algorithms done.")

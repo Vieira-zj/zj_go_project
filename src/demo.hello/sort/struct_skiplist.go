@@ -765,4 +765,6 @@ func TestSkipList() {
 	fmt.Println()
 	// prints:
 	//  5: five
+
+	fmt.Println("SkipList struct demo done.")
 }
