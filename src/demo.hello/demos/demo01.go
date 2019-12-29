@@ -471,13 +471,12 @@ func testCopyBytes() {
 // demo, context
 func testContext01() {
 	var (
-		a       = 1
-		b       = 2
-		timeout = time.Duration(2) * time.Second
+		a = 1
+		b = 2
 	)
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	res := myAdd(ctx, 1, 2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(2)*time.Second) // timeout
+	res := myAdd(ctx, a, b)
 	go func() {
 		time.Sleep(time.Duration(5) * time.Second)
 		cancel()
@@ -496,7 +495,7 @@ func testContext02() {
 		time.Sleep(time.Duration(2) * time.Second)
 		cancel()
 	}()
-	res := myAdd(ctx, 1, 2)
+	res := myAdd(ctx, a, b)
 	fmt.Printf("\nCompute: %d+%d, result: %d\n", a, b, res)
 }
 
@@ -511,6 +510,7 @@ func myAdd(ctx context.Context, a, b int) int {
 		default:
 		}
 	}
+
 	for i := 0; i < b; i++ {
 		res = incr(res)
 		select {

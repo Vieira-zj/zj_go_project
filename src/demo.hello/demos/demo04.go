@@ -369,7 +369,7 @@ func testStopRoutineByChan() {
 // demo, stop routine by context
 func testStopRoutineByCtx() {
 	type ctxKey string
-	var key ctxKey = "name"
+	var key ctxKey = "ctx_1"
 
 	ctx, cancel := context.WithCancel(context.Background())
 	valueCtx := context.WithValue(ctx, key, "monitor_1")
