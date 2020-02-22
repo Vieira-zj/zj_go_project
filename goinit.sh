@@ -30,8 +30,7 @@ function add_sub_git_repos2() {
     git submodule add https://github.com/mvdan/xurls.git src/mvdan.cc/xurls
 }
 
-# install external tools for vscode golang
-function install_ext_tools() {
+function install_vscode_plugins() {
     ext_tools=("github.com/mdempsky/gocode" "github.com/ramya-rao-a/go-outline" \
         "github.com/acroca/go-symbols" "golang.org/x/tools/cmd/guru" \
         "golang.org/x/tools/cmd/gorename" "github.com/stamblerre/gocode" \

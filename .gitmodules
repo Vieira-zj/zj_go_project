@@ -25,15 +25,6 @@
 [submodule "src/github.com/uudashr/gopkgs"]
 	path = src/github.com/uudashr/gopkgs
 	url = https://github.com/uudashr/gopkgs
-[submodule "src/demo.app/vendor/gopkg.in/mgo.v2"]
-	path = src/demo.app/vendor/gopkg.in/mgo.v2
-	url = https://github.com/go-mgo/mgo.git
-[submodule "src/github.com/onsi/ginkgo"]
-	path = src/demo.tests/vendor/github.com/onsi/ginkgo
-	url = https://github.com/onsi/ginkgo.git
-[submodule "src/github.com/onsi/gomega"]
-	path = src/demo.tests/vendor/github.com/onsi/gomega
-	url = https://github.com/onsi/gomega.git
 [submodule "src/github.com/hpcloud/tail"]
 	path = src/github.com/hpcloud/tail
 	url = https://github.com/hpcloud/tail.git
@@ -73,24 +64,33 @@
 	path = src/mvdan.cc/xurls
 	url = https://github.com/mvdan/xurls.git
 
-[submodule "src/demo.tests/vendor/gopkg.in/yaml.v2"]
+[submodule "src/gopkg.in/mgo.v2"]
+	path = src/demo.app/vendor/gopkg.in/mgo.v2
+	url = https://github.com/go-mgo/mgo.git
+[submodule "src/github.com/onsi/ginkgo"]
+	path = src/demo.tests/vendor/github.com/onsi/ginkgo
+	url = https://github.com/onsi/ginkgo.git
+[submodule "src/github.com/onsi/gomega"]
+	path = src/demo.tests/vendor/github.com/onsi/gomega
+	url = https://github.com/onsi/gomega.git
+[submodule "src/gopkg.in/yaml.v2"]
 	path = src/demo.tests/vendor/gopkg.in/yaml.v2
 	url = https://github.com/go-yaml/yaml.git
-[submodule "src/demo.app/vendor/github.com/go-redis/redis"]
+[submodule "src/github.com/go-redis/redis"]
 	path = src/demo.app/vendor/github.com/go-redis/redis
 	url = https://github.com/go-redis/redis.git
 [submodule "src/github.com/julienschmidt/httprouter"]
 	path = src/github.com/julienschmidt/httprouter
 	url = https://github.com/julienschmidt/httprouter.git
-[submodule "src/tools.app/vendor/gopkg.in/gomail.v2"]
+[submodule "src/gopkg.in/gomail.v2"]
 	path = src/tools.app/vendor/gopkg.in/gomail.v2
 	url = https://github.com/go-gomail/gomail.git
-[submodule "src/tools.app/vendor/google.golang.org/grpc"]
+[submodule "src/google.golang.org/grpc"]
 	path = src/tools.app/vendor/google.golang.org/grpc
 	url = https://github.com/grpc/grpc-go.git
-[submodule "src/tools.app/vendor/github.com/golang/protobuf"]
+[submodule "src/github.com/golang/protobuf"]
 	path = src/tools.app/vendor/github.com/golang/protobuf
 	url = https://github.com/golang/protobuf.git
-[submodule "src/tools.app/vendor/google.golang.org/genproto"]
+[submodule "src/google.golang.org/genproto"]
 	path = src/tools.app/vendor/google.golang.org/genproto
 	url = https://github.com/googleapis/go-genproto.git
