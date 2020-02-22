@@ -18,6 +18,18 @@ function add_sub_git_repos() {
     cat .gitmodules
 }
 
+function add_sub_git_repos2() {
+    git submodule add https://github.com/sergi/go-diff.git src/github.com/sergi/go-diff
+    git submodule add https://github.com/BurntSushi/toml.git src/github.com/BurntSushi/toml
+    git submodule add https://github.com/golang/lint.git src/golang.org/x/lint
+    git submodule add https://github.com/golang/mod.git src/golang.org/x/mod
+    git submodule add https://github.com/golang/sync.git src/golang.org/x/sync
+    git submodule add https://github.com/golang/tools.git src/golang.org/x/tools
+    git submodule add https://github.com/golang/xerrors.git src/golang.org/x/xerrors
+    git submodule add https://github.com/dominikh/go-tools.git src/honnef.co/go/tools
+    git submodule add https://github.com/mvdan/xurls.git src/mvdan.cc/xurls
+}
+
 # install external tools for vscode golang
 function install_ext_tools() {
     ext_tools=("github.com/mdempsky/gocode" "github.com/ramya-rao-a/go-outline" \
@@ -28,8 +40,8 @@ function install_ext_tools() {
     
     for tool in ${ext_tools[*]}; do
         echo "install tool: ${tool}"
-        cd ${HOME}/Workspaces/zj_go_project/src
-        cd tool;go install
+        cd ${HOME}/Workspaces/zj_go_project/src/$tool
+        go install
     done
 }
 

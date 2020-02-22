@@ -37,12 +37,42 @@
 [submodule "src/github.com/hpcloud/tail"]
 	path = src/github.com/hpcloud/tail
 	url = https://github.com/hpcloud/tail.git
+[submodule "src/github.com/sergi/go-diff"]
+	path = src/github.com/sergi/go-diff
+	url = https://github.com/sergi/go-diff.git
+[submodule "src/github.com/BurntSushi/toml"]
+	path = src/github.com/BurntSushi/toml
+	url = https://github.com/BurntSushi/toml.git
+
+[submodule "src/golang.org/x/lint"]
+	path = src/golang.org/x/lint
+	url = https://github.com/golang/lint.git
 [submodule "src/golang.org/x/net"]
 	path = src/golang.org/x/net
 	url = https://github.com/golang/net.git
 [submodule "src/golang.org/x/text"]
 	path = src/golang.org/x/text
 	url = https://github.com/golang/text.git
+[submodule "src/golang.org/x/tools"]
+	path = src/golang.org/x/tools
+	url = https://github.com/golang/tools.git
+[submodule "src/golang.org/x/mod"]
+	path = src/golang.org/x/mod
+	url = https://github.com/golang/mod.git
+[submodule "src/golang.org/x/sync"]
+	path = src/golang.org/x/sync
+	url = https://github.com/golang/sync.git
+[submodule "src/golang.org/x/xerrors"]
+	path = src/golang.org/x/xerrors
+	url = https://github.com/golang/xerrors.git
+
+[submodule "src/honnef.co/go/tools"]
+	path = src/honnef.co/go/tools
+	url = https://github.com/dominikh/go-tools.git
+[submodule "src/mvdan.cc/xurls"]
+	path = src/mvdan.cc/xurls
+	url = https://github.com/mvdan/xurls.git
+
 [submodule "src/demo.tests/vendor/gopkg.in/yaml.v2"]
 	path = src/demo.tests/vendor/gopkg.in/yaml.v2
 	url = https://github.com/go-yaml/yaml.git
