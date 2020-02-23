@@ -31,6 +31,8 @@ function add_sub_git_repos2() {
 }
 
 function install_vscode_plugins() {
+    # github.com/mdempsky/gocode => bin/gocode
+    # github.com/stamblerre/gocode => bin/gocode-gomod
     ext_tools=("github.com/mdempsky/gocode" "github.com/ramya-rao-a/go-outline" \
         "github.com/acroca/go-symbols" "golang.org/x/tools/cmd/guru" \
         "golang.org/x/tools/cmd/gorename" "github.com/stamblerre/gocode" \
