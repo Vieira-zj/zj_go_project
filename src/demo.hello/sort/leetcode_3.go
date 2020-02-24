@@ -132,6 +132,43 @@ func getIntersectionNode(headA, headB *listNode) *listNode {
 	return curNodeA
 }
 
+// ------------------------------
+// #4. 回文链表
+// ------------------------------
+
+func isPalindromeLinkedList(head *listNode) bool {
+	if head == nil || head.Next == nil {
+		return true
+	}
+
+	slow := head
+	fast := head
+	for fast.Next != nil && fast.Next.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+
+	cur1 := head
+	cur2 := reverseList(slow.Next)
+	for cur2 != nil { // cur2指向的链表长度较短
+		if cur1.Val != cur2.Val {
+			return false
+		}
+		cur1 = cur1.Next
+		cur2 = cur2.Next
+	}
+	return true
+}
+
+// ------------------------------
+// #5. 链表中倒数第k个节点
+// ------------------------------
+
+func getKthFromEnd(head *listNode, k int) *listNode {
+	// TODO:
+	return nil
+}
+
 // LeetCodeMain03 contains leetcode algorithms.
 func LeetCodeMain03() {
 	if false {
@@ -152,6 +189,12 @@ func LeetCodeMain03() {
 		fmt.Println("\n#3.2 缺失数字")
 		fmt.Println("expect 2, and actual:", missingNumber02([]int{3, 0, 1}))
 		fmt.Println("expect 8, and actual:", missingNumber02([]int{9, 6, 4, 2, 3, 5, 7, 0, 1}))
+
+		fmt.Println("\n#4 回文链表")
+		list1 := createListNodes([]int{1, 2})
+		fmt.Println("expect false, and actual:", isPalindromeLinkedList(list1))
+		list2 := createListNodes([]int{1, 2, 2, 1})
+		fmt.Println("expect true, and actual:", isPalindromeLinkedList(list2))
 	}
 
 	fmt.Println("leetcode sample3 done.")

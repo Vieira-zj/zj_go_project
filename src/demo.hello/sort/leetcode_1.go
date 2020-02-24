@@ -157,6 +157,7 @@ func toLowerCase(str string) string {
 
 // ------------------------------
 // #5. 分割平衡字符串
+// 在一个「平衡字符串」中，'L' 和 'R' 字符的数量是相同的。
 // 输入：s = "RLRRLLRLRL" 输出：4
 // 输入：s = "RLLLLRRRLR" 输出：3
 // ------------------------------
@@ -250,7 +251,7 @@ func hasCycle(head *listNode) bool {
 }
 
 // ------------------------------
-// #8. 颠倒二进制位（考虑使用位运算）
+// #8. ***颠倒二进制位（考虑使用位运算）
 // ------------------------------
 
 func reverseBits(num uint32) uint32 {
@@ -407,6 +408,7 @@ func geneTriangle(numRows int) [][]int {
 
 // ------------------------------
 // #14. 对称二叉树
+// 给定一个二叉树，检查它是否是镜像对称的。
 // ------------------------------
 
 func isSymmetric(root *treeNode) bool {
@@ -432,6 +434,8 @@ func isMirror(node1 *treeNode, node2 *treeNode) bool {
 // ------------------------------
 
 func singleNumber(nums []int) int {
+	// 1 ^ 0 = 1
+	// 1 ^ 1 = 0
 	base := nums[0]
 	for i := 1; i < len(nums); i++ {
 		base ^= nums[i]
