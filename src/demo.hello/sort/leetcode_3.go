@@ -1,6 +1,9 @@
 package sort
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // ------------------------------
 // #1. 存在重复元素
@@ -133,7 +136,7 @@ func getIntersectionNode(headA, headB *listNode) *listNode {
 }
 
 // ------------------------------
-// #4. 回文链表
+// #5. 回文链表
 // ------------------------------
 
 func isPalindromeLinkedList(head *listNode) bool {
@@ -161,7 +164,7 @@ func isPalindromeLinkedList(head *listNode) bool {
 }
 
 // ------------------------------
-// #5. 链表中倒数第k个节点
+// #6. 链表中倒数第k个节点
 // ------------------------------
 
 func getKthFromEnd(head *listNode, k int) *listNode {
@@ -180,7 +183,7 @@ func getKthFromEnd(head *listNode, k int) *listNode {
 }
 
 // ------------------------------
-// 6. 替换空格
+// 7. 替换空格
 // 时间复杂度：O(n) 空间复杂度：O(n)
 // ------------------------------
 
@@ -197,7 +200,7 @@ func replaceSpace(s string) string {
 }
 
 // ------------------------------
-// 7. 左旋转字符串
+// 8. 左旋转字符串
 // 把字符串前面的若干个字符转移到字符串的尾部。
 // ------------------------------
 
@@ -213,6 +216,82 @@ func reverseLeftWords01(s string, n int) string {
 
 func reverseLeftWords02(s string, n int) string {
 	return s[n:] + s[:n]
+}
+
+// ------------------------------
+// 9. 反转字符串中的单词
+// ------------------------------
+
+func reverseWords(s string) string {
+	strs := strings.Split(s, " ")
+	for i := 0; i < len(strs); i++ {
+		strs[i] = reverseString(strs[i])
+	}
+	return strings.Join(strs, " ")
+}
+
+func reverseString(s string) string {
+	b := []rune(s)
+	start := 0
+	end := len(s) - 1
+	for start < end {
+		b[start], b[end] = b[end], b[start]
+		start++
+		end--
+	}
+
+	return string(b)
+}
+
+// ------------------------------
+// 10. 回文整数
+// ------------------------------
+
+func isPalindromeNumber(x int) bool {
+	if x < 0 {
+		return false
+	}
+
+	base := 1
+	tmp := x / base
+	for tmp >= 10 {
+		base *= 10
+		tmp = x / base
+	}
+
+	left := 0
+	right := 0
+	for x > 0 {
+		left = x / base
+		right = x % 10
+		if left != right {
+			return false
+		}
+		x = (x % base) / 10
+		base /= 100
+	}
+	return true
+}
+
+// ------------------------------
+// 11. 整数反转
+// ------------------------------
+
+func reverseNumber(x int) int {
+	const maxInt = int(^uint(0) >> 1)
+
+	ret := 0
+	pop := 0
+	for x != 0 {
+		pop = x % 10
+		ret = ret*10 + pop
+		x /= 10
+		// 如果反转后整数溢出那么就返回 0
+		if maxInt/10-pop < ret {
+			return 0
+		}
+	}
+	return ret
 }
 
 // LeetCodeMain03 contains leetcode algorithms.
@@ -238,27 +317,41 @@ func LeetCodeMain03() {
 		fmt.Println("expect 2, and actual:", missingNumber02([]int{3, 0, 1}))
 		fmt.Println("expect 8, and actual:", missingNumber02([]int{9, 6, 4, 2, 3, 5, 7, 0, 1}))
 
-		fmt.Println("\n#4. 回文链表")
+		fmt.Println("\n#5. 回文链表")
 		list1 := createListNodes([]int{1, 2})
 		fmt.Println("expect false, and actual:", isPalindromeLinkedList(list1))
 		list2 := createListNodes([]int{1, 2, 2, 1})
 		fmt.Println("expect true, and actual:", isPalindromeLinkedList(list2))
 
-		fmt.Println("\n#5. 链表中倒数第k个节点")
+		fmt.Println("\n#6. 链表中倒数第k个节点")
 		list3 := createListNodes([]int{1, 2, 3, 4, 5})
 		fmt.Println("expect [4,5], and actual:")
 		printListNodes(getKthFromEnd(list3, 2))
 
-		fmt.Println("\n#6. 替换空格")
+		fmt.Println("\n#7. 替换空格")
 		fmt.Println("expect 'We%20are%20happy.', and actual:", replaceSpace("We are happy."))
 
-		fmt.Println("\n#7. 左旋转字符串")
-		fmt.Println("#7.1")
+		fmt.Println("\n#8. 左旋转字符串")
+		fmt.Println("#8.1")
 		fmt.Println("expect 'cdefgab', and actual:", reverseLeftWords01("abcdefg", 2))
 		fmt.Println("expect 'umghlrlose', and actual:", reverseLeftWords01("lrloseumgh", 6))
-		fmt.Println("#7.2")
+		fmt.Println("#8.2")
 		fmt.Println("expect 'cdefgab', and actual:", reverseLeftWords02("abcdefg", 2))
 		fmt.Println("expect 'umghlrlose', and actual:", reverseLeftWords02("lrloseumgh", 6))
+
+		fmt.Println("\n#9. 反转字符串中的单词")
+		fmt.Println("expect (s'teL ekat edoCteeL tsetnoc), and actual:")
+		fmt.Println(reverseWords("Let's take LeetCode contest"))
+
+		fmt.Println("\n#10. 回文整数")
+		fmt.Println("expect true, and actual:", isPalindromeNumber(1001))
+		fmt.Println("expect true, and actual:", isPalindromeNumber(12321))
+		fmt.Println("expect false, and actual:", isPalindromeNumber(10))
+		fmt.Println("expect false, and actual:", isPalindromeNumber(1000021))
+
+		fmt.Println("\n11. 整数反转")
+		fmt.Println("expect 321, and actual:", reverseNumber(123))
+		fmt.Println("expect -321, and actual:", reverseNumber(-123))
 	}
 
 	fmt.Println("leetcode sample3 done.")
