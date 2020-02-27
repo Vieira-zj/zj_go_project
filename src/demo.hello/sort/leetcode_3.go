@@ -294,6 +294,74 @@ func reverseNumber(x int) int {
 	return ret
 }
 
+// ------------------------------
+// 12. 有效的括号
+// ------------------------------
+
+func isValidBrackets(s string) bool {
+	st := &stack{
+		slice: make([]int, len(s)),
+		top:   0,
+	}
+
+	for _, char := range s {
+		if char == '(' || char == '[' || char == '{' {
+			st.push(int(char))
+		}
+		if char == ')' || char == ']' || char == '}' {
+			c, err := st.pop()
+			if err != nil {
+				return false
+			}
+			if (char == ')' && c != '(') || (char == ']' && c != '[') || (char == '}' && c != '{') {
+				return false
+			}
+		}
+	}
+	return st.size() == 0
+}
+
+// ------------------------------
+// 13. 最长公共前缀
+// ------------------------------
+
+func longestCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+
+	prefix := strs[0]
+	for i := 1; i < len(strs); i++ {
+		for len(strs[i]) < len(prefix) || strings.Index(strs[i], prefix) != 0 {
+			prefix = prefix[:len(prefix)-1] // str[闭区间:开区间]
+			if len(prefix) == 0 {
+				return ""
+			}
+		}
+	}
+	return prefix
+}
+
+// ------------------------------
+// 14. 字符串中的第一个唯一字符
+// ------------------------------
+
+func firstUniqChar(s string) int {
+	var chars [26]int16
+	for _, c := range s {
+		idx := c - 'a'
+		chars[idx]++
+	}
+
+	for i, c := range s {
+		idx := c - 'a'
+		if chars[idx] == 1 {
+			return i
+		}
+	}
+	return -1
+}
+
 // LeetCodeMain03 contains leetcode algorithms.
 func LeetCodeMain03() {
 	if false {
@@ -349,9 +417,21 @@ func LeetCodeMain03() {
 		fmt.Println("expect false, and actual:", isPalindromeNumber(10))
 		fmt.Println("expect false, and actual:", isPalindromeNumber(1000021))
 
-		fmt.Println("\n11. 整数反转")
+		fmt.Println("\n#11. 整数反转")
 		fmt.Println("expect 321, and actual:", reverseNumber(123))
 		fmt.Println("expect -321, and actual:", reverseNumber(-123))
+
+		fmt.Println("\n#12. 有效的括号")
+		fmt.Println("expect true, and actual:", isValidBrackets("()[]{}"))
+		fmt.Println("expect false, and actual:", isValidBrackets("([)]"))
+
+		fmt.Println("\n#13. 最长公共前缀")
+		fmt.Println("expect 'a', and actual:", longestCommonPrefix([]string{"aa", "ab"}))
+		fmt.Println("expect 'fl', and actual:", longestCommonPrefix([]string{"flower", "flow", "flight"}))
+
+		fmt.Println("\n#14. 字符串中的第一个唯一字符")
+		fmt.Println("expect 0, and actual:", firstUniqChar("leetcode"))
+		fmt.Println("expect 2, and actual:", firstUniqChar("loveleetcode"))
 	}
 
 	fmt.Println("leetcode sample3 done.")
