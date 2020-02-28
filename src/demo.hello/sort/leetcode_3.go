@@ -2,6 +2,7 @@ package sort
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -362,6 +363,21 @@ func firstUniqChar(s string) int {
 	return -1
 }
 
+// ------------------------------
+// 15. 统计位数为偶数的数字
+// ------------------------------
+
+func findNumbers(nums []int) int {
+	count := 0
+	for _, num := range nums {
+		str := strconv.Itoa(num)
+		if len(str)%2 == 0 {
+			count++
+		}
+	}
+	return count
+}
+
 // LeetCodeMain03 contains leetcode algorithms.
 func LeetCodeMain03() {
 	if false {
@@ -432,6 +448,9 @@ func LeetCodeMain03() {
 		fmt.Println("\n#14. 字符串中的第一个唯一字符")
 		fmt.Println("expect 0, and actual:", firstUniqChar("leetcode"))
 		fmt.Println("expect 2, and actual:", firstUniqChar("loveleetcode"))
+
+		fmt.Println(("\n15. 统计位数为偶数的数字"))
+		fmt.Println("expect 2, and actual:", findNumbers([]int{12, 345, 2, 6, 7896}))
 	}
 
 	fmt.Println("leetcode sample3 done.")

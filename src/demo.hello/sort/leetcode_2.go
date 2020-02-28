@@ -253,6 +253,7 @@ func maxProfit02(prices []int) int {
 
 // ------------------------------
 // #9. 合并二叉树
+// 将它们中的一个覆盖到另一个上时，两个二叉树的一些节点便会重叠。
 // ------------------------------
 
 func mergeTrees01(t1 *treeNode, t2 *treeNode) *treeNode {
