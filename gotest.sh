@@ -50,6 +50,12 @@ function go_func_unittest() {
     go test -v ${test_dir}/${target}.go ${test_dir}/${target}_test.go
 }
 
+function ring_unittest() {
+    local test_dir="${GOPATH}/src/demo.hello/sort"
+    local target="struct_ring"
+    go test -v ${test_dir}/${target}.go ${test_dir}/${target}_test.go
+}
+
 
 # TOOLS TEST
 function tool_svc_test() {
@@ -312,7 +318,9 @@ function shell_test_09() {
 # go_test_help
 # go_func_test
 # go_benchmark_test
+
 go_func_unittest
+# ring_unittest
 
 # tool_svc_test diskusage filestree_test.go
 # tool_utils_test mails_test.go
