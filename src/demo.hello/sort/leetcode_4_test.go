@@ -30,3 +30,36 @@ func TestCompressString(t *testing.T) {
 		}
 	}
 }
+
+func TestMyDeque(t *testing.T) {
+	deque := NewDeque()
+	for i := 0; i < 10; i++ {
+		deque.PushHead(i)
+	}
+	deque.Print()
+
+	for i := 0; i < 3; i++ {
+		t.Log("pop:", deque.PopHead())
+	}
+	deque.Print()
+
+	for i := 0; i < 2; i++ {
+		t.Log("pop:", deque.PopTail())
+	}
+	deque.Print()
+
+	deque.PushTail(10)
+	deque.PushTail(11)
+	deque.Print()
+	deque.PrintReverse()
+}
+
+func TestMaxQueue(t *testing.T) {
+	queue := NewMaxQueue()
+	t.Log("max:", queue.MaxValue())
+	queue.PushBack(1)
+	queue.PushBack(2)
+	t.Log("max:", queue.MaxValue())
+	t.Log("pop:", queue.PopFront())
+	t.Log("max", queue.MaxValue())
+}
