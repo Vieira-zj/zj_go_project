@@ -63,3 +63,10 @@ func TestMaxQueue(t *testing.T) {
 	t.Log("pop:", queue.PopFront())
 	t.Log("max", queue.MaxValue())
 }
+
+func TestLongestPalindrome(t *testing.T) {
+	ret := longestPalindrome("abbccccddd")
+	if ret != 9 {
+		t.Fatal("expect 9, and actual:", ret)
+	}
+}

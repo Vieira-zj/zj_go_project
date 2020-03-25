@@ -240,3 +240,27 @@ func (q *MaxQueue) PopFront() int {
 	}
 	return node.val
 }
+
+// ------------------------------
+// 3. 最长回文串
+// 给定一个包含大写和小写字母的字符串，找到通过这些字母构造成的最长的回文串
+// 输入: "abbccccddd"
+// 输出: 9
+// ------------------------------
+
+func longestPalindrome(s string) int {
+	m := make(map[rune]int, 52)
+	for _, r := range s {
+		m[r]++
+	}
+
+	ret := 0
+	for _, v := range m {
+		ret += v - v%2
+	}
+
+	if ret < len(s) {
+		return ret + 1
+	}
+	return ret
+}
