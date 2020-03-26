@@ -70,3 +70,19 @@ func TestLongestPalindrome(t *testing.T) {
 		t.Fatal("expect 9, and actual:", ret)
 	}
 }
+
+func TestMiddleNode(t *testing.T) {
+	header := createListNodes([]int{1, 2, 3, 4, 5})
+	mid := middleNode(header)
+	printListNodes(mid)
+	if mid.Val != 3 {
+		t.Fatal("expect 3, and actual:", mid.Val)
+	}
+
+	header = createListNodes([]int{1, 2, 3, 4, 5, 6})
+	mid = middleNode(header)
+	printListNodes(mid)
+	if mid.Val != 4 {
+		t.Fatal("expect 4, and actual:", mid.Val)
+	}
+}
