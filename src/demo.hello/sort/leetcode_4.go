@@ -280,3 +280,29 @@ func middleNode(head *listNode) *listNode {
 	}
 	return slow
 }
+
+// ------------------------------
+// 5. 二叉树的直径
+// 一棵二叉树的直径长度是任意两个结点路径长度中的最大值。
+// 这条路径可能穿过也可能不穿过根结点。
+// ------------------------------
+
+var ans int
+
+func diameterOfBinaryTree(root *treeNode) int {
+	maxTreeDepth(root)
+	ret := ans
+	ans = 0
+	return ret
+}
+
+func maxTreeDepth(root *treeNode) int {
+	if root == nil {
+		return 0
+	}
+
+	left := maxTreeDepth(root.Left) + 1
+	right := maxTreeDepth(root.Right) + 1
+	ans = maxInt(left+right-2, ans)
+	return maxInt(left, right)
+}

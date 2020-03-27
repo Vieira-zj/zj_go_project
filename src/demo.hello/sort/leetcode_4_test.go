@@ -86,3 +86,16 @@ func TestMiddleNode(t *testing.T) {
 		t.Fatal("expect 4, and actual:", mid.Val)
 	}
 }
+
+func TestDiameterOfBinaryTree(t *testing.T) {
+	header := createBinTree([]int{1, 2, 3, 4, 5})
+	diameter := diameterOfBinaryTree(header)
+	if diameter != 3 {
+		t.Fatal("expect 3, and actual:", diameter)
+	}
+
+	diameter = diameterOfBinaryTree(nil)
+	if diameter != 0 {
+		t.Fatal("expect 0, and actual:", diameter)
+	}
+}
