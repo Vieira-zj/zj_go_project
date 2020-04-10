@@ -94,3 +94,6 @@
 [submodule "src/google.golang.org/genproto"]
 	path = src/tools.app/vendor/google.golang.org/genproto
 	url = https://github.com/googleapis/go-genproto.git
+[submodule "src/tools.app/vendor/github.com/golang/glog"]
+	path = src/tools.app/vendor/github.com/golang/glog
+	url = https://github.com/golang/glog.git
