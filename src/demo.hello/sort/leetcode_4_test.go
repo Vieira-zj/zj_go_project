@@ -99,3 +99,20 @@ func TestDiameterOfBinaryTree(t *testing.T) {
 		t.Fatal("expect 0, and actual:", diameter)
 	}
 }
+
+func TestFindDisappearedNumbers(t *testing.T) {
+	input := []int{4, 3, 2, 7, 8, 2, 3, 1}
+	output := findDisappearedNumbers(input)
+	t.Log("miss numbers:", output)
+	if len(output) != 2 {
+		t.Fatal("expect 2, and actual:", len(output))
+	}
+}
+
+func TestFindUnsortedSubarray(t *testing.T) {
+	input := []int{2, 6, 4, 8, 10, 9, 15}
+	results := findUnsortedSubarray(input)
+	if results != 5 {
+		t.Fatal("expect 5, and actual:", results)
+	}
+}

@@ -2,6 +2,7 @@ package sort
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 )
 
@@ -305,4 +306,67 @@ func maxTreeDepth(root *treeNode) int {
 	right := maxTreeDepth(root.Right) + 1
 	ans = maxInt(left+right-2, ans)
 	return maxInt(left, right)
+}
+
+// ------------------------------
+// 6. 找到所有数组中消失的数字
+// 给定一个范围在  1 <= a[i] <= n ( n = 数组大小 ) 的整型数组，数组中的元素一些出现了2次，另一些只出现1次。
+// 找到所有在 [1, n] 范围之间没有出现在数组中的数字。
+// 输入: [4,3,2,7,8,2,3,1]
+// 输出: [5,6]
+// ------------------------------
+func findDisappearedNumbers(nums []int) []int {
+	idx := 0
+	for _, num := range nums {
+		if num < 0 {
+			idx = (-num) - 1
+		} else {
+			idx = num - 1
+		}
+		if nums[idx] > 0 {
+			nums[idx] = -nums[idx]
+		}
+	}
+
+	ret := make([]int, 0)
+	for idx, num := range nums {
+		if num > 0 {
+			ret = append(ret, idx+1)
+		}
+	}
+	return ret
+}
+
+// ------------------------------
+// 7.最短无序连续子数组
+// 输入: [2, 6, 4, 8, 10, 9, 15]
+// 输出: 5
+// 解释: 你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
+// ------------------------------
+func findUnsortedSubarray(nums []int) int {
+	copied := make([]int, len(nums))
+	copy(copied, nums)
+	sort.Ints(copied)
+	fmt.Println("src:", nums)
+	fmt.Println("sorted:", copied)
+
+	start := -1
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != copied[i] {
+			start = i
+			break
+		}
+	}
+	if start == -1 {
+		return 0
+	}
+
+	end := -1
+	for i := len(nums) - 1; i >= 0; i-- {
+		if nums[i] != copied[i] {
+			end = i
+			break
+		}
+	}
+	return end - start + 1
 }
