@@ -11,7 +11,18 @@ import (
 // 编写一个函数，输入是一个无符号整数，返回其二进制表达式中数字位数为 '1' 的个数。
 // ------------------------------
 
-func hammingWeight(num uint32) int {
+func hammingWeight01(num uint32) int {
+	cnt := 0
+	for num > 0 {
+		if num%2 == 1 {
+			cnt++
+		}
+		num /= 2
+	}
+	return cnt
+}
+
+func hammingWeight02(num uint32) int {
 	var count int
 	for num > 0 {
 		count += int(num & 1)
@@ -22,9 +33,9 @@ func hammingWeight(num uint32) int {
 
 // ------------------------------
 // #2. Fizz Buzz
-// 1. 如果 n 是3的倍数，输出 Fizz
-// 2. 如果 n 是5的倍数，输出 Buzz
-// 3. 如果 n 同时是3和5的倍数，输出 FizzBuzz
+// 1) 如果 n 是3的倍数，输出 Fizz
+// 2) 如果 n 是5的倍数，输出 Buzz
+// 3) 如果 n 同时是3和5的倍数，输出 FizzBuzz
 // ------------------------------
 
 func fizzBuzz(n int) []string {
@@ -525,82 +536,4 @@ func searchBST02(root *treeNode, val int) *treeNode {
 		}
 	}
 	return nil
-}
-
-// LeetCodeMain02 contains leetcode algorithms.
-func LeetCodeMain02() {
-	if false {
-		fmt.Println("\n#1. 位1的个数")
-		fmt.Println("expect 3, actual:", hammingWeight(11))
-
-		fmt.Println("\n#2. Fizz Buzz")
-		fmt.Println("fizz buzz results:", fizzBuzz(15))
-
-		fmt.Println("\n#3. 多数元素")
-		fmt.Println("expect 3, actual:", majorityElement([]int{3, 3, 4}))
-		fmt.Println("expect 2, actual:", majorityElement([]int{2, 2, 1, 1, 1, 2, 2}))
-
-		fmt.Println("\n#4. 罗马数字转整数")
-		fmt.Println("expect 58, actual:", romanToInt("LVIII"))
-		fmt.Println("expect 1994, actual:", romanToInt("MCMXCIV"))
-
-		fmt.Println("\n#5. 合并两个有序链表")
-		listNodes1 := createListNodes([]int{1, 2, 4})
-		listNodes2 := createListNodes([]int{1, 3, 4})
-		fmt.Print("expect [1->1->2->3->4->4], actual: ")
-		printListNodes(mergeTwoLists(listNodes1, listNodes2))
-
-		fmt.Println("\n#6. 移动零")
-		nums := []int{0, 1, 0, 3, 12}
-		// moveZeroes01(nums)
-		moveZeroes02(nums)
-		fmt.Println("expect [1,3,12,0,0], actual:", nums)
-
-		fmt.Println("\n#7. 快乐数")
-		fmt.Println("expect true, actual:", isHappy(19))
-
-		fmt.Println("\n#8.1 买卖股票的最佳时机")
-		fmt.Println("expect 7, and actual:", maxProfit01([]int{7, 1, 5, 3, 6, 4}))
-		fmt.Println("expect 4, and actual:", maxProfit01([]int{1, 2, 3, 4, 5}))
-		fmt.Println("expect 0, and actual:", maxProfit01([]int{7, 6, 4, 3, 1}))
-
-		fmt.Println("#8.2 买卖股票的最佳时机")
-		fmt.Println("expect 7, and actual:", maxProfit02([]int{7, 1, 5, 3, 6, 4}))
-		fmt.Println("expect 4, and actual:", maxProfit02([]int{1, 2, 3, 4, 5}))
-		fmt.Println("expect 0, and actual:", maxProfit02([]int{7, 6, 4, 3, 1}))
-
-		fmt.Println("\n#10. 翻转二叉树")
-		tree := createBinTree([]int{4, 2, 7, 1, 3, 6, 9})
-		fmt.Print("expect [4 7 9 6 2 3 1], and actual: ")
-		printTree(invertTree(tree))
-		fmt.Println()
-
-		fmt.Println("\n#11.1 二进制链表转整数")
-		head1 := createListNodes([]int{1, 0, 1})
-		fmt.Println("expect 5, and actual:", getDecimalValue01(head1))
-		head1 = createListNodes([]int{0})
-		fmt.Println("expect 0, and actual:", getDecimalValue01(head1))
-
-		fmt.Println("\n#11.2 二进制链表转整数")
-		head2 := createListNodes([]int{1, 0, 1})
-		fmt.Println("expect 5, and actual:", getDecimalValue02(head2))
-		head2 = createListNodes([]int{0})
-		fmt.Println("expect 0, and actual:", getDecimalValue02(head2))
-
-		fmt.Println("\n#13. 最大子序和")
-		fmt.Println("expect 6, and actual:", maxSubArray([]int{-2, 1, -3, 4, -1, 2, 1, -5, 4}))
-
-		fmt.Println("\n#14. 最小栈")
-		stack := Constructor()
-		for _, val := range []int{-2, 0, -3} {
-			stack.Push(val)
-		}
-		stack.debugPrint()
-		fmt.Println("expect -3, and actual:", stack.GetMin())
-		stack.Pop()
-		fmt.Println("expect 0, actual:", stack.Top())
-		fmt.Println("expect -2, and actual:", stack.GetMin())
-	}
-
-	fmt.Println("leetcode sample2 done.")
 }
