@@ -16,10 +16,10 @@ func isPalindrome(s string) bool {
 	start := 0
 	end := len(str) - 1
 	for start < end {
-		for !isLetter(str[start]) && !isNumber(str[start]) && start < end {
+		for !isLetter(str[start]) && !isNumber(str[start]) && (start < end) {
 			start++
 		}
-		for !isLetter(str[end]) && !isNumber(str[end]) && start < end {
+		for !isLetter(str[end]) && !isNumber(str[end]) && (start < end) {
 			end--
 		}
 		if str[start] != str[end] {
@@ -44,7 +44,7 @@ func isLetter(b byte) bool {
 // 给定一个整数数组 nums 和一个目标值 target, 请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。
 // ------------------------------
 
-// #2.1 时间复杂度：O(n^2) 空间复杂度：O(1)
+// 时间复杂度：O(n^2) 空间复杂度：O(1)
 func twoSum01(nums []int, target int) []int {
 	for i := 0; i < len(nums)-1; i++ {
 		for j := i + 1; j < len(nums); j++ {
@@ -56,7 +56,7 @@ func twoSum01(nums []int, target int) []int {
 	return []int{-1, -1}
 }
 
-// #2.2 时间复杂度：O(n) 空间复杂度：O(n)
+// 时间复杂度：O(n) 空间复杂度：O(n)
 func twoSum02(nums []int, target int) []int {
 	tmpMap := make(map[int]int, len(nums))
 	for i := 0; i < len(nums); i++ {
@@ -71,6 +71,7 @@ func twoSum02(nums []int, target int) []int {
 
 // ------------------------------
 // #3. 删除链表中的节点
+// 请编写一个函数，使其可以删除某个链表中给定的（非末尾）节点，你将只被给定要求被删除的节点。
 // ------------------------------
 
 type listNode struct {
@@ -158,8 +159,7 @@ func toLowerCase(str string) string {
 // ------------------------------
 // #5. 分割平衡字符串
 // 在一个「平衡字符串」中，'L' 和 'R' 字符的数量是相同的。
-// 输入：s = "RLRRLLRLRL" 输出：4
-// 输入：s = "RLLLLRRRLR" 输出：3
+// 给出一个平衡字符串 s, 请你将它分割成尽可能多的平衡字符串。
 // ------------------------------
 
 type stack struct {
@@ -441,79 +441,4 @@ func singleNumber(nums []int) int {
 		base ^= nums[i]
 	}
 	return base
-}
-
-// LeetCodeMain01 contains leetcode algorithms.
-func LeetCodeMain01() {
-	if false {
-		fmt.Println("\n#1. 验证回文串")
-		fmt.Println("excpect true, actual:", isPalindrome("A man, a plan, a canal: Panama"))
-		fmt.Println("excpect false, actual:", isPalindrome("race a car"))
-
-		fmt.Println("\n#2.1 两数之和")
-		fmt.Println("expect [0,1], actual:", twoSum01([]int{2, 7, 11, 15}, 9))
-		fmt.Println("expect [0,2], actual:", twoSum01([]int{-3, 4, 3, 90}, 0))
-
-		fmt.Println("\n#2.2 两数之和")
-		fmt.Println("expect [1,2], actual:", twoSum02([]int{3, 2, 4}, 6))
-		fmt.Println("expect [0,2], actual:", twoSum02([]int{-3, 4, 3, 90}, 0))
-
-		fmt.Println("\n#3. 删除链表中的节点")
-		listNodes := createListNodes([]int{4, 5, 1, 9})
-		deleteNode(getListNodeByValue(listNodes, 1))
-		fmt.Print("expect [4,5,9], actual: ")
-		printListNodes(listNodes)
-
-		fmt.Println("\n#4. 转换成小写字母")
-		fmt.Println("expect 'hello', actual:", toLowerCase("Hello"))
-
-		fmt.Println("\n#5. 分割平衡字符串")
-		fmt.Println("expect 4, actual:", balancedStringSplit("RLRRLLRLRL"))
-		fmt.Println("expect 3, actual:", balancedStringSplit("RLLLLRRRLR"))
-		fmt.Println("expect 1, actual:", balancedStringSplit("LLLLRRRR"))
-
-		fmt.Println("\n#6. 反转链表")
-		listNodes2 := createListNodes([]int{1, 2, 3, 4, 5})
-		fmt.Print("expect [5,4,3,2,1], actual: ")
-		printListNodes(reverseList(listNodes2))
-
-		fmt.Println("\n#7. 环形链表")
-		listNode3 := createCycleListNodes([]int{3, 2, 0, -4}, 1)
-		fmt.Println("expect true, actual:", hasCycle(listNode3))
-		listNode3 = createCycleListNodes([]int{3, 2, 0, -4}, -1)
-		fmt.Println("expect false, actual:", hasCycle(listNode3))
-
-		fmt.Println("\n#8. 颠倒二进制位")
-		fmt.Println("expect 964176192, actual:", reverseBits(43261596))
-
-		fmt.Println("\n#9. 实现strStr()")
-		fmt.Println("expect 2, actual: ", strStr("hello", "ll"))
-		fmt.Println("expect -1, actual: ", strStr("aaaaa", "bba"))
-
-		fmt.Println("\n#10. 二叉树的最大深度")
-		fmt.Println("expect 3, actual:", maxDepth(createBinTree([]int{3, 9, 20, -1, -1, 15, 7})))
-
-		fmt.Println("\n#11. Excel表列序号")
-		fmt.Println("expect 28, actual:", titleToNumber("AB"))
-		fmt.Println("expect 701, actual:", titleToNumber("ZY"))
-
-		fmt.Println("\n#12. 合并两个有序数组")
-		nums1 := []int{1, 2, 3, 0, 0, 0}
-		nums2 := []int{2, 5, 6}
-		mergeSortedNums(nums1, 3, nums2, len(nums2))
-		fmt.Println("expect [1,2,2,3,5,6], actual:", nums1)
-
-		fmt.Println("\n#13. 杨辉三角")
-		fmt.Println("expect [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]], actual:", geneTriangle(5))
-
-		fmt.Println("\n#14. 对称二叉树")
-		treeNodes := createBinTree([]int{1, 2, 2, 3, 4, 4, 3})
-		fmt.Println("expect true, actual:", isSymmetric(treeNodes))
-
-		fmt.Println("\n#15. 只出现一次的数字")
-		fmt.Println("expect 1, actual:", singleNumber([]int{2, 2, 1}))
-		fmt.Println("expect 4, actual:", singleNumber([]int{4, 1, 2, 1, 2}))
-	}
-
-	fmt.Println("leetcode sample1 done.")
 }

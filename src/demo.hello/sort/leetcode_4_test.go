@@ -56,18 +56,33 @@ func TestMyDeque(t *testing.T) {
 
 func TestMaxQueue(t *testing.T) {
 	queue := NewMaxQueue()
-	t.Log("max:", queue.MaxValue())
-	queue.PushBack(1)
+	expect := queue.MaxValue()
+	if expect != -1 {
+		t.Fatal("expect -1, and actual:", expect)
+	}
+
+	queue.PushBack(4)
 	queue.PushBack(2)
-	t.Log("max:", queue.MaxValue())
-	t.Log("pop:", queue.PopFront())
-	t.Log("max", queue.MaxValue())
+	queue.PushBack(0)
+	queue.PushBack(3)
+	expect = queue.MaxValue()
+	if expect != 4 {
+		t.Fatal("expect 4, and actual:", expect)
+	}
+	expect = queue.PopFront()
+	if expect != 4 {
+		t.Fatal("expect 4, and actual:", expect)
+	}
+	expect = queue.MaxValue()
+	if expect != 3 {
+		t.Fatal("expect 3, and actual:", expect)
+	}
 }
 
 func TestLongestPalindrome(t *testing.T) {
-	ret := longestPalindrome("abbccccddd")
-	if ret != 9 {
-		t.Fatal("expect 9, and actual:", ret)
+	expect := longestPalindrome("abbccccddd")
+	if expect != 9 {
+		t.Fatal("expect 9, and actual:", expect)
 	}
 }
 
@@ -102,17 +117,17 @@ func TestDiameterOfBinaryTree(t *testing.T) {
 
 func TestFindDisappearedNumbers(t *testing.T) {
 	input := []int{4, 3, 2, 7, 8, 2, 3, 1}
-	output := findDisappearedNumbers(input)
-	t.Log("miss numbers:", output)
-	if len(output) != 2 {
-		t.Fatal("expect 2, and actual:", len(output))
+	expect := findDisappearedNumbers(input)
+	t.Log("miss numbers:", expect)
+	if len(expect) != 2 {
+		t.Fatal("expect 2, and actual:", len(expect))
 	}
 }
 
 func TestFindUnsortedSubarray(t *testing.T) {
 	input := []int{2, 6, 4, 8, 10, 9, 15}
-	results := findUnsortedSubarray(input)
-	if results != 5 {
-		t.Fatal("expect 5, and actual:", results)
+	expect := findUnsortedSubarray(input)
+	if expect != 5 {
+		t.Fatal("expect 5, and actual:", expect)
 	}
 }

@@ -244,7 +244,7 @@ func (q *MaxQueue) PopFront() int {
 
 // ------------------------------
 // 3. 最长回文串
-// 给定一个包含大写和小写字母的字符串，找到通过这些字母构造成的最长的回文串
+// 给定一个包含大写和小写字母的字符串，找到通过这些字母构造成的最长的回文串。
 // 输入: "abbccccddd"
 // 输出: 9
 // ------------------------------
@@ -315,6 +315,7 @@ func maxTreeDepth(root *treeNode) int {
 // 输入: [4,3,2,7,8,2,3,1]
 // 输出: [5,6]
 // ------------------------------
+
 func findDisappearedNumbers(nums []int) []int {
 	idx := 0
 	for _, num := range nums {
@@ -343,6 +344,7 @@ func findDisappearedNumbers(nums []int) []int {
 // 输出: 5
 // 解释: 你只需要对 [6, 4, 8, 10, 9] 进行升序排序，那么整个表都会变为升序排序。
 // ------------------------------
+
 func findUnsortedSubarray(nums []int) int {
 	copied := make([]int, len(nums))
 	copy(copied, nums)
