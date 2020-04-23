@@ -240,7 +240,6 @@ func reverseString(s string) string {
 		start++
 		end--
 	}
-
 	return string(b)
 }
 
@@ -376,82 +375,4 @@ func findNumbers(nums []int) int {
 		}
 	}
 	return count
-}
-
-// LeetCodeMain03 contains leetcode algorithms.
-func LeetCodeMain03() {
-	if false {
-		fmt.Println("\n#1. 存在重复元素")
-		fmt.Println("expect true, and actual:", containsDuplicate([]int{1, 2, 3, 1}))
-		fmt.Println("expect false, and actual:", containsDuplicate([]int{1, 2, 3, 4}))
-
-		fmt.Println("\n#2. 删除排序数组中的重复项")
-		fmt.Println("#2.1")
-		fmt.Println("expect 2, and actual:", removeDuplicates01([]int{1, 1, 2}))
-		fmt.Println("expect 5, and actual:", removeDuplicates01([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
-		fmt.Println("#2.2")
-		fmt.Println("expect 2, and actual:", removeDuplicates02([]int{1, 1, 2}))
-		fmt.Println("expect 5, and actual:", removeDuplicates02([]int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}))
-
-		fmt.Println("\n#3. 缺失数字")
-		fmt.Println("#3.1")
-		fmt.Println("expect 2, and actual:", missingNumber01([]int{3, 0, 1}))
-		fmt.Println("expect 8, and actual:", missingNumber01([]int{9, 6, 4, 2, 3, 5, 7, 0, 1}))
-		fmt.Println("#3.2")
-		fmt.Println("expect 2, and actual:", missingNumber02([]int{3, 0, 1}))
-		fmt.Println("expect 8, and actual:", missingNumber02([]int{9, 6, 4, 2, 3, 5, 7, 0, 1}))
-
-		fmt.Println("\n#5. 回文链表")
-		list1 := createListNodes([]int{1, 2})
-		fmt.Println("expect false, and actual:", isPalindromeLinkedList(list1))
-		list2 := createListNodes([]int{1, 2, 2, 1})
-		fmt.Println("expect true, and actual:", isPalindromeLinkedList(list2))
-
-		fmt.Println("\n#6. 链表中倒数第k个节点")
-		list3 := createListNodes([]int{1, 2, 3, 4, 5})
-		fmt.Println("expect [4,5], and actual:")
-		printListNodes(getKthFromEnd(list3, 2))
-
-		fmt.Println("\n#7. 替换空格")
-		fmt.Println("expect 'We%20are%20happy.', and actual:", replaceSpace("We are happy."))
-
-		fmt.Println("\n#8. 左旋转字符串")
-		fmt.Println("#8.1")
-		fmt.Println("expect 'cdefgab', and actual:", reverseLeftWords01("abcdefg", 2))
-		fmt.Println("expect 'umghlrlose', and actual:", reverseLeftWords01("lrloseumgh", 6))
-		fmt.Println("#8.2")
-		fmt.Println("expect 'cdefgab', and actual:", reverseLeftWords02("abcdefg", 2))
-		fmt.Println("expect 'umghlrlose', and actual:", reverseLeftWords02("lrloseumgh", 6))
-
-		fmt.Println("\n#9. 反转字符串中的单词")
-		fmt.Println("expect (s'teL ekat edoCteeL tsetnoc), and actual:")
-		fmt.Println(reverseWords("Let's take LeetCode contest"))
-
-		fmt.Println("\n#10. 回文整数")
-		fmt.Println("expect true, and actual:", isPalindromeNumber(1001))
-		fmt.Println("expect true, and actual:", isPalindromeNumber(12321))
-		fmt.Println("expect false, and actual:", isPalindromeNumber(10))
-		fmt.Println("expect false, and actual:", isPalindromeNumber(1000021))
-
-		fmt.Println("\n#11. 整数反转")
-		fmt.Println("expect 321, and actual:", reverseNumber(123))
-		fmt.Println("expect -321, and actual:", reverseNumber(-123))
-
-		fmt.Println("\n#12. 有效的括号")
-		fmt.Println("expect true, and actual:", isValidBrackets("()[]{}"))
-		fmt.Println("expect false, and actual:", isValidBrackets("([)]"))
-
-		fmt.Println("\n#13. 最长公共前缀")
-		fmt.Println("expect 'a', and actual:", longestCommonPrefix([]string{"aa", "ab"}))
-		fmt.Println("expect 'fl', and actual:", longestCommonPrefix([]string{"flower", "flow", "flight"}))
-
-		fmt.Println("\n#14. 字符串中的第一个唯一字符")
-		fmt.Println("expect 0, and actual:", firstUniqChar("leetcode"))
-		fmt.Println("expect 2, and actual:", firstUniqChar("loveleetcode"))
-
-		fmt.Println(("\n15. 统计位数为偶数的数字"))
-		fmt.Println("expect 2, and actual:", findNumbers([]int{12, 345, 2, 6, 7896}))
-	}
-
-	fmt.Println("leetcode sample3 done.")
 }
