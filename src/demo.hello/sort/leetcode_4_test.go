@@ -131,3 +131,15 @@ func TestFindUnsortedSubarray(t *testing.T) {
 		t.Fatal("expect 5, and actual:", expect)
 	}
 }
+
+func TestIsUnique(t *testing.T) {
+	expect := isUnique("leetcode")
+	if expect {
+		t.Fatal("expect false, and actual:", expect)
+	}
+
+	expect = isUnique("abc")
+	if !expect {
+		t.Fatal("expect true, and actual:", expect)
+	}
+}

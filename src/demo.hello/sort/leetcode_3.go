@@ -184,7 +184,7 @@ func getKthFromEnd(head *listNode, k int) *listNode {
 }
 
 // ------------------------------
-// 7. 替换空格
+// #7. 替换空格
 // 时间复杂度：O(n) 空间复杂度：O(n)
 // ------------------------------
 
@@ -201,7 +201,7 @@ func replaceSpace(s string) string {
 }
 
 // ------------------------------
-// 8. 左旋转字符串
+// #8. 左旋转字符串
 // 把字符串前面的若干个字符转移到字符串的尾部。
 // ------------------------------
 
@@ -220,7 +220,7 @@ func reverseLeftWords02(s string, n int) string {
 }
 
 // ------------------------------
-// 9. 反转字符串中的单词
+// #9. 反转字符串中的单词
 // ------------------------------
 
 func reverseWords(s string) string {
@@ -244,7 +244,7 @@ func reverseString(s string) string {
 }
 
 // ------------------------------
-// 10. 回文整数
+// #10. 回文整数
 // ------------------------------
 
 func isPalindromeNumber(x int) bool {
@@ -274,7 +274,7 @@ func isPalindromeNumber(x int) bool {
 }
 
 // ------------------------------
-// 11. 整数反转
+// #11. 整数反转
 // ------------------------------
 
 func reverseNumber(x int) int {
@@ -295,7 +295,7 @@ func reverseNumber(x int) int {
 }
 
 // ------------------------------
-// 12. 有效的括号
+// #12. 有效的括号
 // ------------------------------
 
 func isValidBrackets(s string) bool {
@@ -322,7 +322,7 @@ func isValidBrackets(s string) bool {
 }
 
 // ------------------------------
-// 13. 最长公共前缀
+// #13. 最长公共前缀
 // ------------------------------
 
 func longestCommonPrefix(strs []string) string {
@@ -343,7 +343,7 @@ func longestCommonPrefix(strs []string) string {
 }
 
 // ------------------------------
-// 14. 字符串中的第一个唯一字符
+// #14. 字符串中的第一个唯一字符
 // ------------------------------
 
 func firstUniqChar(s string) int {
@@ -363,7 +363,7 @@ func firstUniqChar(s string) int {
 }
 
 // ------------------------------
-// 15. 统计位数为偶数的数字
+// #15. 统计位数为偶数的数字
 // ------------------------------
 
 func findNumbers(nums []int) int {

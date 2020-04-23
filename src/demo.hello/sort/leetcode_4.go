@@ -7,7 +7,7 @@ import (
 )
 
 // ------------------------------
-// #1. 字符串压缩
+// 1. 字符串压缩
 // 输入："aabcccccaaa"
 // 输出："a2b1c5a3"
 // 若“压缩”后的字符串没有变短，则返回原先的字符串。
@@ -371,4 +371,55 @@ func findUnsortedSubarray(nums []int) int {
 		}
 	}
 	return end - start + 1
+}
+
+// ------------------------------
+// 8. 二叉搜索树的第k大节点
+// 二叉搜索树：
+// 1）若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
+// 2）若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
+// ------------------------------
+func kthLargest(root *myBinTreeNode, k int) int {
+	search := &kthSearch{
+		k: k,
+	}
+	search.recursion(root)
+	return search.kthMax
+}
+
+type kthSearch struct {
+	k      int
+	kthMax int
+}
+
+func (search *kthSearch) recursion(root *myBinTreeNode) {
+	if root == nil {
+		return
+	}
+
+	search.recursion(root.right)
+	if search.k == 0 {
+		return
+	}
+	search.k--
+	if search.k == 0 {
+		search.kthMax = root.value
+	}
+	search.recursion(root.left)
+}
+
+// ------------------------------
+// 9. 判定字符是否唯一
+// ------------------------------
+
+func isUnique(astr string) bool {
+	// ASCII码字符个数为128个
+	var arr [128]int
+	for _, rune := range astr {
+		arr[rune]++
+		if arr[rune] >= 2 {
+			return false
+		}
+	}
+	return true
 }
