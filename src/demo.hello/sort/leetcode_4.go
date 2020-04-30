@@ -423,3 +423,25 @@ func isUnique(astr string) bool {
 	}
 	return true
 }
+
+// ------------------------------
+// 10. 从尾到头打印链表
+// 输入：head = [1,3,2]
+// 输出：[2,3,1]
+// 考虑使用stack
+// ------------------------------
+func reversePrint(head *listNode) []int {
+	arr := make([]int, 0)
+	for ; head != nil; head = head.Next {
+		arr = append(arr, head.Val)
+	}
+
+	start := 0
+	end := len(arr) - 1
+	for start < end {
+		arr[start], arr[end] = arr[end], arr[start]
+		start++
+		end--
+	}
+	return arr
+}
