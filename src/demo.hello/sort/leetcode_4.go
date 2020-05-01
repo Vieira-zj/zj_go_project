@@ -1,6 +1,7 @@
 package sort
 
 import (
+	"container/list"
 	"fmt"
 	"sort"
 	"strconv"
@@ -428,20 +429,58 @@ func isUnique(astr string) bool {
 // 10. 从尾到头打印链表
 // 输入：head = [1,3,2]
 // 输出：[2,3,1]
-// 考虑使用stack
 // ------------------------------
-func reversePrint(head *listNode) []int {
+func reversePrint01(head *listNode) []int {
+	if head == nil {
+		return nil
+	}
+
+	stack := list.New()
+	for ; head != nil; head = head.Next {
+		stack.PushFront(head.Val)
+	}
+
+	ret := []int{}
+	for e := stack.Front(); e != nil; e = e.Next() {
+		ret = append(ret, e.Value.(int))
+	}
+	return ret
+}
+
+func reversePrint02(head *listNode) []int {
+	if head == nil {
+		return nil
+	}
+
 	arr := make([]int, 0)
 	for ; head != nil; head = head.Next {
 		arr = append(arr, head.Val)
 	}
 
-	start := 0
-	end := len(arr) - 1
-	for start < end {
+	for start, end := 0, len(arr)-1; start < end; {
 		arr[start], arr[end] = arr[end], arr[start]
 		start++
 		end--
 	}
 	return arr
+}
+
+func reversePrint03(head *listNode) []int {
+	if head == nil {
+		return nil
+	}
+
+	count := 0
+	cur := head
+	for ; head != nil; head = head.Next {
+		count++
+	}
+
+	ret := make([]int, count)
+	fmt.Println(count)
+	for i := count - 1; i >= 0; i-- {
+		ret[i] = cur.Val
+		cur = cur.Next
+	}
+	return ret
 }

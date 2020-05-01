@@ -146,6 +146,12 @@ func TestIsUnique(t *testing.T) {
 
 func TestReversePrint(t *testing.T) {
 	list := createListNodes([]int{1, 3, 2, 4})
-	result := reversePrint(list)
+	result := reversePrint01(list)
+	t.Log("expect [4,2,3,1], and actual:", result)
+
+	result = reversePrint02(list)
+	t.Log("expect [4,2,3,1], and actual:", result)
+
+	result = reversePrint03(list)
 	t.Log("expect [4,2,3,1], and actual:", result)
 }
