@@ -380,6 +380,7 @@ func findUnsortedSubarray(nums []int) int {
 // 1）若任意节点的左子树不空，则左子树上所有节点的值均小于它的根节点的值；
 // 2）若任意节点的右子树不空，则右子树上所有节点的值均大于它的根节点的值；
 // ------------------------------
+
 func kthLargest(root *myBinTreeNode, k int) int {
 	search := &kthSearch{
 		k: k,
@@ -430,6 +431,7 @@ func isUnique(astr string) bool {
 // 输入：head = [1,3,2]
 // 输出：[2,3,1]
 // ------------------------------
+
 func reversePrint01(head *listNode) []int {
 	if head == nil {
 		return nil
@@ -483,4 +485,39 @@ func reversePrint03(head *listNode) []int {
 		cur = cur.Next
 	}
 	return ret
+}
+
+// ------------------------------
+// 11. 按既定顺序创建目标数组
+// 目标数组 target 最初为空。
+// 按从左到右的顺序依次读取 nums[i] 和 index[i], 在 target 数组中的下标 index[i] 处插入值 nums[i].
+//
+// 0 <= nums[i] <= 100
+// 0 <= index[i] <= i
+// ------------------------------
+
+func createTargetArray(nums []int, index []int) []int {
+	target := make([]int, len(nums))
+	for i := 0; i < len(nums); i++ {
+		target[i] = -1
+	}
+
+	for i := 0; i < len(nums); i++ {
+		key := index[i]
+		val := nums[i]
+		if i == key {
+			target[key] = val
+			continue
+		}
+		if target[key] == -1 {
+			target[key] = val
+			continue
+		}
+
+		for j := len(nums) - 1; j >= key+1; j-- {
+			target[j] = target[j-1]
+		}
+		target[key] = val
+	}
+	return target
 }

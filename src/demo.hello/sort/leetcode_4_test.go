@@ -155,3 +155,15 @@ func TestReversePrint(t *testing.T) {
 	result = reversePrint03(list)
 	t.Log("expect [4,2,3,1], and actual:", result)
 }
+
+func TestCreateTargetArray(t *testing.T) {
+	nums := []int{0, 1, 2, 3, 4}
+	index := []int{0, 1, 2, 2, 1}
+	result := createTargetArray(nums, index)
+	t.Log("expect [0,4,1,3,2], and actual:", result)
+
+	nums = []int{4, 2, 4, 3, 2}
+	index = []int{0, 0, 1, 3, 1}
+	result = createTargetArray(nums, index)
+	t.Log("expect [2,2,4,4,3], and actual:", result)
+}
