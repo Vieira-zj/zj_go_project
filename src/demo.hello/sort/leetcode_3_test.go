@@ -192,3 +192,19 @@ func TestFindNumbers(t *testing.T) {
 		t.Fatal("expect 2, and actual:", expect)
 	}
 }
+
+func TestCheckPermutation(t *testing.T) {
+	s1 := "abc"
+	s2 := "bca"
+	expect := checkPermutation(s1, s2)
+	if !expect {
+		t.Fatal("expect true, and actual:", expect)
+	}
+
+	s1 = "abc"
+	s2 = "bad"
+	expect = checkPermutation(s1, s2)
+	if expect {
+		t.Fatal("expect false, and actual:", expect)
+	}
+}
