@@ -298,6 +298,7 @@ func diameterOfBinaryTree(root *treeNode) int {
 	return ret
 }
 
+// 最大深度
 func maxTreeDepth(root *treeNode) int {
 	if root == nil {
 		return 0
@@ -520,4 +521,29 @@ func createTargetArray(nums []int, index []int) []int {
 		target[key] = val
 	}
 	return target
+}
+
+// ------------------------------
+// 12. 访问所有点的最小时间
+// 1）每一秒沿水平或者竖直方向移动一个单位长度，或者跨过对角线；
+// 2）必须按照数组中出现的顺序来访问这些点。
+// ------------------------------
+
+func minTimeToVisitAllPoints(points [][]int) int {
+	var ans int
+	for i := 0; i < len(points)-1; i++ {
+		p1x := points[i][0]
+		p1y := points[i][1]
+		p2x := points[i+1][0]
+		p2y := points[i+1][1]
+		ans += maxInt(absInt(p1x-p2x), absInt(p1y-p2y))
+	}
+	return ans
+}
+
+func absInt(x int) int {
+	if x >= 0 {
+		return x
+	}
+	return -x
 }

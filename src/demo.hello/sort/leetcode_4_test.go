@@ -167,3 +167,17 @@ func TestCreateTargetArray(t *testing.T) {
 	result = createTargetArray(nums, index)
 	t.Log("expect [2,2,4,4,3], and actual:", result)
 }
+
+func TestMinTimeToVisitAllPoints(t *testing.T) {
+	points := [][]int{{1, 1}, {3, 4}, {-1, 0}}
+	expect := minTimeToVisitAllPoints(points)
+	if expect != 7 {
+		t.Fatal("expect 7, and actual:", expect)
+	}
+
+	points = [][]int{{3, 2}, {-2, 2}}
+	expect = minTimeToVisitAllPoints(points)
+	if expect != 5 {
+		t.Fatal("expect 5, and actual:", expect)
+	}
+}
