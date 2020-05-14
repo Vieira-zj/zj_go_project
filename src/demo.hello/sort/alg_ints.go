@@ -256,6 +256,34 @@ func numberSampling(nums []int, m int) []int {
 	return selected
 }
 
+// ------------------------------
+// fibonacci
+// 0,1,1,2,3,5,8,13
+// n >= 0, and n is index of number.
+// ------------------------------
+
+func fibonacci(n int) int {
+	if n == 0 || n == 1 {
+		return n
+	}
+	return fibonacci(n-1) + fibonacci(n-2)
+}
+
+func fibonacci2(n int) int {
+	if n == 0 || n == 1 {
+		return n
+	}
+
+	before := 0
+	after := 1
+	for i := 2; i <= n; i++ {
+		tmp := after
+		after += before
+		before = tmp
+	}
+	return after
+}
+
 // TestNumbersAlgorithms test for numbers algorithms.
 func TestNumbersAlgorithms() {
 	if false {
@@ -300,6 +328,10 @@ func TestNumbersAlgorithms() {
 			numbers = append(numbers, i)
 		}
 		fmt.Printf("(%v) sampling 3 numbers: %v\n", numbers, numberSampling(numbers, 3))
+
+		fmt.Println("\n#9. fibonacci")
+		fmt.Println("fibonacci(7):", fibonacci(7))
+		fmt.Println("fibonacci2(7):", fibonacci2(7))
 	}
 
 	fmt.Println("numbers algorithms done.")

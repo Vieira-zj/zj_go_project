@@ -16,7 +16,7 @@ ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
 # Go learn doc: https://github.com/gopl-zh/gopl-zh.github.com.git
 # Go fmt: https://github.com/golang/go/wiki/CodeReviewComments
 # Effective Go: https://golang.org/doc/effective_go.html
-if [ -z $1 ]; then
+if [[ -z $1 ]]; then
     go run src/demo.hello/main/main.go
     exit 0
 fi

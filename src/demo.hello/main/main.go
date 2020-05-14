@@ -84,11 +84,11 @@ func mainAppDemo() {
 }
 
 func sortDemo() {
-	// sort.TestNumbersAlgorithms()
+	sort.TestNumbersAlgorithms()
 	// sort.TestStringsAlgorithms()
 
 	// sort.TestSearchAlgorithms()
-	sort.TestSortAlgorithms()
+	// sort.TestSortAlgorithms()
 
 	// sort.TestLinkedListAlgorithms()
 	// sort.TestSkipList()
