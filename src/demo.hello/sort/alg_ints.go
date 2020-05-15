@@ -68,6 +68,17 @@ func intBinaryToOct02(bits string) int {
 	return ret
 }
 
+func intBinaryToOct03(bits string) int {
+	ret := 0
+	for _, b := range bits {
+		ret <<= 1
+		if b == '1' {
+			ret++
+		}
+	}
+	return ret
+}
+
 func myReverse(s string) string {
 	r := []rune(s)
 	start := 0
@@ -298,6 +309,7 @@ func TestNumbersAlgorithms() {
 		fmt.Printf("%s=%d\n", bits, intBinaryToOct01(bits))
 		bits = "1101110"
 		fmt.Printf("%s=%d\n", bits, intBinaryToOct02(bits))
+		fmt.Printf("%s=%d\n", bits, intBinaryToOct03(bits))
 
 		fmt.Println("\n#3. 求 n 内的质数")
 		fmt.Println("prime numbers in 100:", getPrimeNumbersWithN(100))

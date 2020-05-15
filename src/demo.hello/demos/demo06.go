@@ -189,6 +189,30 @@ func testEventBus() {
 	}
 }
 
+// demo, 信号量
+func testSemaphore() {
+	ch := make(chan struct{}, 3)
+	for i := 0; i < 20; i++ {
+		go func(i int) {
+			ch <- struct{}{}
+			fmt.Printf("routine [%d] is running ...\n", i)
+			time.Sleep(time.Duration(1) * time.Second)
+			<-ch
+		}(i)
+	}
+
+	for i := 0; i < 20; i++ {
+		time.Sleep(time.Duration(rand.Intn(3)) * time.Second)
+		size := len(ch)
+		fmt.Println("channel size:", size)
+		if size == 0 {
+			break
+		}
+	}
+	close(ch)
+	fmt.Println("test semaphore done.")
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
 	testBitsOperation()
@@ -197,6 +221,7 @@ func MainDemo06() {
 	// testInterfaceTypeAssert()
 	// testPointTypeAssert()
 	// testEventBus()
+	// testSemaphore()
 
 	fmt.Println("golang demo06 DONE.")
 }

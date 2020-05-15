@@ -160,6 +160,8 @@ func toLowerCase(str string) string {
 // #5. 分割平衡字符串
 // 在一个「平衡字符串」中，'L' 和 'R' 字符的数量是相同的。
 // 给出一个平衡字符串 s, 请你将它分割成尽可能多的平衡字符串。
+// 输入：s = "RLRRLLRLRL" 输出：4
+// 输入：s = "RLLLLRRRLR" 输出：3
 // ------------------------------
 
 type stack struct {
