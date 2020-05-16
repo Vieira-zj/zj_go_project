@@ -1,6 +1,7 @@
 package sort
 
 import (
+	"container/list"
 	"fmt"
 	"math"
 	"strconv"
@@ -75,4 +76,56 @@ func formatByRange(arr []int) string {
 		nums = append(nums, strconv.Itoa(start)+"-"+strconv.Itoa(arr[len(arr)-1]))
 	}
 	return strings.Join(nums, ",")
+}
+
+// ------------------------------
+// #3. 二叉树的深度优先遍历（前序遍历）
+// ------------------------------
+
+func depthIterator(root *myBinTreeNode) {
+	if root == nil {
+		return
+	}
+	fmt.Print(strconv.Itoa(root.value) + ",")
+	depthIterator(root.left)
+	depthIterator(root.right)
+}
+
+func depthIterator02(root *myBinTreeNode) {
+	s := &treeNodesStack{}
+	s.init(30)
+	s.add(root)
+
+	for s.size() != 0 {
+		node := s.pop()
+		fmt.Printf(strconv.Itoa(node.value) + ",")
+		if node.right != nil {
+			s.add(node.right)
+		}
+		if node.left != nil {
+			s.add(node.left)
+		}
+	}
+}
+
+// ------------------------------
+// #4. 二叉树的广度优先遍历
+// ------------------------------
+
+func widthIterator(root *treeNode) {
+	queue := list.New()
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		ele := queue.Front()
+		queue.Remove(ele)
+		if node, ok := ele.Value.(*treeNode); ok {
+			fmt.Print(strconv.Itoa(node.Val) + ",")
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+	}
 }
