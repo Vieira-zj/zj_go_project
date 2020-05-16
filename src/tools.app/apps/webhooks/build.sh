@@ -18,18 +18,26 @@ function build_image() {
   
   echo "build admission-webhook-example image"
   : ${DOCKER_USER:? required}
-  docker build --no-cache -t ${DOCKER_USER}/admission-webhook-example:v1 .
+  docker build --no-cache -t ${DOCKER_USER}/admission-webhook-example:v1.0.0 .
   #docker push ${DOCKER_USER}/admission-webhook-example:v1
 
   #rm -rf ${bin_file} 
+}
+
+function clear_exited_containers() {
+  docker ps -a | awk '/Exited/ {print $1}' | xargs docker rm
 }
 
 if [[ $1 == "bin" ]]; then
   build_bin
 fi
 
-if [[ $1 = "image" ]]; then
+if [[ $1 == "image" ]]; then
   build_image
 fi
 
-echo "build done"
+if [[ $1 == "clear" ]]; then
+  clear_exited_containers
+fi
+
+echo "admission webhook done"
