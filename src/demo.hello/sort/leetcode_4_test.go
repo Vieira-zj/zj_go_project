@@ -22,11 +22,11 @@ func TestIntToString(t *testing.T) {
 
 func TestCompressString(t *testing.T) {
 	input := []string{"aabcccccaaa", "abbccd"}
-	expect := []string{"a2b1c5a3", "abbccd"}
+	result := []string{"a2b1c5a3", "abbccd"}
 	for i := 0; i < len(input); i++ {
 		ret := compressString(input[i])
-		if ret != expect[i] {
-			t.Fatalf("input %s, exepct %s, and actual %s", input[i], expect[i], ret)
+		if ret != result[i] {
+			t.Fatalf("input %s, exepct %s, and actual %s", input[i], result[i], ret)
 		}
 	}
 }
@@ -56,33 +56,33 @@ func TestMyDeque(t *testing.T) {
 
 func TestMaxQueue(t *testing.T) {
 	queue := NewMaxQueue()
-	expect := queue.MaxValue()
-	if expect != -1 {
-		t.Fatal("expect -1, and actual:", expect)
+	result := queue.MaxValue()
+	if result != -1 {
+		t.Fatal("expect -1, and actual:", result)
 	}
 
 	queue.PushBack(4)
 	queue.PushBack(2)
 	queue.PushBack(0)
 	queue.PushBack(3)
-	expect = queue.MaxValue()
-	if expect != 4 {
-		t.Fatal("expect 4, and actual:", expect)
+	result = queue.MaxValue()
+	if result != 4 {
+		t.Fatal("expect 4, and actual:", result)
 	}
-	expect = queue.PopFront()
-	if expect != 4 {
-		t.Fatal("expect 4, and actual:", expect)
+	result = queue.PopFront()
+	if result != 4 {
+		t.Fatal("expect 4, and actual:", result)
 	}
-	expect = queue.MaxValue()
-	if expect != 3 {
-		t.Fatal("expect 3, and actual:", expect)
+	result = queue.MaxValue()
+	if result != 3 {
+		t.Fatal("expect 3, and actual:", result)
 	}
 }
 
 func TestLongestPalindrome(t *testing.T) {
-	expect := longestPalindrome("abbccccddd")
-	if expect != 9 {
-		t.Fatal("expect 9, and actual:", expect)
+	result := longestPalindrome("abbccccddd")
+	if result != 9 {
+		t.Fatal("expect 9, and actual:", result)
 	}
 }
 
@@ -117,30 +117,30 @@ func TestDiameterOfBinaryTree(t *testing.T) {
 
 func TestFindDisappearedNumbers(t *testing.T) {
 	input := []int{4, 3, 2, 7, 8, 2, 3, 1}
-	expect := findDisappearedNumbers(input)
-	t.Log("miss numbers:", expect)
-	if len(expect) != 2 {
-		t.Fatal("expect 2, and actual:", len(expect))
+	result := findDisappearedNumbers(input)
+	t.Log("miss numbers:", result)
+	if len(result) != 2 {
+		t.Fatal("expect 2, and actual:", len(result))
 	}
 }
 
 func TestFindUnsortedSubarray(t *testing.T) {
 	input := []int{2, 6, 4, 8, 10, 9, 15}
-	expect := findUnsortedSubarray(input)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result := findUnsortedSubarray(input)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 }
 
 func TestIsUnique(t *testing.T) {
-	expect := isUnique("leetcode")
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result := isUnique("leetcode")
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
 
-	expect = isUnique("abc")
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result = isUnique("abc")
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 }
 
@@ -170,14 +170,14 @@ func TestCreateTargetArray(t *testing.T) {
 
 func TestMinTimeToVisitAllPoints(t *testing.T) {
 	points := [][]int{{1, 1}, {3, 4}, {-1, 0}}
-	expect := minTimeToVisitAllPoints(points)
-	if expect != 7 {
-		t.Fatal("expect 7, and actual:", expect)
+	result := minTimeToVisitAllPoints(points)
+	if result != 7 {
+		t.Fatal("expect 7, and actual:", result)
 	}
 
 	points = [][]int{{3, 2}, {-2, 2}}
-	expect = minTimeToVisitAllPoints(points)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result = minTimeToVisitAllPoints(points)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 }

@@ -6,76 +6,76 @@ import (
 )
 
 func TestContainsDuplicate(t *testing.T) {
-	expect := containsDuplicate([]int{1, 2, 3, 1})
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result := containsDuplicate([]int{1, 2, 3, 1})
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 
-	expect = containsDuplicate([]int{1, 2, 3, 4})
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result = containsDuplicate([]int{1, 2, 3, 4})
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
 }
 
 func TestRemoveDuplicates(t *testing.T) {
 	input := []int{1, 1, 2}
-	expect := removeDuplicates01(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result := removeDuplicates01(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 	input = []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
-	expect = removeDuplicates01(input)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result = removeDuplicates01(input)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 
 	input = []int{1, 1, 2}
-	expect = removeDuplicates02(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result = removeDuplicates02(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 	input = []int{0, 0, 1, 1, 1, 2, 2, 3, 3, 4}
-	expect = removeDuplicates02(input)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result = removeDuplicates02(input)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 }
 
 func TestMissingNumber(t *testing.T) {
 	input := []int{3, 0, 1}
-	expect := missingNumber01(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result := missingNumber01(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 	input = []int{9, 6, 4, 2, 3, 5, 7, 0, 1}
-	expect = missingNumber01(input)
-	if expect != 8 {
-		t.Fatal("expect 8, and actual:", expect)
+	result = missingNumber01(input)
+	if result != 8 {
+		t.Fatal("expect 8, and actual:", result)
 	}
 
 	input = []int{3, 0, 1}
-	expect = missingNumber02(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result = missingNumber02(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 	input = []int{9, 6, 4, 2, 3, 5, 7, 0, 1}
-	expect = missingNumber02(input)
-	if expect != 8 {
-		t.Fatal("expect 8, and actual:", expect)
+	result = missingNumber02(input)
+	if result != 8 {
+		t.Fatal("expect 8, and actual:", result)
 	}
 }
 
 func TestIsPalindromeLinkedList(t *testing.T) {
 	list1 := createListNodes([]int{1, 2})
-	expect := isPalindromeLinkedList(list1)
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result := isPalindromeLinkedList(list1)
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
 
 	list2 := createListNodes([]int{1, 2, 2, 1})
-	expect = isPalindromeLinkedList(list2)
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result = isPalindromeLinkedList(list2)
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 }
 
@@ -91,120 +91,146 @@ func TestReplaceSpace(t *testing.T) {
 }
 
 func TestReverseLeftWords(t *testing.T) {
-	expect := reverseLeftWords01("abcdefg", 2)
-	if expect != "cdefgab" {
-		t.Fatal("expect 'cdefgab', and actual:", expect)
+	result := reverseLeftWords01("abcdefg", 2)
+	if result != "cdefgab" {
+		t.Fatal("expect 'cdefgab', and actual:", result)
 	}
-	expect = reverseLeftWords01("lrloseumgh", 6)
-	if expect != "umghlrlose" {
-		t.Fatal("expect 'umghlrlose', and actual:", expect)
+	result = reverseLeftWords01("lrloseumgh", 6)
+	if result != "umghlrlose" {
+		t.Fatal("expect 'umghlrlose', and actual:", result)
 	}
 
-	expect = reverseLeftWords02("abcdefg", 2)
-	if expect != "cdefgab" {
-		t.Fatal("expect 'cdefgab', and actual:", expect)
+	result = reverseLeftWords02("abcdefg", 2)
+	if result != "cdefgab" {
+		t.Fatal("expect 'cdefgab', and actual:", result)
 	}
-	expect = reverseLeftWords02("lrloseumgh", 6)
-	if expect != "umghlrlose" {
-		t.Fatal("expect 'umghlrlose', and actual:", expect)
+	result = reverseLeftWords02("lrloseumgh", 6)
+	if result != "umghlrlose" {
+		t.Fatal("expect 'umghlrlose', and actual:", result)
 	}
 }
 
 func TestReverseWords(t *testing.T) {
 	input := "Let's take LeetCode contest"
-	expect := reverseWords(input)
+	result := reverseWords(input)
 	t.Log("expect (s'teL ekat edoCteeL tsetnoc), and actual:")
-	t.Log(expect)
+	t.Log(result)
 }
 
 func TestIsPalindromeNumber(t *testing.T) {
-	expect := isPalindromeNumber(1001)
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result := isPalindromeNumber(1001)
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
-	expect = isPalindromeNumber(12321)
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result = isPalindromeNumber(12321)
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 
-	expect = isPalindromeNumber(10)
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result = isPalindromeNumber(10)
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
-	expect = isPalindromeNumber(1000021)
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result = isPalindromeNumber(1000021)
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
 }
 
 func TestReverseNumber(t *testing.T) {
-	expect := reverseNumber(123)
-	if expect != 321 {
-		t.Fatal("expect 321, and actual:", expect)
+	result := reverseNumber(123)
+	if result != 321 {
+		t.Fatal("expect 321, and actual:", result)
 	}
 
-	expect = reverseNumber(-123)
-	if expect != -321 {
-		t.Fatal("expect -321, and actual:", expect)
+	result = reverseNumber(-123)
+	if result != -321 {
+		t.Fatal("expect -321, and actual:", result)
 	}
 }
 
 func TestIsValidBrackets(t *testing.T) {
-	expect := isValidBrackets("()[]{}")
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result := isValidBrackets("()[]{}")
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 
-	expect = isValidBrackets("([)]")
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result = isValidBrackets("([)]")
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
 }
 
 func TestLongestCommonPrefix(t *testing.T) {
-	expect := longestCommonPrefix([]string{"aa", "ab"})
-	if expect != "a" {
-		t.Fatal("expect 'a', and actual:", expect)
+	result := longestCommonPrefix([]string{"aa", "ab"})
+	if result != "a" {
+		t.Fatal("expect 'a', and actual:", result)
 	}
 
-	expect = longestCommonPrefix([]string{"flower", "flow", "flight"})
-	if expect != "fl" {
-		t.Fatal("expect 'fl', and actual:", expect)
+	result = longestCommonPrefix([]string{"flower", "flow", "flight"})
+	if result != "fl" {
+		t.Fatal("expect 'fl', and actual:", result)
 	}
 }
 
 func TestFirstUniqChar(t *testing.T) {
-	expect := firstUniqChar("leetcode")
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result := firstUniqChar("leetcode")
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 
-	expect = firstUniqChar("loveleetcode")
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result = firstUniqChar("loveleetcode")
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 }
 
 func TestFindNumbers(t *testing.T) {
 	input := []int{12, 345, 2, 6, 7896}
-	expect := findNumbers(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result := findNumbers(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 }
 
 func TestCheckPermutation(t *testing.T) {
 	s1 := "abc"
 	s2 := "bca"
-	expect := checkPermutation(s1, s2)
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result := checkPermutation(s1, s2)
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 
 	s1 = "abc"
 	s2 = "bad"
-	expect = checkPermutation(s1, s2)
-	if expect {
-		t.Fatal("expect false, and actual:", expect)
+	result = checkPermutation(s1, s2)
+	if result {
+		t.Fatal("expect false, and actual:", result)
 	}
+}
+
+func TestReference(t *testing.T) {
+	// 引用传递
+	node1 := &listNode{
+		Val: 1,
+	}
+	node2 := &listNode{
+		Val: 2,
+	}
+	node1.Next = node2
+	printListNodes(node1)
+	node2 = nil
+	printListNodes(node1)
+}
+
+func TestRemoveDuplicateNodes(t *testing.T) {
+	nodes := createListNodes([]int{1, 2, 3, 3, 2, 1})
+	result := removeDuplicateNodes(nodes)
+	t.Log("expect [1, 2, 3], and actual:")
+	printListNodes(result)
+
+	nodes = createListNodes([]int{1, 1, 1, 1, 2})
+	result = removeDuplicateNodes(nodes)
+	t.Log("expect [1, 2], and actual:")
+	printListNodes(result)
 }

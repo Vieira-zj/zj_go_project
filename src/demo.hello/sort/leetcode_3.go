@@ -398,3 +398,26 @@ func checkPermutation(s1 string, s2 string) bool {
 	}
 	return true
 }
+
+// ------------------------------
+// #17. 移除重复节点
+// 移除未排序链表中的重复节点，保留最开始出现的节点。
+// 输入：[1, 2, 3, 3, 2, 1]
+// 输出：[1, 2, 3]
+// ------------------------------
+
+func removeDuplicateNodes(head *listNode) *listNode {
+	m := make(map[int]struct{}, 0)
+	var pre *listNode
+	cur := head
+	for cur != nil {
+		if _, ok := m[cur.Val]; ok {
+			pre.Next = cur.Next
+		} else {
+			m[cur.Val] = struct{}{}
+			pre = cur
+		}
+		cur = cur.Next
+	}
+	return head
+}

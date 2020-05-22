@@ -6,14 +6,14 @@ import (
 )
 
 func TestHammingWeight(t *testing.T) {
-	expect := hammingWeight01(11)
-	if expect != 3 {
-		t.Fatal("expect 3, and actual:", expect)
+	result := hammingWeight01(11)
+	if result != 3 {
+		t.Fatal("expect 3, and actual:", result)
 	}
 
-	expect = hammingWeight02(11)
-	if expect != 3 {
-		t.Fatal("expect 3, and actual:", expect)
+	result = hammingWeight02(11)
+	if result != 3 {
+		t.Fatal("expect 3, and actual:", result)
 	}
 }
 
@@ -24,27 +24,27 @@ func TestFizzBuzz(t *testing.T) {
 
 func TestMajorityElement(t *testing.T) {
 	input := []int{3, 3, 4}
-	expect := majorityElement(input)
-	if expect != 3 {
-		t.Fatal("expect 3, and actual:", expect)
+	result := majorityElement(input)
+	if result != 3 {
+		t.Fatal("expect 3, and actual:", result)
 	}
 
 	input = []int{2, 2, 1, 1, 4, 2, 2}
-	expect = majorityElement(input)
-	if expect != 2 {
-		t.Fatal("expect 2, and actual:", expect)
+	result = majorityElement(input)
+	if result != 2 {
+		t.Fatal("expect 2, and actual:", result)
 	}
 }
 
 func TestRomanToInt(t *testing.T) {
-	expect := romanToInt("LVIII")
-	if expect != 58 {
-		t.Fatal("expect 58, and actual:", expect)
+	result := romanToInt("LVIII")
+	if result != 58 {
+		t.Fatal("expect 58, and actual:", result)
 	}
 
-	expect = romanToInt("MCMXCIV")
-	if expect != 1994 {
-		t.Fatal("expect 1994, and actual:", expect)
+	result = romanToInt("MCMXCIV")
+	if result != 1994 {
+		t.Fatal("expect 1994, and actual:", result)
 	}
 }
 
@@ -67,37 +67,37 @@ func TestMoveZeroes(t *testing.T) {
 }
 
 func TestIsHappy(t *testing.T) {
-	expect := isHappy(19)
-	if !expect {
-		t.Fatal("expect true, and actual:", expect)
+	result := isHappy(19)
+	if !result {
+		t.Fatal("expect true, and actual:", result)
 	}
 }
 
 func TestMaxProfit(t *testing.T) {
-	expect := maxProfit01([]int{7, 1, 5, 3, 6, 4})
-	if expect != 7 {
-		t.Fatal("expect 7, and actual:", expect)
+	result := maxProfit01([]int{7, 1, 5, 3, 6, 4})
+	if result != 7 {
+		t.Fatal("expect 7, and actual:", result)
 	}
-	expect = maxProfit01([]int{1, 2, 3, 4, 5})
-	if expect != 4 {
-		t.Fatal("expect 4, and actual:", expect)
+	result = maxProfit01([]int{1, 2, 3, 4, 5})
+	if result != 4 {
+		t.Fatal("expect 4, and actual:", result)
 	}
-	expect = maxProfit01([]int{7, 6, 4, 3, 1})
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result = maxProfit01([]int{7, 6, 4, 3, 1})
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 
-	expect = maxProfit02([]int{7, 1, 5, 3, 6, 4})
-	if expect != 7 {
-		t.Fatal("expect 7, and actual:", expect)
+	result = maxProfit02([]int{7, 1, 5, 3, 6, 4})
+	if result != 7 {
+		t.Fatal("expect 7, and actual:", result)
 	}
-	expect = maxProfit02([]int{1, 2, 3, 4, 5})
-	if expect != 4 {
-		t.Fatal("expect 4, and actual:", expect)
+	result = maxProfit02([]int{1, 2, 3, 4, 5})
+	if result != 4 {
+		t.Fatal("expect 4, and actual:", result)
 	}
-	expect = maxProfit02([]int{7, 6, 4, 3, 1})
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result = maxProfit02([]int{7, 6, 4, 3, 1})
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 }
 
@@ -110,33 +110,33 @@ func TestInvertTree(t *testing.T) {
 
 func TestGetDecimalValue(t *testing.T) {
 	list1 := createListNodes([]int{1, 0, 1})
-	expect := getDecimalValue01(list1)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result := getDecimalValue01(list1)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 	list1 = createListNodes([]int{0})
-	expect = getDecimalValue01(list1)
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result = getDecimalValue01(list1)
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 
 	list2 := createListNodes([]int{1, 0, 1})
-	expect = getDecimalValue02(list2)
-	if expect != 5 {
-		t.Fatal("expect 5, and actual:", expect)
+	result = getDecimalValue02(list2)
+	if result != 5 {
+		t.Fatal("expect 5, and actual:", result)
 	}
 	list2 = createListNodes([]int{0})
-	expect = getDecimalValue02(list2)
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result = getDecimalValue02(list2)
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 }
 
 func TestMaxSubArray(t *testing.T) {
 	input := []int{-2, 1, -3, 4, -1, 2, 1, -5, 4}
-	expect := maxSubArray(input)
-	if expect != 6 {
-		t.Fatal("expect 6, and actual:", expect)
+	result := maxSubArray(input)
+	if result != 6 {
+		t.Fatal("expect 6, and actual:", result)
 	}
 }
 
@@ -147,19 +147,19 @@ func TestMinStack(t *testing.T) {
 	}
 	stack.debugPrint()
 
-	expect := stack.GetMin()
-	if expect != -3 {
-		t.Fatal("expect -3, and actual:", expect)
+	result := stack.GetMin()
+	if result != -3 {
+		t.Fatal("expect -3, and actual:", result)
 	}
 
 	stack.Pop()
-	expect = stack.Top()
-	if expect != 0 {
-		t.Fatal("expect 0, and actual:", expect)
+	result = stack.Top()
+	if result != 0 {
+		t.Fatal("expect 0, and actual:", result)
 	}
 
-	expect = stack.GetMin()
-	if expect != -2 {
-		t.Fatal("expect -2, and actual:", expect)
+	result = stack.GetMin()
+	if result != -2 {
+		t.Fatal("expect -2, and actual:", result)
 	}
 }
