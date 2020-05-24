@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
 	"runtime"
 	"strconv"
 
@@ -96,6 +98,14 @@ func sortDemo() {
 	// sort.TestTreeHeap()
 }
 
+func exitWithCtrlC() {
+	// process blocked until ctrl-c signal
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	s := <-c
+	fmt.Println("Exit with signal:", s)
+}
+
 func main() {
 	// testFlagParser()
 	// testAccControl()
@@ -106,6 +116,8 @@ func main() {
 	// mainAppDemo()
 
 	sortDemo()
+
+	// exitWithCtrlC()
 
 	fmt.Println("GO demo main done.")
 }

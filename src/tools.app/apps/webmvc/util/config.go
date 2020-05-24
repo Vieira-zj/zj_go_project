@@ -22,7 +22,7 @@ func NewConfigs() *Configs {
 }
 
 // Parse 解析配置
-func (config *Configs) Parse(fpath string) (c map[string]map[string]string, err error) {
+func (config *Configs) Parse(fpath string) (map[string]map[string]string, error) {
 	config.filePath = fpath
 	cfg, err := goconfig.LoadConfigFile(fpath)
 	for _, sec := range cfg.GetSectionList() {
@@ -39,7 +39,7 @@ func (config *Configs) GetAllCfg() (c map[string]map[string]string) {
 	return config.cfgmap
 }
 
-// ReloadAllCfg 重新刷新配置文件
+// ReloadAllCfg 刷新配置文件
 func (config *Configs) ReloadAllCfg() (c map[string]map[string]string, err error) {
 	return config.Parse(config.filePath)
 }
@@ -49,7 +49,7 @@ func (config *Configs) GetSection(sec string) map[string]string {
 	return config.cfgmap[sec]
 }
 
-// WatchConfig 监听文件
+// WatchConfig 监听事件, 自动刷新配置
 func (config *Configs) WatchConfig() {
 	go func() {
 		watch, err := fsnotify.NewWatcher()

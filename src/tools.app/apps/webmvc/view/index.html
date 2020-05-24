@@ -1,0 +1,16 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>golang web mvc</title>
+    </head>
+    <body>
+        <div>
+            {{template "menu" .}}
+            <p>Hello Modal, User info: id={{.ID}}, role={{.Role}}</p>
+            <p>func hello return: {{hello}}</p>
+            <p>func helloMsg return: {{helloMsg "test message"}}</p>
+        </div>
+    </body>
+</html>
+{{end}}

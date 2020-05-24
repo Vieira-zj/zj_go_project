@@ -1,0 +1,9 @@
+{{define "menu"}}
+<div>
+    {{if eq .Role 1}}
+    <p>Menu for Admin</p>
+    {{else if eq .Role 2}}
+    <p>Menu for User</p>
+    {{end}}
+</div>
+{{end}}
