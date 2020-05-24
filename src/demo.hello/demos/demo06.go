@@ -195,9 +195,11 @@ func testSemaphore() {
 	for i := 0; i < 20; i++ {
 		go func(i int) {
 			ch <- struct{}{}
+			defer func() {
+				<-ch
+			}()
 			fmt.Printf("routine [%d] is running ...\n", i)
 			time.Sleep(time.Duration(1) * time.Second)
-			<-ch
 		}(i)
 	}
 
@@ -213,15 +215,40 @@ func testSemaphore() {
 	fmt.Println("test semaphore done.")
 }
 
+// demo, sync.Once
+func testSyncOnce() {
+	var once sync.Once
+
+	onceBody := func() {
+		time.Sleep(time.Duration(1) * time.Second)
+		fmt.Println("run only once.")
+	}
+
+	done := make(chan bool)
+	for i := 1; i < 10; i++ {
+		go func() {
+			once.Do(onceBody)
+			done <- true
+		}()
+	}
+
+	for i := 1; i < 10; i++ {
+		<-done
+	}
+	fmt.Println("sync once test done.")
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
-	testBitsOperation()
+	// testBitsOperation()
 	// testBase64Encode()
 	// testInitSliceAndRecovery()
 	// testInterfaceTypeAssert()
 	// testPointTypeAssert()
 	// testEventBus()
+
 	// testSemaphore()
+	// testSyncOnce()
 
 	fmt.Println("golang demo06 DONE.")
 }

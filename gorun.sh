@@ -31,7 +31,7 @@ fi
 
 if [[ $1 == "app" ]]; then
     # go run src/demo.app/main/main.go
-    go run src/tools.app/apps/k8sio/main.go
+    go run src/tools.app/apps/webmvc/main.go
     exit 0
 fi
 
