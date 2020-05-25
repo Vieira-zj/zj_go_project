@@ -15,6 +15,8 @@ type UserCtrl struct {
 // Router 将url和处理函数绑定
 func (ctrl *UserCtrl) Router() {
 	RouterPost("/user/login", ctrl.authWithID)
+	// RouterGet("/user/find",ctrl.Find)
+	// RouterGet("/user/quit",ctrl.quit)
 	RegExRouter("/d/.*", ctrl.regText)
 }
 

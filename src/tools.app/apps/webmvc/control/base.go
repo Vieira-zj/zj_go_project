@@ -18,6 +18,7 @@ import (
 func RegisterView() {
 	RegisterFuncMap()
 	RegisterIndexView()
+	// RegisterXxxView()
 }
 
 // RegisterIndexView 注册Index视图
@@ -56,6 +57,8 @@ func loadUserFromSession(req *http.Request) *model.User {
 func RegisterCtrl() {
 	RegisterRegExRouter()
 	new(UserCtrl).Router()
+	// new(OpenCtrl).Router()
+	// new(AttachCtrl).Router()
 }
 
 // RouterGet 添加get路由规则
@@ -113,5 +116,5 @@ func RegisterRegExRouter() {
 }
 
 func notfound(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("RESOURCE NOT FOUND"))
+	w.Write([]byte("RESOURCES NOT FOUND"))
 }
