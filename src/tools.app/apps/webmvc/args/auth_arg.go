@@ -2,7 +2,7 @@ package args
 
 import "tools.app/apps/webmvc/model"
 
-// AuthArg 用户登录接口请求参数
+// AuthArg 登录接口请求数据
 type AuthArg struct {
 	PageArg
 	model.User

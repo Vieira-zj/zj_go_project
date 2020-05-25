@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// PageArg arg的公共属性
+// PageArg 请求数据的公共属性
 type PageArg struct {
 	Pagefrom int    `json:"pagefrom" form:"pagefrom"`
 	Pagesize int    `json:"pagesize" form:"pagesize"`

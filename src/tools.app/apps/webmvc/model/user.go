@@ -2,8 +2,8 @@ package model
 
 // 用户性别和角色
 const (
-	WOMEN = 2
-	MAN   = 1
+	FEMALE = 2
+	MALE   = 1
 
 	UNKNOW = 0
 	ADMIN  = 1

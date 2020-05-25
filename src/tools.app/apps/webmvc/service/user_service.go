@@ -6,7 +6,7 @@ import (
 	"tools.app/apps/webmvc/model"
 )
 
-// UserService user服务
+// UserService user实体类的dao服务
 type UserService struct {
 }
 

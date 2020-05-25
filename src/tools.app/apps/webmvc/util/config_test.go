@@ -6,23 +6,24 @@ import (
 	"testing"
 )
 
+var fpath = filepath.Join(os.Getenv("GOPATH"), "src/tools.app/apps/webmvc/app.dev.conf")
+
 func TestParseConfig(t *testing.T) {
-	fpath := filepath.Join(os.Getenv("GOPATH"), "src/tools.app/apps/webmvc/app.dev.conf")
-	config := NewConfigs()
-	configs, err := config.Parse(fpath)
+	config := new(Configs)
+	err := config.Parse(fpath)
 	if err != nil {
 		t.Fatal("failed with error:", err.Error())
 	}
 
+	configs := config.GetAllCfg()
 	t.Log("log configs:", configs["log"])
 	t.Log("database configs:", configs["database"])
 	t.Log("server configs:", configs["server"])
 }
 
 func TestGetSection(t *testing.T) {
-	fpath := filepath.Join(os.Getenv("GOPATH"), "src/tools.app/apps/webmvc/app.dev.conf")
-	config := NewConfigs()
-	_, err := config.Parse(fpath)
+	config := new(Configs)
+	err := config.Parse(fpath)
 	if err != nil {
 		t.Fatal("failed with error:", err.Error())
 	}

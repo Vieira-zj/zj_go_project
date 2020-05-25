@@ -2,13 +2,13 @@ package util
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
 )
 
-// Bind 参数绑定
+// Bind 请求参数绑定
 func Bind(req *http.Request, obj interface{}) error {
 	contentType := req.Header.Get("Content-Type")
 	if strings.Contains(strings.ToLower(contentType), "application/json") {
@@ -20,8 +20,7 @@ func Bind(req *http.Request, obj interface{}) error {
 	if strings.Contains(strings.ToLower(contentType), "text/xml") {
 		return BindXML(req, obj)
 	}
-	return errors.New("当前方法暂不支持")
-
+	return fmt.Errorf("Content-Type %s not support", contentType)
 }
 
 // BindJSON json参数绑定

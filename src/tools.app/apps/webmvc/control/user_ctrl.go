@@ -27,7 +27,7 @@ func (ctrl *UserCtrl) authWithID(w http.ResponseWriter, req *http.Request) {
 	if u, err := userService.LoginWithOpenID(reqData.User.ID); err != nil {
 		util.RespFail(w, http.StatusInternalServerError, err.Error())
 	} else {
-		util.RespOK(w, &u)
+		util.RespOK(w, u)
 	}
 }
 

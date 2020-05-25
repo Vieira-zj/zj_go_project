@@ -15,14 +15,16 @@ type RespBody struct {
 	Total interface{} `json:"total,omitempty"`
 }
 
-// RespJSON 返回Json的底层方法
+// RespJSON 返回json的底层方法
 func RespJSON(w http.ResponseWriter, data interface{}) {
 	header := w.Header()
 	header.Set("Content-Type", "application/json;charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	ret, err := json.Marshal(data)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln(err)
+		w.Write([]byte(err.Error()))
+		return
 	}
 	w.Write(ret)
 }

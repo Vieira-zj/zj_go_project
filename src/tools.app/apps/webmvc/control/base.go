@@ -16,6 +16,7 @@ import (
 
 // RegisterView 注册视图
 func RegisterView() {
+	RegisterFuncMap()
 	RegisterIndexView()
 }
 
@@ -32,7 +33,7 @@ func RegisterIndexView() {
 	}
 
 	pattern := "/" + tplname
-	log.Printf("register template %s:%s\n", pattern, tplname)
+	log.Printf("register template view %s:%s\n", pattern, tplname)
 	http.HandleFunc(pattern, func(w http.ResponseWriter, req *http.Request) {
 		err := tmpl.ExecuteTemplate(w, tplname, loadUserFromSession(req))
 		if err != nil {
@@ -64,7 +65,8 @@ func RouterGet(pattern string, fun func(w http.ResponseWriter, req *http.Request
 		if req.Method == http.MethodGet {
 			fun(w, req)
 		} else {
-			util.RespFail(w, http.StatusInternalServerError, fmt.Sprint("not support request method"))
+			util.RespFail(w, http.StatusInternalServerError,
+				fmt.Sprintf("not support uri=%s, method=%s\n", req.URL, req.Method))
 		}
 	})
 }
@@ -76,16 +78,17 @@ func RouterPost(pattern string, fun func(w http.ResponseWriter, req *http.Reques
 		if req.Method == http.MethodPost {
 			fun(w, req)
 		} else {
-			util.RespFail(w, http.StatusInternalServerError, fmt.Sprint("not support request method"))
+			util.RespFail(w, http.StatusInternalServerError,
+				fmt.Sprintf("not support uri=%s, method=%s\n", req.URL, req.Method))
 		}
 	})
 }
 
 // RegExRouterMap 保存uri和处理函数之间关系的字典
-var RegExRouterMap = make(map[string]func(w http.ResponseWriter, req *http.Request), 0)
+var RegExRouterMap = make(map[string]func(w http.ResponseWriter, req *http.Request))
 
 // RegexpMatchMap 保存uri和对应正则表达式的字典
-var RegexpMatchMap = make(map[string]*regexp.Regexp, 0)
+var RegexpMatchMap = make(map[string]*regexp.Regexp)
 
 // RegExRouter 添加路由规则, 支持正则
 func RegExRouter(pattern string, fun func(w http.ResponseWriter, req *http.Request)) {
@@ -93,7 +96,7 @@ func RegExRouter(pattern string, fun func(w http.ResponseWriter, req *http.Reque
 	RegexpMatchMap[pattern], _ = regexp.Compile(pattern)
 }
 
-// RegisterRegExRouter 将url和处理函数绑定, 支持正则
+// RegisterRegExRouter 全局通过正则将url和处理函数绑定
 func RegisterRegExRouter() {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		uris := strings.Split(req.RequestURI, "?")
@@ -110,5 +113,5 @@ func RegisterRegExRouter() {
 }
 
 func notfound(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("404 NOT FOUND"))
+	w.Write([]byte("RESOURCE NOT FOUND"))
 }

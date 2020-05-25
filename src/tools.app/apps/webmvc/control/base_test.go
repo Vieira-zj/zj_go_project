@@ -22,7 +22,7 @@ func TestRegisterIndexPage(t *testing.T) {
 
 	user := &model.User{
 		ID:       111,
-		NickName: "tester01",
+		NickName: "test_user01",
 		Role:     model.ADMIN,
 	}
 	err = tmpl.ExecuteTemplate(os.Stdout, tmpl.Name(), user)
