@@ -7,34 +7,29 @@ import (
 	"os/signal"
 	"runtime"
 	"strconv"
-
-	"demo.hello/apps"
-	"demo.hello/demos"
-	"demo.hello/examples"
-	"demo.hello/sort"
 )
 
 func init() {
-	fmt.Println("\n[main.go] init")
+	fmt.Println("[main.go] init")
 	fmt.Println("go version:", runtime.Version())
 	fmt.Println("system arch:", runtime.GOARCH)
 	fmt.Println("default int size:", strconv.IntSize)
 
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
-	fmt.Printf("runtime allocated memory: %d Kb\n", mem.Alloc/1024)
+	fmt.Printf("\nruntime allocated memory: %d Kb\n", mem.Alloc/1024)
 }
 
 // flag test
 var (
-	retCode = 200
-	port    = 8080
-	help    = false
+	code int
+	msg  string
+	help bool
 )
 
 func testFlagParser() {
-	flag.IntVar(&retCode, "c", 200, "status code")
-	flag.IntVar(&port, "p", 8080, "port number")
+	flag.IntVar(&code, "c", 200, "state code")
+	flag.StringVar(&msg, "p", "hello world", "context message")
 	flag.BoolVar(&help, "h", false, "help")
 
 	flag.Parse()
@@ -42,60 +37,7 @@ func testFlagParser() {
 		flag.Usage()
 		return
 	}
-	fmt.Printf("url=>localhost:%d, status code=>%d\n", port, retCode)
-}
-
-func testAccControl() {
-	// struct in demos/demo01
-	fmt.Println("\nfrom main, and only public fileds/methods can access:")
-	// obj := demos.MyObject{"pub", "pri"} // error
-	obj := demos.GetMyObject()
-	obj.Init("pub_test", "pri_test")
-	fmt.Printf("\npublic value: %s\n", obj.VarPublic)
-	fmt.Printf("private value: %s\n", obj.MethodPublicGet())
-}
-
-func testInvokeOrder() {
-	fmt.Println("\nmessage:", demos.HelloMsg)
-}
-
-func mainExample() {
-	examples.MainHello()
-	// examples.MainIO()
-	// examples.MainOO()
-	// examples.MainGoRoutine()
-	// examples.MainHTTP()
-	// examples.MainCrawl()
-	// examples.MainReflect()
-}
-
-func mainDemo() {
-	// demos.MainDemo01()
-	// demos.MainDemo02()
-	// demos.MainDemo03()
-	// demos.MainDemo04()
-	// demos.MainDemo05()
-	demos.MainDemo06()
-
-	// demos.MainUtils()
-	// demos.MainIterator()
-}
-
-func mainAppDemo() {
-	apps.TestCache()
-}
-
-func sortDemo() {
-	sort.TestNumbersAlgorithms()
-	// sort.TestStringsAlgorithms()
-
-	// sort.TestSearchAlgorithms()
-	// sort.TestSortAlgorithms()
-
-	// sort.TestLinkedListAlgorithms()
-	// sort.TestSkipList()
-	// sort.TestTreeAlgorithms()
-	// sort.TestTreeHeap()
+	fmt.Printf("arguments: code:%d, message:%s\n", code, msg)
 }
 
 func exitWithCtrlC() {
@@ -107,17 +49,8 @@ func exitWithCtrlC() {
 }
 
 func main() {
-	// testFlagParser()
-	// testAccControl()
-	// testInvokeOrder()
-
-	// mainDemo()
-	// mainExample()
-	// mainAppDemo()
-
-	sortDemo()
-
+	testFlagParser()
 	// exitWithCtrlC()
 
-	fmt.Println("GO demo main done.")
+	fmt.Println("GO main demo done.")
 }
