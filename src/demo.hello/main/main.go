@@ -29,7 +29,7 @@ var (
 
 func testFlagParser() {
 	flag.IntVar(&code, "c", 200, "state code")
-	flag.StringVar(&msg, "p", "hello world", "context message")
+	flag.StringVar(&msg, "m", "hello world", "context message")
 	flag.BoolVar(&help, "h", false, "help")
 
 	flag.Parse()

@@ -18,14 +18,15 @@ ZJ_GOPRJ="${HOME}/Workspaces/zj_go_project"
 # Effective Go: https://golang.org/doc/effective_go.html
 if [[ -z $1 ]]; then
     go run src/demo.hello/main/main.go
+    # go run src/demo.hello/main/sort/main.go
     exit 0
 fi
 
 if [[ $1 == "main" ]]; then
-    go run src/demo.hello/main/main.go -args hello world
+    # go run src/demo.hello/main/main.go -args hello world
     # go run src/demo.hello/main/main.go -period 3s
     # go run src/demo.hello/main/main.go -h
-    # go run src/demo.hello/main/main.go -p 7890 -c 404
+    go run src/demo.hello/main/main.go -m "test_context" -c 304
     exit 0
 fi
 

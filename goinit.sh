@@ -7,8 +7,7 @@ function add_sub_git_repos() {
         "src/github.com/karrick/godirwalk" "src/github.com/mdempsky/gocode" \
         "src/github.com/ramya-rao-a/go-outline" "src/github.com/rogpeppe/godef" \
         "src/github.com/sqs/goreturns" "src/github.com/stamblerre/gocode" \
-        "src/github.com/uudashr/gopkgs"
-    )
+        "src/github.com/uudashr/gopkgs")
     
     cd ${HOME}/Workspaces/zj_go_project
     for repo in ${repos[*]}; do
@@ -36,8 +35,7 @@ function install_vscode_plugins() {
     ext_tools=("github.com/mdempsky/gocode" "github.com/ramya-rao-a/go-outline" \
         "github.com/acroca/go-symbols" "golang.org/x/tools/cmd/guru" \
         "golang.org/x/tools/cmd/gorename" "github.com/stamblerre/gocode" \
-        "github.com/sqs/goreturns" "golang.org/x/lint/golint"
-    )
+        "github.com/sqs/goreturns" "golang.org/x/lint/golint")
     
     for tool in ${ext_tools[*]}; do
         echo "install tool: ${tool}"

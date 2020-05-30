@@ -2,50 +2,14 @@ package main
 
 import (
 	"fmt"
-	"os"
 
-	"demo.app/memcached"
-	"demo.app/mongodb"
 	"demo.app/redis"
 )
 
-func memcachedMain() {
-	memcached.ConnectMemcacheAndTest()
-}
-
-func mongodbMain(runN uint8) {
-	// #1 mongo test
-	if runN == 1 {
-		mongodb.ConnectToDbAndTest()
-	}
-	// #2 bucket
-	if runN == 2 {
-		const (
-			bucket = "test_bucket_transfer_data11"
-			uid    = 1380469264
-		)
-		bucketInfo := mongodb.NewBucketInfo(bucket, uid)
-		bucketInfo.QueryBucketInfo()
-	}
-	// #3 rs
-	if runN == 3 {
-		rsOp := mongodb.NewRsOperation()
-		defer rsOp.Close()
-		rsOp.InsertRsRecords()
-		// rsOp.InsertRsRecordsParallel()
-	}
-	// #4 mongo op logs
-	// cmd: ./main 10.200.30.11:8001
-	if runN == 4 {
-		mgoOp := mongodb.NewMgoOpertion(os.Args[1])
-		defer mgoOp.Close()
-		mgoOp.PrintMgoOpLogs()
-	}
-}
-
-func redisMain(runN int) {
+func main() {
 	// redis env: docker run --name redis -p 6379:6379 --rm -d redis:4.0
 	// ref: https://github.com/go-redis/redis/blob/master/example_test.go
+	runN := 1
 
 	demo01 := func() {
 		r := redis.NewTestRedis()
@@ -96,12 +60,5 @@ func redisMain(runN int) {
 	if runN == 3 {
 		demo03()
 	}
-}
-
-func main() {
-	// memcachedMain()
-	// mongodbMain(1)
-	redisMain(1)
-
-	fmt.Println("memory db demo DONE.")
+	fmt.Println("redis db demo done.")
 }

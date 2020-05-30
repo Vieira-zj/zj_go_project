@@ -67,6 +67,10 @@
 [submodule "src/gopkg.in/mgo.v2"]
 	path = src/demo.app/vendor/gopkg.in/mgo.v2
 	url = https://github.com/go-mgo/mgo.git
+[submodule "src/demo.app/vendor/github.com/bradfitz/gomemcache"]
+	path = src/demo.app/vendor/github.com/bradfitz/gomemcache
+	url = https://github.com/bradfitz/gomemcache.git
+
 [submodule "src/github.com/onsi/ginkgo"]
 	path = src/demo.tests/vendor/github.com/onsi/ginkgo
 	url = https://github.com/onsi/ginkgo.git
