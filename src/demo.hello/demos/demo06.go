@@ -238,6 +238,68 @@ func testSyncOnce() {
 	fmt.Println("sync once test done.")
 }
 
+// demo, reflect set value
+func testReflectSetValue01() {
+	var i = int(1)
+
+	// 需要传递变量的地址
+	value := reflect.ValueOf(&i)
+	// value是一个指针, 获取该指针指向的值, 相当于value.Elem()
+	value = reflect.Indirect(value)
+	// value = value.Elem()
+	fmt.Println("value:", value.Interface())
+
+	if value.Kind() == reflect.Int {
+		fmt.Println("int value:", value.Int())
+		value.SetInt(2)
+	}
+	fmt.Println("value:", value.Interface())
+}
+
+type testStruct struct {
+	// 只有大写开头的成员变量可以Set
+	Str string `json:"tag_str"`
+}
+
+// demo, reflect set value (struct)
+func testReflectSetValue02() {
+	s := testStruct{Str: "init"}
+
+	value := reflect.ValueOf(&s)
+	value = reflect.Indirect(value)
+	fmt.Println("struct value:", value.Interface())
+
+	f := value.FieldByName("Str")
+	fmt.Println("Str field:", f.Interface())
+
+	if f.Kind() == reflect.String && f.CanSet() {
+		fmt.Println("String field:", f.String())
+		f.SetString("updated")
+		fmt.Println("String field:", f.String())
+	}
+	fmt.Println("struct:", s)
+	fmt.Println("struct value:", value.Interface())
+}
+
+// demo, reflect get struct fields tag
+func testReflectGetTags() {
+	s := new(testStruct)
+
+	t := reflect.TypeOf(s)
+	fmt.Println("type:", t)
+
+	value := reflect.ValueOf(s)
+	value = reflect.Indirect(value)
+	fmt.Println("value:", value)
+
+	valueType := value.Type()
+	fmt.Println("value type:", valueType)
+
+	if f, ok := valueType.FieldByName("Str"); ok {
+		fmt.Println("tag:", f.Tag.Get("json"))
+	}
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
 	// testBitsOperation()
@@ -249,6 +311,10 @@ func MainDemo06() {
 
 	// testSemaphore()
 	// testSyncOnce()
+
+	// testReflectSetValue01()
+	// testReflectSetValue02()
+	// testReflectGetTags()
 
 	fmt.Println("golang demo06 DONE.")
 }
