@@ -108,9 +108,9 @@ response json:
 
 `curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"`
 
-4. Mock test, returns httpdns json string:
+4. Mock test, returns httpdns json string with wait (wait=sec/milli, sec by default):
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=1"`
+`curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=200&unit=milli"`
 
 5. Mock test, returns gzip and chunked http response:
 

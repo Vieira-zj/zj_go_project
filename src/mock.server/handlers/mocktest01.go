@@ -164,6 +164,11 @@ func mockTest0104(w http.ResponseWriter, r *http.Request) {
 		common.ErrHandler(w, err)
 		return
 	}
+	unit, err := common.GetStringArgFromQuery(r, "unit")
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 
 	retIP := `"42.48.232.7", "10.200.20.21"`
 	retJSON := fmt.Sprintf(`{"errno":0, "iplist":[%s]}`, retIP)
@@ -173,7 +178,11 @@ func mockTest0104(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 
 	if wait > 0 {
-		time.Sleep(time.Duration(wait) * time.Second)
+		if unit == "milli" {
+			time.Sleep(time.Duration(wait) * time.Millisecond)
+		} else {
+			time.Sleep(time.Duration(wait) * time.Second)
+		}
 	}
 	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(retJSON))); err != nil {
 		common.ErrHandler(w, err)
