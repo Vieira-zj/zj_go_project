@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 func TestGetBase64Text(t *testing.T) {

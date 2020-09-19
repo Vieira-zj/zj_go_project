@@ -12,8 +12,9 @@ import (
 	"strconv"
 	"time"
 
+	"src/mock.server/common"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
 )
 
 // MockQiNiuHandler router for mock qiniu test handlers.

@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	"tools.app/apps/webmvc/model"
+	"src/tools.app/apps/webmvc/model"
 )
 
 // UserService user实体类的dao服务

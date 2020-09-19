@@ -12,8 +12,8 @@ import (
 	"flag"
 	"fmt"
 
-	mysvc "tools.app/services/diskusage"
-	myutils "tools.app/utils"
+	mysvc "src/tools.app/services/diskusage"
+	myutils "src/tools.app/utils"
 )
 
 var (

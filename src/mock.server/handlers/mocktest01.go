@@ -13,9 +13,10 @@ import (
 	"strings"
 	"time"
 
+	"src/mock.server/common"
+	myutils "src/tools.app/utils"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
-	myutils "tools.app/utils"
 )
 
 // MockTestHandler01 router for mock test handlers.

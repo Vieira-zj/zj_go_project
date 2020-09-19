@@ -12,8 +12,9 @@ import (
 	"net/http"
 	"text/template"
 
+	myutils "src/tools.app/utils"
+
 	"github.com/gorilla/websocket"
-	myutils "tools.app/utils"
 )
 
 func main() {

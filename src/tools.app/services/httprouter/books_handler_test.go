@@ -6,8 +6,9 @@ import (
 	"strings"
 	"testing"
 
+	mysvc "src/tools.app/services/httprouter"
+
 	"github.com/julienschmidt/httprouter"
-	mysvc "tools.app/services/httprouter"
 )
 
 func TestBookShow(t *testing.T) {

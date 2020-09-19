@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	tmplates "src/tools.app/services/httptemplate"
+
 	"github.com/julienschmidt/httprouter"
-	tmplates "tools.app/services/httptemplate"
 )
 
 // RouterEntry an router entry.

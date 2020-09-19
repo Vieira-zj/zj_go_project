@@ -20,11 +20,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"src/mock.server/common"
+
+	k8ssvc "src/tools.app/services/k8sio"
+	wssvc "src/tools.app/services/webshell"
+
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
-	"mock.server/common"
-	k8ssvc "tools.app/services/k8sio"
-	wssvc "tools.app/services/webshell"
 )
 
 var (

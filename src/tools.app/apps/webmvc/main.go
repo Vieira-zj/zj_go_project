@@ -7,8 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"tools.app/apps/webmvc/control"
-	"tools.app/apps/webmvc/util"
+	"src/tools.app/apps/webmvc/control"
+	"src/tools.app/apps/webmvc/util"
 )
 
 func main() {

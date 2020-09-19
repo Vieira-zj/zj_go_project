@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"testing"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 func TestHTTPGet(t *testing.T) {

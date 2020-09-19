@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"os"
 
-	mysvc "tools.app/services/ddtest"
+	mysvc "src/tools.app/services/ddtest"
 )
 
 var (

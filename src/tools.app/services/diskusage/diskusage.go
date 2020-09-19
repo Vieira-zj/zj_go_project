@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 // DiskUsage includes disk tools.

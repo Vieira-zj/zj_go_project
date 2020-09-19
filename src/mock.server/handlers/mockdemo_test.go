@@ -7,9 +7,10 @@ import (
 
 	"testing"
 
+	"src/mock.server/common"
+	"src/mock.server/handlers"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
-	"mock.server/handlers"
 )
 
 func TestMockDemo01(t *testing.T) {

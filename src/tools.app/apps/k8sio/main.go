@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	mysvc "tools.app/services/k8sio"
+	mysvc "src/tools.app/services/k8sio"
 )
 
 var (

@@ -10,8 +10,8 @@ import (
 	"strings"
 	"text/template"
 
-	"tools.app/apps/webmvc/model"
-	"tools.app/apps/webmvc/util"
+	"src/tools.app/apps/webmvc/model"
+	"src/tools.app/apps/webmvc/util"
 )
 
 // RegisterView 注册视图

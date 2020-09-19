@@ -10,9 +10,10 @@ import (
 	"net/http"
 	"strings"
 
+	"src/mock.server/common"
+
 	"github.com/golib/httprouter"
 	redis "gopkg.in/redis.v5"
-	"mock.server/common"
 )
 
 // MockDemoHandler router for mock demo handlers.

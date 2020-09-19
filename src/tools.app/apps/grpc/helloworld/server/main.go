@@ -5,8 +5,9 @@ import (
 	"log"
 	"net"
 
+	pb "src/tools.app/services/grpc"
+
 	"google.golang.org/grpc"
-	pb "tools.app/services/grpc"
 )
 
 const (

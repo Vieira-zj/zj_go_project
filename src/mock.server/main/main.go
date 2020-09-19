@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"mock.server/common"
-	"mock.server/handlers"
+	"src/mock.server/common"
+	"src/mock.server/handlers"
 )
 
 func init() {

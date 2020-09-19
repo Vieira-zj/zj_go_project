@@ -9,9 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"src/mock.server/common"
+	myutils "src/tools.app/utils"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
-	myutils "tools.app/utils"
 )
 
 // ToolsHandler router for tools handlers.

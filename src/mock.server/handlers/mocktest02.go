@@ -12,10 +12,11 @@ import (
 	"strings"
 	"time"
 
+	"src/mock.server/common"
+
+	httputil "src/mock.server/vendor/qbox.us/httputil.v1"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
-	httputil "qbox.us/httputil.v1"
-	"qbox.us/rpc"
 )
 
 // MockTestHandler02 router for mock test handlers.

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 // TestGzipCoder, gzip encode and decode test.

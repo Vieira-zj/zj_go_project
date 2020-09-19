@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"demo.hello/examples"
+	"src/demo.hello/examples"
 )
 
 func main() {

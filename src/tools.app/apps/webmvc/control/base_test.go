@@ -6,7 +6,7 @@ import (
 	"testing"
 	"text/template"
 
-	"tools.app/apps/webmvc/model"
+	"src/tools.app/apps/webmvc/model"
 )
 
 func TestRegisterIndexPage(t *testing.T) {

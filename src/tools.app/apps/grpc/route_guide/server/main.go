@@ -25,7 +25,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	pb "tools.app/services/grpc"
+	pb "src/tools.app/services/grpc"
 )
 
 var (

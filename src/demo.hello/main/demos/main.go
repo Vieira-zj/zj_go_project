@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"demo.hello/demos"
+	"src/demo.hello/demos"
 )
 
 func testAccControl() {

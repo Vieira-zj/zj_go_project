@@ -3,7 +3,7 @@ package gotests_test
 import (
 	"testing"
 
-	"demo.tests/gotests"
+	"src/demo.tests/gotests"
 )
 
 // cmd: go test -v -bench=. src/demo.tests/gotests/word_perf_test.go

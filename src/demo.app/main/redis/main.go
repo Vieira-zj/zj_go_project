@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"demo.app/redis"
+	"src/demo.app/redis"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"demo.hello/sort"
+	"src/demo.hello/sort"
 )
 
 func main() {

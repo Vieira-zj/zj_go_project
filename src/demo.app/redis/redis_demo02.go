@@ -1,16 +1,19 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
 
-	redis "github.com/go-redis/redis"
+	redis "github.com/go-redis/redis/v8"
 )
 
 // TestRedisOp redis general operations test cases.
 type TestRedisOp struct {
 	client *redis.Client
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 // NewTestRedisOp create a TestRedisOp instance.
@@ -21,31 +24,39 @@ func NewTestRedisOp() *TestRedisOp {
 		DB:       0,
 		PoolSize: 5,
 	})
-	pong, err := client.Ping().Result()
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	pong, err := client.Ping(ctx).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("ping:", pong)
 
-	return &TestRedisOp{client: client}
+	return &TestRedisOp{
+		client: client,
+		ctx:    ctx,
+		cancel: cancel,
+	}
 }
 
 // Close : close redis client.
 func (t *TestRedisOp) Close() {
+	t.cancel()
 	t.client.Close()
 }
 
 // StringOperation redis general operations for type string.
-func (t TestRedisOp) StringOperation() {
+func (t *TestRedisOp) StringOperation() {
 	// #1
 	const key1 = "name"
-	err := t.client.Set(key1, "xys", 0).Err()
+	err := t.client.Set(t.ctx, "xys", 0, time.Duration(500)).Err()
 	defer t.DeleteKeyOp(key1)
 	if err != nil {
 		panic(err)
 	}
 
-	val, err := t.client.Get(key1).Result()
+	val, err := t.client.Get(t.ctx, key1).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -53,23 +64,23 @@ func (t TestRedisOp) StringOperation() {
 
 	// #2
 	const key2 = "age"
-	err = t.client.Set(key2, 20, time.Second).Err()
+	err = t.client.Set(t.ctx, key2, 20, time.Second).Err()
 	defer t.DeleteKeyOp(key2)
 	if err != nil {
 		panic(err)
 	}
 
-	t.client.Incr(key2)
-	t.client.Incr(key2)
-	t.client.Decr(key2)
-	val, err = t.client.Get(key2).Result()
+	t.client.Incr(t.ctx, key2)
+	t.client.Incr(t.ctx, key2)
+	t.client.Decr(t.ctx, key2)
+	val, err = t.client.Get(t.ctx, key2).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("\nget %s=%s\n", key2, val)
 
 	time.Sleep(time.Second)
-	val, err = t.client.Get(key2).Result()
+	val, err = t.client.Get(t.ctx, key2).Result()
 	if err != nil {
 		fmt.Println("get failed:", err)
 	} else {
@@ -78,32 +89,32 @@ func (t TestRedisOp) StringOperation() {
 }
 
 // ListOperation redis general operations for type list.
-func (t TestRedisOp) ListOperation() {
+func (t *TestRedisOp) ListOperation() {
 	// #1
 	const key = "fruit"
-	t.client.RPush(key, "apple")
-	t.client.LPush(key, "banana")
+	t.client.RPush(t.ctx, key, "apple")
+	t.client.LPush(t.ctx, key, "banana")
 	defer t.DeleteKeyOp(key)
-	len, err := t.client.LLen(key).Result()
+	len, err := t.client.LLen(t.ctx, key).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("\n%s size: %d\n", key, len)
 
-	items, err := t.client.LRange(key, 0, len).Result()
+	items, err := t.client.LRange(t.ctx, key, 0, len).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("all fruit: %v\n", items)
 
 	// #2
-	value, err := t.client.LPop(key).Result()
+	value, err := t.client.LPop(t.ctx, key).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("\nleft top fruit:", value)
 
-	value, err = t.client.RPop(key).Result()
+	value, err = t.client.RPop(t.ctx, key).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -119,27 +130,27 @@ func (t TestRedisOp) SetOperation() {
 	)
 
 	// #1
-	t.client.SAdd(key1, "Obama")
-	t.client.SAdd(key1, "Hillary")
-	t.client.SAdd(key1, sameName)
+	t.client.SAdd(t.ctx, key1, "Obama")
+	t.client.SAdd(t.ctx, key1, "Hillary")
+	t.client.SAdd(t.ctx, key1, sameName)
 	defer t.DeleteKeyOp(key1)
 
-	isMember, err := t.client.SIsMember(key1, "Bush").Result()
+	isMember, err := t.client.SIsMember(t.ctx, key1, "Bush").Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("\nIs Bush in blacklist:", isMember)
 
-	all, err := t.client.SMembers(key1).Result()
+	all, err := t.client.SMembers(t.ctx, key1).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("All member of blacklist:", all)
 
 	// #2
-	t.client.SAdd(key2, sameName)
+	t.client.SAdd(t.ctx, key2, sameName)
 	defer t.DeleteKeyOp(key2)
-	names, err := t.client.SInter(key1, key2).Result()
+	names, err := t.client.SInter(t.ctx, key1, key2).Result()
 	if err != nil {
 		panic(err)
 	}
@@ -149,17 +160,17 @@ func (t TestRedisOp) SetOperation() {
 // HashOperation redis hash general operations.
 func (t TestRedisOp) HashOperation() {
 	const key = "user_xys"
-	t.client.HSet(key, "name", "xys")
-	t.client.HSet(key, "age", "18")
+	t.client.HSet(t.ctx, key, "name", "xys")
+	t.client.HSet(t.ctx, key, "age", "18")
 	defer t.DeleteKeyOp(key)
 
-	len, err := t.client.HLen(key).Result()
+	len, err := t.client.HLen(t.ctx, key).Result()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("\nuser_xys fields count:", len)
 
-	value, err := t.client.HGet(key, "name").Result()
+	value, err := t.client.HGet(t.ctx, key, "name").Result()
 	if err != nil {
 		panic(err)
 	}
@@ -167,7 +178,7 @@ func (t TestRedisOp) HashOperation() {
 }
 
 // ParallelConnsOp parallel do connections to redis.
-func (t TestRedisOp) ParallelConnsOp() {
+func (t *TestRedisOp) ParallelConnsOp() {
 	const (
 		routines = 10
 		count    = 10
@@ -181,7 +192,7 @@ func (t TestRedisOp) ParallelConnsOp() {
 			defer wg.Done()
 			for j := 0; j < count; j++ {
 				key := fmt.Sprintf("name_%d", j)
-				if err := t.client.Set(key, fmt.Sprintf("xys-%d-%d", i, j), 0).Err(); err != nil {
+				if err := t.client.Set(t.ctx, key, fmt.Sprintf("xys-%d-%d", i, j), 0).Err(); err != nil {
 					fmt.Println("set failed:", err)
 					continue
 				}
@@ -202,13 +213,13 @@ func (t TestRedisOp) ParallelConnsOp() {
 }
 
 // DeleteKeyOp delete a kv in redis.
-func (t TestRedisOp) DeleteKeyOp(key string) {
+func (t *TestRedisOp) DeleteKeyOp(key string) {
 	if len(key) == 0 {
 		fmt.Println("delete key is empty!")
 		return
 	}
 
-	if err := t.client.Del(key).Err(); err != nil {
+	if err := t.client.Del(t.ctx, key).Err(); err != nil {
 		panic(err)
 	}
 	fmt.Printf("success delete key=%s\n", key)

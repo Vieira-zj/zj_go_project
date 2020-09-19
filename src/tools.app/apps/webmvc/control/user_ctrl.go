@@ -3,9 +3,9 @@ package control
 import (
 	"net/http"
 
-	"tools.app/apps/webmvc/args"
-	"tools.app/apps/webmvc/service"
-	"tools.app/apps/webmvc/util"
+	"src/tools.app/apps/webmvc/args"
+	"src/tools.app/apps/webmvc/service"
+	"src/tools.app/apps/webmvc/util"
 )
 
 // UserCtrl user控制器对象

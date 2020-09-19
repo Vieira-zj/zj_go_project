@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"demo.tests/gotests"
+	"src/demo.tests/gotests"
 )
 
 // cmd: go test -v src/demo.tests/gotests/echo_test.go

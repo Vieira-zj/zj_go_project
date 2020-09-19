@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"demo.tests/bddtests"
+	"src/demo.tests/bddtests"
 
 	"github.com/onsi/ginkgo/reporters"
 

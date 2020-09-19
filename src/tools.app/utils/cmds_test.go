@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 func TestRunShellCmd(t *testing.T) {

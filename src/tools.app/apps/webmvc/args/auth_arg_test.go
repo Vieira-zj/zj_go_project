@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"tools.app/apps/webmvc/model"
+	"src/tools.app/apps/webmvc/model"
 )
 
 func TestAuthArg01(t *testing.T) {

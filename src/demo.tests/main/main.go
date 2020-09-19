@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"demo.tests/gotests"
+	"src/demo.tests/gotests"
 )
 
 func init() {

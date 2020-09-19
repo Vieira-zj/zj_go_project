@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"demo.app/mongodb"
+	"src/demo.app/mongodb"
 )
 
 func main() {

@@ -6,8 +6,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"src/mock.server/common"
+
 	"github.com/golib/httprouter"
-	"mock.server/common"
 )
 
 // MockDefault sends a mock default page.

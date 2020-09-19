@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"demo.app/memcached"
+	"src/demo.app/memcached"
 )
 
 func main() {

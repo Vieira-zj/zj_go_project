@@ -1,6 +1,6 @@
 package args
 
-import "tools.app/apps/webmvc/model"
+import "src/tools.app/apps/webmvc/model"
 
 // AuthArg 登录接口请求数据
 type AuthArg struct {

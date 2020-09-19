@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	myutils "tools.app/utils"
+	myutils "src/tools.app/utils"
 )
 
 func BenchmarkReadFile01(b *testing.B) {
