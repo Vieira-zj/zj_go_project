@@ -172,7 +172,7 @@ func (pa path) translateBy(offset point, add bool) {
 }
 
 func testTranslateBy() {
-	var pa path = []point{point{1, 2}, point{4, 6}}
+	var pa path = []point{{1, 2}, {4, 6}}
 	pa.translateBy(point{1, 1}, true)
 
 	for _, p := range pa {

@@ -339,11 +339,11 @@ func testJSONUnmarshalToRawObj() {
 		ID:   "id01",
 		Name: "tester01",
 		Skills: []skill{
-			skill{
+			{
 				Name:  "automation",
 				Level: "junior",
 			},
-			skill{
+			{
 				Name:  "manual",
 				Level: "senior",
 			},

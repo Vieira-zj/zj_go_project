@@ -14,7 +14,8 @@ import (
 
 	"src/mock.server/common"
 
-	httputil "src/mock.server/vendor/qbox.us/httputil.v1"
+	// httputil "src/mock.server/vendor/qbox.us/httputil.v1"
+	// "src/mock.server/vendor/qbox.us/prc"
 
 	"github.com/golib/httprouter"
 )
@@ -136,15 +137,16 @@ func mockTest0203(w http.ResponseWriter, r *http.Request) {
 	size := 1024 * 1024 * 10
 	fmt.Println("mock bytes body:", size)
 	buf := []byte(common.CreateMockString(size))
+	fmt.Println(len(buf))
 
 	// send data by range, and return: 206 Partial Content
-	wait := 500 // millisecond, wait between each range response
-	// mr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
-	mr := rpc.ReadSeeker2RangeReader{&mockReader{wait: wait, r: bytes.NewReader(buf)}}
-	w = rpc.ResponseWriter{w}
-	if err := w.(rpc.ResponseWriter).ReplyRange(mr, int64(len(buf)), &rpc.Metas{}, r); err != nil {
-		common.ErrHandler(w, err)
-	}
+	// wait := 500 // millisecond, wait between each range response
+	// // mr := rpc.ReadSeeker2RangeReader{bytes.NewReader(buf)}
+	// mr := rpc.ReadSeeker2RangeReader{&mockReader{wait: wait, r: bytes.NewReader(buf)}}
+	// w = rpc.ResponseWriter{w}
+	// if err := w.(rpc.ResponseWriter).ReplyRange(mr, int64(len(buf)), &rpc.Metas{}, r); err != nil {
+	// 	common.ErrHandler(w, err)
+	// }
 }
 
 type mockReader struct {
@@ -222,17 +224,17 @@ func mockTest0205(w http.ResponseWriter, r *http.Request) {
 		}()
 
 		time.Sleep(time.Duration(wait) * time.Second)
-		if jacker, ok := httputil.GetHijacker(w); ok {
-			conn, _, err := jacker.Hijack()
-			if err != nil {
-				log.Println("hijack error:", err)
-			} else {
-				log.Println("response can hijack, connection closed.")
-				conn.Close()
-			}
-		} else {
-			log.Println("http.ResponseWriter not http.Hijacker.")
-		}
+		// if jacker, ok := httputil.GetHijacker(w); ok {
+		// 	conn, _, err := jacker.Hijack()
+		// 	if err != nil {
+		// 		log.Println("hijack error:", err)
+		// 	} else {
+		// 		log.Println("response can hijack, connection closed.")
+		// 		conn.Close()
+		// 	}
+		// } else {
+		// 	log.Println("http.ResponseWriter not http.Hijacker.")
+		// }
 	}()
 
 	time.Sleep(time.Duration(wait) * time.Second)
