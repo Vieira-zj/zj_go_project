@@ -2,6 +2,7 @@ package common
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -9,11 +10,9 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+)
 
-	myutils "src/tools.app/utils"
-) 
-
-// ******** Logger
+/* Logger */
 
 // LogRequestData logs http resquest.
 func LogRequestData(r *http.Request) error {
@@ -31,7 +30,7 @@ func LogDivLine() {
 	log.Println("|", strings.Repeat("*", 60))
 }
 
-// ******** Http Response
+/* Http Response */
 
 // JSONResponse json http response.
 type JSONResponse struct {
@@ -52,14 +51,10 @@ type ErrorDesc struct {
 }
 
 // WriteOKJSONResp writes http ok response as a standard JSON.
-func WriteOKJSONResp(w http.ResponseWriter, m interface{}) error {
+func WriteOKJSONResp(w http.ResponseWriter, data interface{}) error {
 	w.Header().Set(TextContentType, ContentTypeJSON)
 	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(&JSONResponse{Data: m}); err != nil {
-		return err
-	}
-	return nil
+	return json.NewEncoder(w).Encode(&JSONResponse{Data: data})
 }
 
 // WriteOKHTMLResp writes http ok response as html.
@@ -74,8 +69,8 @@ func WriteOKHTMLResp(w http.ResponseWriter, data []byte) error {
 	return nil
 }
 
-// WriteCorsHeader writes headers to fix CORS issue.
-func WriteCorsHeader(w http.ResponseWriter) {
+// AddCorsHeaders writes headers to fix CORS issue.
+func AddCorsHeaders(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header")
@@ -85,12 +80,8 @@ func WriteCorsHeader(w http.ResponseWriter) {
 func WriteErrJSONResp(w http.ResponseWriter, errCode int, errMsg string) error {
 	w.Header().Set(TextContentType, ContentTypeJSON)
 	w.WriteHeader(errCode)
-
-	if err := json.NewEncoder(w).Encode(
-		&JSONErrResponse{Error: &ErrorDesc{Status: errCode, Desc: errMsg}}); err != nil {
-		return err
-	}
-	return nil
+	return json.NewEncoder(w).Encode(
+		&JSONErrResponse{Error: &ErrorDesc{Status: errCode, Desc: errMsg}})
 }
 
 // ErrHandler handles "internal server error".
@@ -102,7 +93,7 @@ func ErrHandler(w http.ResponseWriter, err error) {
 	}
 }
 
-// ******** Parse Http Request Query
+/* Parse Http Request Query */
 
 // GetStringArgFromQuery returns string value of arg from request query form.
 func GetStringArgFromQuery(r *http.Request, argName string) (string, error) {
@@ -115,13 +106,13 @@ func GetStringArgFromQuery(r *http.Request, argName string) (string, error) {
 			return val[0], nil
 		}
 	}
-	return "", nil
+	return "", fmt.Errorf("key [%s] not exist", argName)
 }
 
 // GetIntArgFromQuery returns int value of arg from request query form.
 func GetIntArgFromQuery(r *http.Request, argName string) (int, error) {
 	val, err := GetStringArgFromQuery(r, argName)
-	if err != nil || len(val) == 0 {
+	if err != nil {
 		return -1, err
 	}
 	return strconv.Atoi(val)
@@ -130,13 +121,13 @@ func GetIntArgFromQuery(r *http.Request, argName string) (int, error) {
 // GetBoolArgFromQuery returns bool value of args from request query form.
 func GetBoolArgFromQuery(r *http.Request, argName string) (bool, error) {
 	val, err := GetStringArgFromQuery(r, argName)
-	if err != nil || len(val) == 0 {
+	if err != nil {
 		return false, err
 	}
 	return strconv.ParseBool(val)
 }
 
-// ******** Mock API, Template Functions
+/* Mock API, Template Functions */
 
 // ParseParamsForTempl parse query params for templated response.
 func ParseParamsForTempl(query map[string][]string) (map[string]string, error) {
@@ -172,12 +163,7 @@ func getNumberArg(text string) (int, error) {
 	if err != nil {
 		return -1, err
 	}
-	num, err := strconv.Atoi(r.FindString(text))
-	if err != nil {
-		return -1, err
-	}
-
-	return num, nil
+	return strconv.Atoi(r.FindString(text))
 }
 
 // QueryToMap formats string query to map[string][]string (compatible with r.URL.Query()).
@@ -190,15 +176,4 @@ func QueryToMap(query string) map[string][]string {
 		retMap[tmp[0]] = []string{tmp[1]}
 	}
 	return retMap
-}
-
-// ******** Helper Functions
-
-// CreateMockString returns mock md5 string for size of bytes.
-func CreateMockString(size int) string {
-	buf := make([]byte, size, size)
-	for i := 0; i < size; i++ {
-		buf[i] = uint8(rand.Intn(128))
-	}
-	return myutils.GetBase64Text(buf)
 }

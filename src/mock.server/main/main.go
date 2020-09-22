@@ -4,7 +4,6 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"strconv"
 
 	"src/mock.server/common"
 	"src/mock.server/handlers"
@@ -12,13 +11,13 @@ import (
 
 func init() {
 	if err := common.InitConfigs(); err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 }
 
 func main() {
 	help := flag.Bool("h", false, "help.")
-	port := flag.Int("p", 17891, "mock server listening port.")
+	port := flag.String("p", "17891", "mock server listening port.")
 
 	flag.Parse()
 	if *help {
@@ -26,6 +25,6 @@ func main() {
 	}
 
 	router := handlers.NewHTTPRouter()
-	log.Printf("Mock Server start, and listen on %d.\n", *port)
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*port), router))
+	log.Printf("Mock Server start, and listen on %s.\n", *port)
+	log.Fatal(http.ListenAndServe(":"+*port, router))
 }

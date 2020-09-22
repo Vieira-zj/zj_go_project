@@ -1,5 +1,6 @@
 {
   "meta": "mock server config file.",
+  "run_env": "test",
   "server": {
     "redis_uri": "127.0.0.1:6379"
   }

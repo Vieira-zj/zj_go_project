@@ -53,7 +53,7 @@ func (h *Hooks) beforeHooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.start = time.Now()
-	common.WriteCorsHeader(w)
+	common.AddCorsHeaders(w)
 }
 
 func (h *Hooks) afterHooks(w http.ResponseWriter, r *http.Request) {

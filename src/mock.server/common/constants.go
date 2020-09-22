@@ -1,16 +1,14 @@
 package common
 
 import (
-	"os"
-	"path/filepath"
-)
-
-var (
-	// DataDirPath data dir path of mock.
-	DataDirPath = filepath.Join(os.Getenv("GOPATH"), "src/mock.server/data")
+	"encoding/base64"
+	"math/rand"
 )
 
 const (
+	// DataDirPath data dir path of mock.
+	DataDirPath = "data"
+
 	// TextContentType http header "Content-Type".
 	TextContentType = "Content-Type"
 	// TextContentLength http header "Content-Length".
@@ -30,3 +28,21 @@ const (
 	// SvrErrRespMsg error message "Internal Server Error".
 	SvrErrRespMsg = "Internal Server Error"
 )
+
+// IsProd returns run env is production
+func IsProd() bool {
+	return RunConfigs.RunEnv == "prod"
+}
+
+// CreateMockString returns mock base64 string for size of bytes.
+func CreateMockString(size int) string {
+	buf := make([]byte, size, size)
+	for i := 0; i < size; i++ {
+		buf[i] = uint8(rand.Intn(128))
+	}
+	return getBase64Text(buf)
+}
+
+func getBase64Text(text []byte) string {
+	return base64.StdEncoding.EncodeToString(text)
+}

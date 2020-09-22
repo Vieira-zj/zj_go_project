@@ -11,9 +11,12 @@ import (
 	"github.com/golib/httprouter"
 )
 
-// MockDefault sends a mock default page.
+var count int
+
+// MockDefault sends a default page.
 func MockDefault(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	if err := common.WriteOKHTMLResp(w, []byte("Mock Default Page")); err != nil {
+	count = count + 1
+	if err := common.WriteOKHTMLResp(w, []byte("Mock Default Page: "+strconv.Itoa(count))); err != nil {
 		common.ErrHandler(w, err)
 	}
 }
