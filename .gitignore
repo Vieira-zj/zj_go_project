@@ -1,37 +1,30 @@
 .DS_Store
 */.DS_Store
 
-pkg/
-# bin/
+#pkg/
+#bin/
 
-# vscode plugins
-#src/github.com
-#src/golang.org
-
-# vendors
-#src/sys.app/vendor
-#src/demo.hello/vendor
-#src/demo.tests/vendor
-src/mock.server/vendor/mockacc
-src/mock.server/vendor/qbox.us
-src/mock.server/vendor/qiniu.com
-src/mock.server/vendor/qiniupkg.com
+# vendor
+src/vendor
+src/vendor/qbox.us
+src/vendor/qiniu.com
+src/vendor/qiniupkg.com
 
 # k8s dependency modules
-src/tools.app/vendor/k8s.io
-src/tools.app/vendor/github.com/davecgh
-src/tools.app/vendor/github.com/google
-src/tools.app/vendor/github.com/googleapis
-src/tools.app/vendor/github.com/gogo
-src/tools.app/vendor/github.com/imdario
-src/tools.app/vendor/github.com/json-iterator
-src/tools.app/vendor/github.com/modern-go
-src/tools.app/vendor/github.com/spf13
-src/tools.app/vendor/github.com/docker
-src/tools.app/vendor/github.com/gorilla
-src/tools.app/vendor/golang.org/x
-src/tools.app/vendor/gopkg.in/inf.v0
-src/tools.app/vendor/gopkg.in/yaml.v2
-src/tools.app/vendor/sigs.k8s.io
+#src/tools.app/vendor/k8s.io
+#src/tools.app/vendor/github.com/davecgh
+#src/tools.app/vendor/github.com/google
+#src/tools.app/vendor/github.com/googleapis
+#src/tools.app/vendor/github.com/gogo
+#src/tools.app/vendor/github.com/imdario
+#src/tools.app/vendor/github.com/json-iterator
+#src/tools.app/vendor/github.com/modern-go
+#src/tools.app/vendor/github.com/spf13
+#src/tools.app/vendor/github.com/docker
+#src/tools.app/vendor/github.com/gorilla
+#src/tools.app/vendor/golang.org/x
+#src/tools.app/vendor/gopkg.in/inf.v0
+#src/tools.app/vendor/gopkg.in/yaml.v2
+#src/tools.app/vendor/sigs.k8s.io
 
 src/mock.server/data
