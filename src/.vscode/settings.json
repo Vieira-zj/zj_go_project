@@ -1,7 +1,7 @@
 {
     "window.zoomLevel": 0,
-    "go.inferGopath": true,
+    "go.inferGopath": false,
     "go.goroot": "/usr/local/go",
-    "go.gopath": "/Users/zhengjin/Workspaces/zj_go_project",
+    "go.gopath": "/Users/zhengjin/Workspaces/.go",
     "go.testFlags": ["-v"]
 }

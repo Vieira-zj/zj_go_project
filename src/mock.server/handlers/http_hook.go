@@ -11,7 +11,7 @@ import (
 	"github.com/golib/httprouter"
 )
 
-// ******** Http Connect Hooks
+/* Http Connect Hooks */
 
 // NewHooks returns http connect handler hooks.
 func NewHooks() *Hooks {
@@ -38,22 +38,34 @@ func (h *Hooks) RunHooks(fn httprouter.Handle) httprouter.Handle {
 			h.mutex.Unlock()
 		}()
 
-		h.beforeHooks(w, r)
+		if err := h.beforeHooks(w, r); err != nil {
+			common.ErrHandler(w, err)
+			return
+		}
+
+		if retCode, err := common.MockReturnCode(r); err != nil {
+			common.ErrHandler(w, err)
+		} else {
+			log.Println("mock return code:", retCode)
+			w.WriteHeader(retCode)
+			return
+		}
+
 		fn(w, r, param)
 		h.afterHooks(w, r)
 	}
 }
 
-func (h *Hooks) beforeHooks(w http.ResponseWriter, r *http.Request) {
+func (h *Hooks) beforeHooks(w http.ResponseWriter, r *http.Request) error {
 	common.LogDivLine()
 	log.Printf("Start: %s %s\n", r.Method, r.URL.Path)
 	if err := common.LogRequestData(r); err != nil {
-		common.ErrHandler(w, err)
-		return
+		return err
 	}
 
 	h.start = time.Now()
 	common.AddCorsHeaders(w)
+	return common.MockWait(r)
 }
 
 func (h *Hooks) afterHooks(w http.ResponseWriter, r *http.Request) {

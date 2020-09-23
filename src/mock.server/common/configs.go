@@ -3,7 +3,7 @@ package common
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
+	"os"
 )
 
 const configFile = "mock_conf.json"
@@ -31,9 +31,12 @@ var RunConfigs Configs = Configs{
 // InitConfigs reads mock server configs from cur directory.
 func InitConfigs() error {
 	data, err := ioutil.ReadFile(configFile)
-	if err != nil {
+	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	log.Println("load configs:", data)
+
+	if data == nil || len(data) == 0 {
+		data = []byte("{}")
+	}
 	return json.Unmarshal(data, &RunConfigs)
 }

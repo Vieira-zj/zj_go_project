@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 /* Logger */
@@ -176,4 +177,24 @@ func QueryToMap(query string) map[string][]string {
 		retMap[tmp[0]] = []string{tmp[1]}
 	}
 	return retMap
+}
+
+/* Mock Functions */
+
+// MockWait mocks wait before return response
+func MockWait(r *http.Request) error {
+	wait, err := GetIntArgFromQuery(r, "wait")
+	if err != nil {
+		return err
+	}
+	if wait > 0 {
+		log.Printf("mock wait %d seconds before send body.\n", wait)
+		time.Sleep(time.Duration(wait) * time.Second)
+	}
+	return nil
+}
+
+// MockReturnCode mocks http return code
+func MockReturnCode(r *http.Request) (int, error) {
+	return GetIntArgFromQuery(r, "code")
 }

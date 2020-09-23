@@ -15,7 +15,7 @@ type RouterEntry struct {
 // NewHTTPRouter returns a new http server.
 func NewHTTPRouter() *httprouter.Router {
 	routers := make([]RouterEntry, 0, 10)
-	routers = append(routers, RouterEntry{"MockDefault", "GET", "/", MockDefault})
+	routers = append(routers, RouterEntry{"MockDefault", "GET", "/ping", MockDefault})
 	// mock demo
 	routers = append(routers, RouterEntry{"MockDemo", "GET", "/demo/:id", MockDemoHandler})
 	routers = append(routers, RouterEntry{"MockDemo", "POST", "/demo/:id", MockDemoHandler})
