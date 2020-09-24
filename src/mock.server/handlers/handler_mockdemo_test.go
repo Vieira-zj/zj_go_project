@@ -45,7 +45,7 @@ func TestMockDemo02(t *testing.T) {
 	t.Log("Response:", rr.Body.String())
 }
 
-// Mocks a handler and returns a httptest.ResponseRecorder
+// Mocks a handler and returns a httptest.ResponseRecorder.
 func newRequestRecorder(req *http.Request, method, strPath string, fnHandler httprouter.Handle) *httptest.ResponseRecorder {
 	router := httprouter.New()
 	router.Handle(method, strPath, fnHandler)

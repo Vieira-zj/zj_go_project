@@ -55,8 +55,8 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 
 	respJSON := CmdRespJSON{
 		Status:  http.StatusOK,
-		Message: "success",
-		Results: fmt.Sprintf("register uri(%s) success!", uri),
+		Message: fmt.Sprintf("register uri success: %s", uri),
+		Results: string(body),
 	}
 	common.WriteOKJSONResp(w, respJSON)
 }
@@ -64,15 +64,15 @@ func MockAPIRegisterHandler(w http.ResponseWriter, r *http.Request, params httpr
 // MockAPIHandler sends templated json response by register params and body.
 // Post /mock/:uri
 func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	uri := params.ByName(uriName)
-	filePath := fmt.Sprintf(bodyFilePathPattern, dataDirPath, uri)
-	body, err := myutils.ReadFileContentBuf(filePath)
-	if err != nil {
+	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
+	if err := common.MockReturnCode(r, w); err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
 
-	tmpl, err := template.New("mockapi").Parse(string(body))
+	uri := params.ByName(uriName)
+	filePath := fmt.Sprintf(bodyFilePathPattern, dataDirPath, uri)
+	body, err := myutils.ReadFileContentBuf(filePath)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
@@ -85,19 +85,30 @@ func MockAPIHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 		return
 	}
 
-	// 优先级：当前请求的参数 > 注册参数
+	// 优先级：当前请求的参数 覆盖 注册参数
 	queryMap := common.QueryToMap(query)
 	for k, v := range r.URL.Query() {
 		queryMap[k] = v
 	}
+	if len(queryMap) == 0 {
+		if _, err := w.Write([]byte(body)); err != nil {
+			common.ErrHandler(w, err)
+		}
+		return
+	}
+
+	// template 处理
 	tmplParams, err := common.ParseParamsForTempl(queryMap)
 	if err != nil {
 		common.ErrHandler(w, err)
 		return
 	}
 
-	w.Header().Set(common.TextContentType, common.ContentTypeJSON)
-	w.WriteHeader(http.StatusOK)
+	tmpl, err := template.New("mockapi").Parse(string(body))
+	if err != nil {
+		common.ErrHandler(w, err)
+		return
+	}
 	if err := tmpl.Execute(w, tmplParams); err != nil {
 		log.Fatalln(err)
 	}

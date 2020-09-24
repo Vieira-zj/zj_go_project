@@ -42,15 +42,6 @@ func (h *Hooks) RunHooks(fn httprouter.Handle) httprouter.Handle {
 			common.ErrHandler(w, err)
 			return
 		}
-
-		if retCode, err := common.MockReturnCode(r); err != nil {
-			common.ErrHandler(w, err)
-		} else {
-			log.Println("mock return code:", retCode)
-			w.WriteHeader(retCode)
-			return
-		}
-
 		fn(w, r, param)
 		h.afterHooks(w, r)
 	}
@@ -64,7 +55,7 @@ func (h *Hooks) beforeHooks(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	h.start = time.Now()
-	common.AddCorsHeaders(w)
+	common.AddCorsHeaders(r, w)
 	return common.MockWait(r)
 }
 

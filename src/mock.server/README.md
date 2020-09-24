@@ -1,24 +1,36 @@
 # Mock Server APIs
 
-### /
+## Default
 
-1. Default page:
+1. Ping:
 
-`curl -v "http://127.0.0.1:17891/"`
+```sh
+curl -v "http://127.0.0.1:17891/ping"
+```
 
-### /demo/:id
+## Demo
 
-1. Demo, parse Get request:
+`demo/:id`:
 
-`curl -v "http://127.0.0.1:17891/demo/1?userid=xxx&username=xxx"`
+1. Parse Get request:
 
-2. Demo, parse Get request:
+```sh
+curl -v "http://127.0.0.1:17891/demo/1?userid=001&username=foo"
+```
 
-`curl -v "http://127.0.0.1:17891/demo/2?userid=xxx&username=xxx&key=val1&key=val2"`
+2. Parse Get request:
 
-3. Demo, parse Post json body:
+```sh
+curl -v "http://127.0.0.1:17891/demo/2?userid=001&username=bar&key=val1&key=val2"
+```
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/3" -H "Content-Type:application/json" --data-binary @test.json`
+3. Parse Post json body:
+
+```sh
+curl -v -X POST "http://127.0.0.1:17891/demo/3" -H "Content-Type:application/json" --data-binary @test.json
+```
+
+`test.json`:
 
 ```json
 {
@@ -36,31 +48,43 @@
 }
 ```
 
-4. Demo, parse Post form with cookie:
+4. Parse Post form with cookie:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --form key1=val1 --form key2=val2`
+```sh
+curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --form key1=val1 --form key2=val2
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --data-binary @test.out`
+curl -v -X POST "http://127.0.0.1:17891/demo/4" --cookie "user=user_001;pwd=test_com" --data-binary @data.txt
+```
+
+`data.txt`:
 
 ```text
 key1=val1;key2=val2
 ```
 
-5. Demo, show access count which is stored in redis:
+5. Show access count which is stored in redis:
 
-`curl -v "http://127.0.0.1:17891/demo/5"`
+```sh
+curl -v "http://127.0.0.1:17891/demo/5"
+```
 
-### /demo/2-1, demo with templated json response
+## Demo with templated json response
 
-1. Demo, parse Post request, and return templated json:
+1. Parse Post request, and return templated json:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=mmm&username=nnn&age=19&sex=male&key1=val1&key2=val2" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+```sh
+curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=mmm&username=nnn&age=19&sex=male&key1=val1&key2=val2" \n
+  -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt
+```
 
-2. Demo, parse Post request with keywords (randint, randstr), and return templated json:
+2. Parse Post request with keywords (randint, randstr), and return templated json:
 
-`curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=yyy&age=randint(37)&sex=randchoice(male,female)&key1=val1&key2=randstr(16)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+```sh
+curl -v -X POST "http://127.0.0.1:17891/demo/2-1?userid=xxx&username=yyy&age=randint(37)&sex=randchoice(male,female)&key1=val1&key2=randstr(16)" \n
+  -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt
+```
 
-request body (data.txt):
+request body `data.txt`:
 
 ```text
 {
@@ -94,43 +118,65 @@ response json:
 }
 ```
 
-### /mocktest/one/:id
+## Mock Test
 
-1. Mock test, returns bytes body with wait:
+`/mocktest/one/:id`
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/1?size=128&wait=1"`
+1. Return bytes body with wait:
 
-2. Mock test, returns file content with wait:
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/1?size=128&wait=1"
+```
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/2?file=test_log.txt&wait=1"`
+2. Return file content with wait:
 
-3. Mock test, returns custom error code, like 403, 502:
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/2?file=test_log.txt&wait=1"
+```
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"`
+3. Return custom error code, like 403, 502:
 
-4. Mock test, returns httpdns json string with wait (wait=sec/milli, sec by default):
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/3?code=403"
+```
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=200&unit=milli"`
+4. Return httpdns json string with wait (wait=sec/milli, sec by default):
 
-5. Mock test, returns gzip and chunked http response:
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/4?wait=200&unit=milli"
+```
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/5"`
+5. Return gzip and chunked http response:
 
-6. Mock test, returns http response with diff mimetype:
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/5"
+```
 
-`curl -v "http://127.0.0.1:17891/mocktest/one/6?type=txt&errlen=false"`
+6. Return http response with diff mimetype:
 
-### /mocktest/two/:id
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/one/6?type=txt&errlen=false"
+```
 
-1. Mock test, returns 403 Forbidden, or file content:
+## Mock Test 2
 
-`curl -v "http://127.0.0.1:17891/mocktest/two/1?iserr=false"`
+`/mocktest/two/:id`
 
-2. Mock test, returns chunked of bytes by flush:
+1. Return 403 Forbidden, or file content:
 
-`curl -v "http://127.0.0.1:17891/mocktest/two/2"`
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/two/1?iserr=false"
+```
 
-3. Mock test, returns bytes by range with wait:
+2. Return chunked of bytes by flush:
+
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/two/2"
+```
+
+3. Return bytes by range with wait:
+
+`test.sh`:
 
 ```sh
 #!/bin/bash
@@ -143,21 +189,33 @@ done
 echo "done"
 ```
 
-4. Mock test, returns kb data with wait in each read:
+4. Return kb data with wait in each read:
 
-`curl -v "http://127.0.0.1:17891/mocktest/two/4?wait=100&kb=3"`
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/two/4?wait=100&kb=3"
+```
 
-5. Mock test, server side close connection:
+5. Mock server side close connection:
 
-`curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"`
+```sh
+curl -v "http://127.0.0.1:17891/mocktest/two/5?wait=1"
+```
 
-### Mock generic api
+## Mock Apis
 
-1. Register a uri with params and template body (Post /mock/register/:uri):
+1. Register a uri with params and template body (Post `/mock/register/:uri`):
 
-`curl -v "http://127.0.0.1:17891/mock/register/mock-001?userid=xxx&username=yyy&age=randint(27)&sex=randchoice(male,female)&key1=val1&key2=randstr(12)" -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt`
+```sh
+# simple request
+curl -v "http://127.0.0.1:17891/mock/register/mock-001" \
+  -H "Content-Type:text/plain;charset=UTF-8" -d "hello world"
 
-request body (data.txt):
+# request with keys
+curl -v "http://127.0.0.1:17891/mock/register/mock-001?userid=xxx&username=yyy&age=randint(27)&sex=randchoice(male,female)&key1=val1&key2=randstr(12)" \
+  -H "Content-Type:text/plain;charset=UTF-8" --data-binary @data.txt
+```
+
+request body `data.txt`:
 
 ```text
 {
@@ -186,9 +244,11 @@ response json:
 }
 ```
 
-2. Access register uri, and get templated json body (Get /mock/:uri):
+2. Access register uri, and get templated json body (Get `/mock/:uri`):
 
-`curl -v "http://127.0.0.1:17891/mock/mock-001"`
+```sh
+curl -v "http://127.0.0.1:17891/mock/mock-001"
+```
 
 response json:
 
@@ -207,25 +267,37 @@ response json:
 }
 ```
 
-### /mockqiniu/:id
+## Mock Qiniu Apis
+
+`/mockqiniu/:id`
 
 1. Mock mirror file server handler:
 
-`curl -v "http://127.0.0.1:17891/mockqiniu/1?wait=2"`
+```sh
+curl -v "http://127.0.0.1:17891/mockqiniu/1?wait=2"
+```
 
 2. Mock CDN refresh request handler:
 
-`curl -v "http://127.0.0.1:17891/mockqiniu/2"`
+```sh
+curl -v "http://127.0.0.1:17891/mockqiniu/2"
+```
 
 3. Mock return diff file content by arg "start":
 
-`curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"`
+```sh
+curl -v "http://127.0.0.1:17891/mockqiniu/3?start=100"
+```
 
-### /tools/:name
+## Tools Apis
+
+`/tools/:name`
 
 1. Run shell commands:
 
-`curl -v -X POST "http://127.0.0.1:17891/tools/cmd" -H "Content-Type:application/json" --data-binary "@test.json"`
+```sh
+curl -v -X POST "http://127.0.0.1:17891/tools/cmd" -H "Content-Type:application/json" --data-binary "@test.json"
+```
 
 request json:
 
@@ -254,7 +326,9 @@ response json:
 
 2. Send an email:
 
-`curl -v -X POST "http://127.0.0.1:17891/tools/mail" -H "Content-Type:application/json" --data-binary "@test.json"`
+```sh
+curl -v -X POST "http://127.0.0.1:17891/tools/mail" -H "Content-Type:application/json" --data-binary "@test.json"
+```
 
 request json:
 
@@ -285,3 +359,4 @@ response json:
   }
 }
 ```
+

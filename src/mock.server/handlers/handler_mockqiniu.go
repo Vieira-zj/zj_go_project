@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -36,6 +35,8 @@ func MockQiNiuHandler(w http.ResponseWriter, r *http.Request, params httprouter.
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
+	} else {
+		common.ErrHandler(w, fmt.Errorf("Method not support: %s", r.Method))
 	}
 }
 
@@ -48,16 +49,6 @@ func mockQiNiu01(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.(http.Flusher).Flush()
-
-	wait, err := common.GetIntArgFromQuery(r, "wait")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
-	if wait > 0 {
-		time.Sleep(time.Duration(wait) * time.Second)
-		log.Printf("sleep for %d seconds before send file body.\n", wait)
-	}
 
 	b, err := ioutil.ReadFile("ab_test.out")
 	if err != nil {

@@ -43,6 +43,8 @@ func MockTestHandler02(w http.ResponseWriter, r *http.Request, params httprouter
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
+	} else {
+		common.ErrHandler(w, fmt.Errorf("Method not support: %s", r.Method))
 	}
 }
 

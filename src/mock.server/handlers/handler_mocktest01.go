@@ -44,6 +44,8 @@ func MockTestHandler01(w http.ResponseWriter, r *http.Request, params httprouter
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
+	} else {
+		common.ErrHandler(w, fmt.Errorf("Method not support: %s", r.Method))
 	}
 }
 
@@ -63,21 +65,11 @@ func mockTest0101(w http.ResponseWriter, r *http.Request) {
 		common.ErrHandler(w, err)
 		return
 	}
-	wait, err := common.GetIntArgFromQuery(r, "wait")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
 
 	// mock bytes
 	if size > 0 {
 		log.Printf("create mock bytes of length %d.\n", size)
 		s += common.CreateMockString(size)
-	}
-	// wait before send header
-	if wait > 0 {
-		log.Printf("wait %d seconds before send header.\n", wait)
-		time.Sleep(time.Duration(wait) * time.Second)
 	}
 
 	w.Header().Set(common.TextContentLength, strconv.Itoa(len(s)))
@@ -106,11 +98,6 @@ func mockTest0102(w http.ResponseWriter, r *http.Request) {
 		common.ErrHandler(w, err)
 		return
 	}
-	wait, err := common.GetIntArgFromQuery(r, "wait")
-	if err != nil {
-		common.ErrHandler(w, err)
-		return
-	}
 
 	// read file bytes
 	if len(filepath) > 0 {
@@ -125,11 +112,6 @@ func mockTest0102(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(common.TextContentLength, strconv.Itoa(len(s)))
 	w.WriteHeader(http.StatusOK)
 
-	// wait before send body
-	if wait > 0 {
-		fmt.Printf("wait %d seconds before send body.\n", wait)
-		time.Sleep(time.Duration(wait) * time.Second)
-	}
 	if _, err := io.Copy(w, bufio.NewReader(strings.NewReader(s))); err != nil {
 		common.ErrHandler(w, err)
 	}

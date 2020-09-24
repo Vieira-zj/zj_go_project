@@ -31,8 +31,7 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 			return
 		}
-	}
-	if r.Method == "POST" {
+	} else if r.Method == "POST" {
 		switch id {
 		case "2-1":
 			mockDemo0201(w, r)
@@ -43,6 +42,8 @@ func MockDemoHandler(w http.ResponseWriter, r *http.Request, params httprouter.P
 		default:
 			common.ErrHandler(w, fmt.Errorf("POST for invalid path: %s", r.URL.Path))
 		}
+	} else {
+		common.ErrHandler(w, fmt.Errorf("Method not support: %s", r.Method))
 	}
 }
 

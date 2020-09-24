@@ -1,6 +1,7 @@
 package demos
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"reflect"
@@ -300,6 +301,24 @@ func testReflectGetTags() {
 	}
 }
 
+// demo, time.Tick in loop
+func testLoopWithTimeTick() {
+	timeout := 3
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeout)*time.Second)
+	defer cancel()
+
+	for i := 0; i < 5; i++ {
+		select {
+		case <-time.Tick(time.Second):
+			fmt.Println("sleep 1 second")
+		case <-ctx.Done():
+			fmt.Println("cancelled")
+			return
+		}
+	}
+	fmt.Println("done")
+}
+
 // MainDemo06 main for golang demo06.
 func MainDemo06() {
 	// testBitsOperation()
@@ -315,6 +334,8 @@ func MainDemo06() {
 	// testReflectSetValue01()
 	// testReflectSetValue02()
 	// testReflectGetTags()
+
+	testLoopWithTimeTick()
 
 	fmt.Println("golang demo06 DONE.")
 }

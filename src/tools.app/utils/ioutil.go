@@ -76,7 +76,7 @@ func ReadFileContent(path string) (string, error) {
 func ReadFileContentBuf(path string) ([]byte, error) {
 	var (
 		bufSize  = 1024
-		retBytes = make([]byte, 0, bufSize*10)
+		retBytes = make([]byte, bufSize*10)
 	)
 
 	exist, err := IsFileExist(path)

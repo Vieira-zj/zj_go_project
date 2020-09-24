@@ -29,19 +29,24 @@ func ToolsHandler(w http.ResponseWriter, r *http.Request, params httprouter.Para
 		default:
 			common.ErrHandler(w, fmt.Errorf("GET for invalid path: %s", r.URL.Path))
 		}
+	} else {
+		common.ErrHandler(w, fmt.Errorf("Method not support: %s", r.Method))
 	}
 
+	timeout := 8
 	for {
 		select {
 		case <-ch:
 			return
-		case <-time.Tick(time.Second):
-			log.Println("tools handler is processing...")
-		case <-time.After(time.Duration(15) * time.Second):
+		case <-time.After(time.Duration(timeout) * time.Second):
 			common.ErrHandler(w, fmt.Errorf("Time out"))
 			return
+		case <-r.Context().Done():
+			log.Println("request cancelled")
+			return
+		case <-time.Tick(time.Second):
+			log.Println("tools handler is processing...")
 		}
-		time.Sleep(time.Duration(300) * time.Millisecond)
 	}
 }
 

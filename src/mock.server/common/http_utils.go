@@ -71,10 +71,17 @@ func WriteOKHTMLResp(w http.ResponseWriter, data []byte) error {
 }
 
 // AddCorsHeaders writes headers to fix CORS issue.
-func AddCorsHeaders(w http.ResponseWriter) {
+func AddCorsHeaders(r *http.Request, w http.ResponseWriter) {
+	if IsProd() {
+		return
+	}
+
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header")
+	}
 }
 
 // WriteErrJSONResp writes http error response as a Standard API JSON with a resp code.
@@ -107,7 +114,7 @@ func GetStringArgFromQuery(r *http.Request, argName string) (string, error) {
 			return val[0], nil
 		}
 	}
-	return "", fmt.Errorf("key [%s] not exist", argName)
+	return "", fmt.Errorf("key not exist: [%s]", argName)
 }
 
 // GetIntArgFromQuery returns int value of arg from request query form.
@@ -169,6 +176,10 @@ func getNumberArg(text string) (int, error) {
 
 // QueryToMap formats string query to map[string][]string (compatible with r.URL.Query()).
 func QueryToMap(query string) map[string][]string {
+	if len(query) == 0 {
+		return make(map[string][]string)
+	}
+
 	items := strings.Split(query, "&")
 	retMap := make(map[string][]string, len(items))
 
@@ -181,12 +192,16 @@ func QueryToMap(query string) map[string][]string {
 
 /* Mock Functions */
 
-// MockWait mocks wait before return response
+// MockWait mocks wait before return response.
 func MockWait(r *http.Request) error {
 	wait, err := GetIntArgFromQuery(r, "wait")
 	if err != nil {
+		if strings.HasPrefix(err.Error(), "key not exist") {
+			return nil
+		}
 		return err
 	}
+
 	if wait > 0 {
 		log.Printf("mock wait %d seconds before send body.\n", wait)
 		time.Sleep(time.Duration(wait) * time.Second)
@@ -194,7 +209,17 @@ func MockWait(r *http.Request) error {
 	return nil
 }
 
-// MockReturnCode mocks http return code
-func MockReturnCode(r *http.Request) (int, error) {
-	return GetIntArgFromQuery(r, "code")
+// MockReturnCode mocks http return code, default is 200.
+func MockReturnCode(r *http.Request, w http.ResponseWriter) error {
+	retCode, err := GetIntArgFromQuery(r, "code")
+	if err != nil && !strings.HasPrefix(err.Error(), "key not exist") {
+		return err
+	}
+
+	if retCode <= 0 {
+		retCode = http.StatusOK
+	}
+	log.Println("mock return code:", retCode)
+	w.WriteHeader(retCode)
+	return nil
 }

@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const configFile = "mock_conf.json"
+const configFile = "/mock_conf.json"
 
 // Configs mock server configs.
 type Configs struct {
