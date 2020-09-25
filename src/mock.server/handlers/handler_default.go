@@ -16,7 +16,7 @@ var count int
 // MockDefault sends a default message.
 func MockDefault(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	count = count + 1
-	msg := fmt.Sprintf("Mock Server, access count: %d\n", count)
+	msg := fmt.Sprintf("Mock Server, access count: %d", count)
 	if err := common.WriteOKHTMLResp(w, []byte(msg)); err != nil {
 		common.ErrHandler(w, err)
 	}

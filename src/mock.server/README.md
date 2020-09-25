@@ -247,7 +247,7 @@ response json:
 2. Access register uri, and get templated json body (Get `/mock/:uri`):
 
 ```sh
-curl -v "http://127.0.0.1:17891/mock/mock-001"
+curl -v "http://127.0.0.1:17891/mock/api/mock-001"
 ```
 
 response json:

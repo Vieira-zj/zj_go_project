@@ -42,6 +42,11 @@ func (h *Hooks) RunHooks(fn httprouter.Handle) httprouter.Handle {
 			common.ErrHandler(w, err)
 			return
 		}
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		fn(w, r, param)
 		h.afterHooks(w, r)
 	}
