@@ -80,7 +80,7 @@ func AddCorsHeaders(r *http.Request, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	if r.Method == "OPTIONS" {
 		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept,Origin,Content-Type,X-Custom-Header,X-Test")
 	}
 }
 

@@ -30,6 +30,7 @@ func NewHTTPRouter() *httprouter.Router {
 	// mock api
 	routers = append(routers, RouterEntry{"MockAPIRegister", "POST", "/mock/register/:uri", MockAPIRegisterHandler})
 	routers = append(routers, RouterEntry{"MockAPI", "GET", "/mock/api/:uri", MockAPIHandler})
+	routers = append(routers, RouterEntry{"MockAPI", "POST", "/mock/api/:uri", MockAPIHandler})
 
 	// mock demo
 	routers = append(routers, RouterEntry{"MockDemo", "GET", "/demo/:id", MockDemoHandler})
